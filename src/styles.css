@@ -1262,17 +1262,14 @@ footer {
   right: 0;
   z-index: 30;
   display: grid;
-  grid-template-columns: 1fr 52px;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 12px max(9px, env(safe-area-inset-bottom));
+  gap: 6px;
+  padding: 10px 16px max(10px, env(safe-area-inset-bottom));
   background: var(--paper);
   border-top: 1px solid var(--rule-solid);
 }
 .mobile-bar-top {
-  grid-column: 1 / -1;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 10px;
 }
@@ -1281,8 +1278,8 @@ footer {
   border: 1px solid var(--rule-solid);
 }
 .mobile-horizon button {
-  height: 30px !important;
-  min-width: 52px;
+  height: 44px !important;
+  min-width: 56px;
   border: 0 !important;
   border-left: 1px solid var(--rule) !important;
 }
@@ -1292,28 +1289,9 @@ footer {
 .mobile-horizon button[aria-pressed='true'] {
   background: var(--accent-tint);
 }
-.mobile-bar-readout {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  text-align: right;
-}
 .map-skeleton {
   min-height: 300px;
   background: var(--paper-2);
-}
-.mobile-bar div {
-  line-height: 1;
-}
-.mobile-bar span {
-  display: block;
-  font-size: 8px;
-  color: var(--muted);
-}
-.mobile-bar strong {
-  font:
-    14px 'Geist Mono Variable',
-    monospace;
 }
 .mobile-bar input {
   width: 100%;
@@ -1346,16 +1324,6 @@ footer {
   border: 10px solid var(--paper);
   border-radius: 50%;
   background: var(--accent);
-}
-.mobile-bar button {
-  height: 44px;
-  border: 1px solid var(--accent);
-  color: var(--accent-ink);
-  background: transparent;
-  font-size: 10px;
-}
-.mobile-bar button:disabled {
-  opacity: 0.3;
 }
 .sheet-backdrop {
   position: fixed;
@@ -1649,4 +1617,127 @@ footer {
 }
 .planner-tabs {
   margin-bottom: 8px;
+}
+
+/* Mobile time-machine bar: label, readout, score, slider with scale, horizon + live state. */
+.mobile-bar-when {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.mobile-bar-eyebrow {
+  font:
+    500 10px 'Geist Mono Variable',
+    monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.mobile-bar-readout {
+  font:
+    500 14px 'Geist Mono Variable',
+    monospace;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mobile-bar-score {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  line-height: 1;
+}
+.mobile-bar-score b {
+  font:
+    400 34px/0.9 'Instrument Serif',
+    serif;
+  color: var(--accent-ink);
+}
+.mobile-bar-score small {
+  font:
+    12px 'Geist Mono Variable',
+    monospace;
+  color: var(--muted);
+}
+.mobile-bar-slider input {
+  display: block;
+}
+.mobile-bar-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: -6px;
+  font:
+    10px 'Geist Mono Variable',
+    monospace;
+  color: var(--muted);
+}
+.mobile-bar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.mobile-horizon button {
+  font-size: 12px;
+  color: var(--muted);
+  background: transparent;
+  padding: 0 12px;
+}
+.mobile-horizon button[aria-pressed='true'] {
+  color: var(--ink);
+}
+.mobile-bar-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 0 14px;
+  font-size: 12px;
+  border: 1px solid var(--accent);
+  color: var(--accent-ink);
+  background: transparent;
+}
+.mobile-bar-live.is-live {
+  border-color: var(--rule-solid);
+  color: var(--ink);
+}
+.mobile-bar-live.is-live i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--link);
+  animation: live-pulse 2s ease-in-out infinite;
+}
+@keyframes live-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mobile-bar-live.is-live i {
+    animation: none;
+  }
+}
+.weighting {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.weighting-label {
+  font:
+    500 10px 'Geist Mono Variable',
+    monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.weighting-toggle button {
+  display: grid;
+  gap: 2px;
+  padding: 8px 16px;
+  text-align: left;
+}
+.weighting-toggle button small {
+  font-size: 11px;
 }

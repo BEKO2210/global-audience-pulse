@@ -233,3 +233,16 @@ export function snapToMinutes(date: Date, minutes: number) {
   const step = minutes * 60_000
   return new Date(Math.round(date.getTime() / step) * step)
 }
+
+/** Human offset from now for the time machine readout, e.g. "in 2 h 15 min", "in 3 T 4 h". */
+export function formatOffset(ms: number) {
+  const totalMinutes = Math.round(Math.abs(ms) / 60_000)
+  if (totalMinutes === 0) return 'jetzt'
+  const days = Math.floor(totalMinutes / 1440)
+  const hours = Math.floor((totalMinutes % 1440) / 60)
+  const minutes = totalMinutes % 60
+  const parts = days
+    ? [`${days} T`, hours ? `${hours} h` : '']
+    : [hours ? `${hours} h` : '', minutes ? `${minutes} min` : '']
+  return `${ms < 0 ? 'vor' : 'in'} ${parts.filter(Boolean).join(' ')}`
+}

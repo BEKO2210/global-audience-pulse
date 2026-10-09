@@ -1,6 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Desktop, Moon, Sun, X } from '@phosphor-icons/react'
-import { MotionConfig, motion } from 'motion/react'
+import { MotionConfig, motion, useReducedMotion } from 'motion/react'
 import { DATA_SOURCES, MODEL_CONFIG, PHASES, STATUS_LEVELS } from './config/model'
 import { PRESETS, REGIONS, REGION_BY_ID, type RegionId } from './config/regions'
 import { useAudience } from './hooks/useAudience'
@@ -10,6 +10,7 @@ import {
   circularMean,
   fastZonedParts,
   findNextOffsetChange,
+  formatOffset,
   formatTime,
   localDecimalHourFast,
   getOffsetTable,
@@ -19,6 +20,8 @@ import {
   startOfNextZonedDay,
   timeZoneName,
 } from './lib/time'
+
+const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 import { findBestWindows, normalizedWeights, phaseAt, statusFor } from './lib/model'
 import { FALLBACK_SNAPSHOT, loadSnapshot, type Snapshot } from './lib/snapshot'
 import { Dial } from './components/Dial'
@@ -37,6 +40,8 @@ const WorldMap = lazy(() =>
 
 function Section({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   const [visible, setVisible] = useState(false)
+  // MotionConfig "user" still runs opacity fades; skip the entrance entirely for reduced motion.
+  const reduceMotion = useReducedMotion()
   useEffect(() => {
     const fallback = window.setTimeout(() => setVisible(true), 1_200)
     return () => clearTimeout(fallback)
@@ -44,7 +49,7 @@ function Section({ children, className = '' }: { children: React.ReactNode; clas
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: 18 }}
+      initial={reduceMotion ? false : { opacity: 0, y: 18 }}
       animate={visible ? { opacity: 1, y: 0 } : undefined}
       whileInView={{ opacity: 1, y: 0 }}
       onViewportEnter={() => setVisible(true)}
@@ -610,19 +615,30 @@ export default function App() {
                   </h2>
                 </div>
                 <div className="method-copy">
-                  <div className="weighting-toggle" aria-label="Gewichtungsmodell">
-                    <button
-                      aria-pressed={weightingMode === 'value'}
-                      onClick={() => setWeightingMode('value')}
+                  <div className="weighting">
+                    <span className="weighting-label" id="weighting-label">
+                      Gewichtung der Regionen
+                    </span>
+                    <div
+                      className="weighting-toggle"
+                      role="group"
+                      aria-labelledby="weighting-label"
                     >
-                      Werbewert
-                    </button>
-                    <button
-                      aria-pressed={weightingMode === 'reach'}
-                      onClick={() => setWeightingMode('reach')}
-                    >
-                      Reichweite
-                    </button>
+                      <button
+                        aria-pressed={weightingMode === 'value'}
+                        onClick={() => setWeightingMode('value')}
+                      >
+                        Werbewert
+                        <small>nach Kaufkraft</small>
+                      </button>
+                      <button
+                        aria-pressed={weightingMode === 'reach'}
+                        onClick={() => setWeightingMode('reach')}
+                      >
+                        Reichweite
+                        <small>nach Nutzerzahl</small>
+                      </button>
+                    </div>
                   </div>
                   <p>
                     Der Score verbindet die geglättete menschliche Aufmerksamkeitskurve mit den
@@ -700,9 +716,51 @@ export default function App() {
               {snapshotState === 'live' ? 'aus aktuellen Daten berechnet' : 'modellierte Vorschau'}
             </span>
           </footer>
-          <div className="mobile-bar">
+          <div className="mobile-bar" role="region" aria-label="Zeit vorspulen">
             <div className="mobile-bar-top">
-              <div className="mobile-horizon" role="group" aria-label="Zeithorizont">
+              <div className="mobile-bar-when">
+                <span className="mobile-bar-eyebrow">Zeit vorspulen</span>
+                <span className="mobile-bar-readout">
+                  {scrubbed
+                    ? `${scrubbed.toLocaleString('de-DE', {
+                        weekday: 'short',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })} · ${formatOffset(scrubbed.getTime() - minuteNow.getTime())}`
+                    : `Jetzt · ${formatTime(minuteNow, userTimeZone)}`}
+                </span>
+              </div>
+              <div className="mobile-bar-score" aria-label="Gesamtwert">
+                <b>{scoreGridReady ? <AnimatedNumber value={score} /> : '—'}</b>
+                <small>/100</small>
+              </div>
+            </div>
+            <div className="mobile-bar-slider">
+              <input
+                aria-label="Mobile Zeitmaschine"
+                type="range"
+                min={0}
+                max={mobileHorizon * 60}
+                step={15}
+                value={Math.max(
+                  0,
+                  Math.min(
+                    mobileHorizon * 60,
+                    Math.round((date.getTime() - minuteNow.getTime()) / 60_000),
+                  ),
+                )}
+                onChange={(e) =>
+                  scrubTo(new Date(minuteNow.getTime() + Number(e.target.value) * 60_000))
+                }
+              />
+              <div className="mobile-bar-scale" aria-hidden="true">
+                <span>jetzt</span>
+                <span>{mobileHorizon === 24 ? '+12 h' : '+3,5 T'}</span>
+                <span>{mobileHorizon === 24 ? '+24 h' : '+7 T'}</span>
+              </div>
+            </div>
+            <div className="mobile-bar-actions">
+              <div className="mobile-horizon" role="group" aria-label="Zeitraum des Schiebers">
                 <button aria-pressed={mobileHorizon === 24} onClick={() => setMobileHorizon(24)}>
                   24 h
                 </button>
@@ -710,42 +768,16 @@ export default function App() {
                   7 Tage
                 </button>
               </div>
-              <div className="mobile-bar-readout">
-                <span>
-                  {scrubbed
-                    ? scrubbed.toLocaleString('de-DE', {
-                        weekday: 'short',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })
-                    : 'Jetzt live'}
+              {scrubbed ? (
+                <button className="mobile-bar-live" onClick={() => setScrubbed(null)}>
+                  Zurück zu jetzt
+                </button>
+              ) : (
+                <span className="mobile-bar-live is-live" role="status">
+                  <i aria-hidden="true" /> Live
                 </span>
-                <strong>
-                  {scoreGridReady ? <AnimatedNumber value={score} /> : '—'}
-                  /100
-                </strong>
-              </div>
-            </div>
-            <input
-              aria-label="Mobile Zeitmaschine"
-              type="range"
-              min={0}
-              max={mobileHorizon * 60}
-              step={15}
-              value={Math.max(
-                0,
-                Math.min(
-                  mobileHorizon * 60,
-                  Math.round((date.getTime() - minuteNow.getTime()) / 60_000),
-                ),
               )}
-              onChange={(e) =>
-                scrubTo(new Date(minuteNow.getTime() + Number(e.target.value) * 60_000))
-              }
-            />
-            <button onClick={() => setScrubbed(null)} disabled={!scrubbed}>
-              Live
-            </button>
+            </div>
           </div>
         </div>
         {detailRegion && (

@@ -13,6 +13,8 @@ async function tabUntil(page: Page, predicate: () => Promise<boolean>, limit = 1
 for (const theme of ['light', 'dark'] as const) {
   test(`has no serious or critical axe violations in ${theme} mode`, async ({ page }) => {
     await page.addInitScript((value) => localStorage.setItem('gap-theme', value), theme)
+    // Audit the settled UI: entrance fades would otherwise be sampled mid-opacity (flaky contrast).
+    await page.emulateMedia({ reducedMotion: 'reduce' })
     await openReady(page)
     const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()
     expect(

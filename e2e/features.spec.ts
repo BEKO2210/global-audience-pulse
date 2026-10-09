@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 import { readFile } from 'node:fs/promises'
-import { openReady } from './helpers'
+import { allowClipboard, openReady } from './helpers'
 
 test('audience selection renormalizes and persists in URL and localStorage', async ({ page }) => {
   await openReady(page)
@@ -19,8 +19,9 @@ test('audience selection renormalizes and persists in URL and localStorage', asy
 test('switches weighting and planner tabs, exports TZID ICS, and copies the plan', async ({
   page,
   context,
+  browserName,
 }) => {
-  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+  await allowClipboard(page, context, browserName)
   await openReady(page)
   await page.getByRole('button', { name: 'Reichweite' }).click()
   await expect(page).toHaveURL(/weight=reach/)
@@ -43,8 +44,12 @@ test('switches weighting and planner tabs, exports TZID ICS, and copies the plan
   await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toMatch(/^1\./)
 })
 
-test('share link round-trips audience and weighting state', async ({ page, context }) => {
-  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+test('share link round-trips audience and weighting state', async ({
+  page,
+  context,
+  browserName,
+}) => {
+  await allowClipboard(page, context, browserName)
   await page.addInitScript(() => Object.defineProperty(navigator, 'share', { value: undefined }))
   await openReady(page)
   await page.getByRole('button', { name: /Berlin abwählen/ }).click()

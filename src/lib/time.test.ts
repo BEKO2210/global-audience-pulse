@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { circularMean, formatDecimalHour, startOfNextZonedDay, zonedParts } from './time'
+import {
+  circularMean,
+  formatDecimalHour,
+  formatOffset,
+  startOfNextZonedDay,
+  zonedParts,
+} from './time'
 
 describe('DST-sichere Ortszeiten', () => {
   it('bildet die doppelte Berliner Stunde am 25.10.2026 korrekt ab', () => {
@@ -30,4 +36,14 @@ it('berechnet das zirkuläre Mittel über Mitternacht', () => {
 it('rundet Dezimalstunden vor dem Aufteilen', () => {
   expect(formatDecimalHour(17 + 59.6 / 60)).toBe('18:00')
   expect(formatDecimalHour(23 + 59.6 / 60)).toBe('00:00')
+})
+
+describe('formatOffset', () => {
+  it('formats the time machine distance from now', () => {
+    expect(formatOffset(0)).toBe('jetzt')
+    expect(formatOffset(135 * 60_000)).toBe('in 2 h 15 min')
+    expect(formatOffset(16 * 3_600_000)).toBe('in 16 h')
+    expect(formatOffset((3 * 24 + 4) * 3_600_000 + 20 * 60_000)).toBe('in 3 T 4 h')
+    expect(formatOffset(-45 * 60_000)).toBe('vor 45 min')
+  })
 })
