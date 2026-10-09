@@ -19,7 +19,7 @@
   --series-4: #8997c7;
   --series-5: #bc7f9f;
   --motion-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --mobile-bar-height: 242px;
+  --mobile-bar-height: 72px;
 }
 [data-theme='light'] {
   color-scheme: light;
@@ -550,7 +550,7 @@ button:active {
 .forecast {
   width: 100%;
   display: block;
-  touch-action: none;
+  touch-action: pan-y;
   overflow: visible;
   scroll-margin-bottom: calc(150px + env(safe-area-inset-bottom));
 }
@@ -1413,94 +1413,9 @@ button:active {
 .legal-copy p {
   margin: 0 0 14px;
 }
-.mobile-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 30;
-  display: grid;
-  gap: 8px;
-  min-height: var(--mobile-bar-height);
-  padding: 12px 16px max(10px, env(safe-area-inset-bottom));
-  background: var(--paper);
-  border-top: 1px solid var(--rule-solid);
-  overscroll-behavior: contain;
-}
-.mobile-bar-top {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 10px;
-}
-.mobile-horizon {
-  display: flex;
-  border: 1px solid var(--rule-solid);
-  position: relative;
-  isolation: isolate;
-}
-.mobile-horizon-indicator {
-  position: absolute;
-  inset: 0;
-  background: var(--accent-tint);
-  border: 1px solid var(--accent);
-  z-index: -1;
-}
-.mobile-horizon button {
-  height: 44px !important;
-  min-width: 56px;
-  border: 0 !important;
-  border-left: 1px solid var(--rule) !important;
-  position: relative;
-  z-index: 1;
-}
-.mobile-horizon button > span:last-child {
-  position: relative;
-}
-.mobile-horizon button:first-child {
-  border-left: 0 !important;
-}
-.mobile-horizon button[aria-pressed='true'] {
-  color: var(--ink);
-}
 .map-skeleton {
   min-height: 300px;
   background: var(--paper-2);
-}
-.mobile-bar input {
-  width: 100%;
-  accent-color: var(--accent);
-  height: 58px;
-  /* Keep the whole finger gesture on the slider: no page pan, no toolbar collapse mid-drag. */
-  touch-action: none;
-  appearance: none;
-  background: transparent;
-}
-.mobile-bar input::-webkit-slider-runnable-track {
-  height: 58px;
-  background: transparent;
-}
-.mobile-bar input::-webkit-slider-thumb {
-  appearance: none;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--accent);
-  border: 8px solid var(--paper);
-  box-shadow: 0 0 0 1px var(--accent);
-  margin-top: 7px;
-}
-.mobile-bar input::-moz-range-track {
-  height: 58px;
-  background: transparent;
-}
-.mobile-bar input::-moz-range-thumb {
-  width: 28px;
-  height: 28px;
-  border: 8px solid var(--paper);
-  box-shadow: 0 0 0 1px var(--accent);
-  border-radius: 50%;
-  background: var(--accent);
 }
 .sheet-backdrop {
   position: fixed;
@@ -1809,194 +1724,6 @@ button:active {
 .planner-tabs {
   margin-bottom: 8px;
 }
-
-/* Mobile time-machine bar: label, readout, score, slider with scale, horizon + live state. */
-.mobile-bar-when {
-  display: grid;
-  gap: 3px;
-  min-width: 0;
-}
-.mobile-bar-eyebrow {
-  font:
-    500 10px 'Geist Mono Variable',
-    monospace;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.mobile-bar-readout {
-  font:
-    560 20px/1.15 'Geist Mono Variable',
-    monospace;
-  color: var(--ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-variant-numeric: tabular-nums;
-  min-width: 13ch;
-}
-.mobile-bar-relative {
-  color: var(--muted);
-  font:
-    11px 'Geist Mono Variable',
-    monospace;
-  font-variant-numeric: tabular-nums;
-  min-height: 17px;
-}
-.mobile-bar-score {
-  display: grid;
-  grid-template-columns: 2ch minmax(82px, auto);
-  align-items: end;
-  column-gap: 8px;
-  line-height: 1;
-  text-align: right;
-}
-.mobile-bar-score b {
-  font:
-    400 46px/0.82 'Instrument Serif',
-    serif;
-  font-variant-numeric: tabular-nums;
-  transition: color 0.22s var(--motion-ease);
-}
-.mobile-bar-score > span {
-  /* Tone colours are for the large number only; small text stays ink for contrast. */
-  color: var(--ink);
-  font:
-    600 10px/1.2 'Geist Mono Variable',
-    monospace;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding-bottom: 2px;
-  white-space: nowrap;
-}
-.mobile-bar-score.strong {
-  color: var(--accent-ink);
-}
-.mobile-bar-score.good {
-  color: var(--series-2);
-}
-.mobile-bar-score.medium {
-  color: var(--series-3);
-}
-.mobile-bar-score.quiet {
-  color: var(--muted);
-}
-.mobile-bar-slider {
-  position: relative;
-  height: 82px;
-  padding-top: 2px;
-}
-.mobile-bar-slider input {
-  display: block;
-  position: relative;
-  z-index: 3;
-  margin: 0;
-}
-.mobile-bar-scale {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1px;
-  font:
-    10px 'Geist Mono Variable',
-    monospace;
-  color: var(--muted);
-}
-.mobile-track-visual {
-  position: absolute;
-  z-index: 1;
-  left: 0;
-  right: 0;
-  top: 2px;
-  height: 58px;
-  overflow: hidden;
-  border-bottom: 1px solid var(--rule-solid);
-  pointer-events: none;
-}
-.mobile-track-visual svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-.mobile-forecast-area {
-  fill: var(--accent-tint);
-}
-.mobile-forecast-line {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 1.5;
-  vector-effect: non-scaling-stroke;
-}
-.mobile-track-visual > i {
-  position: absolute;
-  bottom: 0;
-  width: 1px;
-  height: 12px;
-  background: var(--accent);
-  opacity: 0.7;
-}
-.mobile-now-marker {
-  position: absolute;
-  left: 4px;
-  top: 3px;
-  color: var(--muted);
-  font:
-    8px 'Geist Mono Variable',
-    monospace;
-  text-transform: uppercase;
-}
-.mobile-value-bubble {
-  position: absolute;
-  z-index: 5;
-  top: -35px;
-  transform: translateX(-50%);
-  min-width: 64px;
-  padding: 5px 7px;
-  background: var(--ink);
-  color: var(--paper);
-  text-align: center;
-  font:
-    12px 'Geist Mono Variable',
-    monospace;
-  font-variant-numeric: tabular-nums;
-  pointer-events: none;
-}
-.mobile-bar-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-.mobile-horizon button {
-  font-size: 12px;
-  color: var(--muted);
-  background: transparent;
-  padding: 0 12px;
-}
-.mobile-horizon button[aria-pressed='true'] {
-  color: var(--ink);
-}
-.mobile-bar-live {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 44px;
-  padding: 0 14px;
-  font-size: 12px;
-  border: 1px solid var(--accent);
-  color: var(--accent-ink);
-  background: transparent;
-}
-.mobile-bar-live.is-live {
-  border-color: var(--rule-solid);
-  color: var(--ink);
-}
-.mobile-bar-live.is-live i {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--link);
-  animation: live-pulse 2s ease-in-out infinite;
-}
 @keyframes live-pulse {
   50% {
     opacity: 0.35;
@@ -2082,28 +1809,6 @@ button:active {
   text-align: center;
   font-weight: inherit;
 }
-/* Fixed boxes in the bar so changing status words and numbers never move their neighbours. */
-/* Number on top, status word below: they never overlap and neither moves the other. */
-.mobile-bar-score {
-  grid-template-columns: auto !important;
-  justify-items: end;
-  row-gap: 4px;
-}
-.mobile-bar-score b .animated-number {
-  min-width: 0;
-  text-align: right;
-}
-.mobile-bar-scale {
-  position: relative;
-  height: 14px;
-  display: block;
-}
-.mobile-bar-scale span {
-  position: absolute;
-  top: 0;
-  transform: translateX(-50%);
-  white-space: nowrap;
-}
 /* Serif numerals: tighter fixed cells than 1ch so the digits read as one number. */
 .hero-score .digit,
 .mobile-bar-score b .digit,
@@ -2113,4 +1818,201 @@ button:active {
 }
 .hero-aside dd.best-region .flag-image {
   flex: none;
+}
+
+/* ── Mobile time bar: one slim row. The forecast curve is the slider; a hairline cursor marks the
+   chosen moment, like a chart scrubber. Time on the left, score on the right. ── */
+.mobile-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto 46px;
+  align-items: center;
+  gap: 10px;
+  height: calc(var(--mobile-bar-height) + env(safe-area-inset-bottom));
+  padding: 0 14px env(safe-area-inset-bottom);
+  background: var(--paper);
+  border-top: 1px solid var(--rule-solid);
+  overscroll-behavior: contain;
+}
+.mobile-bar-when {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+.mobile-bar-readout {
+  font:
+    500 17px/1 'Geist Mono Variable',
+    monospace;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.mobile-bar-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font:
+    500 11px/1.2 'Geist Variable',
+    sans-serif;
+  color: var(--muted);
+  white-space: nowrap;
+  text-align: left;
+}
+.mobile-bar-live.is-live i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--link);
+  animation: live-pulse 2.4s ease-in-out infinite;
+}
+.mobile-bar-back {
+  color: var(--accent-ink);
+  font-weight: 600;
+  margin-left: 2px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.mobile-bar-slider {
+  position: relative;
+  height: 48px;
+  min-width: 0;
+}
+.mobile-track-visual {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.mobile-track-visual svg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 4px;
+  width: 100%;
+  height: 30px;
+}
+.mobile-forecast-area {
+  fill: var(--accent-tint);
+}
+.mobile-forecast-line {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5px;
+  vector-effect: non-scaling-stroke;
+}
+.mobile-track-visual .window-tick {
+  position: absolute;
+  top: 34px;
+  width: 1px;
+  height: 4px;
+  background: var(--accent);
+}
+.mobile-track-visual .scale-label {
+  position: absolute;
+  bottom: 0;
+  transform: translateX(-50%);
+  font:
+    10px/1 'Geist Mono Variable',
+    monospace;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.mobile-cursor {
+  position: absolute;
+  top: 2px;
+  height: 34px;
+  width: 1px;
+  background: var(--ink);
+  transform: translateX(-0.5px);
+  transition: left 0.18s var(--motion-ease);
+}
+.mobile-bar-slider.is-dragging .mobile-cursor {
+  transition: none;
+}
+.mobile-cursor b {
+  position: absolute;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--paper);
+  transform: translate(-50%, -50%) scale(1);
+  transition:
+    top 0.18s var(--motion-ease),
+    transform 0.18s var(--motion-ease);
+}
+.mobile-bar-slider.is-dragging .mobile-cursor b {
+  transform: translate(-50%, -50%) scale(1.45);
+  transition: transform 0.18s var(--motion-ease);
+}
+/* The native range input stays the real control: invisible, full track height, whole track draggable. */
+.mobile-bar-slider input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+  touch-action: none;
+}
+.mobile-bar-slider:has(input:focus-visible) .mobile-cursor {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.mobile-horizon-toggle {
+  min-width: 36px;
+  min-height: 32px;
+  padding: 0 6px;
+  border: 1px solid var(--rule-solid);
+  background: var(--paper);
+  font:
+    500 10px/1 'Geist Mono Variable',
+    monospace;
+  color: var(--ink);
+}
+.mobile-bar-score {
+  display: grid;
+  justify-items: end;
+  gap: 3px;
+  line-height: 1;
+}
+.mobile-bar-score b {
+  font:
+    400 34px/0.8 'Instrument Serif',
+    serif;
+  transition: color 0.22s var(--motion-ease);
+}
+.mobile-bar-score > span {
+  font:
+    500 9px/1.1 'Geist Variable',
+    sans-serif;
+  color: var(--ink);
+  text-align: right;
+  white-space: nowrap;
+}
+.mobile-bar-score.strong b {
+  color: var(--accent-ink);
+}
+.mobile-bar-score.good b {
+  color: var(--series-2);
+}
+.mobile-bar-score.medium b {
+  color: var(--series-3);
+}
+.mobile-bar-score.quiet b {
+  color: var(--muted);
+}
+@media (min-width: 1024px) {
+  .mobile-bar {
+    display: none;
+  }
 }

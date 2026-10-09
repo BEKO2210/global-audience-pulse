@@ -54,6 +54,7 @@ export function Forecast({
       .y0(y(0))
       .y1((d) => y(d.score))
       .curve(curveMonotoneX)(points) ?? ''
+  const touchStart = useRef<{ x: number; y: number; scrubbing: boolean } | null>(null)
   const scrub = (clientX: number) => {
     const rect = ref.current?.getBoundingClientRect()
     if (!rect) return
@@ -101,11 +102,41 @@ export function Forecast({
           Intl.DateTimeFormat().resolvedOptions().timeZone,
         )}
         onPointerDown={(e) => {
-          e.currentTarget.setPointerCapture(e.pointerId)
-          scrub(e.clientX)
+          // Mouse/pen scrub immediately. Touch waits for intent: the browser keeps vertical
+          // pans (touch-action: pan-y) so scrolling over the chart scrolls the page.
+          touchStart.current = { x: e.clientX, y: e.clientY, scrubbing: false }
+          if (e.pointerType !== 'touch') {
+            e.currentTarget.setPointerCapture(e.pointerId)
+            scrub(e.clientX)
+          }
         }}
         onPointerMove={(e) => {
-          if (e.currentTarget.hasPointerCapture(e.pointerId)) scrub(e.clientX)
+          if (e.pointerType !== 'touch') {
+            if (e.currentTarget.hasPointerCapture(e.pointerId)) scrub(e.clientX)
+            return
+          }
+          const start = touchStart.current
+          if (!start) return
+          if (!start.scrubbing && Math.abs(e.clientX - start.x) > 8) {
+            start.scrubbing = Math.abs(e.clientX - start.x) > Math.abs(e.clientY - start.y)
+            if (start.scrubbing) e.currentTarget.setPointerCapture(e.pointerId)
+          }
+          if (start.scrubbing) scrub(e.clientX)
+        }}
+        onPointerUp={(e) => {
+          const start = touchStart.current
+          // A deliberate tap (no movement) on touch also moves the time machine.
+          if (
+            e.pointerType === 'touch' &&
+            start &&
+            !start.scrubbing &&
+            Math.hypot(e.clientX - start.x, e.clientY - start.y) < 8
+          )
+            scrub(e.clientX)
+          touchStart.current = null
+        }}
+        onPointerCancel={() => {
+          touchStart.current = null
         }}
         onKeyDown={(e) => {
           if (['ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home'].includes(e.key))

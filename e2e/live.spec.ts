@@ -31,7 +31,7 @@ test('clocks tick, simulated time changes the score, and Live returns to now', a
   const liveButton = page.locator('.forecast-panel').getByRole('button', { name: 'Live' })
   await expect(liveButton).toBeEnabled()
   await liveButton.click()
-  await expect(page.locator('.mobile-bar-readout')).toContainText('Jetzt')
+  await expect(page.locator('.mobile-bar-readout')).toHaveText(/^\d{2}:\d{2}$/)
   // The bar is hidden on desktop; assert the live state exists rather than its visibility.
   await expect(page.locator('.mobile-bar-live.is-live')).toHaveCount(1)
 })

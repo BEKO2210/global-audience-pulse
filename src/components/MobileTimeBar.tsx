@@ -10,6 +10,14 @@ import { AnimatedNumber } from './AnimatedNumber'
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value))
 
+/** Compact distance for the slim bar: "+45 min", "+15 h", "+3 T". */
+const shortOffset = (minutes: number) =>
+  minutes < 60
+    ? `+${minutes} min`
+    : minutes < 1440
+      ? `+${Math.round(minutes / 60)} h`
+      : `+${Math.round(minutes / 1440)} T`
+
 export function MobileTimeBar({
   now,
   selectedDate,
@@ -109,30 +117,31 @@ export function MobileTimeBar({
     })
   }
 
+  const userZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  const live = displayedMinutes === 0
+  const cursorY = height - 5 - (score / 100) * (height - 12)
+
   return (
     <div className="mobile-bar" role="region" aria-label="Zeit vorspulen">
-      <div className="mobile-bar-top">
-        <div className="mobile-bar-when">
-          <span className="mobile-bar-eyebrow">Zielzeit</span>
-          <span className="mobile-bar-readout">
-            {displayedMinutes === 0
-              ? `Jetzt · ${formatTime(now, Intl.DateTimeFormat().resolvedOptions().timeZone)}`
-              : date.toLocaleString('de-DE', {
-                  weekday: 'short',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}
+      <div className="mobile-bar-when">
+        <span className="mobile-bar-readout">{formatTime(live ? now : date, userZone)}</span>
+        {live ? (
+          <span className="mobile-bar-live is-live" role="status">
+            <i aria-hidden="true" /> Live
           </span>
-          <span className="mobile-bar-relative">
-            {formatOffset(date.getTime() - now.getTime())}
-          </span>
-        </div>
-        <div className={`mobile-bar-score ${status.tone}`} aria-label="Gesamtwert">
-          <b>{ready ? <AnimatedNumber value={score} /> : '—'}</b>
-          <span>{status.label}</span>
-        </div>
+        ) : (
+          <button
+            className="mobile-bar-live"
+            onClick={onLive}
+            aria-label={`Zurück zu jetzt (gewählt: ${formatOffset(date.getTime() - now.getTime())})`}
+          >
+            {shortOffset(displayedMinutes)}
+            <span className="mobile-bar-back">Jetzt</span>
+          </button>
+        )}
       </div>
-      <div className="mobile-bar-slider">
+
+      <div className={`mobile-bar-slider${dragging ? ' is-dragging' : ''}`}>
         <div className="mobile-track-visual" aria-hidden="true">
           <svg viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none">
             <path d={areaPath} className="mobile-forecast-area" />
@@ -150,17 +159,26 @@ export function MobileTimeBar({
               0,
               100,
             )
-            return <i key={window.start.toISOString()} style={{ left: `${left}%` }} />
+            return (
+              <i
+                key={window.start.toISOString()}
+                className="window-tick"
+                style={{ left: `${left}%` }}
+              />
+            )
           })}
-          <span className="mobile-now-marker">jetzt</span>
+          {ticks.map((tick) => (
+            <span key={tick.left} className="scale-label" style={{ left: `${tick.left}%` }}>
+              {tick.label}
+            </span>
+          ))}
+          <span className="mobile-cursor" style={{ left: `${position}%` }}>
+            <b style={{ top: `${(cursorY / height) * 100}%` }} />
+          </span>
         </div>
-        {dragging && (
-          <div className="mobile-value-bubble" style={{ left: `${position}%` }} aria-hidden="true">
-            {formatTime(date, Intl.DateTimeFormat().resolvedOptions().timeZone)}
-          </div>
-        )}
         <input
           aria-label="Mobile Zeitmaschine"
+          aria-valuetext={`${date.toLocaleString('de-DE', { weekday: 'long', hour: '2-digit', minute: '2-digit' })}, Score ${Math.round(score)}`}
           type="range"
           min={0}
           max={maxMinutes}
@@ -175,46 +193,22 @@ export function MobileTimeBar({
           onBlur={() => setDragging(false)}
           onChange={(event) => update(Number(event.target.value))}
         />
-        <div className="mobile-bar-scale" aria-hidden="true">
-          {ticks.map((tick) => (
-            <span key={tick.left} style={{ left: `${tick.left}%` }}>
-              {tick.label}
-            </span>
-          ))}
-        </div>
       </div>
-      <div className="mobile-bar-actions">
-        <div className="mobile-horizon" role="group" aria-label="Zeitraum des Schiebers">
-          <button aria-pressed={horizon === 24} onClick={() => onHorizon(24)}>
-            {horizon === 24 && (
-              <motion.span
-                className="mobile-horizon-indicator"
-                layoutId="mobile-horizon-indicator"
-                transition={reduceMotion ? { duration: 0 } : MOTION.spring}
-              />
-            )}
-            <span>24 h</span>
-          </button>
-          <button aria-pressed={horizon === 168} onClick={() => onHorizon(168)}>
-            {horizon === 168 && (
-              <motion.span
-                className="mobile-horizon-indicator"
-                layoutId="mobile-horizon-indicator"
-                transition={reduceMotion ? { duration: 0 } : MOTION.spring}
-              />
-            )}
-            <span>7 Tage</span>
-          </button>
-        </div>
-        {displayedMinutes ? (
-          <button className="mobile-bar-live" onClick={onLive}>
-            Zurück zu jetzt
-          </button>
-        ) : (
-          <span className="mobile-bar-live is-live" role="status">
-            <i aria-hidden="true" /> Live
-          </span>
-        )}
+
+      <button
+        className="mobile-horizon-toggle"
+        onClick={() => onHorizon(horizon === 24 ? 168 : 24)}
+        aria-label={
+          horizon === 24
+            ? 'Zeitraum: 24 Stunden, auf 7 Tage umschalten'
+            : 'Zeitraum: 7 Tage, auf 24 Stunden umschalten'
+        }
+      >
+        {horizon === 24 ? '24 h' : '7 T'}
+      </button>
+      <div className={`mobile-bar-score ${status.tone}`} aria-label="Gesamtwert">
+        <b>{ready ? <AnimatedNumber value={score} /> : '—'}</b>
+        <span>{status.label}</span>
       </div>
       <span className="sr-only">Beste Fenster beginnen ab Score {STATUS_LEVELS[1].min}.</span>
     </div>
