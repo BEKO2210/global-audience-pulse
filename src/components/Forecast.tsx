@@ -3,7 +3,8 @@ import { scaleLinear, scaleTime } from 'd3-scale'
 import { area, curveMonotoneX, line } from 'd3-shape'
 import { motion } from 'motion/react'
 import type { PostingWindow } from '../lib/model'
-import { formatDateTime, formatTime } from '../lib/time'
+import { MODEL_CONFIG } from '../config/model'
+import { formatDateTime, formatTime, snapToMinutes } from '../lib/time'
 
 export interface ForecastPoint {
   date: Date
@@ -54,11 +55,21 @@ export function Forecast({
       width - pad.r,
       Math.max(pad.l, ((clientX - rect.left) / rect.width) * width),
     )
-    onScrub(x.invert(px))
+    onScrub(snapToMinutes(x.invert(px), MODEL_CONFIG.scanStepMinutes))
   }
   const ticks = x.ticks(5)
   const selectedInDomain = new Date(
     Math.min(domain[1].getTime(), Math.max(domain[0].getTime(), selectedDate.getTime())),
+  )
+  const selectedIndex = Math.min(
+    points.length - 1,
+    Math.max(
+      0,
+      Math.round(
+        (selectedInDomain.getTime() - domain[0].getTime()) /
+          (MODEL_CONFIG.scanStepMinutes * 60_000),
+      ),
+    ),
   )
   return (
     <section className="panel forecast-panel" aria-labelledby="forecast-title">
@@ -151,16 +162,7 @@ export function Forecast({
         />
         <circle
           cx={x(selectedInDomain)}
-          cy={y(
-            points.reduce(
-              (best, p) =>
-                Math.abs(p.date.getTime() - selectedInDomain.getTime()) <
-                Math.abs(best.date.getTime() - selectedInDomain.getTime())
-                  ? p
-                  : best,
-              points[0]!,
-            ).score,
-          )}
+          cy={y(points[selectedIndex]?.score ?? 0)}
           r="5"
           className="now-point"
         />

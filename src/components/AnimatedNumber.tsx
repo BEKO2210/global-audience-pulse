@@ -7,7 +7,9 @@ export function AnimatedNumber({ value }: { value: number }) {
   const [shown, setShown] = useState(Math.round(value))
   useEffect(() => {
     spring.set(value)
-    return display.on('change', (v) => setShown(v))
-  }, [value, spring, display])
+    // Motion values are stable for this component's lifetime.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value])
+  useEffect(() => display.on('change', (v) => setShown(v)), [display])
   return <span>{shown}</span>
 }

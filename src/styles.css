@@ -153,6 +153,10 @@ button {
   margin-right: 5px;
   animation: pulse-live 3s ease-in-out infinite;
 }
+.freshness i.offline {
+  background: var(--soft);
+  animation: none;
+}
 @keyframes pulse-live {
   0%,
   100% {
@@ -323,6 +327,14 @@ button {
     12px 'Geist Mono Variable',
     monospace;
 }
+.hero-aside .best-region {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  white-space: nowrap;
+  text-align: right;
+}
 .desktop-grid,
 .analysis-grid {
   display: grid;
@@ -442,6 +454,12 @@ button {
   paint-order: stroke;
   stroke: var(--paper);
   stroke-width: 2px;
+}
+.map-label-leader {
+  stroke: var(--ink);
+  stroke-width: 0.75px;
+  opacity: 0.7;
+  pointer-events: none;
 }
 .world-map g:focus-visible {
   outline: none;
@@ -742,6 +760,39 @@ button {
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
+.dial-region {
+  transition: opacity 0.15s;
+}
+.dial-region.muted {
+  opacity: 0.14;
+}
+.dial-explainer {
+  color: var(--muted);
+  font-size: 10px;
+  margin: 0;
+}
+.dial-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.dial-legend button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 32px;
+  padding: 3px 7px;
+  border: 1px solid var(--rule);
+  background: transparent;
+  color: var(--muted);
+  font:
+    9px 'Geist Mono Variable',
+    monospace;
+}
+.dial-legend button[aria-pressed='true'] {
+  border-color: var(--accent);
+  color: var(--ink);
+}
 .dial-mean {
   fill: var(--ink) !important;
   font-size: 18px !important;
@@ -963,10 +1014,10 @@ button {
   top: 2px;
   transition: transform 0.2s;
 }
-.include-button[aria-checked='true'] i {
+.include-button[aria-pressed='true'] i {
   border-color: var(--accent);
 }
-.include-button[aria-checked='true'] i::after {
+.include-button[aria-pressed='true'] i::after {
   background: var(--accent);
   transform: translateX(13px);
 }
@@ -999,10 +1050,10 @@ button {
   background: var(--muted);
   transition: transform 0.2s;
 }
-.compact-toggle[aria-checked='true'] i {
+.compact-toggle[aria-pressed='true'] i {
   border-color: var(--accent);
 }
-.compact-toggle[aria-checked='true'] i::after {
+.compact-toggle[aria-pressed='true'] i::after {
   background: var(--accent);
   transform: translateX(10px);
 }
@@ -1486,20 +1537,30 @@ footer {
   }
   .analysis-grid {
     grid-template-columns: 1.15fr 0.85fr;
+    gap: 24px;
+    align-items: stretch;
+    padding: 24px 48px;
+  }
+  .analysis-grid > div,
+  .analysis-grid .panel {
+    height: 100%;
+  }
+  .analysis-grid .panel {
+    margin: 0;
   }
   .insight-strip {
-    margin: 55px 48px;
+    margin: 28px 48px 0;
   }
   .presets,
   .regions-section,
   .method {
-    padding: 72px 48px;
+    padding: 44px 48px;
   }
   .region-grid {
     grid-template-columns: repeat(4, 1fr);
   }
   .planner {
-    margin: 60px 48px;
+    margin: 24px 48px 44px;
   }
   footer {
     padding: 32px 48px;

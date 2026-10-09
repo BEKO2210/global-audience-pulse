@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-10-09T15:07:02.731Z",
+  "generatedAt": "2026-10-09T15:53:28.447Z",
   "sources": {
     "worldBank": {
-      "fetchedAt": "2026-10-09T15:07:02.731Z",
+      "fetchedAt": "2026-10-09T15:53:28.447Z",
       "urls": [
         "https://api.worldbank.org/v2/country/USA;DEU;AUT;CHE;FRA;NLD;BEL;POL;ITA;ESP;PRT;CZE;DNK;SWE;NOR;FIN;GBR;IRL;BRA;MEX;ARG;COL;CHL;PER;VEN;ECU;GTM;BOL;DOM;HND;PRY;SLV;NIC;CRI;PAN;URY;ARE;SAU;EGY;MAR;DZA;TUN;JOR;LBN;IRQ;KWT;QAT;OMN;BHR;IND;PAK;BGD;LKA;NPL;JPN;KOR;TWN/indicator/SP.POP.TOTL?format=json&mrnev=1&per_page=500",
         "https://api.worldbank.org/v2/country/USA;DEU;AUT;CHE;FRA;NLD;BEL;POL;ITA;ESP;PRT;CZE;DNK;SWE;NOR;FIN;GBR;IRL;BRA;MEX;ARG;COL;CHL;PER;VEN;ECU;GTM;BOL;DOM;HND;PRY;SLV;NIC;CRI;PAN;URY;ARE;SAU;EGY;MAR;DZA;TUN;JOR;LBN;IRQ;KWT;QAT;OMN;BHR;IND;PAK;BGD;LKA;NPL;JPN;KOR;TWN/indicator/IT.NET.USER.ZS?format=json&mrnev=1&per_page=500",
@@ -10,7 +10,7 @@
       ]
     },
     "wikimedia": {
-      "fetchedAt": "2026-10-09T15:07:02.731Z",
+      "fetchedAt": "2026-10-09T15:53:28.447Z",
       "urls": [
         "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/de.wikipedia/all-access/user/hourly/2026091114/2026100914",
         "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/pt.wikipedia/all-access/user/hourly/2026091114/2026100914",

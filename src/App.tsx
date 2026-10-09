@@ -5,6 +5,7 @@ import { DATA_SOURCES, MODEL_CONFIG, PHASES, STATUS_LEVELS } from './config/mode
 import { PRESETS, REGIONS, REGION_BY_ID, type RegionId } from './config/regions'
 import { useAudience } from './hooks/useAudience'
 import { useLiveData } from './hooks/useLiveData'
+import { useScoreGrid } from './hooks/useScoreGrid'
 import {
   circularMean,
   fastZonedParts,
@@ -14,9 +15,10 @@ import {
   getOffsetTable,
   offsetAt,
   relativeTime,
+  startOfNextZonedDay,
   timeZoneName,
 } from './lib/time'
-import { buildScoreGrid, findBestWindows, normalizedWeights, phaseAt, statusFor } from './lib/model'
+import { findBestWindows, normalizedWeights, phaseAt, statusFor } from './lib/model'
 import { FALLBACK_SNAPSHOT, loadSnapshot, type Snapshot } from './lib/snapshot'
 import { Dial } from './components/Dial'
 import { Forecast } from './components/Forecast'
@@ -73,7 +75,7 @@ function yearRange(dataYears: Record<string, number>, indicator: string) {
   const years = Object.entries(dataYears)
     .filter(([key]) => key.endsWith(`.${indicator}`))
     .map(([, year]) => year)
-  if (!years.length) return 'Fallback'
+  if (!years.length) return 'Jahr unbekannt'
   const min = Math.min(...years)
   const max = Math.max(...years)
   return `Daten ${min}${min === max ? '' : `–${max}`}`
@@ -115,8 +117,10 @@ function Header({
           onClick={onRefresh}
           title={`Automatischer Abruf alle ${MODEL_CONFIG.liveRefreshMinutes} Min. · Klick für Sofort-Update`}
         >
-          <i />
-          Messdaten {freshness(snapshot.sources.wikimedia.fetchedAt)}
+          <i className={snapshot.generatedAt ? '' : 'offline'} />
+          {snapshot.generatedAt
+            ? `Messdaten ${freshness(snapshot.sources.wikimedia.fetchedAt)}`
+            : 'Messdaten nicht verfügbar'}
         </button>
         <LiveClock />
         <div className="theme-toggle" aria-label="Darstellung" role="group">
@@ -156,6 +160,7 @@ function initialThemePreference(): ThemePreference {
 
 export default function App() {
   const [snapshot, setSnapshot] = useState<Snapshot>(FALLBACK_SNAPSHOT)
+  const [snapshotState, setSnapshotState] = useState<'loading' | 'live' | 'fallback'>('loading')
   const [minuteNow, setMinuteNow] = useState(() => new Date())
   const [scrubbed, setScrubbed] = useState<Date | null>(null)
   const [detail, setDetail] = useState<RegionId | null>(null)
@@ -170,10 +175,12 @@ export default function App() {
   const [mobileHorizon, setMobileHorizon] = useState<24 | 168>(24)
   const { selected, toggle, selectAll, setSelected, weightingMode, setWeightingMode } =
     useAudience()
-  const refreshSnapshot = useCallback(
-    () => void loadSnapshot(import.meta.env.BASE_URL, true).then(setSnapshot),
-    [],
-  )
+  const refreshSnapshot = useCallback(() => {
+    void loadSnapshot(import.meta.env.BASE_URL, true).then((next) => {
+      setSnapshot(next)
+      setSnapshotState(next.generatedAt ? 'live' : 'fallback')
+    })
+  }, [])
   useEffect(() => refreshSnapshot(), [refreshSnapshot])
   useEffect(() => {
     let interval = 0
@@ -237,25 +244,22 @@ export default function App() {
       returnFocusRef.current?.focus()
     }
   }, [detail])
-  const live = useLiveData(snapshot)
+  const { live, status: liveStatus } = useLiveData(snapshot)
   const activeSnapshot = useMemo<Snapshot>(
     () => ({
       ...snapshot,
       weightingMode,
       profiles: Object.fromEntries(
-        Object.entries(snapshot.profiles).map(([id, profile]) => [
-          id,
-          { ...profile, deviation: live[id as RegionId]?.deviation },
-        ]),
+        Object.entries(snapshot.profiles).map(([id, profile]) => {
+          const measure = live[id as RegionId]
+          return [id, measure ? { ...profile, deviation: measure.deviation } : profile]
+        }),
       ) as Snapshot['profiles'],
     }),
     [snapshot, weightingMode, live],
   )
   const date = scrubbed ?? minuteNow
-  const scoreGrid = useMemo(
-    () => buildScoreGrid(REGIONS, activeSnapshot, minuteNow),
-    [minuteNow, activeSnapshot],
-  )
+  const { grid: scoreGrid, ready: scoreGridReady } = useScoreGrid(activeSnapshot, minuteNow)
   const score = scoreGrid.globalAt(selected, date)
   const status = statusFor(score)
   const forecast = useMemo(
@@ -278,8 +282,10 @@ export default function App() {
       .slice(0, 3)
   }, [minuteNow, selected, scoreGrid])
   const plannerSets = useMemo(() => {
-    const tomorrow = new Date(minuteNow)
-    tomorrow.setHours(24, 0, 0, 0)
+    const tomorrow = startOfNextZonedDay(
+      minuteNow,
+      Intl.DateTimeFormat().resolvedOptions().timeZone,
+    )
     const todayHours = Math.max(1, (tomorrow.getTime() - minuteNow.getTime()) / 3_600_000)
     return {
       today: findBestWindows(
@@ -308,6 +314,9 @@ export default function App() {
   const regionScores = REGIONS.filter((r) => selected.includes(r.id))
     .map((region) => ({ region, score: scoreGrid.activityAt(region.id, date) }))
     .sort((a, b) => b.score - a.score)
+  const regionsInPrime = regionScores.filter(
+    ({ region }) => phaseAt(localDecimalHourFast(date, region.timeZone)).id === 'prime',
+  ).length
   const weights = normalizedWeights(selected, activeSnapshot)
   const worldMean = circularMean(
     selected.map((id) => localDecimalHourFast(date, REGION_BY_ID[id].timeZone)),
@@ -343,383 +352,399 @@ export default function App() {
   const detailRegion = detail ? REGION_BY_ID[detail] : null
   return (
     <MotionConfig reducedMotion="user">
-      <div id="top" className="app-shell">
-        <Header
-          snapshot={snapshot}
-          themePreference={themePreference}
-          onTheme={setThemePreference}
-          onRefresh={refreshSnapshot}
-        />
-        <main>
-          <Section className="hero">
-            <div className="hero-copy">
-              <p className="eyebrow">Echtzeit-Publikumsradar · {selected.length} Regionen aktiv</p>
-              <h1>Jetzt posten oder warten?</h1>
-              {selected.length === 0 ? (
-                <div className="empty-selection-banner">
-                  <strong>Keine Regionen ausgewählt</strong>
-                  <p>
-                    Wähle mindestens einen Markt aus, um weltweite Posting-Fenster zu berechnen.
-                  </p>
-                  <button className="button primary" onClick={selectAll}>
-                    Alle Regionen aktivieren
-                  </button>
-                </div>
-              ) : (
-                <div className="score-row">
-                  <div className="hero-score" aria-live={scrubbed ? 'off' : 'polite'}>
-                    <AnimatedNumber value={score} />
-                    <small>/100</small>
-                  </div>
-                  <div className="score-meta">
-                    <span className={`status ${status.tone}`}>
-                      <i />
-                      {status.label}
-                    </span>
-                    <strong>{status.verdict}</strong>
+      <>
+        <div id="top" className="app-shell" inert={detail ? true : undefined}>
+          <Header
+            snapshot={snapshot}
+            themePreference={themePreference}
+            onTheme={setThemePreference}
+            onRefresh={refreshSnapshot}
+          />
+          <main>
+            <Section className="hero">
+              <div className="hero-copy">
+                <p className="eyebrow" data-testid="data-state">
+                  {snapshotState === 'live'
+                    ? 'Aktuelles Publikumsradar'
+                    : snapshotState === 'fallback'
+                      ? 'Beispieldaten · Offline-Modell'
+                      : 'Daten werden geladen'}{' '}
+                  · {selected.length} Regionen aktiv
+                </p>
+                <h1>Jetzt posten oder warten?</h1>
+                {selected.length === 0 ? (
+                  <div className="empty-selection-banner">
+                    <strong>Keine Regionen ausgewählt</strong>
                     <p>
-                      {regionScores[0]?.region.city} führt mit{' '}
-                      {Math.round(regionScores[0]?.score ?? 0)}.{' '}
-                      {sleeping.length
-                        ? `${joinGerman(sleeping.map(({ region }) => region.city))} ${sleeping.length === 1 ? 'schläft' : 'schlafen'}.`
-                        : 'Alle Kernmärkte sind wach.'}
+                      Wähle mindestens einen Markt aus, um weltweite Posting-Fenster zu berechnen.
                     </p>
+                    <button className="button primary" onClick={selectAll}>
+                      Alle Regionen aktivieren
+                    </button>
                   </div>
-                </div>
-              )}
-            </div>
-            <div className="hero-aside">
-              <div className="hero-recommendation">
-                <span className="eyebrow">Optimales Zeitfenster</span>
-                <div className="hero-window-time">
-                  {windows24[0] ? (
-                    <>
-                      {formatTime(
-                        windows24[0].start,
-                        Intl.DateTimeFormat().resolvedOptions().timeZone,
-                      )}
-                      –
-                      {formatTime(
-                        windows24[0].end,
-                        Intl.DateTimeFormat().resolvedOptions().timeZone,
-                      )}{' '}
-                      <small>{timeZoneName(windows24[0].start)}</small>
-                    </>
-                  ) : (
-                    '—'
+                ) : (
+                  <div className="score-row">
+                    <div
+                      className="hero-score"
+                      data-timestamp={date.toISOString()}
+                      aria-live={scrubbed ? 'off' : 'polite'}
+                    >
+                      {scoreGridReady ? <AnimatedNumber value={score} /> : <span>—</span>}
+                      <small>/100</small>
+                    </div>
+                    <div className="score-meta">
+                      <span className={`status ${status.tone}`}>
+                        <i />
+                        {status.label}
+                      </span>
+                      <strong>{status.verdict}</strong>
+                      <p>
+                        {regionScores[0]?.region.city} führt mit{' '}
+                        {Math.round(regionScores[0]?.score ?? 0)}.{' '}
+                        {sleeping.length
+                          ? `${joinGerman(sleeping.map(({ region }) => region.city))} ${sleeping.length === 1 ? 'schläft' : 'schlafen'}.`
+                          : 'Alle Kernmärkte sind wach.'}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="hero-aside">
+                <div className="hero-recommendation">
+                  <span className="eyebrow">Optimales Zeitfenster</span>
+                  <div className="hero-window-time">
+                    {windows24[0] ? (
+                      <>
+                        {formatTime(
+                          windows24[0].start,
+                          Intl.DateTimeFormat().resolvedOptions().timeZone,
+                        )}
+                        –
+                        {formatTime(
+                          windows24[0].end,
+                          Intl.DateTimeFormat().resolvedOptions().timeZone,
+                        )}{' '}
+                        <small>{timeZoneName(windows24[0].start)}</small>
+                      </>
+                    ) : (
+                      '—'
+                    )}
+                  </div>
+                  {windows24[0] && (
+                    <p className="hero-window-benefit">
+                      Score <AnimatedNumber value={windows24[0].score} /> ·{' '}
+                      {windows24[0].score >= score
+                        ? `+${Math.round(windows24[0].score - score)} Pkt. Potenzial`
+                        : 'bestes verbleibendes Fenster'}
+                    </p>
                   )}
                 </div>
-                {windows24[0] && (
-                  <p className="hero-window-benefit">
-                    Score <AnimatedNumber value={windows24[0].score} /> ·{' '}
-                    {windows24[0].score >= score
-                      ? `+${Math.round(windows24[0].score - score)} Pkt. Potenzial`
-                      : 'bestes verbleibendes Fenster'}
-                  </p>
-                )}
-              </div>
-              <dl>
-                <div>
-                  <dt>Beste Region</dt>
-                  <dd>
-                    {regionScores[0] && (
-                      <Flag
-                        src={regionScores[0].region.flagUrl}
-                        label={regionScores[0].region.name}
-                        size={20}
-                      />
-                    )}{' '}
-                    {regionScores[0]?.region.city ?? '—'}
-                  </dd>
-                </div>
-                <div>
-                  <dt>Nächstes Fenster</dt>
-                  <dd>
-                    {windows24[0]
-                      ? minuteNow >= windows24[0].start && minuteNow < windows24[0].end
-                        ? `Jetzt bis ${formatTime(windows24[0].end, Intl.DateTimeFormat().resolvedOptions().timeZone)}`
-                        : formatTime(
-                            windows24[0].start,
-                            Intl.DateTimeFormat().resolvedOptions().timeZone,
-                          )
-                      : '—'}
-                  </dd>
-                </div>
-              </dl>
-            </div>
-          </Section>
-          <div className="desktop-grid">
-            <Section className="map-slot">
-              <Suspense
-                fallback={<div className="panel map-skeleton" aria-label="Karte wird geladen" />}
-              >
-                <WorldMap date={date} grid={scoreGrid} selected={selected} onRegion={setDetail} />
-              </Suspense>
-            </Section>
-            <Section className="forecast-slot">
-              <Forecast
-                points={forecast}
-                selectedDate={date}
-                windows={windows24}
-                minuteNow={minuteNow}
-                onScrub={setScrubbed}
-                recommendationThreshold={STATUS_LEVELS[1].min}
-              />
-            </Section>
-          </div>
-          <Section>
-            <div className="insight-strip">
-              <div>
-                <span className="eyebrow">Nächster Wechsel</span>
-                <strong>
-                  {nextPrime
-                    ? `In ${relativeTime(nextPrime.date, date)} beginnt Primetime in ${nextPrime.region.city}`
-                    : '—'}
-                </strong>
-              </div>
-              <div>
-                <span className="eyebrow">Zweites Zeitfenster heute</span>
-                <strong>
-                  {windows24[1]
-                    ? `${formatTime(windows24[1].start, Intl.DateTimeFormat().resolvedOptions().timeZone)} ${timeZoneName(windows24[1].start)} · Score ${Math.round(windows24[1].score)}`
-                    : 'Kein weiteres Fenster heute'}
-                </strong>
-                {dst && (dst.date.getTime() - date.getTime()) / 3_600_000 <= 48 && (
-                  <small>
-                    Zeitumstellung: {dst.region.city} ·{' '}
-                    {dst.date.toLocaleDateString('de-DE', { day: '2-digit', month: 'long' })}
-                  </small>
-                )}
-              </div>
-            </div>
-          </Section>
-          <Section>
-            <section className="presets" aria-labelledby="presets-title">
-              <div className="section-head">
-                <div>
-                  <p className="eyebrow">Berechnete Presets</p>
-                  <h2 id="presets-title">Strategische Posting-Korridore</h2>
-                </div>
-              </div>
-              <div className="preset-grid">
-                {presetWindows.map(({ preset, window }) => {
-                  const active =
-                    preset.ids.length === selected.length &&
-                    preset.ids.every((id) => selected.includes(id))
-                  return (
-                    <button
-                      key={preset.name}
-                      className={active ? 'preset-card active' : 'preset-card'}
-                      aria-pressed={active}
-                      onClick={() => setSelected([...preset.ids])}
-                    >
-                      <span className="eyebrow">{preset.ids.length} Regionen</span>
-                      <h3>{preset.name}</h3>
-                      {window && (
-                        <>
-                          <div className="preset-time">
-                            {formatTime(
-                              window.start,
-                              Intl.DateTimeFormat().resolvedOptions().timeZone,
-                            )}
-                            –
-                            {formatTime(
-                              window.end,
-                              Intl.DateTimeFormat().resolvedOptions().timeZone,
-                            )}{' '}
-                            <small>{timeZoneName(window.start)}</small>
-                          </div>
-                          <div className="preset-score">
-                            Score <AnimatedNumber value={window.score} />
-                          </div>
-                          <p>
-                            {preset.ids
-                              .map((id) => {
-                                const r = REGION_BY_ID[id]
-                                return `${r.city} ${formatTime(window.start, r.timeZone)} · ${phaseAt(localDecimalHourFast(window.start, r.timeZone)).name}`
-                              })
-                              .join(' · ')}
-                          </p>
-                        </>
-                      )}
-                    </button>
-                  )
-                })}
-              </div>
-            </section>
-          </Section>
-          <div className="analysis-grid">
-            <Section>
-              <Heatmap
-                start={minuteNow}
-                selected={selected}
-                grid={scoreGrid}
-                onScrub={setScrubbed}
-              />
-            </Section>
-            <Section>
-              <Dial date={date} selected={selected} worldMean={worldMean} />
-            </Section>
-          </div>
-          <Section>
-            <RegionCards
-              date={date}
-              selected={selected}
-              snapshot={activeSnapshot}
-              grid={scoreGrid}
-              live={live}
-              onToggle={toggle}
-              onSelectAll={selectAll}
-              onReset={() => setSelected([])}
-              isLive={!scrubbed}
-            />
-            {selected.length < REGIONS.length && (
-              <button className="text-button" onClick={selectAll}>
-                Alle {REGIONS.length} Regionen aktivieren
-              </button>
-            )}
-          </Section>
-          <Section>
-            <Planner windowSets={plannerSets} selected={selected} dst={dst} />
-          </Section>
-          <Section>
-            <section className="method" aria-labelledby="method-title">
-              <div>
-                <p className="eyebrow">Methodik & Quellen</p>
-                <h2 id="method-title">
-                  Messbar, modelliert,
-                  <br />
-                  transparent.
-                </h2>
-              </div>
-              <div className="method-copy">
-                <div className="weighting-toggle" aria-label="Gewichtungsmodell">
-                  <button
-                    aria-pressed={weightingMode === 'value'}
-                    onClick={() => setWeightingMode('value')}
-                  >
-                    Werbewert
-                  </button>
-                  <button
-                    aria-pressed={weightingMode === 'reach'}
-                    onClick={() => setWeightingMode('reach')}
-                  >
-                    Reichweite
-                  </button>
-                </div>
-                <p>
-                  Der Score verbindet die geglättete menschliche Aufmerksamkeitskurve mit den
-                  stündlichen Wikipedia-Abrufen der jeweiligen Sprachregion:{' '}
-                  <strong>
-                    {MODEL_CONFIG.measuredBlend * 100} % Messprofil +{' '}
-                    {MODEL_CONFIG.baselineBlend * 100} % Baseline
-                  </strong>
-                  . <strong>Reichweite</strong> basiert auf Internetnutzern;{' '}
-                  <strong>Werbewert</strong> multipliziert sie mit dem BIP pro Kopf. Beide
-                  Weltbank-Gewichte werden für deine Auswahl live neu normiert. Der
-                  US-Ost/West-Split ist eine dokumentierte statische Census-Näherung; USA und UK
-                  bleiben bewusst modellbasiert.
-                </p>
-                <div className="share-table">
-                  {REGIONS.map((region) => (
-                    <div key={region.id}>
-                      <span>
-                        <Flag src={region.flagUrl} label={region.name} size={16} /> {region.city}
-                      </span>
-                      <span>
-                        Reichweite {Math.round(activeSnapshot.weights.reach[region.id] * 100)} %
-                      </span>
-                      <span>
-                        Werbewert {Math.round(activeSnapshot.weights.value[region.id] * 100)} %
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                <div className="source-list">
-                  <a href={DATA_SOURCES.worldBankPopulation}>
-                    Weltbank · Bevölkerung{' '}
-                    <span>{yearRange(snapshot.dataYears, 'population')}</span>
-                  </a>
-                  <a href={DATA_SOURCES.worldBankInternet}>
-                    Weltbank · Internetnutzung{' '}
-                    <span>{yearRange(snapshot.dataYears, 'internet')}</span>
-                  </a>
-                  <a href={DATA_SOURCES.worldBankGdpPerCapita}>
-                    Weltbank · BIP pro Kopf{' '}
-                    <span>{yearRange(snapshot.dataYears, 'gdpPerCapita')}</span>
-                  </a>
-                  <a href={DATA_SOURCES.wikimedia}>
-                    Wikimedia Pageviews{' '}
-                    <span>Datenprofil · {freshness(snapshot.sources.wikimedia.fetchedAt)}</span>
-                  </a>
-                  <div className="source-fetched">
-                    Abruf: Weltbank {freshness(snapshot.sources.worldBank.fetchedAt)} · Wikimedia{' '}
-                    {freshness(snapshot.sources.wikimedia.fetchedAt)}
+                <dl>
+                  <div>
+                    <dt>Beste Region</dt>
+                    <dd className="best-region">
+                      {regionScores[0] && (
+                        <Flag
+                          code={regionScores[0].region.flag}
+                          label={regionScores[0].region.name}
+                          size={20}
+                        />
+                      )}{' '}
+                      {regionScores[0]?.region.city ?? '—'}
+                    </dd>
                   </div>
-                  <a href={DATA_SOURCES.diagramDesign}>
-                    diagram-design, MIT <span>Design-Tokens</span>
-                  </a>
-                </div>
-                <p className="limitations">
-                  Wikipedia ist ein Aktivitäts-Proxy, keine Social-Plattform-Messung.
-                  Englischsprachige Wikipedia wird bewusst nicht für USA/UK verwendet, da sie
-                  Zeitzonen mischt. Ländergruppen und der dokumentierte US-Split approximieren
-                  globale Zielgruppen; sie ersetzen keine eigenen Analytics.
-                </p>
+                  <div>
+                    <dt>Gerade Primetime</dt>
+                    <dd>
+                      {regionsInPrime} von {selected.length} Regionen
+                    </dd>
+                  </div>
+                </dl>
               </div>
-            </section>
-          </Section>
-        </main>
-        <footer>
-          <span>Global Audience Pulse v{__APP_VERSION__}</span>
-          <span>{REGIONS.length} Regionen · live berechnet</span>
-        </footer>
-        <div className="mobile-bar">
-          <div className="mobile-bar-top">
-            <div className="mobile-horizon" role="group" aria-label="Zeithorizont">
-              <button aria-pressed={mobileHorizon === 24} onClick={() => setMobileHorizon(24)}>
-                24 h
-              </button>
-              <button aria-pressed={mobileHorizon === 168} onClick={() => setMobileHorizon(168)}>
-                7 Tage
-              </button>
+            </Section>
+            <div className="desktop-grid">
+              <Section className="map-slot">
+                <Suspense
+                  fallback={<div className="panel map-skeleton" aria-label="Karte wird geladen" />}
+                >
+                  <WorldMap date={date} grid={scoreGrid} selected={selected} onRegion={setDetail} />
+                </Suspense>
+              </Section>
+              <Section className="forecast-slot">
+                <Forecast
+                  points={forecast}
+                  selectedDate={date}
+                  windows={windows24}
+                  minuteNow={minuteNow}
+                  onScrub={setScrubbed}
+                  recommendationThreshold={STATUS_LEVELS[1].min}
+                />
+              </Section>
             </div>
-            <div className="mobile-bar-readout">
-              <span>
-                {scrubbed
-                  ? scrubbed.toLocaleString('de-DE', {
-                      weekday: 'short',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })
-                  : 'Jetzt live'}
-              </span>
-              <strong>
-                <AnimatedNumber value={score} />
-                /100
-              </strong>
+            <Section>
+              <div className="insight-strip">
+                <div>
+                  <span className="eyebrow">Nächster Wechsel</span>
+                  <strong>
+                    {nextPrime
+                      ? `In ${relativeTime(nextPrime.date, date)} beginnt Primetime in ${nextPrime.region.city}`
+                      : '—'}
+                  </strong>
+                </div>
+                <div>
+                  <span className="eyebrow">Zweites Zeitfenster heute</span>
+                  <strong>
+                    {windows24[1]
+                      ? `${formatTime(windows24[1].start, Intl.DateTimeFormat().resolvedOptions().timeZone)} ${timeZoneName(windows24[1].start)} · Score ${Math.round(windows24[1].score)}`
+                      : 'Kein weiteres Fenster heute'}
+                  </strong>
+                  {dst && (dst.date.getTime() - date.getTime()) / 3_600_000 <= 48 && (
+                    <small>
+                      Zeitumstellung: {dst.region.city} ·{' '}
+                      {dst.date.toLocaleDateString('de-DE', { day: '2-digit', month: 'long' })}
+                    </small>
+                  )}
+                </div>
+              </div>
+            </Section>
+            <Section>
+              <section className="presets" aria-labelledby="presets-title">
+                <div className="section-head">
+                  <div>
+                    <p className="eyebrow">Berechnete Szenarien</p>
+                    <h2 id="presets-title">Strategische Posting-Korridore</h2>
+                  </div>
+                </div>
+                <div className="preset-grid">
+                  {presetWindows.map(({ preset, window }) => {
+                    const active =
+                      preset.ids.length === selected.length &&
+                      preset.ids.every((id) => selected.includes(id))
+                    return (
+                      <button
+                        key={preset.name}
+                        className={active ? 'preset-card active' : 'preset-card'}
+                        aria-pressed={active}
+                        onClick={() => setSelected([...preset.ids])}
+                      >
+                        <span className="eyebrow">{preset.ids.length} Regionen</span>
+                        <h3>{preset.name}</h3>
+                        {window && (
+                          <>
+                            <div className="preset-time">
+                              {formatTime(
+                                window.start,
+                                Intl.DateTimeFormat().resolvedOptions().timeZone,
+                              )}
+                              –
+                              {formatTime(
+                                window.end,
+                                Intl.DateTimeFormat().resolvedOptions().timeZone,
+                              )}{' '}
+                              <small>{timeZoneName(window.start)}</small>
+                            </div>
+                            <div className="preset-score">
+                              Score <AnimatedNumber value={window.score} />
+                            </div>
+                            <p>
+                              {preset.ids
+                                .map((id) => {
+                                  const r = REGION_BY_ID[id]
+                                  return `${r.city} ${formatTime(window.start, r.timeZone)} · ${phaseAt(localDecimalHourFast(window.start, r.timeZone)).name}`
+                                })
+                                .join(' · ')}
+                            </p>
+                          </>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+              </section>
+            </Section>
+            <div className="analysis-grid">
+              <Section>
+                <Heatmap
+                  start={minuteNow}
+                  selected={selected}
+                  grid={scoreGrid}
+                  onScrub={setScrubbed}
+                />
+              </Section>
+              <Section>
+                <Dial date={date} selected={selected} worldMean={worldMean} />
+              </Section>
             </div>
+            <Section>
+              <RegionCards
+                date={date}
+                selected={selected}
+                snapshot={activeSnapshot}
+                grid={scoreGrid}
+                live={live}
+                liveStatus={liveStatus}
+                onToggle={toggle}
+                onSelectAll={selectAll}
+                onReset={() => setSelected([])}
+                isLive={!scrubbed}
+              />
+              {selected.length < REGIONS.length && (
+                <button className="text-button" onClick={selectAll}>
+                  Alle {REGIONS.length} Regionen aktivieren
+                </button>
+              )}
+            </Section>
+            <Section>
+              <Planner windowSets={plannerSets} selected={selected} dst={dst} />
+            </Section>
+            <Section>
+              <section className="method" aria-labelledby="method-title">
+                <div>
+                  <p className="eyebrow">Methodik & Quellen</p>
+                  <h2 id="method-title">
+                    Messbar, modelliert,
+                    <br />
+                    transparent.
+                  </h2>
+                </div>
+                <div className="method-copy">
+                  <div className="weighting-toggle" aria-label="Gewichtungsmodell">
+                    <button
+                      aria-pressed={weightingMode === 'value'}
+                      onClick={() => setWeightingMode('value')}
+                    >
+                      Werbewert
+                    </button>
+                    <button
+                      aria-pressed={weightingMode === 'reach'}
+                      onClick={() => setWeightingMode('reach')}
+                    >
+                      Reichweite
+                    </button>
+                  </div>
+                  <p>
+                    Der Score verbindet die geglättete menschliche Aufmerksamkeitskurve mit den
+                    stündlichen Wikipedia-Abrufen der jeweiligen Sprachregion:{' '}
+                    <strong>
+                      {MODEL_CONFIG.measuredBlend * 100} % Messprofil +{' '}
+                      {MODEL_CONFIG.baselineBlend * 100} % Baseline
+                    </strong>
+                    . <strong>Reichweite</strong> basiert auf Internetnutzern;{' '}
+                    <strong>Werbewert</strong> multipliziert sie mit dem BIP pro Kopf. Beide
+                    Weltbank-Gewichte werden für deine Auswahl live neu normiert. Der
+                    US-Ost/West-Split ist eine dokumentierte statische Census-Näherung; USA und UK
+                    bleiben bewusst modellbasiert.
+                  </p>
+                  {snapshotState === 'live' ? (
+                    <div className="share-table">
+                      {REGIONS.map((region) => (
+                        <div key={region.id}>
+                          <span>
+                            <Flag code={region.flag} label={region.name} size={16} /> {region.city}
+                          </span>
+                          <span>
+                            Reichweite {Math.round(activeSnapshot.weights.reach[region.id] * 100)} %
+                          </span>
+                          <span>
+                            Werbewert {Math.round(activeSnapshot.weights.value[region.id] * 100)} %
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="data-unavailable">
+                      Gewichtungsdaten sind derzeit nicht verfügbar.
+                    </p>
+                  )}
+                  <div className="source-list">
+                    <a href={DATA_SOURCES.worldBankPopulation}>
+                      Weltbank · Bevölkerung{' '}
+                      <span>{yearRange(snapshot.dataYears, 'population')}</span>
+                    </a>
+                    <a href={DATA_SOURCES.worldBankInternet}>
+                      Weltbank · Internetnutzung{' '}
+                      <span>{yearRange(snapshot.dataYears, 'internet')}</span>
+                    </a>
+                    <a href={DATA_SOURCES.worldBankGdpPerCapita}>
+                      Weltbank · BIP pro Kopf{' '}
+                      <span>{yearRange(snapshot.dataYears, 'gdpPerCapita')}</span>
+                    </a>
+                    <a href={DATA_SOURCES.wikimedia}>
+                      Wikimedia Pageviews{' '}
+                      <span>Datenprofil · {freshness(snapshot.sources.wikimedia.fetchedAt)}</span>
+                    </a>
+                    <div className="source-fetched">
+                      Abruf: Weltbank {freshness(snapshot.sources.worldBank.fetchedAt)} · Wikimedia{' '}
+                      {freshness(snapshot.sources.wikimedia.fetchedAt)}
+                    </div>
+                    <a href={DATA_SOURCES.diagramDesign}>
+                      diagram-design, MIT <span>Design-Tokens</span>
+                    </a>
+                  </div>
+                  <p className="limitations">
+                    Wikipedia ist ein Aktivitäts-Proxy, keine Social-Plattform-Messung.
+                    Englischsprachige Wikipedia wird bewusst nicht für USA/UK verwendet, da sie
+                    Zeitzonen mischt. Ländergruppen und der dokumentierte US-Split approximieren
+                    globale Zielgruppen; sie ersetzen keine eigenen Analytics.
+                  </p>
+                </div>
+              </section>
+            </Section>
+          </main>
+          <footer>
+            <span>Global Audience Pulse v{__APP_VERSION__}</span>
+            <span>
+              {REGIONS.length} Regionen ·{' '}
+              {snapshotState === 'live' ? 'aus aktuellen Daten berechnet' : 'modellierte Vorschau'}
+            </span>
+          </footer>
+          <div className="mobile-bar">
+            <div className="mobile-bar-top">
+              <div className="mobile-horizon" role="group" aria-label="Zeithorizont">
+                <button aria-pressed={mobileHorizon === 24} onClick={() => setMobileHorizon(24)}>
+                  24 h
+                </button>
+                <button aria-pressed={mobileHorizon === 168} onClick={() => setMobileHorizon(168)}>
+                  7 Tage
+                </button>
+              </div>
+              <div className="mobile-bar-readout">
+                <span>
+                  {scrubbed
+                    ? scrubbed.toLocaleString('de-DE', {
+                        weekday: 'short',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })
+                    : 'Jetzt live'}
+                </span>
+                <strong>
+                  {scoreGridReady ? <AnimatedNumber value={score} /> : '—'}
+                  /100
+                </strong>
+              </div>
+            </div>
+            <input
+              aria-label="Mobile Zeitmaschine"
+              type="range"
+              min={0}
+              max={mobileHorizon * 60}
+              step={15}
+              value={Math.max(
+                0,
+                Math.min(
+                  mobileHorizon * 60,
+                  Math.round((date.getTime() - minuteNow.getTime()) / 60_000),
+                ),
+              )}
+              onChange={(e) =>
+                setScrubbed(new Date(minuteNow.getTime() + Number(e.target.value) * 60_000))
+              }
+            />
+            <button onClick={() => setScrubbed(null)} disabled={!scrubbed}>
+              Live
+            </button>
           </div>
-          <input
-            aria-label="Mobile Zeitmaschine"
-            type="range"
-            min={0}
-            max={mobileHorizon * 60}
-            step={15}
-            value={Math.max(
-              0,
-              Math.min(
-                mobileHorizon * 60,
-                Math.round((date.getTime() - minuteNow.getTime()) / 60_000),
-              ),
-            )}
-            onChange={(e) =>
-              setScrubbed(new Date(minuteNow.getTime() + Number(e.target.value) * 60_000))
-            }
-          />
-          <button onClick={() => setScrubbed(null)} disabled={!scrubbed}>
-            Live
-          </button>
         </div>
         {detailRegion && (
           <div className="sheet-backdrop" onClick={() => setDetail(null)}>
@@ -742,7 +767,7 @@ export default function App() {
               >
                 <X size={22} weight="regular" aria-hidden="true" />
               </button>
-              <Flag src={detailRegion.flagUrl} label={detailRegion.name} size={28} />
+              <Flag code={detailRegion.flag} label={detailRegion.name} size={28} />
               <p className="eyebrow">Region im Fokus</p>
               <h2 id="detail-title">{detailRegion.name}</h2>
               <div className="detail-score">
@@ -771,7 +796,7 @@ export default function App() {
             </motion.aside>
           </div>
         )}
-      </div>
+      </>
     </MotionConfig>
   )
 }

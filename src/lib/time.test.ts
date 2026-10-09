@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { circularMean, formatDecimalHour, zonedParts } from './time'
+import { circularMean, formatDecimalHour, startOfNextZonedDay, zonedParts } from './time'
 
 describe('DST-sichere Ortszeiten', () => {
   it('bildet die doppelte Berliner Stunde am 25.10.2026 korrekt ab', () => {
@@ -11,6 +11,14 @@ describe('DST-sichere Ortszeiten', () => {
     expect(zonedParts(new Date('2026-11-01T05:30:00Z'), 'America/New_York').hour).toBe(1)
     expect(zonedParts(new Date('2026-11-01T06:30:00Z'), 'America/New_York').hour).toBe(1)
     expect(zonedParts(new Date('2026-11-01T07:30:00Z'), 'America/New_York').hour).toBe(2)
+  })
+  it('findet den nächsten Berliner Kalendertag auch über die Zeitumstellung', () => {
+    expect(
+      startOfNextZonedDay(new Date('2026-10-24T20:30:00Z'), 'Europe/Berlin').toISOString(),
+    ).toBe('2026-10-24T22:00:00.000Z')
+    expect(
+      startOfNextZonedDay(new Date('2026-10-25T22:30:00Z'), 'Europe/Berlin').toISOString(),
+    ).toBe('2026-10-25T23:00:00.000Z')
   })
 })
 

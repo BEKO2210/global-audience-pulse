@@ -13,7 +13,23 @@ concurrency:
   group: pages
   cancel-in-progress: false
 jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
   deploy:
+    needs: checks
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -26,6 +42,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: node scripts/fetch-data.mjs
+      - run: npm run validate:snapshot
       - run: npm run build
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
@@ -33,3 +50,23 @@ jobs:
           path: dist
       - id: deployment
         uses: actions/deploy-pages@v5
+  smoke-live:
+    needs: deploy
+    runs-on: ubuntu-latest
+    env:
+      E2E_BASE_URL: ${{ needs.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test e2e/smoke.spec.ts e2e/data.spec.ts e2e/layout.spec.ts
+      - if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: deployed-smoke-report
+          path: playwright-report
+          if-no-files-found: ignore

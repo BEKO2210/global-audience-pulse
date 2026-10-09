@@ -21,7 +21,12 @@ function readCache(): { at: number; data: LiveMeasures } | null {
 }
 
 export function useLiveData(snapshot: Snapshot) {
-  const [live, setLive] = useState<LiveMeasures>(() => readCache()?.data ?? {})
+  const initialCache = readCache()
+  const [live, setLive] = useState<LiveMeasures>(() => initialCache?.data ?? {})
+  const [status, setStatus] = useState<'loading' | 'live' | 'fallback'>(() =>
+    initialCache && Object.keys(initialCache.data).length ? 'live' : 'loading',
+  )
+  const generatedAt = snapshot.generatedAt
   useEffect(() => {
     const cached = readCache()
     const controller = new AbortController()
@@ -39,42 +44,27 @@ export function useLiveData(snapshot: Snapshot) {
             const body = (await response.json()) as {
               items?: { timestamp: string; views: number }[]
             }
-            const items = body.items ?? []
+            const items = (body.items ?? []).map((item) => {
+              const date = new Date(
+                `${item.timestamp.slice(0, 4)}-${item.timestamp.slice(4, 6)}-${item.timestamp.slice(6, 8)}T${item.timestamp.slice(8, 10)}:00:00Z`,
+              )
+              return { ...item, date, parts: fastZonedParts(date, region.timeZone) }
+            })
             const latest = items.at(-1)
             if (!latest) return null
-            const hour = fastZonedParts(
-              new Date(
-                `${latest.timestamp.slice(0, 4)}-${latest.timestamp.slice(4, 6)}-${latest.timestamp.slice(6, 8)}T${latest.timestamp.slice(8, 10)}:00:00Z`,
-              ),
-              region.timeZone,
-            ).hour
+            const hour = latest.parts.hour
             const values = items
-              .filter(
-                (item) =>
-                  fastZonedParts(
-                    new Date(
-                      `${item.timestamp.slice(0, 4)}-${item.timestamp.slice(4, 6)}-${item.timestamp.slice(6, 8)}T${item.timestamp.slice(8, 10)}:00:00Z`,
-                    ),
-                    region.timeZone,
-                  ).hour === hour,
-              )
+              .slice(0, -1)
+              .filter((item) => item.parts.hour === hour)
               .map((item) => item.views)
-            const profileTypical =
-              snapshot.profiles[region.id]?.[
-                fastZonedParts(new Date(), region.timeZone).weekday === 'Sat' ||
-                fastZonedParts(new Date(), region.timeZone).weekday === 'Sun'
-                  ? 'weekend'
-                  : 'weekday'
-              ]?.[hour]
-            const typical =
-              values.length > 1
-                ? values.slice(0, -1).reduce((a, b) => a + b, 0) / (values.length - 1)
-                : profileTypical
-                  ? latest.views / (profileTypical / 100)
-                  : latest.views
-            const at = new Date(
-              `${latest.timestamp.slice(0, 4)}-${latest.timestamp.slice(4, 6)}-${latest.timestamp.slice(6, 8)}T${latest.timestamp.slice(8, 10)}:00:00Z`,
-            ).toISOString()
+            const sorted = [...values].sort((a, b) => a - b)
+            const middle = Math.floor(sorted.length / 2)
+            const typical = sorted.length
+              ? sorted.length % 2
+                ? sorted[middle]!
+                : (sorted[middle - 1]! + sorted[middle]!) / 2
+              : latest.views
+            const at = latest.date.toISOString()
             return [
               region.id,
               { lastMeasuredAt: at, deviation: typical ? (latest.views / typical - 1) * 100 : 0 },
@@ -88,12 +78,22 @@ export function useLiveData(snapshot: Snapshot) {
         entries.filter((x): x is NonNullable<typeof x> => Boolean(x)),
       ) as LiveMeasures
       if (!controller.signal.aborted && Object.keys(data).length) {
-        setLive(data)
+        setStatus('live')
+        setLive((previous) => {
+          const merged = { ...previous, ...data }
+          return JSON.stringify(previous) === JSON.stringify(merged) ? previous : merged
+        })
         try {
-          localStorage.setItem(key, JSON.stringify({ at: Date.now(), data }))
+          const previous = readCache()?.data ?? {}
+          localStorage.setItem(
+            key,
+            JSON.stringify({ at: Date.now(), data: { ...previous, ...data } }),
+          )
         } catch {
           /* Cache may be unavailable. */
         }
+      } else if (!controller.signal.aborted) {
+        setStatus('fallback')
       }
     }
     if (!cached || Date.now() - cached.at >= MODEL_CONFIG.runtimeCacheMinutes * 60_000) void run()
@@ -104,6 +104,6 @@ export function useLiveData(snapshot: Snapshot) {
       controller.abort()
       clearInterval(interval)
     }
-  }, [snapshot])
-  return live
+  }, [generatedAt])
+  return { live, status }
 }

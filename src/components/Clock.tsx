@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { formatTime } from '../lib/time'
+import { formatTime, timeZoneName } from '../lib/time'
 
 export function LiveClock() {
   const [now, setNow] = useState(() => new Date())
@@ -11,7 +11,9 @@ export function LiveClock() {
   return (
     <div className="live-clock" aria-label="Aktuelle Uhrzeit">
       <span>{formatTime(now, zone, true)}</span>
-      <small>{formatTime(now, 'UTC')} UTC</small>
+      <small>
+        {timeZoneName(now, zone)} · {formatTime(now, 'UTC')} UTC
+      </small>
     </div>
   )
 }

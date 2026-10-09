@@ -1,16 +1,19 @@
+import type { FlagCode } from '../config/flag-codes'
+import { FLAG_URLS } from '../config/flags'
+
 export function Flag({
-  src,
+  code,
   label,
   size = 20,
 }: {
-  src: string
+  code: FlagCode
   label: string
   size?: 16 | 20 | 28
 }) {
   return (
     <img
       className="flag-image"
-      src={src}
+      src={FLAG_URLS[code]}
       alt={`${label} Flagge`}
       width={size}
       height={Math.round((size * 3) / 4)}

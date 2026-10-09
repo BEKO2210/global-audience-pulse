@@ -218,3 +218,18 @@ export function findNextOffsetChange(timeZone: string, from: Date, days = 370) {
   )
   return transition ? new Date(transition.at) : null
 }
+
+/** Start of the next calendar day in an explicit IANA zone, including DST days. */
+export function startOfNextZonedDay(date: Date, timeZone: string) {
+  const parts = fastZonedParts(date, timeZone)
+  const wall = Date.UTC(parts.year, parts.month - 1, parts.day + 1)
+  const table = getOffsetTable(timeZone, date)
+  let result = wall - offsetAt(date, table) * 60_000
+  result = wall - offsetAt(new Date(result), table) * 60_000
+  return new Date(result)
+}
+
+export function snapToMinutes(date: Date, minutes: number) {
+  const step = minutes * 60_000
+  return new Date(Math.round(date.getTime() / step) * step)
+}

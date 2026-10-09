@@ -39,7 +39,11 @@ export function WorldMap({
   const twilight = geoCircle().center([nightCenter.longitude, nightCenter.latitude]).radius(96)()
   const primePhase = PHASES.find((phase) => phase.id === 'prime')
   return (
-    <section className="panel map-panel" aria-labelledby="map-title">
+    <section
+      className="panel map-panel"
+      data-timestamp={date.toISOString()}
+      aria-labelledby="map-title"
+    >
       <div className="section-head">
         <div>
           <p className="eyebrow">Live-Karte</p>
@@ -74,6 +78,12 @@ export function WorldMap({
           const hour = localDecimalHourFast(date, region.timeZone)
           const prime = primePhase ? phaseAt(hour).id === primePhase.id : false
           const elevation = solarElevation(region.coordinates[1], region.coordinates[0], date)
+          const labelOffset =
+            region.id === 'eu_uk'
+              ? { x: -12, y: -17, anchor: 'end' as const }
+              : region.id === 'eu_central'
+                ? { x: 12, y: -29, anchor: 'start' as const }
+                : { x: 0, y: -13, anchor: 'middle' as const }
           return (
             <g
               key={region.id}
@@ -109,7 +119,21 @@ export function WorldMap({
                 stroke="var(--paper)"
                 strokeWidth="2"
               />
-              <text y="-13" textAnchor="middle" className="map-pin-label">
+              {labelOffset.x !== 0 && (
+                <line
+                  x1="0"
+                  y1="-8"
+                  x2={labelOffset.x * 0.75}
+                  y2={labelOffset.y + 4}
+                  className="map-label-leader"
+                />
+              )}
+              <text
+                x={labelOffset.x}
+                y={labelOffset.y}
+                textAnchor={labelOffset.anchor}
+                className="map-pin-label"
+              >
                 {region.city}
               </text>
             </g>

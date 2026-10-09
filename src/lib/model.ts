@@ -79,6 +79,39 @@ export interface ScoreGrid {
   points: (ids: readonly RegionId[], from: Date, hours: number) => { date: Date; score: number }[]
 }
 
+export interface ScoreGridData {
+  start: number
+  end: number
+  stepMs: number
+  size: number
+  byRegion: Record<RegionId, Float32Array>
+}
+
+export function createScoreGrid(data: ScoreGridData, snapshot: Snapshot): ScoreGrid {
+  const { start, stepMs, size, byRegion } = data
+  const activityAt = (id: RegionId, date: Date) => {
+    const position = Math.min(size - 1, Math.max(0, (date.getTime() - start) / stepMs))
+    const lower = Math.floor(position)
+    const fraction = position - lower
+    const values = byRegion[id]
+    return (
+      (values?.[lower] ?? 0) * (1 - fraction) +
+      (values?.[Math.min(size - 1, lower + 1)] ?? 0) * fraction
+    )
+  }
+  const globalAt = (ids: readonly RegionId[], date: Date) => {
+    if (!ids.length) return 0
+    const weights = normalizedWeights(ids, snapshot)
+    return ids.reduce((sum, id) => sum + activityAt(id, date) * (weights[id] ?? 0), 0)
+  }
+  const points = (ids: readonly RegionId[], from: Date, hours: number) =>
+    Array.from({ length: Math.floor((hours * 60) / MODEL_CONFIG.scanStepMinutes) + 1 }, (_, i) => {
+      const date = new Date(from.getTime() + i * stepMs)
+      return { date, score: globalAt(ids, date) }
+    })
+  return { ...data, activityAt, globalAt, points }
+}
+
 /**
  * One immutable 15-minute grid shared by every visualization. Intl is used only
  * while retrieving the cached offset tables, never inside the sample loop.
@@ -90,6 +123,19 @@ export function buildScoreGrid(
   beforeHours = 12,
   afterHours = 24 * 7,
 ): ScoreGrid {
+  return createScoreGrid(
+    buildScoreGridData(regions, snapshot, anchor, beforeHours, afterHours),
+    snapshot,
+  )
+}
+
+export function buildScoreGridData(
+  regions: readonly RegionConfig[],
+  snapshot: Snapshot,
+  anchor: Date,
+  beforeHours = 12,
+  afterHours = 24 * 7,
+): ScoreGridData {
   const stepMs = MODEL_CONFIG.scanStepMinutes * 60_000
   const start = Math.floor((anchor.getTime() - beforeHours * 3_600_000) / stepMs) * stepMs
   const end = Math.ceil((anchor.getTime() + afterHours * 3_600_000) / stepMs) * stepMs
@@ -107,27 +153,7 @@ export function buildScoreGrid(
     }
     byRegion[region.id] = values
   }
-  const activityAt = (id: RegionId, date: Date) => {
-    const position = Math.min(size - 1, Math.max(0, (date.getTime() - start) / stepMs))
-    const lower = Math.floor(position)
-    const fraction = position - lower
-    const values = byRegion[id]
-    return (
-      (values[lower] ?? 0) * (1 - fraction) +
-      (values[Math.min(size - 1, lower + 1)] ?? 0) * fraction
-    )
-  }
-  const globalAt = (ids: readonly RegionId[], date: Date) => {
-    if (!ids.length) return 0
-    const weights = normalizedWeights(ids, snapshot)
-    return ids.reduce((sum, id) => sum + activityAt(id, date) * (weights[id] ?? 0), 0)
-  }
-  const points = (ids: readonly RegionId[], from: Date, hours: number) =>
-    Array.from({ length: Math.floor((hours * 60) / MODEL_CONFIG.scanStepMinutes) + 1 }, (_, i) => {
-      const date = new Date(from.getTime() + i * stepMs)
-      return { date, score: globalAt(ids, date) }
-    })
-  return { start, end, stepMs, size, byRegion, activityAt, globalAt, points }
+  return { start, end, stepMs, size, byRegion }
 }
 
 export function normalizedWeights(ids: readonly RegionId[], snapshot: Snapshot) {
@@ -145,8 +171,9 @@ export function globalActivity(
   snapshot: Snapshot,
 ) {
   const weights = normalizedWeights(selected, snapshot)
+  const regionById = new Map(regions.map((region) => [region.id, region]))
   return selected.reduce((sum, id) => {
-    const region = regions.find((item) => item.id === id)
+    const region = regionById.get(id)
     return sum + (region ? regionActivity(region, date, snapshot) * (weights[id] ?? 0) : 0)
   }, 0)
 }

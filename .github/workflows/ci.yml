@@ -3,7 +3,7 @@ on:
   push:
   pull_request:
 jobs:
-  verify:
+  checks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -16,8 +16,32 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
-      - run: npm run build
+      - run: npm run validate:snapshot
+      # scripts/fetch-data.mjs imports the region config in plain Node (no Vite asset imports allowed)
+      - run: node --input-type=module -e "await import('./src/config/regions.ts')"
   e2e:
+    runs-on: ubuntu-latest
+    env:
+      E2E_WEBKIT: '1'
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium webkit
+      - run: npx playwright test
+      - if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: playwright-report
+          path: |
+            playwright-report
+            test-results/**/first-viewport-*.png
+          if-no-files-found: ignore
+  lighthouse:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -27,5 +51,11 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - run: npx playwright install --with-deps chromium
-      - run: npx playwright test
+      - run: node scripts/prepare-lhci.mjs
+      - run: npx @lhci/cli autorun
+      - if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: lighthouse-report
+          path: .lighthouseci
+          if-no-files-found: ignore

@@ -13,7 +13,9 @@
     "lint": "eslint .",
     "typecheck": "tsc -b --pretty false",
     "fetch-data": "node scripts/fetch-data.mjs",
+    "validate:snapshot": "node scripts/validate-snapshot.mjs",
     "e2e": "playwright test",
+    "lighthouse": "node scripts/prepare-lhci.mjs && lhci autorun",
     "icons": "node scripts/generate-icons.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
@@ -34,7 +36,9 @@
     "world-atlas": "^2.0.2"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@eslint/js": "^10.0.1",
+    "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.64.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/d3-geo": "^3.1.1",

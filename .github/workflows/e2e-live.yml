@@ -1,0 +1,25 @@
+name: Live E2E
+on:
+  schedule:
+    - cron: '23 */6 * * *'
+  workflow_dispatch:
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    env:
+      E2E_BASE_URL: https://beko2210.github.io/global-audience-pulse/
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test e2e/smoke.spec.ts e2e/data.spec.ts e2e/layout.spec.ts
+      - if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: live-e2e-report
+          path: playwright-report
+          if-no-files-found: ignore

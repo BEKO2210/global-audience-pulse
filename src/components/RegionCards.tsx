@@ -22,6 +22,7 @@ export function RegionCards({
   selected,
   snapshot,
   live,
+  liveStatus,
   onToggle,
   grid,
   onSelectAll,
@@ -32,6 +33,7 @@ export function RegionCards({
   selected: readonly RegionId[]
   snapshot: Snapshot
   live: Partial<Record<RegionId, LiveMeasure>>
+  liveStatus: 'loading' | 'live' | 'fallback'
   onToggle: (id: RegionId) => void
   grid: ScoreGrid
   onSelectAll: () => void
@@ -51,7 +53,11 @@ export function RegionCards({
   )
 
   return (
-    <section className="regions-section" aria-labelledby="regions-title">
+    <section
+      className="regions-section"
+      data-timestamp={date.toISOString()}
+      aria-labelledby="regions-title"
+    >
       <div className="section-head">
         <div>
           <p className="eyebrow">Regionen</p>
@@ -105,7 +111,7 @@ export function RegionCards({
               >
                 <div className="compact-card">
                   <span className="flag">
-                    <Flag src={region.flagUrl} label={region.name} size={28} />
+                    <Flag code={region.flag} label={region.name} size={28} />
                   </span>
                   <span className="compact-place">
                     <b>{region.city}</b>
@@ -124,8 +130,14 @@ export function RegionCards({
                 <motion.div layout className="card-detail">
                   <div className="card-top">
                     <p className="eyebrow">{region.name}</p>
-                    <span className={measured ? 'badge measured' : 'badge'}>
-                      {measured ? 'gemessen' : 'Modell'}
+                    <span className={measure ? 'badge measured' : 'badge'}>
+                      {measure
+                        ? 'Live'
+                        : liveStatus === 'fallback' && region.project
+                          ? 'Fallback'
+                          : measured
+                            ? 'Datenprofil'
+                            : 'Modell'}
                     </span>
                   </div>
                   <div className="region-time">
@@ -174,8 +186,7 @@ export function RegionCards({
               <button
                 className="compact-toggle"
                 onClick={() => onToggle(region.id)}
-                role="switch"
-                aria-checked={selected.includes(region.id)}
+                aria-pressed={selected.includes(region.id)}
                 aria-label={`${region.city} ${selected.includes(region.id) ? 'abwählen' : 'auswählen'}`}
               >
                 <i />
@@ -183,8 +194,8 @@ export function RegionCards({
               <button
                 className="include-button"
                 onClick={() => onToggle(region.id)}
-                role="switch"
-                aria-checked={selected.includes(region.id)}
+                aria-pressed={selected.includes(region.id)}
+                aria-label={`${region.city} ${selected.includes(region.id) ? 'abwählen' : 'auswählen'}`}
               >
                 <span>
                   {selected.includes(region.id) ? 'In Zielgruppe' : 'Nicht in Zielgruppe'}

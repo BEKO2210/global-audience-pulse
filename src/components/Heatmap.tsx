@@ -47,7 +47,7 @@ export const Heatmap = memo(function Heatmap({
           {REGIONS.filter((r) => selected.includes(r.id)).map((region) => (
             <div key={region.id} className="heatmap-row">
               <span className="heatmap-label">
-                <Flag src={region.flagUrl} label={region.name} size={16} /> {region.city}
+                <Flag code={region.flag} label={region.name} size={16} /> {region.city}
               </span>
               {hours.map((date, i) => {
                 const score = grid.activityAt(region.id, date)

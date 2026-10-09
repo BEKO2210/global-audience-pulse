@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { PHASES } from '../config/model'
 import { REGIONS, type RegionId } from '../config/regions'
 import { formatDecimalHour, localDecimalHourFast } from '../lib/time'
+import { Flag } from './Flag'
 
 const polar = (cx: number, cy: number, radius: number, hour: number) => {
   const angle = (hour / 24) * Math.PI * 2 - Math.PI / 2
@@ -25,6 +27,7 @@ export function Dial({
   const cx = 150
   const cy = 150
   const selectedRegions = REGIONS.filter((region) => selected.includes(region.id))
+  const [highlighted, setHighlighted] = useState<RegionId | null>(null)
   return (
     <section className="panel dial-panel" aria-labelledby="dial-title">
       <div className="section-head">
@@ -60,7 +63,15 @@ export function Dial({
             const utcHour = date.getUTCHours() + date.getUTCMinutes() / 60
             const offset = localHour - utcHour
             return (
-              <g key={region.id}>
+              <g
+                key={region.id}
+                className={
+                  highlighted && highlighted !== region.id ? 'dial-region muted' : 'dial-region'
+                }
+              >
+                <title>
+                  Ring {index + 1}: {region.name} ({region.city})
+                </title>
                 {PHASES.map((phase) => {
                   const from = (((phase.from - offset) % 24) + 24) % 24
                   const duration = phase.to - phase.from
@@ -84,7 +95,6 @@ export function Dial({
                     </g>
                   )
                 })}
-                <title>{region.city}</title>
               </g>
             )
           })}
@@ -97,7 +107,7 @@ export function Dial({
             )
           })}
           <text x={cx} y={cy - 10} textAnchor="middle" className="dial-center-label">
-            Publikums-Schwerpunkt
+            Schwerpunkt
           </text>
           <text x={cx} y={cy + 14} textAnchor="middle" className="dial-mean">
             {formatDecimalHour(worldMean)}
@@ -106,6 +116,25 @@ export function Dial({
             {selected.length} Märkte aktiv
           </text>
         </svg>
+        <p className="dial-explainer">
+          Jedes Ringsegment zeigt die Aktivitätsphase zur lokalen Stunde.
+        </p>
+        <div className="dial-legend" aria-label="Ringreihenfolge außen nach innen">
+          {selectedRegions.map((region, index) => (
+            <button
+              key={region.id}
+              type="button"
+              aria-pressed={highlighted === region.id}
+              onClick={() => setHighlighted(highlighted === region.id ? null : region.id)}
+              onPointerEnter={() => setHighlighted(region.id)}
+              onPointerLeave={() => setHighlighted(null)}
+            >
+              <span>{index + 1}</span>
+              <Flag code={region.flag} label={region.name} size={16} />
+              {region.city}
+            </button>
+          ))}
+        </div>
       </div>
     </section>
   )

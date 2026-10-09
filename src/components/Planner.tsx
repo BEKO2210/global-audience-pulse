@@ -2,25 +2,35 @@ import { useState } from 'react'
 import { Check, DownloadSimple, Fire, ShareNetwork } from '@phosphor-icons/react'
 import { REGIONS, type RegionConfig, type RegionId } from '../config/regions'
 import { phaseAt, type PostingWindow } from '../lib/model'
-import { formatDateTime, formatTime, localDecimalHourFast, timeZoneName } from '../lib/time'
+import {
+  fastZonedParts,
+  formatDateTime,
+  formatTime,
+  localDecimalHourFast,
+  timeZoneName,
+} from '../lib/time'
 import { AnimatedNumber } from './AnimatedNumber'
 
-function icsDate(date: Date) {
+function icsUtcDate(date: Date) {
   return date
     .toISOString()
     .replace(/[-:]/g, '')
     .replace(/\.\d{3}/, '')
 }
-function downloadIcs(window: PostingWindow) {
+function icsLocalDate(date: Date, timeZone: string) {
+  const p = fastZonedParts(date, timeZone)
+  return `${p.year}${String(p.month).padStart(2, '0')}${String(p.day).padStart(2, '0')}T${String(p.hour).padStart(2, '0')}${String(p.minute).padStart(2, '0')}${String(p.second).padStart(2, '0')}`
+}
+function downloadIcs(window: PostingWindow, timeZone: string) {
   const body = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
     'PRODID:-//Global Audience Pulse//DE',
     'BEGIN:VEVENT',
     `UID:${window.start.getTime()}@global-audience-pulse`,
-    `DTSTAMP:${icsDate(new Date())}`,
-    `DTSTART:${icsDate(window.start)}`,
-    `DTEND:${icsDate(window.end)}`,
+    `DTSTAMP:${icsUtcDate(new Date())}`,
+    `DTSTART;TZID=${timeZone}:${icsLocalDate(window.start, timeZone)}`,
+    `DTEND;TZID=${timeZone}:${icsLocalDate(window.end, timeZone)}`,
     'SUMMARY:Optimales Posting-Fenster',
     'END:VEVENT',
     'END:VCALENDAR',
@@ -74,7 +84,10 @@ export function Planner({
   const share = async () => {
     const data = { title: 'Mein Posting-Plan', text: plan, url: location.href }
     if (navigator.share) await navigator.share(data)
-    else await copy()
+    else {
+      await navigator.clipboard.writeText(location.href)
+      setMessage('Link kopiert')
+    }
   }
   return (
     <section className="panel planner" aria-labelledby="planner-title">
@@ -125,7 +138,7 @@ export function Planner({
             </div>
             <button
               className="icon-button"
-              onClick={() => downloadIcs(window)}
+              onClick={() => downloadIcs(window, zone)}
               aria-label="Als Kalenderdatei laden"
             >
               <DownloadSimple size={19} weight="regular" aria-hidden="true" />
