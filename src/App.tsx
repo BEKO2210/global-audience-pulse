@@ -1,7 +1,8 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Desktop, Moon, Sun, X } from '@phosphor-icons/react'
-import { MotionConfig, motion, useReducedMotion } from 'motion/react'
+import { AnimatePresence, MotionConfig, motion, useReducedMotion } from 'motion/react'
 import { DATA_SOURCES, MODEL_CONFIG, PHASES, STATUS_LEVELS } from './config/model'
+import { MOTION } from './config/motion'
 import { PRESETS, REGIONS, REGION_BY_ID, type RegionId } from './config/regions'
 import { useAudience } from './hooks/useAudience'
 import { useLiveData } from './hooks/useLiveData'
@@ -10,7 +11,6 @@ import {
   circularMean,
   fastZonedParts,
   findNextOffsetChange,
-  formatOffset,
   formatTime,
   localDecimalHourFast,
   getOffsetTable,
@@ -21,7 +21,6 @@ import {
   timeZoneName,
 } from './lib/time'
 
-const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 import { findBestWindows, normalizedWeights, phaseAt, statusFor } from './lib/model'
 import { FALLBACK_SNAPSHOT, loadSnapshot, type Snapshot } from './lib/snapshot'
 import { Dial } from './components/Dial'
@@ -33,12 +32,22 @@ import { RegionCards } from './components/RegionCards'
 import { AnimatedNumber } from './components/AnimatedNumber'
 import { Flag } from './components/Flag'
 import { PhaseIcon } from './components/PhaseIcon'
+import { MobileTimeBar } from './components/MobileTimeBar'
+import { SiteFooter } from './components/SiteFooter'
 
 const WorldMap = lazy(() =>
   import('./components/WorldMap').then((module) => ({ default: module.WorldMap })),
 )
 
-function Section({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+function Section({
+  children,
+  className = '',
+  delay = 0,
+}: {
+  children: React.ReactNode
+  className?: string
+  delay?: number
+}) {
   const [visible, setVisible] = useState(false)
   // MotionConfig "user" still runs opacity fades; skip the entrance entirely for reduced motion.
   const reduceMotion = useReducedMotion()
@@ -49,12 +58,12 @@ function Section({ children, className = '' }: { children: React.ReactNode; clas
   return (
     <motion.div
       className={className}
-      initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+      initial={reduceMotion ? false : { opacity: 0, y: 8 }}
       animate={visible ? { opacity: 1, y: 0 } : undefined}
       whileInView={{ opacity: 1, y: 0 }}
       onViewportEnter={() => setVisible(true)}
       viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: reduceMotion ? 0 : MOTION.entrance, delay, ease: MOTION.ease }}
     >
       {children}
     </motion.div>
@@ -108,7 +117,12 @@ function Header({
   onRefresh: () => void
 }) {
   return (
-    <header className="site-header">
+    <motion.header
+      className="site-header"
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: MOTION.entrance, ease: MOTION.ease }}
+    >
       <a className="wordmark" href="#top" aria-label="Global Audience Pulse Start">
         <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" width="32" height="32" />
         <span>
@@ -149,7 +163,7 @@ function Header({
           ))}
         </div>
       </div>
-    </header>
+    </motion.header>
   )
 }
 
@@ -165,6 +179,8 @@ function initialThemePreference(): ThemePreference {
 }
 
 export default function App() {
+  // reducedMotion="user" alone still runs opacity/colour tweens; make them instant as well.
+  const reduceMotion = useReducedMotion()
   const [snapshot, setSnapshot] = useState<Snapshot>(FALLBACK_SNAPSHOT)
   const [snapshotState, setSnapshotState] = useState<'loading' | 'live' | 'fallback'>('loading')
   const [minuteNow, setMinuteNow] = useState(() => new Date())
@@ -179,6 +195,15 @@ export default function App() {
   )
   const activeTheme = themePreference === 'system' ? systemTheme : themePreference
   const [mobileHorizon, setMobileHorizon] = useState<24 | 168>(24)
+  const [heroCountsFromZero] = useState(() => {
+    try {
+      const seen = sessionStorage.getItem('gap-entrance-seen') === '1'
+      sessionStorage.setItem('gap-entrance-seen', '1')
+      return !seen
+    } catch {
+      return true
+    }
+  })
   const { selected, toggle, selectAll, setSelected, weightingMode, setWeightingMode } =
     useAudience()
   const refreshSnapshot = useCallback(() => {
@@ -276,6 +301,10 @@ export default function App() {
     () => scoreGrid.points(selected, minuteNow, 24),
     [scoreGrid, minuteNow, selected],
   )
+  const mobileForecast = useMemo(
+    () => scoreGrid.points(selected, minuteNow, mobileHorizon),
+    [scoreGrid, minuteNow, selected, mobileHorizon],
+  )
   const windows24 = useMemo(() => {
     const searchStart = new Date(minuteNow.getTime() - MODEL_CONFIG.windowMinutes * 60_000)
     return findBestWindows(
@@ -361,7 +390,7 @@ export default function App() {
   )
   const detailRegion = detail ? REGION_BY_ID[detail] : null
   return (
-    <MotionConfig reducedMotion="user">
+    <MotionConfig reducedMotion="user" transition={reduceMotion ? { duration: 0 } : undefined}>
       <>
         <div id="top" className="app-shell" inert={detail ? true : undefined}>
           <Header
@@ -371,7 +400,7 @@ export default function App() {
             onRefresh={refreshSnapshot}
           />
           <main>
-            <Section className="hero">
+            <Section className="hero" delay={MOTION.stagger}>
               <div className="hero-copy">
                 <p className="eyebrow" data-testid="data-state">
                   {snapshotState === 'live'
@@ -395,18 +424,43 @@ export default function App() {
                 ) : (
                   <div className="score-row">
                     <div
-                      className="hero-score"
+                      className={`hero-score ${status.tone}`}
                       data-timestamp={date.toISOString()}
                       aria-live={scrubbed ? 'off' : 'polite'}
                     >
-                      {scoreGridReady ? <AnimatedNumber value={score} /> : <span>—</span>}
+                      {scoreGridReady ? (
+                        <AnimatedNumber
+                          value={score}
+                          initialValue={heroCountsFromZero ? 0 : score}
+                          delayMs={heroCountsFromZero ? 120 : 0}
+                          accentOnChange={!scrubbed}
+                        />
+                      ) : (
+                        <span>—</span>
+                      )}
                       <small>/100</small>
                     </div>
                     <div className="score-meta">
-                      <span className={`status ${status.tone}`}>
-                        <i />
-                        {status.label}
-                      </span>
+                      {reduceMotion ? (
+                        <span className={`status ${status.tone}`}>
+                          <i />
+                          {status.label}
+                        </span>
+                      ) : (
+                        <AnimatePresence mode="wait" initial={false}>
+                          <motion.span
+                            key={status.label}
+                            className={`status ${status.tone}`}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: MOTION.change, ease: MOTION.ease }}
+                          >
+                            <i />
+                            {status.label}
+                          </motion.span>
+                        </AnimatePresence>
+                      )}
                       <strong>{status.verdict}</strong>
                       <p>
                         {regionScores[0]?.region.city} führt mit{' '}
@@ -473,14 +527,14 @@ export default function App() {
               </div>
             </Section>
             <div className="desktop-grid">
-              <Section className="map-slot">
+              <Section className="map-slot" delay={MOTION.stagger * 3}>
                 <Suspense
                   fallback={<div className="panel map-skeleton" aria-label="Karte wird geladen" />}
                 >
                   <WorldMap date={date} grid={scoreGrid} selected={selected} onRegion={setDetail} />
                 </Suspense>
               </Section>
-              <Section className="forecast-slot">
+              <Section className="forecast-slot" delay={MOTION.stagger * 4}>
                 <Forecast
                   points={forecast}
                   selectedDate={date}
@@ -576,7 +630,13 @@ export default function App() {
             </Section>
             <div className="analysis-grid">
               <Section>
-                <Heatmap start={minuteNow} selected={selected} grid={scoreGrid} onScrub={scrubTo} />
+                <Heatmap
+                  start={minuteNow}
+                  selectedDate={date}
+                  selected={selected}
+                  grid={scoreGrid}
+                  onScrub={scrubTo}
+                />
               </Section>
               <Section>
                 <Dial date={date} selected={selected} worldMean={worldMean} />
@@ -709,127 +769,87 @@ export default function App() {
               </section>
             </Section>
           </main>
-          <footer>
-            <span>Global Audience Pulse v{__APP_VERSION__}</span>
-            <span>
-              {REGIONS.length} Regionen ·{' '}
-              {snapshotState === 'live' ? 'aus aktuellen Daten berechnet' : 'modellierte Vorschau'}
-            </span>
-          </footer>
-          <div className="mobile-bar" role="region" aria-label="Zeit vorspulen">
-            <div className="mobile-bar-top">
-              <div className="mobile-bar-when">
-                <span className="mobile-bar-eyebrow">Zeit vorspulen</span>
-                <span className="mobile-bar-readout">
-                  {scrubbed
-                    ? `${scrubbed.toLocaleString('de-DE', {
-                        weekday: 'short',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })} · ${formatOffset(scrubbed.getTime() - minuteNow.getTime())}`
-                    : `Jetzt · ${formatTime(minuteNow, userTimeZone)}`}
-                </span>
-              </div>
-              <div className="mobile-bar-score" aria-label="Gesamtwert">
-                <b>{scoreGridReady ? <AnimatedNumber value={score} /> : '—'}</b>
-                <small>/100</small>
-              </div>
-            </div>
-            <div className="mobile-bar-slider">
-              <input
-                aria-label="Mobile Zeitmaschine"
-                type="range"
-                min={0}
-                max={mobileHorizon * 60}
-                step={15}
-                value={Math.max(
-                  0,
-                  Math.min(
-                    mobileHorizon * 60,
-                    Math.round((date.getTime() - minuteNow.getTime()) / 60_000),
-                  ),
-                )}
-                onChange={(e) =>
-                  scrubTo(new Date(minuteNow.getTime() + Number(e.target.value) * 60_000))
-                }
-              />
-              <div className="mobile-bar-scale" aria-hidden="true">
-                <span>jetzt</span>
-                <span>{mobileHorizon === 24 ? '+12 h' : '+3,5 T'}</span>
-                <span>{mobileHorizon === 24 ? '+24 h' : '+7 T'}</span>
-              </div>
-            </div>
-            <div className="mobile-bar-actions">
-              <div className="mobile-horizon" role="group" aria-label="Zeitraum des Schiebers">
-                <button aria-pressed={mobileHorizon === 24} onClick={() => setMobileHorizon(24)}>
-                  24 h
-                </button>
-                <button aria-pressed={mobileHorizon === 168} onClick={() => setMobileHorizon(168)}>
-                  7 Tage
-                </button>
-              </div>
-              {scrubbed ? (
-                <button className="mobile-bar-live" onClick={() => setScrubbed(null)}>
-                  Zurück zu jetzt
-                </button>
-              ) : (
-                <span className="mobile-bar-live is-live" role="status">
-                  <i aria-hidden="true" /> Live
-                </span>
-              )}
-            </div>
-          </div>
+          <SiteFooter />
+          <MobileTimeBar
+            now={minuteNow}
+            selectedDate={date}
+            horizon={mobileHorizon}
+            points={mobileForecast}
+            windows={mobileHorizon === 24 ? windows24 : plannerSets.week}
+            ready={scoreGridReady}
+            onHorizon={setMobileHorizon}
+            onScrub={scrubTo}
+            onLive={() => setScrubbed(null)}
+          />
         </div>
-        {detailRegion && (
-          <div className="sheet-backdrop" onClick={() => setDetail(null)}>
-            <motion.aside
-              ref={sheetRef}
-              className="detail-sheet"
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              onClick={(e) => e.stopPropagation()}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="detail-title"
+        <AnimatePresence>
+          {detailRegion && (
+            <motion.div
+              className="sheet-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: MOTION.change, ease: MOTION.ease }}
+              onClick={() => setDetail(null)}
             >
-              <button
-                ref={closeRef}
-                className="sheet-close"
-                onClick={() => setDetail(null)}
-                aria-label="Schließen"
-              >
-                <X size={22} weight="regular" aria-hidden="true" />
-              </button>
-              <Flag code={detailRegion.flag} label={detailRegion.name} size={28} />
-              <p className="eyebrow">Region im Fokus</p>
-              <h2 id="detail-title">{detailRegion.name}</h2>
-              <div className="detail-score">
-                {Math.round(scoreGrid.activityAt(detailRegion.id, date))}
-                <small>/100</small>
-              </div>
-              <p>
-                {detailRegion.city} · {formatTime(date, detailRegion.timeZone)} ·{' '}
-                {timeZoneName(date, detailRegion.timeZone)}
-              </p>
-              <p>
-                <PhaseIcon icon={phaseAt(localDecimalHourFast(date, detailRegion.timeZone)).icon} />{' '}
-                {phaseAt(localDecimalHourFast(date, detailRegion.timeZone)).name}
-              </p>
-              <button
-                className="button primary"
-                onClick={() => {
-                  if (!selected.includes(detailRegion.id)) toggle(detailRegion.id)
-                  setDetail(null)
+              <motion.aside
+                ref={sheetRef}
+                className="detail-sheet"
+                initial={{ y: '100%' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100%' }}
+                transition={MOTION.spring}
+                drag="y"
+                dragConstraints={{ top: 0, bottom: 0 }}
+                dragElastic={{ top: 0, bottom: 0.7 }}
+                onDragEnd={(_, info) => {
+                  if (info.offset.y > 90 || info.velocity.y > 500) setDetail(null)
                 }}
+                onClick={(e) => e.stopPropagation()}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="detail-title"
               >
-                {selected.includes(detailRegion.id)
-                  ? 'Ist in deiner Zielgruppe'
-                  : 'Zur Zielgruppe hinzufügen'}
-              </button>
-            </motion.aside>
-          </div>
-        )}
+                <button
+                  ref={closeRef}
+                  className="sheet-close"
+                  onClick={() => setDetail(null)}
+                  aria-label="Schließen"
+                >
+                  <X size={22} weight="regular" aria-hidden="true" />
+                </button>
+                <Flag code={detailRegion.flag} label={detailRegion.name} size={28} />
+                <p className="eyebrow">Region im Fokus</p>
+                <h2 id="detail-title">{detailRegion.name}</h2>
+                <div className="detail-score">
+                  <AnimatedNumber value={scoreGrid.activityAt(detailRegion.id, date)} />
+                  <small>/100</small>
+                </div>
+                <p>
+                  {detailRegion.city} · {formatTime(date, detailRegion.timeZone)} ·{' '}
+                  {timeZoneName(date, detailRegion.timeZone)}
+                </p>
+                <p>
+                  <PhaseIcon
+                    icon={phaseAt(localDecimalHourFast(date, detailRegion.timeZone)).icon}
+                  />{' '}
+                  {phaseAt(localDecimalHourFast(date, detailRegion.timeZone)).name}
+                </p>
+                <button
+                  className="button primary"
+                  onClick={() => {
+                    if (!selected.includes(detailRegion.id)) toggle(detailRegion.id)
+                    setDetail(null)
+                  }}
+                >
+                  {selected.includes(detailRegion.id)
+                    ? 'Ist in deiner Zielgruppe'
+                    : 'Zur Zielgruppe hinzufügen'}
+                </button>
+              </motion.aside>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </>
     </MotionConfig>
   )

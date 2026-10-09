@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { motion } from 'motion/react'
 import { PHASES, SERIES } from '../config/model'
 import { REGIONS, type RegionId } from '../config/regions'
 import type { LiveMeasure } from '../hooks/useLiveData'
@@ -99,8 +98,7 @@ export function RegionCards({
           const measuredAt = measure?.lastMeasuredAt ?? snapshot.profiles[region.id]?.lastMeasuredAt
           const isExpanded = expanded === region.id
           return (
-            <motion.article
-              layout
+            <article
               key={region.id}
               className={`${selected.includes(region.id) ? 'region-card' : 'region-card unselected'}${isExpanded ? ' expanded' : ''}`}
             >
@@ -130,7 +128,7 @@ export function RegionCards({
                     <AnimatedNumber value={score} />
                   </strong>
                 </div>
-                <motion.div layout className="card-detail">
+                <div className="card-detail">
                   <div className="card-top">
                     <p className="eyebrow">{region.name}</p>
                     <span className={measure ? 'badge measured' : 'badge'}>
@@ -184,7 +182,7 @@ export function RegionCards({
                         : '—'}
                     </b>
                   </p>
-                </motion.div>
+                </div>
               </button>
               <button
                 className="compact-toggle"
@@ -205,7 +203,7 @@ export function RegionCards({
                 </span>
                 <i />
               </button>
-            </motion.article>
+            </article>
           )
         })}
       </div>

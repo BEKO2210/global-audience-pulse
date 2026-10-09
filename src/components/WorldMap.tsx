@@ -1,12 +1,13 @@
 import { geoCircle, geoEqualEarth, geoPath } from 'd3-geo'
 import { feature } from 'topojson-client'
 import landData from 'world-atlas/land-110m.json'
-import { motion } from 'motion/react'
+import { motion, useReducedMotion } from 'motion/react'
 import { REGIONS, type RegionId } from '../config/regions'
 import { PHASES, SERIES } from '../config/model'
 import { phaseAt, type ScoreGrid } from '../lib/model'
 import { antipode, solarElevation, subsolarPoint } from '../lib/solar'
 import { localDecimalHourFast } from '../lib/time'
+import { MOTION } from '../config/motion'
 
 const projection = geoEqualEarth().fitExtent(
   [
@@ -32,6 +33,7 @@ export function WorldMap({
   selected: readonly RegionId[]
   onRegion: (id: RegionId) => void
 }) {
+  const reduceMotion = useReducedMotion()
   const sun = subsolarPoint(date)
   const nightCenter = antipode(sun)
   const night = geoCircle().center([nightCenter.longitude, nightCenter.latitude]).radius(90)()
@@ -66,9 +68,29 @@ export function WorldMap({
         </defs>
         <path d={SPHERE_PATH} className="ocean" />
         <g clipPath="url(#sphere)">
-          <path d={LAND_PATH} className="land" />
-          <path d={path(twilight) ?? ''} className="twilight" />
-          <path d={path(night) ?? ''} className="night" />
+          <motion.path
+            d={LAND_PATH}
+            className="land"
+            initial={reduceMotion ? false : { opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: reduceMotion ? 0 : MOTION.entrance, ease: MOTION.ease }}
+          />
+          <motion.path
+            d={path(twilight) ?? ''}
+            className="twilight"
+            animate={{ d: path(twilight) ?? '' }}
+            transition={{ duration: reduceMotion ? 0 : MOTION.change, ease: MOTION.ease }}
+          />
+          <motion.path
+            d={path(night) ?? ''}
+            className="night"
+            initial={reduceMotion ? false : { opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            animate={{ d: path(night) ?? '' }}
+            viewport={{ once: true }}
+            transition={{ duration: reduceMotion ? 0 : MOTION.change, ease: MOTION.ease }}
+          />
         </g>
         <path d={SPHERE_PATH} className="sphere-line" />
         {REGIONS.map((region, index) => {
@@ -85,7 +107,7 @@ export function WorldMap({
                 ? { x: 12, y: -29, anchor: 'start' as const }
                 : { x: 0, y: -13, anchor: 'middle' as const }
           return (
-            <g
+            <motion.g
               key={region.id}
               data-region={region.id}
               data-solar-elevation={elevation.toFixed(2)}
@@ -101,23 +123,20 @@ export function WorldMap({
                   onRegion(region.id)
                 }
               }}
+              animate={{ opacity: selected.includes(region.id) ? 1 : 0.42 }}
+              transition={{ duration: reduceMotion ? 0 : MOTION.change, ease: MOTION.ease }}
             >
               <circle r="24" fill="transparent" className="map-hitbox" />
               {prime && selected.includes(region.id) && (
-                <motion.circle
-                  r="13"
-                  fill="none"
-                  stroke={SERIES[index]}
-                  initial={{ opacity: 0.6, scale: 0.6 }}
-                  animate={{ opacity: 0, scale: 1.6 }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                />
+                <circle r="12" fill="none" stroke={SERIES[index]} opacity="0.35" />
               )}
-              <circle
+              <motion.circle
                 r={5 + score / 30}
                 fill={SERIES[index]}
                 stroke="var(--paper)"
                 strokeWidth="2"
+                animate={{ r: 5 + score / 30 }}
+                transition={{ duration: reduceMotion ? 0 : MOTION.change, ease: MOTION.ease }}
               />
               {labelOffset.x !== 0 && (
                 <line
@@ -136,7 +155,7 @@ export function WorldMap({
               >
                 {region.city}
               </text>
-            </g>
+            </motion.g>
           )
         })}
       </svg>

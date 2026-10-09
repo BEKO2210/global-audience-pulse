@@ -1,4 +1,4 @@
-import { memo, useRef, useState, type KeyboardEvent } from 'react'
+import { memo, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react'
 import { REGIONS, type RegionId } from '../config/regions'
 import type { ScoreGrid } from '../lib/model'
 import { formatTime } from '../lib/time'
@@ -7,11 +7,13 @@ import { Flag } from './Flag'
 // Props only change per minute or on audience change, not while scrubbing.
 export const Heatmap = memo(function Heatmap({
   start,
+  selectedDate,
   selected,
   grid,
   onScrub,
 }: {
   start: Date
+  selectedDate: Date
   selected: readonly RegionId[]
   grid: ScoreGrid
   onScrub: (date: Date) => void
@@ -22,6 +24,10 @@ export const Heatmap = memo(function Heatmap({
   const [activeCell, setActiveCell] = useState({ row: 0, column: 0 })
   const cellRefs = useRef(new Map<string, HTMLButtonElement>())
   const heatLevel = (score: number) => Math.min(4, Math.floor(score / 20))
+  const selectedRatio = Math.min(
+    1,
+    Math.max(0, (selectedDate.getTime() - start.getTime()) / (23 * 3_600_000)),
+  )
   const moveFocus = (row: number, column: number) => {
     const next = {
       row: Math.min(regions.length - 1, Math.max(0, row)),
@@ -58,9 +64,12 @@ export const Heatmap = memo(function Heatmap({
           className="heatmap"
           role="grid"
           aria-label="Aktivität nach Region und Zeit"
-          style={{
-            gridTemplateColumns: `minmax(70px, 90px) repeat(${hours.length}, minmax(28px, 1fr))`,
-          }}
+          style={
+            {
+              gridTemplateColumns: `minmax(70px, 90px) repeat(${hours.length}, minmax(28px, 1fr))`,
+              '--selected-ratio': selectedRatio,
+            } as CSSProperties
+          }
         >
           <div className="heatmap-row" role="row">
             <span role="columnheader" />
@@ -92,6 +101,7 @@ export const Heatmap = memo(function Heatmap({
                     role="gridcell"
                     tabIndex={activeCell.row === row && activeCell.column === column ? 0 : -1}
                     className={`${column === 0 ? 'heat-cell current-col' : 'heat-cell'} heat-${heatLevel(score)}`}
+                    style={{ animationDelay: `${column * 18}ms` }}
                     aria-label={`${region.city}, ${formatTime(date, userZone)}: ${Math.round(score)} Prozent`}
                     onFocus={() => setActiveCell({ row, column })}
                     onKeyDown={(event) => onCellKeyDown(event, row, column)}

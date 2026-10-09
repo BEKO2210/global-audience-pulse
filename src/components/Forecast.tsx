@@ -1,9 +1,10 @@
 import { useRef } from 'react'
 import { scaleLinear, scaleTime } from 'd3-scale'
 import { area, curveMonotoneX, line } from 'd3-shape'
-import { motion } from 'motion/react'
+import { motion, useReducedMotion } from 'motion/react'
 import type { PostingWindow } from '../lib/model'
 import { MODEL_CONFIG } from '../config/model'
+import { MOTION } from '../config/motion'
 import { formatDateTime, formatTime, snapToMinutes } from '../lib/time'
 
 export interface ForecastPoint {
@@ -30,6 +31,7 @@ export function Forecast({
   isLive: boolean
   recommendationThreshold: number
 }) {
+  const reduceMotion = useReducedMotion()
   const ref = useRef<SVGSVGElement>(null)
   const width = 720
   const height = 270
@@ -142,12 +144,22 @@ export function Forecast({
             </text>
           </g>
         ))}
-        <path d={areaPath} className="forecast-area" />
+        <motion.path
+          d={areaPath}
+          className="forecast-area"
+          initial={reduceMotion ? false : { opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: reduceMotion ? 0 : MOTION.entrance, ease: MOTION.ease }}
+        />
         <motion.path
           d={linePath}
           className="forecast-line"
-          initial={false}
+          initial={reduceMotion ? false : { pathLength: 0 }}
+          whileInView={{ pathLength: 1 }}
           animate={{ d: linePath }}
+          viewport={{ once: true }}
+          transition={{ duration: reduceMotion ? 0 : MOTION.change, ease: MOTION.ease }}
         />
         {ticks.map((tick) => (
           <g key={tick.getTime()} transform={`translate(${x(tick)} ${height - pad.b})`}>
@@ -157,18 +169,22 @@ export function Forecast({
             </text>
           </g>
         ))}
-        <line
+        <motion.line
           x1={x(selectedInDomain)}
           x2={x(selectedInDomain)}
           y1={pad.t}
           y2={height - pad.b}
           className="now-line"
+          animate={{ x1: x(selectedInDomain), x2: x(selectedInDomain) }}
+          transition={{ duration: reduceMotion ? 0 : MOTION.change, ease: MOTION.ease }}
         />
-        <circle
+        <motion.circle
           cx={x(selectedInDomain)}
           cy={y(points[selectedIndex]?.score ?? 0)}
           r="5"
           className="now-point"
+          animate={{ cx: x(selectedInDomain), cy: y(points[selectedIndex]?.score ?? 0) }}
+          transition={{ duration: reduceMotion ? 0 : MOTION.change, ease: MOTION.ease }}
         />
       </svg>
       <div className="forecast-legend">

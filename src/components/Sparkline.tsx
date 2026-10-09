@@ -1,4 +1,6 @@
 import { curveMonotoneX, line } from 'd3-shape'
+import { motion, useReducedMotion } from 'motion/react'
+import { MOTION } from '../config/motion'
 
 export function Sparkline({
   values,
@@ -9,6 +11,7 @@ export function Sparkline({
   color?: string
   height?: number
 }) {
+  const reduceMotion = useReducedMotion()
   const width = 180
   const d =
     line<number>()
@@ -22,7 +25,18 @@ export function Sparkline({
       preserveAspectRatio="none"
       aria-hidden="true"
     >
-      <path d={d} fill="none" stroke={color} strokeWidth="2" vectorEffect="non-scaling-stroke" />
+      <motion.path
+        d={d}
+        fill="none"
+        stroke={color}
+        strokeWidth="2"
+        vectorEffect="non-scaling-stroke"
+        initial={reduceMotion ? false : { pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        animate={{ d }}
+        viewport={{ once: true }}
+        transition={{ duration: reduceMotion ? 0 : MOTION.change, ease: MOTION.ease }}
+      />
     </svg>
   )
 }
