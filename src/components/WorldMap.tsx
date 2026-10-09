@@ -4,10 +4,9 @@ import landData from 'world-atlas/land-110m.json'
 import { motion } from 'motion/react'
 import { REGIONS, type RegionId } from '../config/regions'
 import { PHASES, SERIES } from '../config/model'
-import { phaseAt, regionActivity } from '../lib/model'
-import type { Snapshot } from '../lib/snapshot'
+import { phaseAt, type ScoreGrid } from '../lib/model'
 import { antipode, solarElevation, subsolarPoint } from '../lib/solar'
-import { localDecimalHour } from '../lib/time'
+import { localDecimalHourFast } from '../lib/time'
 
 const projection = geoEqualEarth().fitExtent(
   [
@@ -18,15 +17,18 @@ const projection = geoEqualEarth().fitExtent(
 )
 const path = geoPath(projection)
 const land = feature(landData as any, (landData as any).objects.land)
+// Static geometry: project once at module load, not on every scrub step.
+const SPHERE_PATH = path({ type: 'Sphere' }) ?? ''
+const LAND_PATH = path(land as any) ?? ''
 
 export function WorldMap({
   date,
-  snapshot,
+  grid,
   selected,
   onRegion,
 }: {
   date: Date
-  snapshot: Snapshot
+  grid: ScoreGrid
   selected: readonly RegionId[]
   onRegion: (id: RegionId) => void
 }) {
@@ -55,21 +57,21 @@ export function WorldMap({
       >
         <defs>
           <clipPath id="sphere">
-            <path d={path({ type: 'Sphere' }) ?? ''} />
+            <path d={SPHERE_PATH} />
           </clipPath>
         </defs>
-        <path d={path({ type: 'Sphere' }) ?? ''} className="ocean" />
+        <path d={SPHERE_PATH} className="ocean" />
         <g clipPath="url(#sphere)">
-          <path d={path(land as any) ?? ''} className="land" />
+          <path d={LAND_PATH} className="land" />
           <path d={path(twilight) ?? ''} className="twilight" />
           <path d={path(night) ?? ''} className="night" />
         </g>
-        <path d={path({ type: 'Sphere' }) ?? ''} className="sphere-line" />
+        <path d={SPHERE_PATH} className="sphere-line" />
         {REGIONS.map((region, index) => {
           const point = projection([...region.coordinates])
           if (!point) return null
-          const score = regionActivity(region, date, snapshot)
-          const hour = localDecimalHour(date, region.timeZone)
+          const score = grid.activityAt(region.id, date)
+          const hour = localDecimalHourFast(date, region.timeZone)
           const prime = primePhase ? phaseAt(hour).id === primePhase.id : false
           const elevation = solarElevation(region.coordinates[1], region.coordinates[0], date)
           return (
@@ -90,6 +92,7 @@ export function WorldMap({
                 }
               }}
             >
+              <circle r="24" fill="transparent" className="map-hitbox" />
               {prime && selected.includes(region.id) && (
                 <motion.circle
                   r="13"
@@ -106,6 +109,9 @@ export function WorldMap({
                 stroke="var(--paper)"
                 strokeWidth="2"
               />
+              <text y="-13" textAnchor="middle" className="map-pin-label">
+                {region.city}
+              </text>
             </g>
           )
         })}
@@ -117,7 +123,7 @@ export function WorldMap({
         </span>
         <span>
           <i className="twilight-dot" />
-          Zivile Dämmerung (0 bis −6°)
+          Dämmerung
         </span>
         <span>
           <i className="night-dot" />

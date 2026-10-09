@@ -1,9 +1,23 @@
 <!doctype html>
-<html lang="de" data-theme="dark">
+<html lang="de">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#11110f" />
+    <script>
+      try {
+        const saved = localStorage.getItem('gap-theme')
+        const theme =
+          saved === 'light' || saved === 'dark'
+            ? saved
+            : matchMedia('(prefers-color-scheme: light)').matches
+              ? 'light'
+              : 'dark'
+        document.documentElement.dataset.theme = theme
+        document.querySelector('meta[name="theme-color"]').content =
+          theme === 'light' ? '#f4f0e7' : '#11110f'
+      } catch {}
+    </script>
     <meta
       name="description"
       content="Global Audience Pulse zeigt live, wo deine Community wach ist – und wann dein nächster Post wirkt."
@@ -11,7 +25,15 @@
     <meta property="og:title" content="Global Audience Pulse" />
     <meta property="og:description" content="Die Live-Weltuhr für Creator." />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content="/global-audience-pulse/og-image.png" />
     <link rel="icon" href="/global-audience-pulse/favicon.svg" type="image/svg+xml" />
+    <link
+      rel="icon"
+      href="/global-audience-pulse/favicon-32x32.png"
+      sizes="32x32"
+      type="image/png"
+    />
+    <link rel="apple-touch-icon" href="/global-audience-pulse/apple-touch-icon.png" />
     <title>Global Audience Pulse</title>
   </head>
   <body>

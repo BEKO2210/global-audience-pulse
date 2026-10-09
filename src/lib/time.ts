@@ -1,5 +1,21 @@
 const formatterCache = new Map<string, Intl.DateTimeFormat>()
 
+export interface OffsetTransition {
+  at: number
+  offsetMinutes: number
+}
+
+export interface OffsetTable {
+  timeZone: string
+  start: number
+  end: number
+  initialOffsetMinutes: number
+  transitions: readonly OffsetTransition[]
+}
+
+const offsetTableCache = new Map<string, OffsetTable>()
+const DAY_MS = 86_400_000
+
 /** Intl.DateTimeFormat construction is expensive; reuse one instance per locale/options. */
 function formatter(locale: string, options: Intl.DateTimeFormatOptions) {
   const key = `${locale}|${JSON.stringify(options)}`
@@ -34,6 +50,96 @@ export function zonedParts(date: Date, timeZone: string) {
     second: Number(value('second')),
     weekday: value('weekday'),
   }
+}
+
+function intlOffsetMinutes(date: Date, timeZone: string) {
+  const p = zonedParts(date, timeZone)
+  const wallAsUtc = Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute, p.second)
+  return Math.round((wallAsUtc - Math.floor(date.getTime() / 1_000) * 1_000) / 60_000)
+}
+
+/**
+ * Builds the only Intl-backed object used by the activity model. Seven-day probes
+ * find a changed offset; a minute bisection records the exact transition slot.
+ */
+export function buildOffsetTable(timeZone: string, start: Date, end: Date): OffsetTable {
+  const startMs = start.getTime()
+  const endMs = end.getTime()
+  const initialOffsetMinutes = intlOffsetMinutes(start, timeZone)
+  const transitions: OffsetTransition[] = []
+  let cursor = startMs
+  let currentOffset = initialOffsetMinutes
+  const probeStep = 7 * DAY_MS
+  while (cursor < endMs) {
+    const probe = Math.min(endMs, cursor + probeStep)
+    const probeOffset = intlOffsetMinutes(new Date(probe), timeZone)
+    if (probeOffset !== currentOffset) {
+      let low = cursor
+      let high = probe
+      while (high - low > 60_000) {
+        const middle = Math.floor((low + high) / 2)
+        if (intlOffsetMinutes(new Date(middle), timeZone) === currentOffset) low = middle
+        else high = middle
+      }
+      let at = Math.floor(high / 60_000) * 60_000
+      if (intlOffsetMinutes(new Date(at), timeZone) === currentOffset) at += 60_000
+      currentOffset = intlOffsetMinutes(new Date(at), timeZone)
+      transitions.push({ at, offsetMinutes: currentOffset })
+      cursor = at
+    } else {
+      cursor = probe
+    }
+  }
+  return { timeZone, start: startMs, end: endMs, initialOffsetMinutes, transitions }
+}
+
+/** Session-cached, two-year table: previous/next transitions are available too. */
+export function getOffsetTable(timeZone: string, reference = new Date()) {
+  const year = reference.getUTCFullYear()
+  const key = `${timeZone}|${year}`
+  let table = offsetTableCache.get(key)
+  if (!table) {
+    table = buildOffsetTable(
+      timeZone,
+      new Date(Date.UTC(year - 1, 0, 1)),
+      new Date(Date.UTC(year + 2, 0, 1)),
+    )
+    offsetTableCache.set(key, table)
+  }
+  return table
+}
+
+export function offsetAt(date: Date, table: OffsetTable) {
+  const time = date.getTime()
+  let offset = table.initialOffsetMinutes
+  for (const transition of table.transitions) {
+    if (transition.at > time) break
+    offset = transition.offsetMinutes
+  }
+  return offset
+}
+
+/** Arithmetic-only wall-clock parts for model code. */
+export function fastZonedParts(
+  date: Date,
+  timeZone: string,
+  table = getOffsetTable(timeZone, date),
+) {
+  const shifted = new Date(date.getTime() + offsetAt(date, table) * 60_000)
+  return {
+    year: shifted.getUTCFullYear(),
+    month: shifted.getUTCMonth() + 1,
+    day: shifted.getUTCDate(),
+    hour: shifted.getUTCHours(),
+    minute: shifted.getUTCMinutes(),
+    second: shifted.getUTCSeconds(),
+    weekday: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][shifted.getUTCDay()]!,
+  }
+}
+
+export function localDecimalHourFast(date: Date, timeZone: string) {
+  const p = fastZonedParts(date, timeZone)
+  return p.hour + p.minute / 60 + p.second / 3_600
 }
 
 export function localDecimalHour(date: Date, timeZone: string) {
@@ -106,29 +212,9 @@ export function relativeTime(target: Date, from = new Date()) {
 }
 
 export function findNextOffsetChange(timeZone: string, from: Date, days = 370) {
-  const offset = (d: Date) => {
-    const p = zonedParts(d, timeZone)
-    return Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute) - d.getTime()
-  }
-  // UTC offsets never change twice within a day: probe daily, then bisect to the second.
-  const dayMs = 86_400_000
-  let previousTime = from.getTime()
-  let previous = offset(from)
-  for (let step = 1; step <= days; step += 1) {
-    const probeTime = from.getTime() + step * dayMs
-    const next = offset(new Date(probeTime))
-    if (next !== previous) {
-      let low = previousTime
-      let high = probeTime
-      while (high - low > 1_000) {
-        const middle = Math.floor((low + high) / 2)
-        if (offset(new Date(middle)) === previous) low = middle
-        else high = middle
-      }
-      return new Date(high)
-    }
-    previousTime = probeTime
-    previous = next
-  }
-  return null
+  const limit = from.getTime() + days * DAY_MS
+  const transition = getOffsetTable(timeZone, from).transitions.find(
+    (item) => item.at > from.getTime() && item.at <= limit,
+  )
+  return transition ? new Date(transition.at) : null
 }

@@ -9,11 +9,11 @@ export const MODEL_CONFIG = {
 } as const
 
 export const PHASES = [
-  { id: 'sleep', name: 'Nachtruhe', emoji: '◌', from: 0, to: 6, color: 'var(--soft)' },
-  { id: 'morning', name: 'Morgen', emoji: '◒', from: 6, to: 9, color: 'var(--series-3)' },
-  { id: 'day', name: 'Aktiver Tag', emoji: '●', from: 9, to: 18, color: 'var(--series-2)' },
-  { id: 'prime', name: 'Primetime', emoji: '✦', from: 18, to: 22, color: 'var(--accent)' },
-  { id: 'late', name: 'Spätabend', emoji: '◐', from: 22, to: 24, color: 'var(--series-4)' },
+  { id: 'sleep', name: 'Nachtruhe', icon: 'moon', from: 0, to: 6, color: 'var(--soft)' },
+  { id: 'morning', name: 'Morgen', icon: 'sunrise', from: 6, to: 9, color: 'var(--series-3)' },
+  { id: 'day', name: 'Aktiver Tag', icon: 'briefcase', from: 9, to: 18, color: 'var(--series-2)' },
+  { id: 'prime', name: 'Primetime', icon: 'fire', from: 18, to: 22, color: 'var(--accent)' },
+  { id: 'late', name: 'Spätabend', icon: 'moon-stars', from: 22, to: 24, color: 'var(--series-4)' },
 ] as const
 
 export const STATUS_LEVELS = [

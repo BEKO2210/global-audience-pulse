@@ -15,3 +15,21 @@ export function LiveClock() {
     </div>
   )
 }
+
+export function RegionClock({
+  timeZone,
+  live,
+  date,
+}: {
+  timeZone: string
+  live: boolean
+  date: Date
+}) {
+  const [now, setNow] = useState(() => new Date())
+  useEffect(() => {
+    if (!live) return
+    const id = window.setInterval(() => setNow(new Date()), 1_000)
+    return () => clearInterval(id)
+  }, [live])
+  return <>{formatTime(live ? now : date, timeZone, true)}</>
+}

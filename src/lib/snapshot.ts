@@ -99,9 +99,14 @@ export function parseSnapshot(input: unknown): Snapshot {
   }
 }
 
-export async function loadSnapshot(base = import.meta.env.BASE_URL) {
+export async function loadSnapshot(base = import.meta.env.BASE_URL, fresh = false) {
   try {
-    const response = await fetch(`${base}data/snapshot.json`)
+    const response = await fetch(
+      `${base}data/snapshot.json${fresh ? `?refresh=${Date.now()}` : ''}`,
+      {
+        cache: fresh ? 'no-store' : 'default',
+      },
+    )
     if (!response.ok) throw new Error(`HTTP ${response.status}`)
     return parseSnapshot(await response.json())
   } catch {

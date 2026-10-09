@@ -27,7 +27,7 @@ export default defineConfig({
     motionStudio(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'icon.svg'],
+      includeAssets: ['favicon.svg', 'favicon-32x32.png', 'apple-touch-icon.png', 'og-image.png'],
       manifest: {
         name: 'Global Audience Pulse',
         short_name: 'Audience Pulse',
@@ -36,10 +36,19 @@ export default defineConfig({
         background_color: '#11110f',
         display: 'standalone',
         lang: 'de',
-        icons: [{ src: 'icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' }],
+        icons: [
+          { src: 'icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: 'icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          {
+            src: 'icon-maskable-512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable',
+          },
+        ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,woff2,json}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,woff2,json}'],
         runtimeCaching: [
           {
             urlPattern: /\/data\/snapshot\.json$/,

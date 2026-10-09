@@ -36,6 +36,12 @@ Motion Studio ist im Dev-Server kostenlos zum Inspizieren und visuellen Editiere
 
 Die E2E-Spezifikationen liegen in `e2e/`; sie sind absichtlich nicht Teil der Sandbox-Verifikation, weil dafür ein lokaler Server und Browser nötig sind.
 
+## Drittanbieter
+
+- `flag-icons` 7.5 (MIT) für die regionalen SVG-Flaggen.
+- `@phosphor-icons/react` (MIT) für konsistente UI- und Phasen-Symbole.
+- `sharp` erzeugt die PNG-App- und Social-Media-Assets aus den eingecheckten SVG-Quellen (`npm run icons`).
+
 ## Lizenz
 
 Global Audience Pulse steht unter der [PolyForm Noncommercial License 1.0.0](LICENSE.md). Die Nutzung ist für nichtkommerzielle Zwecke frei; jede kommerzielle Nutzung erfordert die schriftliche Erlaubnis der Urheberin. Weitere Hinweise und Drittanbieter-Lizenzen stehen in [NOTICE.md](NOTICE.md).

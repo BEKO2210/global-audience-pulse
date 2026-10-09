@@ -6,7 +6,7 @@ test('lädt fehlerfrei, bleibt im Viewport und reagiert auf Scrubbing', async ({
     if (message.type() === 'error') errors.push(message.text())
   })
   await page.goto('')
-  await expect(page.getByRole('heading', { name: /Ist deine Welt/i })).toBeVisible()
+  await expect(page.getByRole('heading', { name: /Jetzt posten oder warten/i })).toBeVisible()
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
@@ -18,6 +18,27 @@ test('lädt fehlerfrei, bleibt im Viewport und reagiert auf Scrubbing', async ({
   await page.keyboard.press('PageUp')
   await expect.poll(() => page.locator('.hero-score').textContent()).not.toBe(before)
   expect(errors).toEqual([])
+})
+
+test('folgt dem hellen Betriebssystem-Theme, nutzt SVG-Flaggen und vollständige Manifest-Icons', async ({
+  page,
+}) => {
+  await page.emulateMedia({ colorScheme: 'light' })
+  await page.goto('')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#f4f0e7')
+  expect(await page.locator('img.flag-image').count()).toBeGreaterThan(0)
+  expect(await page.evaluate(() => /[\u{1F1E6}-\u{1F1FF}]/u.test(document.body.innerText))).toBe(
+    false,
+  )
+
+  const manifestHref = await page.locator('link[rel="manifest"]').getAttribute('href')
+  expect(manifestHref).toBeTruthy()
+  const manifest = await page.evaluate(async (href) => (await fetch(href!)).json(), manifestHref)
+  for (const icon of manifest.icons as { src: string }[]) {
+    const response = await page.request.get(new URL(icon.src, page.url()).toString())
+    expect(response.ok()).toBe(true)
+  }
 })
 
 test('360 px hat keinen Seitenüberlauf und eine feste mobile Leiste', async ({

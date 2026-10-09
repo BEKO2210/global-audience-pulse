@@ -1,12 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { motion } from 'motion/react'
 import { PHASES, SERIES } from '../config/model'
 import { REGIONS, type RegionId } from '../config/regions'
 import type { LiveMeasure } from '../hooks/useLiveData'
-import { normalizedWeights, phaseAt, regionActivity } from '../lib/model'
+import { normalizedWeights, phaseAt, type ScoreGrid } from '../lib/model'
 import type { Snapshot } from '../lib/snapshot'
-import { formatTime, localDecimalHour } from '../lib/time'
+import { localDecimalHourFast } from '../lib/time'
 import { Sparkline } from './Sparkline'
+import { Flag } from './Flag'
+import { PhaseIcon } from './PhaseIcon'
+import { AnimatedNumber } from './AnimatedNumber'
+import { RegionClock } from './Clock'
 
 function measuredAge(iso: string) {
   const minutes = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60_000))
@@ -19,21 +23,23 @@ export function RegionCards({
   snapshot,
   live,
   onToggle,
+  grid,
+  onSelectAll,
+  onReset,
+  isLive,
 }: {
   date: Date
   selected: readonly RegionId[]
   snapshot: Snapshot
   live: Partial<Record<RegionId, LiveMeasure>>
   onToggle: (id: RegionId) => void
+  grid: ScoreGrid
+  onSelectAll: () => void
+  onReset: () => void
+  isLive: boolean
 }) {
   const [filter, setFilter] = useState<'all' | 'measured' | 'model'>('all')
   const [expanded, setExpanded] = useState<RegionId | null>(null)
-  const [clock, setClock] = useState(() => new Date())
-  useEffect(() => {
-    const id = window.setInterval(() => setClock(new Date()), 1_000)
-    return () => clearInterval(id)
-  }, [])
-  const displayDate = Math.abs(clock.getTime() - date.getTime()) < 61_000 ? clock : date
   const weights = normalizedWeights(selected, snapshot)
   const measuredCount = REGIONS.filter((region) => Boolean(snapshot.profiles[region.id])).length
   const visible = REGIONS.filter(
@@ -49,23 +55,19 @@ export function RegionCards({
       <div className="section-head">
         <div>
           <p className="eyebrow">Regionen</p>
-          <h2 id="regions-title">Deine globale Redaktion</h2>
+          <h2 id="regions-title">Deine Zielgruppen-Märkte</h2>
         </div>
-        <span className="micro">
-          {selected.length} von {REGIONS.length} aktiv
-        </span>
-      </div>
-      <div className="audience-selector" aria-label="Zielgruppen-Auswahl">
-        {REGIONS.map((region) => (
-          <button
-            key={region.id}
-            className={selected.includes(region.id) ? 'chip active' : 'chip'}
-            onClick={() => onToggle(region.id)}
-            aria-pressed={selected.includes(region.id)}
-          >
-            {region.flag} {region.city}
+        <div className="selection-actions">
+          <span className="micro">
+            {selected.length} von {REGIONS.length} aktiv
+          </span>
+          <button className="text-button" onClick={onSelectAll}>
+            Alle auswählen
           </button>
-        ))}
+          <button className="text-button" onClick={onReset}>
+            Auswahl zurücksetzen
+          </button>
+        </div>
       </div>
       <div className="filter-row" aria-label="Regionen filtern">
         <button onClick={() => setFilter('all')} aria-pressed={filter === 'all'}>
@@ -81,11 +83,11 @@ export function RegionCards({
       <div className="region-grid">
         {visible.map((region) => {
           const index = REGIONS.findIndex((item) => item.id === region.id)
-          const score = regionActivity(region, date, snapshot)
-          const phase = phaseAt(localDecimalHour(date, region.timeZone))
+          const score = grid.activityAt(region.id, date)
+          const phase = phaseAt(localDecimalHourFast(date, region.timeZone))
           const measured = Boolean(snapshot.profiles[region.id])
           const values = Array.from({ length: 48 }, (_, i) =>
-            regionActivity(region, new Date(date.getTime() + (i - 12) * 30 * 60_000), snapshot),
+            grid.activityAt(region.id, new Date(date.getTime() + (i - 12) * 30 * 60_000)),
           )
           const measure = live[region.id]
           const measuredAt = measure?.lastMeasuredAt ?? snapshot.profiles[region.id]?.lastMeasuredAt
@@ -102,18 +104,22 @@ export function RegionCards({
                 aria-expanded={isExpanded}
               >
                 <div className="compact-card">
-                  <span className="flag">{region.flag}</span>
+                  <span className="flag">
+                    <Flag src={region.flagUrl} label={region.name} size={28} />
+                  </span>
                   <span className="compact-place">
                     <b>{region.city}</b>
                     <small>
-                      <i style={{ background: phase.color }} /> {phase.name}
+                      <PhaseIcon icon={phase.icon} /> {phase.name}
                     </small>
                   </span>
                   <span className="compact-time">
-                    {formatTime(displayDate, region.timeZone, true)}
+                    <RegionClock date={date} timeZone={region.timeZone} live={isLive} />
                   </span>
                   <Sparkline values={values} color={SERIES[index]} height={28} />
-                  <strong className="compact-score">{Math.round(score)}</strong>
+                  <strong className="compact-score">
+                    <AnimatedNumber value={score} />
+                  </strong>
                 </div>
                 <motion.div layout className="card-detail">
                   <div className="card-top">
@@ -123,24 +129,30 @@ export function RegionCards({
                     </span>
                   </div>
                   <div className="region-time">
-                    {formatTime(displayDate, region.timeZone, true)}
+                    <RegionClock date={date} timeZone={region.timeZone} live={isLive} />
                   </div>
-                  <p className="phase" style={{ color: phase.color }}>
-                    {phase.emoji} {phase.name}
+                  <p className="phase">
+                    <PhaseIcon icon={phase.icon} /> {phase.name}
                   </p>
                   <div className="card-score">
-                    <strong>{Math.round(score)}</strong>
+                    <strong>
+                      <AnimatedNumber value={score} />
+                    </strong>
                     <span>/100</span>
                   </div>
                   <Sparkline values={values} color={SERIES[index]} height={36} />
-                  {measuredAt && (
-                    <p className="deviation">
-                      {measure
-                        ? `gerade ${measure.deviation >= 0 ? '+' : ''}${Math.round(measure.deviation)} % · `
-                        : ''}
-                      Messung vor {measuredAge(measuredAt)}
-                    </p>
-                  )}
+                  <p className="deviation">
+                    {measuredAt ? (
+                      <>
+                        {measure
+                          ? `gerade ${measure.deviation >= 0 ? '+' : ''}${Math.round(measure.deviation)} % · `
+                          : ''}
+                        Messung vor {measuredAge(measuredAt)}
+                      </>
+                    ) : (
+                      <span className="deviation-placeholder">Statistisches Basismodell</span>
+                    )}
+                  </p>
                   <div className="weight">
                     <span
                       style={{
@@ -160,6 +172,15 @@ export function RegionCards({
                 </motion.div>
               </button>
               <button
+                className="compact-toggle"
+                onClick={() => onToggle(region.id)}
+                role="switch"
+                aria-checked={selected.includes(region.id)}
+                aria-label={`${region.city} ${selected.includes(region.id) ? 'abwählen' : 'auswählen'}`}
+              >
+                <i />
+              </button>
+              <button
                 className="include-button"
                 onClick={() => onToggle(region.id)}
                 role="switch"
@@ -177,7 +198,7 @@ export function RegionCards({
       <div className="phase-legend">
         {PHASES.map((phase) => (
           <span key={phase.id}>
-            <i style={{ background: phase.color }} />
+            <PhaseIcon icon={phase.icon} />
             {phase.name} · {String(phase.from).padStart(2, '0')}–{String(phase.to).padStart(2, '0')}{' '}
             Uhr
           </span>

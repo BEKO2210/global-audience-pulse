@@ -16,12 +16,14 @@ export function Forecast({
   windows,
   minuteNow,
   onScrub,
+  recommendationThreshold,
 }: {
   points: readonly ForecastPoint[]
   selectedDate: Date
   windows: readonly PostingWindow[]
   minuteNow: Date
   onScrub: (date: Date) => void
+  recommendationThreshold: number
 }) {
   const ref = useRef<SVGSVGElement>(null)
   const width = 720
@@ -55,6 +57,9 @@ export function Forecast({
     onScrub(x.invert(px))
   }
   const ticks = x.ticks(5)
+  const selectedInDomain = new Date(
+    Math.min(domain[1].getTime(), Math.max(domain[0].getTime(), selectedDate.getTime())),
+  )
   return (
     <section className="panel forecast-panel" aria-labelledby="forecast-title">
       <div className="section-head">
@@ -62,7 +67,7 @@ export function Forecast({
           <p className="eyebrow">24-Stunden-Prognose</p>
           <h2 id="forecast-title">Das nächste Momentum</h2>
         </div>
-        <span className="micro">15-Min.-Raster</span>
+        <span className="micro">Skala: 0–100 Aktivitäts-Score</span>
       </div>
       <svg
         ref={ref}
@@ -73,7 +78,7 @@ export function Forecast({
         aria-label="Zeitmaschine"
         aria-valuemin={domain[0].getTime()}
         aria-valuemax={domain[1].getTime()}
-        aria-valuenow={selectedDate.getTime()}
+        aria-valuenow={selectedInDomain.getTime()}
         aria-valuetext={formatDateTime(
           selectedDate,
           Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -96,17 +101,31 @@ export function Forecast({
         }}
       >
         {[25, 50, 75].map((v) => (
-          <line key={v} x1={pad.l} x2={width - pad.r} y1={y(v)} y2={y(v)} className="grid-line" />
+          <g key={v}>
+            <line x1={pad.l} x2={width - pad.r} y1={y(v)} y2={y(v)} className="grid-line" />
+            <text x={pad.l - 6} y={y(v) + 3} textAnchor="end" className="forecast-y-label">
+              {v}
+            </text>
+          </g>
         ))}
-        {windows.map((win) => (
-          <rect
-            key={win.start.toISOString()}
-            x={x(win.start)}
-            y={pad.t}
-            width={Math.max(2, x(win.end) - x(win.start))}
-            height={height - pad.t - pad.b}
-            className="window-band"
-          />
+        {windows.map((win, index) => (
+          <g key={win.start.toISOString()}>
+            <rect
+              x={x(win.start)}
+              y={pad.t}
+              width={Math.max(2, x(win.end) - x(win.start))}
+              height={height - pad.t - pad.b}
+              className="window-band"
+            />
+            <text
+              x={x(win.start) + (x(win.end) - x(win.start)) / 2}
+              y={pad.t + 12}
+              textAnchor="middle"
+              className="window-band-label"
+            >
+              Top {index + 1}
+            </text>
+          </g>
         ))}
         <path d={areaPath} className="forecast-area" />
         <motion.path
@@ -124,19 +143,19 @@ export function Forecast({
           </g>
         ))}
         <line
-          x1={x(selectedDate)}
-          x2={x(selectedDate)}
+          x1={x(selectedInDomain)}
+          x2={x(selectedInDomain)}
           y1={pad.t}
           y2={height - pad.b}
           className="now-line"
         />
         <circle
-          cx={x(selectedDate)}
+          cx={x(selectedInDomain)}
           cy={y(
             points.reduce(
               (best, p) =>
-                Math.abs(p.date.getTime() - selectedDate.getTime()) <
-                Math.abs(best.date.getTime() - selectedDate.getTime())
+                Math.abs(p.date.getTime() - selectedInDomain.getTime()) <
+                Math.abs(best.date.getTime() - selectedInDomain.getTime())
                   ? p
                   : best,
               points[0]!,
@@ -146,6 +165,9 @@ export function Forecast({
           className="now-point"
         />
       </svg>
+      <div className="forecast-legend">
+        <i /> Optimales Posting-Fenster (Score ab {recommendationThreshold})
+      </div>
       <div className="scrub-readout">
         <span>Zeitmaschine</span>
         <strong>

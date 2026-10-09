@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { MODEL_CONFIG } from '../config/model'
 import { REGIONS, type RegionId } from '../config/regions'
 import type { Snapshot } from '../lib/snapshot'
-import { zonedParts } from '../lib/time'
+import { fastZonedParts } from '../lib/time'
 
 export interface LiveMeasure {
   lastMeasuredAt: string
@@ -42,7 +42,7 @@ export function useLiveData(snapshot: Snapshot) {
             const items = body.items ?? []
             const latest = items.at(-1)
             if (!latest) return null
-            const hour = zonedParts(
+            const hour = fastZonedParts(
               new Date(
                 `${latest.timestamp.slice(0, 4)}-${latest.timestamp.slice(4, 6)}-${latest.timestamp.slice(6, 8)}T${latest.timestamp.slice(8, 10)}:00:00Z`,
               ),
@@ -51,7 +51,7 @@ export function useLiveData(snapshot: Snapshot) {
             const values = items
               .filter(
                 (item) =>
-                  zonedParts(
+                  fastZonedParts(
                     new Date(
                       `${item.timestamp.slice(0, 4)}-${item.timestamp.slice(4, 6)}-${item.timestamp.slice(6, 8)}T${item.timestamp.slice(8, 10)}:00:00Z`,
                     ),
@@ -61,8 +61,8 @@ export function useLiveData(snapshot: Snapshot) {
               .map((item) => item.views)
             const profileTypical =
               snapshot.profiles[region.id]?.[
-                zonedParts(new Date(), region.timeZone).weekday === 'Sat' ||
-                zonedParts(new Date(), region.timeZone).weekday === 'Sun'
+                fastZonedParts(new Date(), region.timeZone).weekday === 'Sat' ||
+                fastZonedParts(new Date(), region.timeZone).weekday === 'Sun'
                   ? 'weekend'
                   : 'weekday'
               ]?.[hour]

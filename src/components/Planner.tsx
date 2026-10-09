@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import { REGIONS, type RegionId } from '../config/regions'
-import type { PostingWindow } from '../lib/model'
-import { formatDateTime, formatTime, timeZoneName } from '../lib/time'
+import { Check, DownloadSimple, Fire, ShareNetwork } from '@phosphor-icons/react'
+import { REGIONS, type RegionConfig, type RegionId } from '../config/regions'
+import { phaseAt, type PostingWindow } from '../lib/model'
+import { formatDateTime, formatTime, localDecimalHourFast, timeZoneName } from '../lib/time'
+import { AnimatedNumber } from './AnimatedNumber'
 
 function icsDate(date: Date) {
   return date
@@ -33,6 +35,7 @@ function downloadIcs(window: PostingWindow) {
 export function Planner({
   windowSets,
   selected,
+  dst,
 }: {
   windowSets: {
     today: readonly PostingWindow[]
@@ -40,8 +43,10 @@ export function Planner({
     week: readonly PostingWindow[]
   }
   selected: readonly RegionId[]
+  dst?: { region: RegionConfig; date: Date }
 }) {
   const [message, setMessage] = useState('')
+  const [copied, setCopied] = useState(false)
   const [scope, setScope] = useState<keyof typeof windowSets>('today')
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const windows = windowSets[scope]
@@ -63,6 +68,8 @@ export function Planner({
       ta.remove()
     }
     setMessage('Plan kopiert')
+    setCopied(true)
+    window.setTimeout(() => setCopied(false), 2_200)
   }
   const share = async () => {
     const data = { title: 'Mein Posting-Plan', text: plan, url: location.href }
@@ -97,15 +104,23 @@ export function Planner({
             <div>
               <strong>{formatDateTime(window.start, zone)}</strong>
               <p>
-                bis {formatTime(window.end, zone)} · Score {Math.round(window.score)}
+                bis {formatTime(window.end, zone)} · Score <AnimatedNumber value={window.score} />
               </p>
-              <small>
+              <small className="window-markets">
+                <Fire size={14} weight="regular" aria-hidden="true" /> Im Peak:{' '}
                 {selected
-                  .map((id) => {
-                    const r = REGIONS.find((x) => x.id === id)!
-                    return `${r.city} ${formatTime(window.start, r.timeZone)}`
-                  })
-                  .join(' · ')}
+                  .map((id) => REGIONS.find((region) => region.id === id)!)
+                  .filter((region) =>
+                    ['prime', 'day'].includes(
+                      phaseAt(localDecimalHourFast(window.start, region.timeZone)).id,
+                    ),
+                  )
+                  .slice(0, 4)
+                  .map(
+                    (region) =>
+                      `${region.city} (${formatTime(window.start, region.timeZone)} ${phaseAt(localDecimalHourFast(window.start, region.timeZone)).name})`,
+                  )
+                  .join(' · ') || 'Kein Kernmarkt in der Hochphase'}
               </small>
             </div>
             <button
@@ -113,19 +128,26 @@ export function Planner({
               onClick={() => downloadIcs(window)}
               aria-label="Als Kalenderdatei laden"
             >
-              ↓
+              <DownloadSimple size={19} weight="regular" aria-hidden="true" />
             </button>
           </article>
         ))}
       </div>
       <div className="planner-actions">
-        <button className="button primary" onClick={copy}>
-          Plan kopieren
+        <button className={`button primary${copied ? ' copied' : ''}`} onClick={copy}>
+          {copied && <Check size={18} weight="regular" aria-hidden="true" />}{' '}
+          {copied ? 'In Zwischenablage kopiert' : 'Plan kopieren'}
         </button>
         <button className="button" onClick={share}>
-          Link teilen
+          <ShareNetwork size={18} weight="regular" aria-hidden="true" /> Link teilen
         </button>
       </div>
+      {dst && (
+        <p className="dst-note">
+          Nächste Zeitumstellung: {dst.region.city} ·{' '}
+          {dst.date.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })}
+        </p>
+      )}
       <span className="sr-only" aria-live="polite">
         {message}
       </span>

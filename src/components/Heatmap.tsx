@@ -1,26 +1,29 @@
+import { memo } from 'react'
 import { REGIONS, type RegionId } from '../config/regions'
-import { regionActivity } from '../lib/model'
-import type { Snapshot } from '../lib/snapshot'
+import type { ScoreGrid } from '../lib/model'
 import { formatTime } from '../lib/time'
+import { Flag } from './Flag'
 
-export function Heatmap({
+// Props only change per minute or on audience change, not while scrubbing.
+export const Heatmap = memo(function Heatmap({
   start,
   selected,
-  snapshot,
+  grid,
   onScrub,
 }: {
   start: Date
   selected: readonly RegionId[]
-  snapshot: Snapshot
+  grid: ScoreGrid
   onScrub: (date: Date) => void
 }) {
+  const userZone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const hours = Array.from({ length: 24 }, (_, i) => new Date(start.getTime() + i * 3_600_000))
   const heatLevel = (score: number) => Math.min(4, Math.floor(score / 20))
   return (
     <section className="panel heatmap-panel" aria-labelledby="heatmap-title">
       <div className="section-head">
         <div>
-          <p className="eyebrow">Audience × Zeit</p>
+          <p className="eyebrow">Zielgruppe × Zeit</p>
           <h2 id="heatmap-title">Aktivitätsmatrix</h2>
         </div>
         <span className="micro">Deine Zeitzone</span>
@@ -29,7 +32,7 @@ export function Heatmap({
         <div
           className="heatmap"
           style={{
-            gridTemplateColumns: `minmax(54px, 88px) repeat(${hours.length}, minmax(0, 1fr))`,
+            gridTemplateColumns: `minmax(70px, 90px) repeat(${hours.length}, minmax(28px, 1fr))`,
           }}
         >
           <span />
@@ -38,25 +41,21 @@ export function Heatmap({
               key={date.getTime()}
               className={i === 0 ? 'current-col axis-label' : 'axis-label'}
             >
-              {i === 0
-                ? 'jetzt'
-                : i % 3 === 0
-                  ? formatTime(date, Intl.DateTimeFormat().resolvedOptions().timeZone).slice(0, 2)
-                  : ''}
+              {i === 0 ? 'jetzt' : i % 3 === 0 ? formatTime(date, userZone).slice(0, 2) : ''}
             </span>
           ))}
           {REGIONS.filter((r) => selected.includes(r.id)).map((region) => (
             <div key={region.id} className="heatmap-row">
               <span className="heatmap-label">
-                {region.flag} {region.city}
+                <Flag src={region.flagUrl} label={region.name} size={16} /> {region.city}
               </span>
               {hours.map((date, i) => {
-                const score = regionActivity(region, date, snapshot)
+                const score = grid.activityAt(region.id, date)
                 return (
                   <button
                     key={date.getTime()}
                     className={`${i === 0 ? 'heat-cell current-col' : 'heat-cell'} heat-${heatLevel(score)}`}
-                    aria-label={`${region.city}, ${formatTime(date, Intl.DateTimeFormat().resolvedOptions().timeZone)}: ${Math.round(score)} Prozent`}
+                    aria-label={`${region.city}, ${formatTime(date, userZone)}: ${Math.round(score)} Prozent`}
                     onClick={() => onScrub(date)}
                   />
                 )
@@ -74,4 +73,4 @@ export function Heatmap({
       </div>
     </section>
   )
-}
+})

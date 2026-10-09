@@ -1,26 +1,22 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
-import { MotionConfig, motion, useSpring, useTransform } from 'motion/react'
-import { DATA_SOURCES, MODEL_CONFIG } from './config/model'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Desktop, Moon, Sun, X } from '@phosphor-icons/react'
+import { MotionConfig, motion } from 'motion/react'
+import { DATA_SOURCES, MODEL_CONFIG, PHASES, STATUS_LEVELS } from './config/model'
 import { PRESETS, REGIONS, REGION_BY_ID, type RegionId } from './config/regions'
 import { useAudience } from './hooks/useAudience'
 import { useLiveData } from './hooks/useLiveData'
 import {
   circularMean,
+  fastZonedParts,
   findNextOffsetChange,
-  formatDecimalHour,
   formatTime,
-  localDecimalHour,
+  localDecimalHourFast,
+  getOffsetTable,
+  offsetAt,
   relativeTime,
   timeZoneName,
 } from './lib/time'
-import {
-  findBestWindows,
-  globalActivity,
-  normalizedWeights,
-  phaseAt,
-  regionActivity,
-  statusFor,
-} from './lib/model'
+import { buildScoreGrid, findBestWindows, normalizedWeights, phaseAt, statusFor } from './lib/model'
 import { FALLBACK_SNAPSHOT, loadSnapshot, type Snapshot } from './lib/snapshot'
 import { Dial } from './components/Dial'
 import { Forecast } from './components/Forecast'
@@ -28,22 +24,13 @@ import { Heatmap } from './components/Heatmap'
 import { LiveClock } from './components/Clock'
 import { Planner } from './components/Planner'
 import { RegionCards } from './components/RegionCards'
-import { Sparkline } from './components/Sparkline'
+import { AnimatedNumber } from './components/AnimatedNumber'
+import { Flag } from './components/Flag'
+import { PhaseIcon } from './components/PhaseIcon'
 
 const WorldMap = lazy(() =>
   import('./components/WorldMap').then((module) => ({ default: module.WorldMap })),
 )
-
-function AnimatedNumber({ value }: { value: number }) {
-  const spring = useSpring(value, { stiffness: 130, damping: 24 })
-  const display = useTransform(spring, (n) => Math.round(n))
-  const [shown, setShown] = useState(Math.round(value))
-  useEffect(() => {
-    spring.set(value)
-    return display.on('change', (v) => setShown(v))
-  }, [value, spring, display])
-  return <span>{shown}</span>
-}
 
 function Section({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   const [visible, setVisible] = useState(false)
@@ -67,15 +54,14 @@ function Section({ children, className = '' }: { children: React.ReactNode; clas
 }
 
 function nextPhaseStart(region: (typeof REGIONS)[number], from: Date, phaseId = 'prime') {
-  const start = from.getTime() + 60_000
-  let previous = phaseAt(localDecimalHour(from, region.timeZone)).id
-  for (let m = 0; m < 48 * 60; m += 1) {
-    const d = new Date(start + m * 60_000)
-    const current = phaseAt(localDecimalHour(d, region.timeZone)).id
-    if (current === phaseId && previous !== phaseId) return d
-    previous = current
-  }
-  return new Date(from.getTime() + 24 * 3_600_000)
+  const targetHour = PHASES.find((phase) => phase.id === phaseId)?.from ?? PHASES[0].from
+  const parts = fastZonedParts(from, region.timeZone)
+  const afterStart = parts.hour + parts.minute / 60 + parts.second / 3_600 >= targetHour
+  const wall = Date.UTC(parts.year, parts.month - 1, parts.day + (afterStart ? 1 : 0), targetHour)
+  const table = getOffsetTable(region.timeZone, from)
+  let result = wall - offsetAt(from, table) * 60_000
+  result = wall - offsetAt(new Date(result), table) * 60_000
+  return new Date(result)
 }
 
 function joinGerman(items: readonly string[]) {
@@ -104,19 +90,19 @@ function freshness(date: string) {
 
 function Header({
   snapshot,
-  theme,
+  themePreference,
   onTheme,
+  onRefresh,
 }: {
   snapshot: Snapshot
-  theme: string
-  onTheme: () => void
+  themePreference: ThemePreference
+  onTheme: (theme: ThemePreference) => void
+  onRefresh: () => void
 }) {
   return (
     <header className="site-header">
       <a className="wordmark" href="#top" aria-label="Global Audience Pulse Start">
-        <svg viewBox="0 0 32 20">
-          <path d="M1 11h6l3-8 5 15 4-8 3 4h9" />
-        </svg>
+        <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" width="32" height="32" />
         <span>
           Global Audience
           <br />
@@ -124,21 +110,48 @@ function Header({
         </span>
       </a>
       <div className="header-actions">
-        <span className="freshness">
+        <button
+          className="freshness"
+          onClick={onRefresh}
+          title={`Automatischer Abruf alle ${MODEL_CONFIG.liveRefreshMinutes} Min. · Klick für Sofort-Update`}
+        >
           <i />
           Messdaten {freshness(snapshot.sources.wikimedia.fetchedAt)}
-        </span>
-        <LiveClock />
-        <button
-          className="theme-toggle"
-          onClick={onTheme}
-          aria-label={theme === 'dark' ? 'Helles Design' : 'Dunkles Design'}
-        >
-          {theme === 'dark' ? '☼' : '◐'}
         </button>
+        <LiveClock />
+        <div className="theme-toggle" aria-label="Darstellung" role="group">
+          {(
+            [
+              ['system', Desktop, 'System'],
+              ['light', Sun, 'Hell'],
+              ['dark', Moon, 'Dunkel'],
+            ] as const
+          ).map(([value, Icon, label]) => (
+            <button
+              key={value}
+              onClick={() => onTheme(value)}
+              aria-pressed={themePreference === value}
+              aria-label={label}
+              title={label}
+            >
+              <Icon size={16} weight="regular" aria-hidden="true" />
+            </button>
+          ))}
+        </div>
       </div>
     </header>
   )
+}
+
+type ThemePreference = 'system' | 'light' | 'dark'
+
+function initialThemePreference(): ThemePreference {
+  try {
+    const stored = localStorage.getItem('gap-theme')
+    return stored === 'light' || stored === 'dark' || stored === 'system' ? stored : 'system'
+  } catch {
+    return 'system'
+  }
 }
 
 export default function App() {
@@ -149,18 +162,19 @@ export default function App() {
   const sheetRef = useRef<HTMLElement>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
   const returnFocusRef = useRef<HTMLElement | null>(null)
-  const [theme, setTheme] = useState(() => {
-    try {
-      return localStorage.getItem('gap-theme') ?? 'dark'
-    } catch {
-      return 'dark'
-    }
-  })
+  const [themePreference, setThemePreference] = useState<ThemePreference>(initialThemePreference)
+  const [systemTheme, setSystemTheme] = useState<'light' | 'dark'>(() =>
+    window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark',
+  )
+  const activeTheme = themePreference === 'system' ? systemTheme : themePreference
+  const [mobileHorizon, setMobileHorizon] = useState<24 | 168>(24)
   const { selected, toggle, selectAll, setSelected, weightingMode, setWeightingMode } =
     useAudience()
-  useEffect(() => {
-    void loadSnapshot().then(setSnapshot)
-  }, [])
+  const refreshSnapshot = useCallback(
+    () => void loadSnapshot(import.meta.env.BASE_URL, true).then(setSnapshot),
+    [],
+  )
+  useEffect(() => refreshSnapshot(), [refreshSnapshot])
   useEffect(() => {
     let interval = 0
     const timeout = window.setTimeout(
@@ -176,13 +190,24 @@ export default function App() {
     }
   }, [])
   useEffect(() => {
-    document.documentElement.dataset.theme = theme
+    const media = window.matchMedia('(prefers-color-scheme: light)')
+    const update = (event: MediaQueryListEvent | MediaQueryList) =>
+      setSystemTheme(event.matches ? 'light' : 'dark')
+    update(media)
+    media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  }, [])
+  useEffect(() => {
+    document.documentElement.dataset.theme = activeTheme
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', activeTheme === 'light' ? '#f4f0e7' : '#11110f')
     try {
-      localStorage.setItem('gap-theme', theme)
+      localStorage.setItem('gap-theme', themePreference)
     } catch {
       /* optional */
     }
-  }, [theme])
+  }, [activeTheme, themePreference])
   useEffect(() => {
     if (!detail) return
     returnFocusRef.current = document.activeElement as HTMLElement | null
@@ -227,23 +252,20 @@ export default function App() {
     [snapshot, weightingMode, live],
   )
   const date = scrubbed ?? minuteNow
-  const score = useMemo(
-    () => globalActivity(REGIONS, selected, date, activeSnapshot),
-    [selected, date, activeSnapshot],
+  const scoreGrid = useMemo(
+    () => buildScoreGrid(REGIONS, activeSnapshot, minuteNow),
+    [minuteNow, activeSnapshot],
   )
+  const score = scoreGrid.globalAt(selected, date)
   const status = statusFor(score)
   const forecast = useMemo(
-    () =>
-      Array.from({ length: Math.floor((24 * 60) / MODEL_CONFIG.scanStepMinutes) + 1 }, (_, i) => {
-        const d = new Date(minuteNow.getTime() + i * MODEL_CONFIG.scanStepMinutes * 60_000)
-        return { date: d, score: globalActivity(REGIONS, selected, d, activeSnapshot) }
-      }),
-    [minuteNow, selected, activeSnapshot],
+    () => scoreGrid.points(selected, minuteNow, 24),
+    [scoreGrid, minuteNow, selected],
   )
   const windows24 = useMemo(() => {
     const searchStart = new Date(minuteNow.getTime() - MODEL_CONFIG.windowMinutes * 60_000)
     return findBestWindows(
-      (d) => globalActivity(REGIONS, selected, d, activeSnapshot),
+      (d) => scoreGrid.globalAt(selected, d),
       searchStart,
       24 + MODEL_CONFIG.windowMinutes / 60,
       MODEL_CONFIG.windowMinutes,
@@ -254,45 +276,45 @@ export default function App() {
           window.end > minuteNow && window.start < new Date(minuteNow.getTime() + 24 * 3_600_000),
       )
       .slice(0, 3)
-  }, [minuteNow, selected, activeSnapshot])
+  }, [minuteNow, selected, scoreGrid])
   const plannerSets = useMemo(() => {
     const tomorrow = new Date(minuteNow)
     tomorrow.setHours(24, 0, 0, 0)
     const todayHours = Math.max(1, (tomorrow.getTime() - minuteNow.getTime()) / 3_600_000)
     return {
       today: findBestWindows(
-        (d) => globalActivity(REGIONS, selected, d, activeSnapshot),
+        (d) => scoreGrid.globalAt(selected, d),
         minuteNow,
         todayHours,
         MODEL_CONFIG.windowMinutes,
         3,
       ),
       tomorrow: findBestWindows(
-        (d) => globalActivity(REGIONS, selected, d, activeSnapshot),
+        (d) => scoreGrid.globalAt(selected, d),
         tomorrow,
         24,
         MODEL_CONFIG.windowMinutes,
         3,
       ),
       week: findBestWindows(
-        (d) => globalActivity(REGIONS, selected, d, activeSnapshot),
+        (d) => scoreGrid.globalAt(selected, d),
         minuteNow,
         24 * 7,
         MODEL_CONFIG.windowMinutes,
         5,
       ),
     }
-  }, [minuteNow, selected, activeSnapshot])
+  }, [minuteNow, selected, scoreGrid])
   const regionScores = REGIONS.filter((r) => selected.includes(r.id))
-    .map((region) => ({ region, score: regionActivity(region, date, activeSnapshot) }))
+    .map((region) => ({ region, score: scoreGrid.activityAt(region.id, date) }))
     .sort((a, b) => b.score - a.score)
   const weights = normalizedWeights(selected, activeSnapshot)
   const worldMean = circularMean(
-    selected.map((id) => localDecimalHour(date, REGION_BY_ID[id].timeZone)),
+    selected.map((id) => localDecimalHourFast(date, REGION_BY_ID[id].timeZone)),
     selected.map((id) => weights[id] ?? 0),
   )
   const sleeping = regionScores
-    .filter((x) => phaseAt(localDecimalHour(date, x.region.timeZone)).id === 'sleep')
+    .filter((x) => phaseAt(localDecimalHourFast(date, x.region.timeZone)).id === 'sleep')
     .sort((a, b) => (weights[b.region.id] ?? 0) - (weights[a.region.id] ?? 0))
   const nextPrime = REGIONS.filter((r) => selected.includes(r.id))
     .map((r) => ({ region: r, date: nextPhaseStart(r, date) }))
@@ -309,14 +331,14 @@ export default function App() {
       PRESETS.map((preset) => ({
         preset,
         window: findBestWindows(
-          (d) => globalActivity(REGIONS, preset.ids, d, activeSnapshot),
+          (d) => scoreGrid.globalAt(preset.ids, d),
           minuteNow,
           24,
           MODEL_CONFIG.windowMinutes,
           1,
         )[0],
       })),
-    [minuteNow, activeSnapshot],
+    [minuteNow, scoreGrid],
   )
   const detailRegion = detail ? REGION_BY_ID[detail] : null
   return (
@@ -324,67 +346,90 @@ export default function App() {
       <div id="top" className="app-shell">
         <Header
           snapshot={snapshot}
-          theme={theme}
-          onTheme={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          themePreference={themePreference}
+          onTheme={setThemePreference}
+          onRefresh={refreshSnapshot}
         />
         <main>
           <Section className="hero">
             <div className="hero-copy">
-              <p className="eyebrow">
-                Live Audience Intelligence · {selected.length}/{REGIONS.length} Regionen
-              </p>
-              <h1>
-                Ist deine Welt
-                <br />
-                <em>bereit?</em>
-              </h1>
-              <div className="score-row">
-                <div className="hero-score" aria-live={scrubbed ? 'off' : 'polite'}>
-                  <AnimatedNumber value={score} />
-                  <small>/100</small>
-                </div>
-                <div className="score-meta">
-                  <span className={`status ${status.tone}`}>
-                    <i />
-                    {status.label}
-                  </span>
-                  <strong>{status.verdict}</strong>
+              <p className="eyebrow">Echtzeit-Publikumsradar · {selected.length} Regionen aktiv</p>
+              <h1>Jetzt posten oder warten?</h1>
+              {selected.length === 0 ? (
+                <div className="empty-selection-banner">
+                  <strong>Keine Regionen ausgewählt</strong>
                   <p>
-                    {regionScores[0]?.region.city} führt mit{' '}
-                    {Math.round(regionScores[0]?.score ?? 0)}.{' '}
-                    {sleeping.length
-                      ? `${joinGerman(sleeping.map(({ region }) => region.city))} ${sleeping.length === 1 ? 'schläft' : 'schlafen'}.`
-                      : 'Alle Kernmärkte sind wach.'}
+                    Wähle mindestens einen Markt aus, um weltweite Posting-Fenster zu berechnen.
                   </p>
+                  <button className="button primary" onClick={selectAll}>
+                    Alle Regionen aktivieren
+                  </button>
                 </div>
-              </div>
+              ) : (
+                <div className="score-row">
+                  <div className="hero-score" aria-live={scrubbed ? 'off' : 'polite'}>
+                    <AnimatedNumber value={score} />
+                    <small>/100</small>
+                  </div>
+                  <div className="score-meta">
+                    <span className={`status ${status.tone}`}>
+                      <i />
+                      {status.label}
+                    </span>
+                    <strong>{status.verdict}</strong>
+                    <p>
+                      {regionScores[0]?.region.city} führt mit{' '}
+                      {Math.round(regionScores[0]?.score ?? 0)}.{' '}
+                      {sleeping.length
+                        ? `${joinGerman(sleeping.map(({ region }) => region.city))} ${sleeping.length === 1 ? 'schläft' : 'schlafen'}.`
+                        : 'Alle Kernmärkte sind wach.'}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
             <div className="hero-aside">
-              <div className="hero-spark">
-                <span>Nächste 24 Stunden</span>
-                <Sparkline values={forecast.map((p) => p.score)} height={96} />
-                <div>
-                  <small>
-                    {formatTime(minuteNow, Intl.DateTimeFormat().resolvedOptions().timeZone)}
-                  </small>
-                  <b>Peak {Math.round(Math.max(...forecast.map((p) => p.score)))}</b>
-                  <small>
-                    {formatTime(
-                      new Date(minuteNow.getTime() + 24 * 3_600_000),
-                      Intl.DateTimeFormat().resolvedOptions().timeZone,
-                    )}
-                  </small>
+              <div className="hero-recommendation">
+                <span className="eyebrow">Optimales Zeitfenster</span>
+                <div className="hero-window-time">
+                  {windows24[0] ? (
+                    <>
+                      {formatTime(
+                        windows24[0].start,
+                        Intl.DateTimeFormat().resolvedOptions().timeZone,
+                      )}
+                      –
+                      {formatTime(
+                        windows24[0].end,
+                        Intl.DateTimeFormat().resolvedOptions().timeZone,
+                      )}{' '}
+                      <small>{timeZoneName(windows24[0].start)}</small>
+                    </>
+                  ) : (
+                    '—'
+                  )}
                 </div>
+                {windows24[0] && (
+                  <p className="hero-window-benefit">
+                    Score <AnimatedNumber value={windows24[0].score} /> ·{' '}
+                    {windows24[0].score >= score
+                      ? `+${Math.round(windows24[0].score - score)} Pkt. Potenzial`
+                      : 'bestes verbleibendes Fenster'}
+                  </p>
+                )}
               </div>
               <dl>
                 <div>
-                  <dt>Weltmittelzeit</dt>
-                  <dd>{formatDecimalHour(worldMean)}</dd>
-                </div>
-                <div>
                   <dt>Beste Region</dt>
                   <dd>
-                    {regionScores[0]?.region.flag} {regionScores[0]?.region.city}
+                    {regionScores[0] && (
+                      <Flag
+                        src={regionScores[0].region.flagUrl}
+                        label={regionScores[0].region.name}
+                        size={20}
+                      />
+                    )}{' '}
+                    {regionScores[0]?.region.city ?? '—'}
                   </dd>
                 </div>
                 <div>
@@ -408,12 +453,7 @@ export default function App() {
               <Suspense
                 fallback={<div className="panel map-skeleton" aria-label="Karte wird geladen" />}
               >
-                <WorldMap
-                  date={date}
-                  snapshot={activeSnapshot}
-                  selected={selected}
-                  onRegion={setDetail}
-                />
+                <WorldMap date={date} grid={scoreGrid} selected={selected} onRegion={setDetail} />
               </Suspense>
             </Section>
             <Section className="forecast-slot">
@@ -423,6 +463,7 @@ export default function App() {
                 windows={windows24}
                 minuteNow={minuteNow}
                 onScrub={setScrubbed}
+                recommendationThreshold={STATUS_LEVELS[1].min}
               />
             </Section>
           </div>
@@ -437,12 +478,18 @@ export default function App() {
                 </strong>
               </div>
               <div>
-                <span className="eyebrow">Zeitumstellung</span>
+                <span className="eyebrow">Zweites Zeitfenster heute</span>
                 <strong>
-                  {dst
-                    ? `${dst.region.city} · ${dst.date.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })}`
-                    : 'Keine in den nächsten 12 Monaten'}
+                  {windows24[1]
+                    ? `${formatTime(windows24[1].start, Intl.DateTimeFormat().resolvedOptions().timeZone)} ${timeZoneName(windows24[1].start)} · Score ${Math.round(windows24[1].score)}`
+                    : 'Kein weiteres Fenster heute'}
                 </strong>
+                {dst && (dst.date.getTime() - date.getTime()) / 3_600_000 <= 48 && (
+                  <small>
+                    Zeitumstellung: {dst.region.city} ·{' '}
+                    {dst.date.toLocaleDateString('de-DE', { day: '2-digit', month: 'long' })}
+                  </small>
+                )}
               </div>
             </div>
           </Section>
@@ -451,38 +498,53 @@ export default function App() {
               <div className="section-head">
                 <div>
                   <p className="eyebrow">Berechnete Presets</p>
-                  <h2 id="presets-title">Redaktionelle Wellen</h2>
+                  <h2 id="presets-title">Strategische Posting-Korridore</h2>
                 </div>
               </div>
               <div className="preset-grid">
-                {presetWindows.map(({ preset, window }) => (
-                  <button key={preset.name} onClick={() => setSelected([...preset.ids])}>
-                    <span className="eyebrow">{preset.ids.length} Regionen</span>
-                    <h3>{preset.name}</h3>
-                    {window && (
-                      <>
-                        <div className="preset-time">
-                          {formatTime(
-                            window.start,
-                            Intl.DateTimeFormat().resolvedOptions().timeZone,
-                          )}
-                          –
-                          {formatTime(window.end, Intl.DateTimeFormat().resolvedOptions().timeZone)}{' '}
-                          <small>{timeZoneName(window.start)}</small>
-                        </div>
-                        <div className="preset-score">Score {Math.round(window.score)}</div>
-                        <p>
-                          {preset.ids
-                            .map((id) => {
-                              const r = REGION_BY_ID[id]
-                              return `${r.city} ${formatTime(window.start, r.timeZone)} · ${phaseAt(localDecimalHour(window.start, r.timeZone)).name}`
-                            })
-                            .join(' · ')}
-                        </p>
-                      </>
-                    )}
-                  </button>
-                ))}
+                {presetWindows.map(({ preset, window }) => {
+                  const active =
+                    preset.ids.length === selected.length &&
+                    preset.ids.every((id) => selected.includes(id))
+                  return (
+                    <button
+                      key={preset.name}
+                      className={active ? 'preset-card active' : 'preset-card'}
+                      aria-pressed={active}
+                      onClick={() => setSelected([...preset.ids])}
+                    >
+                      <span className="eyebrow">{preset.ids.length} Regionen</span>
+                      <h3>{preset.name}</h3>
+                      {window && (
+                        <>
+                          <div className="preset-time">
+                            {formatTime(
+                              window.start,
+                              Intl.DateTimeFormat().resolvedOptions().timeZone,
+                            )}
+                            –
+                            {formatTime(
+                              window.end,
+                              Intl.DateTimeFormat().resolvedOptions().timeZone,
+                            )}{' '}
+                            <small>{timeZoneName(window.start)}</small>
+                          </div>
+                          <div className="preset-score">
+                            Score <AnimatedNumber value={window.score} />
+                          </div>
+                          <p>
+                            {preset.ids
+                              .map((id) => {
+                                const r = REGION_BY_ID[id]
+                                return `${r.city} ${formatTime(window.start, r.timeZone)} · ${phaseAt(localDecimalHourFast(window.start, r.timeZone)).name}`
+                              })
+                              .join(' · ')}
+                          </p>
+                        </>
+                      )}
+                    </button>
+                  )
+                })}
               </div>
             </section>
           </Section>
@@ -491,7 +553,7 @@ export default function App() {
               <Heatmap
                 start={minuteNow}
                 selected={selected}
-                snapshot={activeSnapshot}
+                grid={scoreGrid}
                 onScrub={setScrubbed}
               />
             </Section>
@@ -504,8 +566,12 @@ export default function App() {
               date={date}
               selected={selected}
               snapshot={activeSnapshot}
+              grid={scoreGrid}
               live={live}
               onToggle={toggle}
+              onSelectAll={selectAll}
+              onReset={() => setSelected([])}
+              isLive={!scrubbed}
             />
             {selected.length < REGIONS.length && (
               <button className="text-button" onClick={selectAll}>
@@ -514,7 +580,7 @@ export default function App() {
             )}
           </Section>
           <Section>
-            <Planner windowSets={plannerSets} selected={selected} />
+            <Planner windowSets={plannerSets} selected={selected} dst={dst} />
           </Section>
           <Section>
             <section className="method" aria-labelledby="method-title">
@@ -558,7 +624,7 @@ export default function App() {
                   {REGIONS.map((region) => (
                     <div key={region.id}>
                       <span>
-                        {region.flag} {region.city}
+                        <Flag src={region.flagUrl} label={region.name} size={16} /> {region.city}
                       </span>
                       <span>
                         Reichweite {Math.round(activeSnapshot.weights.reach[region.id] * 100)} %
@@ -609,17 +675,44 @@ export default function App() {
           <span>{REGIONS.length} Regionen · live berechnet</span>
         </footer>
         <div className="mobile-bar">
-          <div>
-            <span>{status.verdict}</span>
-            <strong>{Math.round(score)}/100</strong>
+          <div className="mobile-bar-top">
+            <div className="mobile-horizon" role="group" aria-label="Zeithorizont">
+              <button aria-pressed={mobileHorizon === 24} onClick={() => setMobileHorizon(24)}>
+                24 h
+              </button>
+              <button aria-pressed={mobileHorizon === 168} onClick={() => setMobileHorizon(168)}>
+                7 Tage
+              </button>
+            </div>
+            <div className="mobile-bar-readout">
+              <span>
+                {scrubbed
+                  ? scrubbed.toLocaleString('de-DE', {
+                      weekday: 'short',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })
+                  : 'Jetzt live'}
+              </span>
+              <strong>
+                <AnimatedNumber value={score} />
+                /100
+              </strong>
+            </div>
           </div>
           <input
             aria-label="Mobile Zeitmaschine"
             type="range"
-            min={-720}
-            max={10080}
+            min={0}
+            max={mobileHorizon * 60}
             step={15}
-            value={Math.round((date.getTime() - minuteNow.getTime()) / 60_000)}
+            value={Math.max(
+              0,
+              Math.min(
+                mobileHorizon * 60,
+                Math.round((date.getTime() - minuteNow.getTime()) / 60_000),
+              ),
+            )}
             onChange={(e) =>
               setScrubbed(new Date(minuteNow.getTime() + Number(e.target.value) * 60_000))
             }
@@ -647,13 +740,13 @@ export default function App() {
                 onClick={() => setDetail(null)}
                 aria-label="Schließen"
               >
-                ×
+                <X size={22} weight="regular" aria-hidden="true" />
               </button>
-              <span className="detail-flag">{detailRegion.flag}</span>
+              <Flag src={detailRegion.flagUrl} label={detailRegion.name} size={28} />
               <p className="eyebrow">Region im Fokus</p>
               <h2 id="detail-title">{detailRegion.name}</h2>
               <div className="detail-score">
-                {Math.round(regionActivity(detailRegion, date, activeSnapshot))}
+                {Math.round(scoreGrid.activityAt(detailRegion.id, date))}
                 <small>/100</small>
               </div>
               <p>
@@ -661,8 +754,8 @@ export default function App() {
                 {timeZoneName(date, detailRegion.timeZone)}
               </p>
               <p>
-                {phaseAt(localDecimalHour(date, detailRegion.timeZone)).emoji}{' '}
-                {phaseAt(localDecimalHour(date, detailRegion.timeZone)).name}
+                <PhaseIcon icon={phaseAt(localDecimalHourFast(date, detailRegion.timeZone)).icon} />{' '}
+                {phaseAt(localDecimalHourFast(date, detailRegion.timeZone)).name}
               </p>
               <button
                 className="button primary"

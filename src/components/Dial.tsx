@@ -1,6 +1,17 @@
+import { PHASES } from '../config/model'
 import { REGIONS, type RegionId } from '../config/regions'
-import { SERIES } from '../config/model'
-import { formatDecimalHour, formatTime, localDecimalHour } from '../lib/time'
+import { formatDecimalHour, localDecimalHourFast } from '../lib/time'
+
+const polar = (cx: number, cy: number, radius: number, hour: number) => {
+  const angle = (hour / 24) * Math.PI * 2 - Math.PI / 2
+  return [cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius] as const
+}
+
+function arc(cx: number, cy: number, radius: number, from: number, to: number) {
+  const start = polar(cx, cy, radius, from)
+  const end = polar(cx, cy, radius, to)
+  return `M ${start[0]} ${start[1]} A ${radius} ${radius} 0 ${to - from > 12 ? 1 : 0} 1 ${end[0]} ${end[1]}`
+}
 
 export function Dial({
   date,
@@ -13,91 +24,88 @@ export function Dial({
 }) {
   const cx = 150
   const cy = 150
-  const radius = 108
+  const selectedRegions = REGIONS.filter((region) => selected.includes(region.id))
   return (
     <section className="panel dial-panel" aria-labelledby="dial-title">
       <div className="section-head">
         <div>
-          <p className="eyebrow">24-Stunden-Zifferblatt</p>
-          <h2 id="dial-title">Ein Tag, acht Orte</h2>
+          <p className="eyebrow">24-Stunden-Aktivitätsrad</p>
+          <h2 id="dial-title">Wann deine Märkte wach sind</h2>
         </div>
       </div>
       <div className="dial-wrap">
-        <svg viewBox="0 0 300 300" className="dial" aria-label="Ortszeiten als kreisförmige Uhr">
-          <circle cx={cx} cy={cy} r={radius} className="dial-ring" />
-          {Array.from({ length: 24 }, (_, h) => {
-            const a = (h / 24) * Math.PI * 2 - Math.PI / 2
-            const outer = radius + 5
-            const inner = radius + (h % 6 === 0 ? -8 : -3)
+        <svg
+          viewBox="0 0 300 300"
+          className="dial"
+          role="img"
+          aria-label="Aktivitätsphasen der ausgewählten Märkte über 24 Stunden"
+        >
+          {Array.from({ length: 24 }, (_, hour) => {
+            const outer = polar(cx, cy, 130, hour)
+            const inner = polar(cx, cy, hour % 6 === 0 ? 119 : 124, hour)
             return (
-              <g key={h}>
-                <line
-                  x1={cx + Math.cos(a) * inner}
-                  y1={cy + Math.sin(a) * inner}
-                  x2={cx + Math.cos(a) * outer}
-                  y2={cy + Math.sin(a) * outer}
-                  className="dial-tick"
-                />
-                {h % 6 === 0 && (
-                  <text
-                    x={cx + Math.cos(a) * (radius - 22)}
-                    y={cy + Math.sin(a) * (radius - 22) + 4}
-                    textAnchor="middle"
-                  >
-                    {String(h).padStart(2, '0')}
-                  </text>
-                )}
+              <line
+                key={hour}
+                x1={inner[0]}
+                y1={inner[1]}
+                x2={outer[0]}
+                y2={outer[1]}
+                className="dial-tick"
+              />
+            )
+          })}
+          {selectedRegions.map((region, index) => {
+            const radius = 108 - index * 7
+            const localHour = localDecimalHourFast(date, region.timeZone)
+            const utcHour = date.getUTCHours() + date.getUTCMinutes() / 60
+            const offset = localHour - utcHour
+            return (
+              <g key={region.id}>
+                {PHASES.map((phase) => {
+                  const from = (((phase.from - offset) % 24) + 24) % 24
+                  const duration = phase.to - phase.from
+                  const firstEnd = Math.min(24, from + duration)
+                  return (
+                    <g key={phase.id}>
+                      <path
+                        d={arc(cx, cy, radius, from, firstEnd)}
+                        fill="none"
+                        stroke={phase.color}
+                        strokeWidth="5"
+                      />
+                      {from + duration > 24 && (
+                        <path
+                          d={arc(cx, cy, radius, 0, from + duration - 24)}
+                          fill="none"
+                          stroke={phase.color}
+                          strokeWidth="5"
+                        />
+                      )}
+                    </g>
+                  )
+                })}
+                <title>{region.city}</title>
               </g>
             )
           })}
-          {REGIONS.map((region, i) => {
-            const h = localDecimalHour(date, region.timeZone)
-            const a = (h / 24) * Math.PI * 2 - Math.PI / 2
-            const pinRadius = radius + 2
-            const tickRadius = radius - 10
+          {[0, 6, 12, 18].map((hour) => {
+            const point = polar(cx, cy, 141, hour)
             return (
-              <g key={region.id} className={selected.includes(region.id) ? '' : 'pin-muted'}>
-                <line
-                  x1={cx + Math.cos(a) * tickRadius}
-                  y1={cy + Math.sin(a) * tickRadius}
-                  x2={cx + Math.cos(a) * (pinRadius - 5)}
-                  y2={cy + Math.sin(a) * (pinRadius - 5)}
-                  stroke={SERIES[i]}
-                  className="dial-pin-tick"
-                />
-                <circle
-                  cx={cx + Math.cos(a) * pinRadius}
-                  cy={cy + Math.sin(a) * pinRadius}
-                  r="6"
-                  fill={SERIES[i]}
-                  stroke="var(--paper-2)"
-                  strokeWidth="2"
-                />
-                <title>
-                  {region.name}: {formatTime(date, region.timeZone)}
-                </title>
-              </g>
+              <text key={hour} x={point[0]} y={point[1] + 4} textAnchor="middle">
+                {String(hour).padStart(2, '0')}
+              </text>
             )
           })}
           <text x={cx} y={cy - 10} textAnchor="middle" className="dial-center-label">
-            Weltmittelzeit
+            Publikums-Schwerpunkt
           </text>
           <text x={cx} y={cy + 14} textAnchor="middle" className="dial-mean">
             {formatDecimalHour(worldMean)}
           </text>
           <text x={cx} y={cy + 35} textAnchor="middle" className="dial-date">
-            {date.toLocaleDateString('de-DE', { day: '2-digit', month: 'short', year: 'numeric' })}
+            {selected.length} Märkte aktiv
           </text>
         </svg>
-        <ol className="dial-list">
-          {REGIONS.map((region, i) => (
-            <li key={region.id} className={selected.includes(region.id) ? '' : 'muted-item'}>
-              <i style={{ background: SERIES[i] }} />
-              <span>{region.city}</span>
-              <strong>{formatTime(date, region.timeZone)}</strong>
-            </li>
-          ))}
-        </ol>
       </div>
     </section>
   )

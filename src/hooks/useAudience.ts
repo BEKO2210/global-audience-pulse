@@ -7,8 +7,9 @@ const valid = new Set<RegionId>(all)
 
 function initialSelection(): RegionId[] {
   try {
-    const query = new URLSearchParams(location.search)
-      .get('audience')
+    const audienceParam = new URLSearchParams(location.search).get('audience')
+    if (audienceParam === 'none') return []
+    const query = audienceParam
       ?.split(',')
       .filter((id): id is RegionId => valid.has(id as RegionId))
     if (query?.length) return query
@@ -36,7 +37,7 @@ export function useAudience() {
       localStorage.setItem('gap-audience', JSON.stringify(selected))
       const url = new URL(location.href)
       if (selected.length === all.length) url.searchParams.delete('audience')
-      else url.searchParams.set('audience', selected.join(','))
+      else url.searchParams.set('audience', selected.length ? selected.join(',') : 'none')
       history.replaceState(null, '', url)
     } catch {
       /* Storage and history are optional enhancements. */
@@ -55,11 +56,7 @@ export function useAudience() {
   }, [weightingMode])
   const toggle = (id: RegionId) =>
     setSelected((current) =>
-      current.includes(id)
-        ? current.length > 1
-          ? current.filter((item) => item !== id)
-          : current
-        : [...current, id],
+      current.includes(id) ? current.filter((item) => item !== id) : [...current, id],
     )
   return {
     selected,

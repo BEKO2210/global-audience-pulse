@@ -1,7 +1,7 @@
 import { MODEL_CONFIG, PHASES, STATUS_LEVELS } from '../config/model'
 import type { RegionConfig, RegionId } from '../config/regions'
 import type { Snapshot } from './snapshot'
-import { zonedParts } from './time'
+import { fastZonedParts, getOffsetTable, type OffsetTable } from './time'
 
 const clamp = (n: number, min = 0, max = 100) => Math.min(max, Math.max(min, n))
 const smooth = (t: number) => (1 - Math.cos(Math.PI * clamp(t, 0, 1))) / 2
@@ -48,8 +48,11 @@ function interpolateProfile(profile: readonly number[], hour: number) {
   return (profile[i] ?? 0) * (1 - (h - i)) + (profile[next] ?? 0) * (h - i)
 }
 
-export function regionActivity(region: RegionConfig, date: Date, snapshot: Snapshot) {
-  const parts = zonedParts(date, region.timeZone)
+function activityFromParts(
+  region: RegionConfig,
+  parts: ReturnType<typeof fastZonedParts>,
+  snapshot: Snapshot,
+) {
   const hour = parts.hour + parts.minute / 60 + parts.second / 3600
   const weekend = parts.weekday === 'Sat' || parts.weekday === 'Sun'
   const baseline = baselineActivity(hour, weekend)
@@ -59,6 +62,72 @@ export function regionActivity(region: RegionConfig, date: Date, snapshot: Snaps
   const blended = MODEL_CONFIG.measuredBlend * measured + MODEL_CONFIG.baselineBlend * baseline
   const liveFactor = 1 + clamp(profile.deviation ?? 0, -50, 50) / 100
   return clamp(blended * liveFactor)
+}
+
+export function regionActivity(region: RegionConfig, date: Date, snapshot: Snapshot) {
+  return activityFromParts(region, fastZonedParts(date, region.timeZone), snapshot)
+}
+
+export interface ScoreGrid {
+  start: number
+  end: number
+  stepMs: number
+  size: number
+  byRegion: Record<RegionId, Float32Array>
+  activityAt: (id: RegionId, date: Date) => number
+  globalAt: (ids: readonly RegionId[], date: Date) => number
+  points: (ids: readonly RegionId[], from: Date, hours: number) => { date: Date; score: number }[]
+}
+
+/**
+ * One immutable 15-minute grid shared by every visualization. Intl is used only
+ * while retrieving the cached offset tables, never inside the sample loop.
+ */
+export function buildScoreGrid(
+  regions: readonly RegionConfig[],
+  snapshot: Snapshot,
+  anchor: Date,
+  beforeHours = 12,
+  afterHours = 24 * 7,
+): ScoreGrid {
+  const stepMs = MODEL_CONFIG.scanStepMinutes * 60_000
+  const start = Math.floor((anchor.getTime() - beforeHours * 3_600_000) / stepMs) * stepMs
+  const end = Math.ceil((anchor.getTime() + afterHours * 3_600_000) / stepMs) * stepMs
+  const size = Math.round((end - start) / stepMs) + 1
+  const tables = Object.fromEntries(
+    regions.map((region) => [region.id, getOffsetTable(region.timeZone, anchor)]),
+  ) as Record<RegionId, OffsetTable>
+  const byRegion = {} as Record<RegionId, Float32Array>
+  for (const region of regions) {
+    const values = new Float32Array(size)
+    const table = tables[region.id]
+    for (let i = 0; i < size; i += 1) {
+      const date = new Date(start + i * stepMs)
+      values[i] = activityFromParts(region, fastZonedParts(date, region.timeZone, table), snapshot)
+    }
+    byRegion[region.id] = values
+  }
+  const activityAt = (id: RegionId, date: Date) => {
+    const position = Math.min(size - 1, Math.max(0, (date.getTime() - start) / stepMs))
+    const lower = Math.floor(position)
+    const fraction = position - lower
+    const values = byRegion[id]
+    return (
+      (values[lower] ?? 0) * (1 - fraction) +
+      (values[Math.min(size - 1, lower + 1)] ?? 0) * fraction
+    )
+  }
+  const globalAt = (ids: readonly RegionId[], date: Date) => {
+    if (!ids.length) return 0
+    const weights = normalizedWeights(ids, snapshot)
+    return ids.reduce((sum, id) => sum + activityAt(id, date) * (weights[id] ?? 0), 0)
+  }
+  const points = (ids: readonly RegionId[], from: Date, hours: number) =>
+    Array.from({ length: Math.floor((hours * 60) / MODEL_CONFIG.scanStepMinutes) + 1 }, (_, i) => {
+      const date = new Date(from.getTime() + i * stepMs)
+      return { date, score: globalAt(ids, date) }
+    })
+  return { start, end, stepMs, size, byRegion, activityAt, globalAt, points }
 }
 
 export function normalizedWeights(ids: readonly RegionId[], snapshot: Snapshot) {
