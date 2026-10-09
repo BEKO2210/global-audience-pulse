@@ -16,8 +16,9 @@ test('clocks tick, simulated time changes the score, and Live returns to now', a
   const slider = page.getByRole('slider', { name: 'Zeitmaschine', exact: true })
   await slider.focus()
   await page.keyboard.press('PageUp')
-  await expect(page.locator('.mobile-bar button', { hasText: 'Live' })).toBeEnabled()
-  await page.locator('.mobile-bar button', { hasText: 'Live' }).click()
+  const liveButton = page.locator('.forecast-panel').getByRole('button', { name: 'Live' })
+  await expect(liveButton).toBeEnabled()
+  await liveButton.click()
   await expect(page.locator('.mobile-bar-readout')).toContainText('Jetzt live')
 })
 
@@ -32,13 +33,20 @@ test('keyboard, pointer, and heatmap scrubbing update all time-driven views', as
     return performance.measure('keyboard-scrub', 'scrub-start', 'scrub-end').duration
   })
   const keyboardTime = await page.locator('.hero-score').getAttribute('data-timestamp')
+  expect(keyboardTime).toMatch(/:([0134][05]):00\.000Z$/)
   expect(scrubDuration).toBeLessThan(16)
 
+  // focus() on the SVG slider does not scroll; centre it so the fixed mobile bar cannot cover it.
+  await slider.evaluate((element) => element.scrollIntoView({ block: 'center', behavior: 'instant' }))
   const box = await slider.boundingBox()
   expect(box).toBeTruthy()
   await page.mouse.click(box!.x + box!.width * 0.75, box!.y + box!.height / 2)
+  // React commits the pointer update asynchronously; poll instead of reading once.
+  await expect
+    .poll(() => page.locator('.hero-score').getAttribute('data-timestamp'))
+    .not.toBe(keyboardTime)
   const pointerTime = await page.locator('.hero-score').getAttribute('data-timestamp')
-  expect(pointerTime).not.toBe(keyboardTime)
+  expect(pointerTime).toMatch(/:([0134][05]):00\.000Z$/)
 
   await page.locator('.heat-cell').nth(5).click()
   const timestamps = await Promise.all(

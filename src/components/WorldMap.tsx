@@ -56,7 +56,7 @@ export function WorldMap({
       <svg
         viewBox="0 0 800 400"
         className="world-map"
-        role="img"
+        role="group"
         aria-label="Weltkarte mit Tag-Nacht-Grenze und Aktivitätspunkten"
       >
         <defs>

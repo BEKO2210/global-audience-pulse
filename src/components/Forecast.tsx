@@ -17,6 +17,8 @@ export function Forecast({
   windows,
   minuteNow,
   onScrub,
+  onLive,
+  isLive,
   recommendationThreshold,
 }: {
   points: readonly ForecastPoint[]
@@ -24,6 +26,8 @@ export function Forecast({
   windows: readonly PostingWindow[]
   minuteNow: Date
   onScrub: (date: Date) => void
+  onLive: () => void
+  isLive: boolean
   recommendationThreshold: number
 }) {
   const ref = useRef<SVGSVGElement>(null)
@@ -180,6 +184,9 @@ export function Forecast({
           })}
         </strong>
         <span>Ziehen · Pfeiltasten</span>
+        <button type="button" onClick={onLive} disabled={isLive}>
+          Live
+        </button>
       </div>
     </section>
   )

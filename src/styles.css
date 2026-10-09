@@ -25,11 +25,11 @@
   --paper-2: #ebe6dc;
   --ink: #201f1b;
   --muted: #67645d;
-  --soft: #716d65;
+  --soft: #635f58;
   --rule: rgba(32, 31, 27, 0.14);
   --rule-solid: #827c72;
   --accent: #eb6c36;
-  --accent-ink: #b34a1b;
+  --accent-ink: #9f3d12;
   --accent-tint: rgba(235, 108, 54, 0.13);
   --link: #286c68;
   --series-1: #c95d42;
@@ -473,6 +473,7 @@ button {
   display: block;
   touch-action: none;
   overflow: visible;
+  scroll-margin-bottom: calc(150px + env(safe-area-inset-bottom));
 }
 .grid-line {
   stroke: var(--rule);
@@ -547,6 +548,16 @@ button {
 }
 .scrub-readout strong {
   color: var(--ink);
+}
+.scrub-readout button {
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent-ink);
+}
+.scrub-readout button:disabled {
+  opacity: 0.45;
 }
 .insight-strip {
   border-block: 1px solid var(--rule);
@@ -854,6 +865,9 @@ button {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.compact-place .compact-profile {
+  color: var(--accent-ink);
+}
 .compact-place b {
   font-size: 12px;
 }
@@ -894,7 +908,9 @@ button {
   justify-content: space-between;
 }
 .region-card.unselected {
-  opacity: 0.55;
+  /* Muted but still readable (opacity would drop text below WCAG AA). */
+  border-style: dashed;
+  filter: grayscale(1);
 }
 .card-main {
   border: 0;
@@ -1625,7 +1641,8 @@ footer {
     9px 'Geist Mono Variable',
     monospace;
 }
-.filter-row button[aria-pressed='true'] {
+.filter-row button[aria-pressed='true'],
+.filter-row button[aria-selected='true'] {
   color: var(--ink);
   border-color: var(--ink);
   background: var(--paper-2);

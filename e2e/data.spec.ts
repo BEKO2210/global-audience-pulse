@@ -63,7 +63,8 @@ test('labels runtime fallback honestly when Wikimedia is unavailable', async ({ 
   await page.route('**/data/snapshot.json*', (route) => route.fulfill({ json: freshSnapshot }))
   await page.route('https://wikimedia.org/**', (route) => route.abort('failed'))
   await openReady(page)
-  await expect(page.locator('.badge', { hasText: 'Fallback' }).first()).toBeVisible()
+  // Compact rows (mobile) and cards (desktop) each render the label; assert the one the user sees.
+  await expect(page.getByText('Profil (Snapshot)').filter({ visible: true }).first()).toBeVisible()
   await expectNoInvalidNumbers(page)
 })
 

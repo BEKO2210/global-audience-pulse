@@ -26,8 +26,12 @@ test('switches weighting and planner tabs, exports TZID ICS, and copies the plan
   await expect(page).toHaveURL(/weight=reach/)
   expect(await page.evaluate(() => localStorage.getItem('gap-weighting'))).toBe('reach')
 
-  await page.getByRole('button', { name: /Morgen/ }).click()
-  await expect(page.getByRole('button', { name: /Morgen/ })).toHaveAttribute('aria-pressed', 'true')
+  const planner = page.getByRole('region', { name: 'Die nächsten starken Fenster' })
+  await planner.getByRole('tab', { name: /Morgen/ }).click()
+  await expect(planner.getByRole('tab', { name: /Morgen/ })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  )
   const downloadPromise = page.waitForEvent('download')
   await page.getByRole('button', { name: 'Als Kalenderdatei laden' }).first().click()
   const download = await downloadPromise

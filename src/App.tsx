@@ -15,6 +15,7 @@ import {
   getOffsetTable,
   offsetAt,
   relativeTime,
+  snapToMinutes,
   startOfNextZonedDay,
   timeZoneName,
 } from './lib/time'
@@ -259,6 +260,10 @@ export default function App() {
     [snapshot, weightingMode, live],
   )
   const date = scrubbed ?? minuteNow
+  const scrubTo = useCallback(
+    (next: Date) => setScrubbed(snapToMinutes(next, MODEL_CONFIG.scanStepMinutes)),
+    [],
+  )
   const { grid: scoreGrid, ready: scoreGridReady } = useScoreGrid(activeSnapshot, minuteNow)
   const score = scoreGrid.globalAt(selected, date)
   const status = statusFor(score)
@@ -476,7 +481,9 @@ export default function App() {
                   selectedDate={date}
                   windows={windows24}
                   minuteNow={minuteNow}
-                  onScrub={setScrubbed}
+                  onScrub={scrubTo}
+                  onLive={() => setScrubbed(null)}
+                  isLive={!scrubbed}
                   recommendationThreshold={STATUS_LEVELS[1].min}
                 />
               </Section>
@@ -564,12 +571,7 @@ export default function App() {
             </Section>
             <div className="analysis-grid">
               <Section>
-                <Heatmap
-                  start={minuteNow}
-                  selected={selected}
-                  grid={scoreGrid}
-                  onScrub={setScrubbed}
-                />
+                <Heatmap start={minuteNow} selected={selected} grid={scoreGrid} onScrub={scrubTo} />
               </Section>
               <Section>
                 <Dial date={date} selected={selected} worldMean={worldMean} />
@@ -738,7 +740,7 @@ export default function App() {
                 ),
               )}
               onChange={(e) =>
-                setScrubbed(new Date(minuteNow.getTime() + Number(e.target.value) * 60_000))
+                scrubTo(new Date(minuteNow.getTime() + Number(e.target.value) * 60_000))
               }
             />
             <button onClick={() => setScrubbed(null)} disabled={!scrubbed}>

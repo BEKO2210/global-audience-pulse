@@ -118,6 +118,9 @@ export function RegionCards({
                     <small>
                       <PhaseIcon icon={phase.icon} /> {phase.name}
                     </small>
+                    {liveStatus === 'fallback' && region.project && (
+                      <small className="compact-profile">Profil (Snapshot)</small>
+                    )}
                   </span>
                   <span className="compact-time">
                     <RegionClock date={date} timeZone={region.timeZone} live={isLive} />
@@ -134,7 +137,7 @@ export function RegionCards({
                       {measure
                         ? 'Live'
                         : liveStatus === 'fallback' && region.project
-                          ? 'Fallback'
+                          ? 'Profil (Snapshot)'
                           : measured
                             ? 'Datenprofil'
                             : 'Modell'}

@@ -31,10 +31,12 @@ test('keyboard reaches scrubber, heatmap, toggles, and focus-trapped sheet', asy
   await page.keyboard.press('ArrowRight')
   await tabUntil(page, () =>
     page
-      .locator('.heat-cell')
+      .getByRole('gridcell')
       .first()
       .evaluate((el) => el === document.activeElement),
   )
+  await page.keyboard.press('ArrowRight')
+  await expect(page.getByRole('gridcell').nth(1)).toBeFocused()
   await page.keyboard.press('Enter')
   await tabUntil(page, () =>
     page

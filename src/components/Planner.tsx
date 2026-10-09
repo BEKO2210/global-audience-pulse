@@ -99,18 +99,22 @@ export function Planner({
         <span className="micro">{timeZoneName(new Date(), zone)}</span>
       </div>
       <p className="planner-zone-note">Kalendertage in deiner Zeitzone</p>
-      <div className="filter-row planner-tabs">
-        <button onClick={() => setScope('today')} aria-pressed={scope === 'today'}>
+      <div className="filter-row planner-tabs" role="tablist" aria-label="Planungszeitraum">
+        <button role="tab" onClick={() => setScope('today')} aria-selected={scope === 'today'}>
           Heute ({windowSets.today.length})
         </button>
-        <button onClick={() => setScope('tomorrow')} aria-pressed={scope === 'tomorrow'}>
+        <button
+          role="tab"
+          onClick={() => setScope('tomorrow')}
+          aria-selected={scope === 'tomorrow'}
+        >
           Morgen ({windowSets.tomorrow.length})
         </button>
-        <button onClick={() => setScope('week')} aria-pressed={scope === 'week'}>
+        <button role="tab" onClick={() => setScope('week')} aria-selected={scope === 'week'}>
           7 Tage ({windowSets.week.length})
         </button>
       </div>
-      <div className="planner-list">
+      <div className="planner-list" role="tabpanel">
         {windows.map((window, i) => (
           <article key={window.start.toISOString()}>
             <span className="window-index">{String(i + 1).padStart(2, '0')}</span>
