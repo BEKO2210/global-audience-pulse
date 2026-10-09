@@ -39,15 +39,17 @@ export function AnimatedNumber({
   useEffect(() => display.on('change', (v) => setShown(v)), [display])
   return (
     <span className="animated-number">
-      <span className="sr-only">{shown}</span>
-      {/* One fixed cell per digit: serif digits are proportional and would shift while tweening. */}
-      {String(shown)
-        .split('')
-        .map((digit, index) => (
-          <b key={index} className="digit" aria-hidden="true">
-            {digit}
-          </b>
-        ))}
+      {/* One fixed cell per digit (serif digits are proportional and would shift while tweening);
+          role="img" + aria-label gives screen readers one number without duplicating the text. */}
+      <span role="img" aria-label={String(shown)}>
+        {String(shown)
+          .split('')
+          .map((digit, index) => (
+            <b key={index} className="digit">
+              {digit}
+            </b>
+          ))}
+      </span>
       <i ref={underlineRef} aria-hidden="true" />
     </span>
   )
