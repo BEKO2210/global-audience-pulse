@@ -37,7 +37,9 @@ test('keyboard, pointer, and heatmap scrubbing update all time-driven views', as
   expect(scrubDuration).toBeLessThan(16)
 
   // focus() on the SVG slider does not scroll; centre it so the fixed mobile bar cannot cover it.
-  await slider.evaluate((element) => element.scrollIntoView({ block: 'center', behavior: 'instant' }))
+  await slider.evaluate((element) =>
+    element.scrollIntoView({ block: 'center', behavior: 'instant' }),
+  )
   const box = await slider.boundingBox()
   expect(box).toBeTruthy()
   await page.mouse.click(box!.x + box!.width * 0.75, box!.y + box!.height / 2)
