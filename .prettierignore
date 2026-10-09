@@ -1,0 +1,11 @@
+dist
+node_modules
+.npm-cache
+test-results
+playwright-report
+LICENSE.md
+NOTICE.md
+TASK*.md
+REPORT*.md
+CODEX-REPORT*.md
+REVIEW*.md

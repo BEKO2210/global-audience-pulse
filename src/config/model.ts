@@ -3,6 +3,7 @@ export const MODEL_CONFIG = {
   baselineBlend: 0.4,
   windowMinutes: 90,
   scanStepMinutes: 15,
+  minimumWindowGapMinutes: 180,
   liveRefreshMinutes: 1,
   runtimeCacheMinutes: 30,
 } as const
@@ -26,8 +27,18 @@ export const DATA_SOURCES = {
   worldBank: 'https://api.worldbank.org/v2/country',
   worldBankPopulation: 'https://data.worldbank.org/indicator/SP.POP.TOTL',
   worldBankInternet: 'https://data.worldbank.org/indicator/IT.NET.USER.ZS',
+  worldBankGdpPerCapita: 'https://data.worldbank.org/indicator/NY.GDP.PCAP.CD',
   wikimedia: 'https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate',
   diagramDesign: 'https://github.com/cathrynlavery/diagram-design',
 } as const
 
-export const SERIES = ['var(--series-1)', 'var(--series-2)', 'var(--series-3)', 'var(--series-4)', 'var(--series-5)', '#8f8b77', '#9c76a8', '#62a39b'] as const
+export const SERIES = [
+  'var(--series-1)',
+  'var(--series-2)',
+  'var(--series-3)',
+  'var(--series-4)',
+  'var(--series-5)',
+  '#8f8b77',
+  '#9c76a8',
+  '#62a39b',
+] as const

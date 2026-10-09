@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { circularMean, zonedParts } from './time'
+import { circularMean, formatDecimalHour, zonedParts } from './time'
 
 describe('DST-sichere Ortszeiten', () => {
   it('bildet die doppelte Berliner Stunde am 25.10.2026 korrekt ab', () => {
@@ -16,5 +16,10 @@ describe('DST-sichere Ortszeiten', () => {
 
 it('berechnet das zirkuläre Mittel über Mitternacht', () => {
   const result = circularMean([23, 1])
-  expect(result < .001 || result > 23.999).toBe(true)
+  expect(result < 0.001 || result > 23.999).toBe(true)
+})
+
+it('rundet Dezimalstunden vor dem Aufteilen', () => {
+  expect(formatDecimalHour(17 + 59.6 / 60)).toBe('18:00')
+  expect(formatDecimalHour(23 + 59.6 / 60)).toBe('00:00')
 })

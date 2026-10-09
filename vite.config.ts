@@ -6,6 +6,21 @@ import { motionStudio } from 'motion-studio'
 
 export default defineConfig({
   base: '/global-audience-pulse/',
+  define: { __APP_VERSION__: JSON.stringify(process.env.npm_package_version ?? 'dev') },
+  build: {
+    chunkSizeWarningLimit: 500,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/react') || id.includes('node_modules/scheduler'))
+            return 'react'
+          if (id.includes('node_modules/motion') || id.includes('node_modules/framer-motion'))
+            return 'motion'
+          if (id.includes('node_modules/d3-')) return 'charts'
+        },
+      },
+    },
+  },
   plugins: [
     react(),
     tailwindcss(),
@@ -25,13 +40,15 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,woff2,json}'],
-        runtimeCaching: [{
-          urlPattern: /\/data\/snapshot\.json$/,
-          handler: 'StaleWhileRevalidate',
-          options: { cacheName: 'audience-snapshot' },
-        }],
+        runtimeCaching: [
+          {
+            urlPattern: /\/data\/snapshot\.json$/,
+            handler: 'NetworkFirst',
+            options: { cacheName: 'audience-snapshot', networkTimeoutSeconds: 3 },
+          },
+        ],
       },
     }),
   ],
-  test: { environment: 'node', include: ['src/**/*.test.ts'] },
+  test: { environment: 'node', include: ['src/**/*.test.ts', 'scripts/**/*.test.mjs'] },
 })
