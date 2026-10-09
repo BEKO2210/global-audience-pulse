@@ -1266,6 +1266,7 @@ footer {
   padding: 10px 16px max(10px, env(safe-area-inset-bottom));
   background: var(--paper);
   border-top: 1px solid var(--rule-solid);
+  overscroll-behavior: contain;
 }
 .mobile-bar-top {
   display: flex;
@@ -1297,7 +1298,8 @@ footer {
   width: 100%;
   accent-color: var(--accent);
   height: 44px;
-  touch-action: pan-y;
+  /* Keep the whole finger gesture on the slider: no page pan, no toolbar collapse mid-drag. */
+  touch-action: none;
   appearance: none;
   background: transparent;
 }
