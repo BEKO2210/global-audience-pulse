@@ -43,10 +43,13 @@ function Section({
   children,
   className = '',
   delay = 0,
+  immediate = false,
 }: {
   children: React.ReactNode
   className?: string
   delay?: number
+  /** Render without entrance fade (used for the hero, which holds the LCP element). */
+  immediate?: boolean
 }) {
   const [visible, setVisible] = useState(false)
   // MotionConfig "user" still runs opacity fades; skip the entrance entirely for reduced motion.
@@ -58,7 +61,7 @@ function Section({
   return (
     <motion.div
       className={className}
-      initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+      initial={reduceMotion || immediate ? false : { opacity: 0, y: 8 }}
       animate={visible ? { opacity: 1, y: 0 } : undefined}
       whileInView={{ opacity: 1, y: 0 }}
       onViewportEnter={() => setVisible(true)}
@@ -400,7 +403,7 @@ export default function App() {
             onRefresh={refreshSnapshot}
           />
           <main>
-            <Section className="hero" delay={MOTION.stagger}>
+            <Section className="hero" immediate>
               <div className="hero-copy">
                 <p className="eyebrow" data-testid="data-state">
                   {snapshotState === 'live'
