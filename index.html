@@ -38,7 +38,29 @@
     <title>Global Audience Pulse</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!--
+      Static first paint (replaced by React on mount): header + hero headline, so the LCP text paints
+      before the JS bundle has run. Keep markup/classes in sync with Header and the hero in App.tsx.
+    -->
+      <div id="top" class="app-shell">
+        <header class="site-header">
+          <a class="wordmark" href="#top" aria-label="Global Audience Pulse Start"
+            ><img alt="" width="32" height="32" src="/global-audience-pulse/favicon.svg" /><span
+              >Global Audience<br />Pulse</span
+            ></a
+          >
+        </header>
+        <main>
+          <div class="hero">
+            <div class="hero-copy">
+              <p class="eyebrow">Aktuelles Publikumsradar</p>
+              <h1>Jetzt posten oder warten?</h1>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

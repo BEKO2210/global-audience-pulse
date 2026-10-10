@@ -7,6 +7,7 @@ import { PRESETS, REGIONS, REGION_BY_ID, type RegionId } from './config/regions'
 import { useAudience } from './hooks/useAudience'
 import { useLiveData } from './hooks/useLiveData'
 import { useScoreGrid } from './hooks/useScoreGrid'
+import { useDeferredMount } from './hooks/useDeferredMount'
 import { ReportTeaser, useLiveReport } from './components/reportShared'
 const LiveReport = lazy(() => import('./components/LiveReport'))
 import {
@@ -46,13 +47,19 @@ function Section({
   className = '',
   delay = 0,
   immediate = false,
+  defer = false,
+  placeholderHeight = 640,
 }: {
   children: React.ReactNode
   className?: string
   delay?: number
   /** Render without entrance fade (used for the hero, which holds the LCP element). */
   immediate?: boolean
+  /** Below-the-fold: mount after first paint (idle slot) or when scrolled near. */
+  defer?: boolean
+  placeholderHeight?: number
 }) {
+  const { attach: attachPlaceholder, mounted } = useDeferredMount<HTMLDivElement>(defer)
   const [visible, setVisible] = useState(false)
   // MotionConfig "user" still runs opacity fades; skip the entrance entirely for reduced motion.
   const reduceMotion = useReducedMotion()
@@ -60,6 +67,15 @@ function Section({
     const fallback = window.setTimeout(() => setVisible(true), 1_200)
     return () => clearTimeout(fallback)
   }, [])
+  if (!mounted)
+    return (
+      <div
+        ref={attachPlaceholder}
+        className={`${className} deferred-placeholder`}
+        style={{ minHeight: placeholderHeight }}
+        aria-busy="true"
+      />
+    )
   return (
     <motion.div
       className={className}
@@ -124,9 +140,8 @@ function Header({
   return (
     <motion.header
       className="site-header"
-      initial={{ opacity: 0, y: -8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: MOTION.entrance, ease: MOTION.ease }}
+      // No entrance: the static shell in index.html already shows the header before React runs.
+      initial={false}
     >
       <a className="wordmark" href="#top" aria-label="Global Audience Pulse Start">
         <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" width="32" height="32" />
@@ -585,7 +600,7 @@ export default function App() {
                 </div>
               </div>
             </Section>
-            <Section>
+            <Section defer placeholderHeight={520}>
               <section className="presets" aria-labelledby="presets-title">
                 <div className="section-head">
                   <div>
@@ -641,7 +656,7 @@ export default function App() {
               </section>
             </Section>
             <div className="analysis-grid">
-              <Section>
+              <Section defer placeholderHeight={620}>
                 <Heatmap
                   start={minuteNow}
                   selectedDate={date}
@@ -650,11 +665,11 @@ export default function App() {
                   onScrub={scrubTo}
                 />
               </Section>
-              <Section>
+              <Section defer placeholderHeight={620}>
                 <Dial date={date} selected={selected} worldMean={worldMean} />
               </Section>
             </div>
-            <Section>
+            <Section defer placeholderHeight={1100}>
               <RegionCards
                 date={date}
                 selected={selected}
@@ -673,10 +688,10 @@ export default function App() {
                 </button>
               )}
             </Section>
-            <Section>
+            <Section defer placeholderHeight={640}>
               <Planner windowSets={plannerSets} selected={selected} dst={dst} />
             </Section>
-            <Section>
+            <Section defer placeholderHeight={900}>
               <section className="method" aria-labelledby="method-title">
                 <div>
                   <p className="eyebrow">Methodik & Quellen</p>
