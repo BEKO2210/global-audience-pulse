@@ -7,3 +7,4 @@ test-results
 *.tsbuildinfo
 .lighthouseci
 .lighthouse-dist
+REVIEW-LOCAL.md

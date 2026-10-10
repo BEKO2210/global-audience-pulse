@@ -34,6 +34,17 @@ OpenCode mit `ornith:9b-agent32k` auf der RTX 3070, ohne Kosten. `docs/opencode-
   die Checks selbst aus. Probeaufgabe T-050a: Verschiebung korrekt, aber Testdatei `ago_test.ts` (lief nie),
   falsche Erwartung (`2880 Min` = „1 Tagen“) und „alle Tests grün“ erfunden.
 
+## Lokaler Review-Bot (T-051)
+
+`npm run review:local [-- --base main --strict]` prüft den Diff seit `main` (inkl. nicht committeter Änderungen; neue
+Dateien vorher committen oder `git add -N`) mit `qwen3.5:9b`: zwei Durchgänge (allgemein, Barrierefreiheit), dann
+prüft eine zweite Stufe jeden Befund einzeln am Code und lehnt Vermutungen ab. Befunde, deren Datei/Zeile nicht in
+der Änderung liegt, werden verworfen. Ergebnis in `REVIEW-LOCAL.md` (nicht im Repo). Nur Hinweise – Claude entscheidet.
+
+Messung 2026-10-10: 4 absichtlich eingebaute Fehler (hart codierte Schwelle, hart codierter Text, Grenze `<=` statt
+`<`, entferntes `role="img"`) → 3 bestätigt (das entfernte `role` meldet der Erstdurchgang, die Prüfstufe lehnt es
+ab); sauberer Diff (T-050 + Trend-Fix) → 6 Vermutungen, alle von der Prüfstufe abgelehnt, 0 Befunde. Dauer 3–6 min.
+
 ## Ausfall-Regel
 
 1. Agent liefert nichts / Fehler / Kontingent leer → Eintrag unter „Verlauf“ in der Auftragsdatei
@@ -46,6 +57,7 @@ OpenCode mit `ornith:9b-agent32k` auf der RTX 3070, ohne Kosten. `docs/opencode-
 
 ```bash
 npm run format:check && npm run lint && npm run typecheck && npm test && npm run build
+npm run review:local            # T-051: zweite Meinung von qwen3.5:9b → REVIEW-LOCAL.md (braucht freie GPU)
 npx vite preview --port 4317 --strictPort &   # danach:
 npx playwright test --project=chromium-desktop --project=chromium-mobile   # 2× hintereinander
 # WebKit: docker run --rm --user $(id -u):$(id -g) -e HOME=/tmp --network host --ipc=host -v "$PWD":/work -w /work \

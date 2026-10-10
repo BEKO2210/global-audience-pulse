@@ -18,7 +18,8 @@
     "lighthouse": "node scripts/prepare-lhci.mjs && lhci autorun",
     "icons": "node scripts/generate-icons.mjs",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "review:local": "node scripts/dev/local-review.mjs"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",
