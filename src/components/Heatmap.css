@@ -1,0 +1,126 @@
+.heatmap-panel .heatmap {
+  --heatmap-label-width: 118px;
+}
+
+.heatmap-panel .heatmap::after {
+  display: none;
+}
+
+.heatmap-panel .heatmap-label {
+  overflow: visible;
+  text-overflow: clip;
+  font-size: 9px;
+  padding-right: 6px;
+}
+
+.heatmap-panel .heatmap-label .flag-image {
+  width: 14px;
+  height: 10px;
+}
+
+.heatmap-cursor-grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  column-gap: inherit;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.heatmap-cursor-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.heatmap-cursor {
+  /* Grid item spanning all rows of its hour column; offset within the column by minutes. */
+  position: relative;
+  z-index: 3;
+  pointer-events: none;
+  justify-self: start;
+  align-self: stretch;
+  grid-row: 1;
+  width: 3px;
+  margin-left: -1.5px;
+  left: calc(var(--cursor-fraction, 0) * 100%);
+  background: var(--ink);
+  box-shadow:
+    -1px 0 0 var(--paper),
+    1px 0 0 var(--paper);
+  transition: left 150ms var(--motion-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heatmap-cursor {
+    transition: none;
+  }
+}
+
+.heatmap-cursor--now {
+  width: 2px;
+  margin-left: -1px;
+  /* Softer line via colour, not opacity: opacity would also fade the "jetzt" label (contrast). */
+  background: color-mix(in srgb, var(--muted) 60%, transparent);
+  box-shadow:
+    -1px 0 0 var(--paper),
+    1px 0 0 var(--paper);
+}
+
+.heatmap-cursor-label {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font:
+    9px 'Geist Mono Variable',
+    monospace;
+  font-weight: 600;
+  line-height: 1.25;
+  white-space: nowrap;
+  color: var(--paper);
+  background: var(--ink);
+  box-shadow: 0 0 0 1px var(--paper);
+}
+
+.heatmap-cursor--now .heatmap-cursor-label {
+  /* "jetzt" sits under the grid, the selected-time label on top: they can never collide. */
+  top: auto;
+  bottom: 0;
+  transform: translate(-50%, calc(100% + 3px));
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--paper-2);
+  box-shadow: 0 0 0 1px var(--rule-solid);
+}
+
+.heatmap-panel .axis-label.selected-col-header {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.heatmap-panel .heat-cell.selected-col {
+  outline: 1px solid color-mix(in srgb, var(--ink) 55%, transparent);
+  outline-offset: -1px;
+  z-index: 1;
+}
+
+.heatmap-panel .heat-cell.now-col:not(.selected-col) {
+  border-left-color: color-mix(in srgb, var(--muted) 70%, var(--paper-2));
+  border-right-color: color-mix(in srgb, var(--muted) 70%, var(--paper-2));
+}
+
+@media (max-width: 420px) {
+  .heatmap-panel .heatmap {
+    --heatmap-label-width: 108px;
+    min-width: 360px;
+  }
+}
+
+/* Room below the grid for the "jetzt" label. */
+.heatmap-panel .heatmap {
+  margin-bottom: 18px;
+}

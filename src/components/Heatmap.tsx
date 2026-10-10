@@ -4,6 +4,27 @@ import type { ScoreGrid } from '../lib/model'
 import { formatTime } from '../lib/time'
 import { Flag } from './Flag'
 import { ACTIVITY_LEVELS } from '../config/model'
+import './Heatmap.css'
+
+const HEATMAP_LABEL_WIDTH = 'var(--heatmap-label-width)'
+const HOUR_MS = 3_600_000
+// 24 hourly columns: the timeline spans 24 h (a 23 h span put the cursor one column early).
+const TIMELINE_SPAN_MS = 24 * HOUR_MS
+
+function formatCursorLabel(date: Date, timeZone: string) {
+  const weekday = new Intl.DateTimeFormat('de-DE', { timeZone, weekday: 'short' })
+    .format(date)
+    .replace(/\.$/, '')
+  return `${weekday} ${formatTime(date, timeZone)}`
+}
+
+function ratioAlongTimeline(time: Date, start: Date) {
+  return Math.min(1, Math.max(0, (time.getTime() - start.getTime()) / TIMELINE_SPAN_MS))
+}
+
+function columnIndex(time: Date, start: Date) {
+  return Math.min(23, Math.max(0, Math.floor((time.getTime() - start.getTime()) / HOUR_MS)))
+}
 
 // Props only change per minute or on audience change, not while scrubbing.
 export const Heatmap = memo(function Heatmap({
@@ -20,7 +41,7 @@ export const Heatmap = memo(function Heatmap({
   onScrub: (date: Date) => void
 }) {
   const userZone = Intl.DateTimeFormat().resolvedOptions().timeZone
-  const hours = Array.from({ length: 24 }, (_, i) => new Date(start.getTime() + i * 3_600_000))
+  const hours = Array.from({ length: 24 }, (_, i) => new Date(start.getTime() + i * HOUR_MS))
   const regions = REGIONS.filter((region) => selected.includes(region.id))
   const [activeCell, setActiveCell] = useState({ row: 0, column: 0 })
   const cellRefs = useRef(new Map<string, HTMLButtonElement>())
@@ -28,10 +49,16 @@ export const Heatmap = memo(function Heatmap({
     const index = ACTIVITY_LEVELS.findIndex((level) => score >= level.min && score <= level.max)
     return index < 0 ? ACTIVITY_LEVELS.length - 1 : index
   }
-  const selectedRatio = Math.min(
-    1,
-    Math.max(0, (selectedDate.getTime() - start.getTime()) / (23 * 3_600_000)),
-  )
+  const selectedRatio = ratioAlongTimeline(selectedDate, start)
+  // Fraction of the way through its hour column (cursor is placed in the column itself, so grid gaps
+  // and label width never skew it).
+  const columnFraction = (time: Date) =>
+    Math.min(1, Math.max(0, ((time.getTime() - start.getTime()) % HOUR_MS) / HOUR_MS))
+  const selectedColumn = columnIndex(selectedDate, start)
+  const nowColumn = columnIndex(start, start)
+  const sameInstant =
+    Math.floor(selectedDate.getTime() / 60_000) === Math.floor(start.getTime() / 60_000)
+  const selectedCursorLabel = sameInstant ? 'jetzt' : formatCursorLabel(selectedDate, userZone)
   const moveFocus = (row: number, column: number) => {
     const next = {
       row: Math.min(regions.length - 1, Math.max(0, row)),
@@ -70,7 +97,7 @@ export const Heatmap = memo(function Heatmap({
           aria-label="Aktivität nach Region und Zeit"
           style={
             {
-              gridTemplateColumns: `minmax(70px, 90px) repeat(${hours.length}, minmax(28px, 1fr))`,
+              gridTemplateColumns: `${HEATMAP_LABEL_WIDTH} repeat(${hours.length}, minmax(28px, 1fr))`,
               '--selected-ratio': selectedRatio,
             } as CSSProperties
           }
@@ -81,7 +108,7 @@ export const Heatmap = memo(function Heatmap({
               <span
                 key={date.getTime()}
                 role="columnheader"
-                className={i === 0 ? 'current-col axis-label' : 'axis-label'}
+                className={i === selectedColumn ? 'axis-label selected-col-header' : 'axis-label'}
               >
                 {i === 0 ? 'jetzt' : i % 3 === 0 ? formatTime(date, userZone).slice(0, 2) : ''}
               </span>
@@ -95,6 +122,12 @@ export const Heatmap = memo(function Heatmap({
               {hours.map((date, column) => {
                 const score = grid.activityAt(region.id, date)
                 const key = `${row}:${column}`
+                const columnClass =
+                  column === selectedColumn
+                    ? 'selected-col'
+                    : column === nowColumn && !sameInstant
+                      ? 'now-col'
+                      : ''
                 return (
                   <button
                     key={date.getTime()}
@@ -104,7 +137,7 @@ export const Heatmap = memo(function Heatmap({
                     }}
                     role="gridcell"
                     tabIndex={activeCell.row === row && activeCell.column === column ? 0 : -1}
-                    className={`${column === 0 ? 'heat-cell current-col' : 'heat-cell'} heat-${heatLevel(score)}`}
+                    className={`heat-cell ${columnClass} heat-${heatLevel(score)}`}
                     style={{ animationDelay: `${column * 18}ms` }}
                     aria-label={`${region.city}, ${formatTime(date, userZone)}: ${Math.round(score)} Prozent`}
                     onFocus={() => setActiveCell({ row, column })}
@@ -115,6 +148,43 @@ export const Heatmap = memo(function Heatmap({
               })}
             </div>
           ))}
+          {/* Separate overlay grid with identical columns: cursors must not take part in the
+              auto-placement of the cells (they would shift every cell by a column). */}
+          <div
+            className="heatmap-cursor-grid"
+            aria-hidden="true"
+            style={{
+              gridTemplateColumns: `${HEATMAP_LABEL_WIDTH} repeat(${hours.length}, minmax(28px, 1fr))`,
+            }}
+          >
+            {!sameInstant && (
+              <div
+                aria-hidden="true"
+                className="heatmap-cursor heatmap-cursor--now"
+                style={
+                  {
+                    gridColumn: nowColumn + 2,
+                    '--cursor-fraction': columnFraction(start),
+                  } as CSSProperties
+                }
+              >
+                <span className="heatmap-cursor-label">jetzt</span>
+              </div>
+            )}
+            <div
+              aria-hidden="true"
+              className="heatmap-cursor heatmap-cursor--selected"
+              data-testid="heatmap-selected-cursor"
+              style={
+                {
+                  gridColumn: selectedColumn + 2,
+                  '--cursor-fraction': columnFraction(selectedDate),
+                } as CSSProperties
+              }
+            >
+              <span className="heatmap-cursor-label">{selectedCursorLabel}</span>
+            </div>
+          </div>
         </div>
       </div>
       <div className="heat-legend" aria-label="Aktivität 0 bis 100">
