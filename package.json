@@ -19,7 +19,8 @@
     "icons": "node scripts/generate-icons.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "review:local": "node scripts/dev/local-review.mjs"
+    "review:local": "node scripts/dev/local-review.mjs",
+    "research": "node scripts/research/run.mjs"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",

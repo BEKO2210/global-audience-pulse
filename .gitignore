@@ -8,3 +8,4 @@ test-results
 .lighthouseci
 .lighthouse-dist
 REVIEW-LOCAL.md
+.cache
