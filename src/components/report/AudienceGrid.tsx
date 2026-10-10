@@ -40,7 +40,8 @@ export function AudienceGrid({
               </p>
               {g.besteZeit != null && g.besteZeitScore != null ? (
                 <p className="lr-audience-window">
-                  Bestes Fenster {g.besteZeit} <span className="lr-mono">({g.besteZeitScore})</span>
+                  Bestes Fenster <span className="lr-nowrap">{g.besteZeit}</span>{' '}
+                  <span className="lr-mono">({g.besteZeitScore})</span>
                 </p>
               ) : null}
               {urteil ? <p className="lr-audience-urteil">{urteil}</p> : null}

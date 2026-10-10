@@ -514,7 +514,12 @@
   gap: 10px;
 }
 
-@media (min-width: 900px) {
+/* Columns follow the block's own width, not the window: in the two-column desktop report the block is only
+   half as wide, and four tiles there squeezed "Bestes Fenster …" onto five lines. */
+.lr-block:has(> .lr-audience-grid) {
+  container-type: inline-size;
+}
+@container (min-width: 760px) {
   .lr-audience-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
@@ -678,4 +683,8 @@
 }
 .lr-live-row > :last-child {
   text-align: right;
+}
+
+.lr-nowrap {
+  white-space: nowrap;
 }
