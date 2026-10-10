@@ -194,7 +194,7 @@ export function Forecast({
               textAnchor="middle"
               className="window-band-label"
             >
-              Top {index + 1}
+              Nr. {index + 1}
             </text>
           </g>
         ))}

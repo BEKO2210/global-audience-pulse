@@ -41,7 +41,7 @@ describe('formatDuration', () => {
   })
 
   it('shows minutes and seconds from 60 on', () => {
-    expect(formatDuration(60)).toBe('1 min 0 s')
-    expect(formatDuration(125)).toBe('2 min 5 s')
+    expect(formatDuration(60)).toBe('1 Min 0 s')
+    expect(formatDuration(125)).toBe('2 Min 5 s')
   })
 })

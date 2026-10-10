@@ -41,9 +41,9 @@ it('rundet Dezimalstunden vor dem Aufteilen', () => {
 describe('formatOffset', () => {
   it('formats the time machine distance from now', () => {
     expect(formatOffset(0)).toBe('jetzt')
-    expect(formatOffset(135 * 60_000)).toBe('in 2 h 15 min')
-    expect(formatOffset(16 * 3_600_000)).toBe('in 16 h')
-    expect(formatOffset((3 * 24 + 4) * 3_600_000 + 20 * 60_000)).toBe('in 3 T 4 h')
-    expect(formatOffset(-45 * 60_000)).toBe('vor 45 min')
+    expect(formatOffset(135 * 60_000)).toBe('in 2 Std 15 Min')
+    expect(formatOffset(16 * 3_600_000)).toBe('in 16 Std')
+    expect(formatOffset((3 * 24 + 4) * 3_600_000 + 20 * 60_000)).toBe('in 3 Tagen 4 Std')
+    expect(formatOffset(-45 * 60_000)).toBe('vor 45 Min')
   })
 })

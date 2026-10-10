@@ -3,9 +3,12 @@ import { DATA_SOURCES } from '../config/model'
 
 export function SiteFooter({
   worldBankFreshness,
+  worldBankYears,
   wikimediaFreshness,
 }: {
   worldBankFreshness: string
+  /** e.g. "Datenjahr 2024–2025": the newest year the World Bank has published, not the fetch time. */
+  worldBankYears: string
   wikimediaFreshness: string
 }) {
   return (
@@ -35,10 +38,11 @@ export function SiteFooter({
         </nav>
         <nav className="footer-group" aria-labelledby="footer-data">
           <h2 id="footer-data">Daten</h2>
-          <a href={DATA_SOURCES.wikimedia}>Wikimedia</a>
-          <span className="footer-freshness">Stand {wikimediaFreshness}</span>
+          <a href={DATA_SOURCES.wikimedia}>Wikimedia Pageviews</a>
+          <span className="footer-freshness">Stundenwerte · abgerufen {wikimediaFreshness}</span>
           <a href={DATA_SOURCES.worldBank}>Weltbank</a>
-          <span className="footer-freshness">Stand {worldBankFreshness}</span>
+          <span className="footer-freshness">{worldBankYears} · neueste veröffentlichte</span>
+          <span className="footer-freshness">abgerufen {worldBankFreshness}</span>
         </nav>
         <nav className="footer-group" aria-labelledby="footer-project">
           <h2 id="footer-project">Projekt</h2>

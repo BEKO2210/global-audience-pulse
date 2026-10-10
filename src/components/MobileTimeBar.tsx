@@ -11,13 +11,13 @@ import { track } from '../lib/analytics'
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value))
 
-/** Compact distance for the slim bar: "+45 min", "+15 h", "+3 T". */
-const shortOffset = (minutes: number) =>
-  minutes < 60
-    ? `+${minutes} min`
-    : minutes < 1440
-      ? `+${Math.round(minutes / 60)} h`
-      : `+${Math.round(minutes / 1440)} T`
+/** Compact distance for the slim bar: "+45 Min", "+15 Std", "+3 Tage". */
+const shortOffset = (minutes: number) => {
+  if (minutes < 60) return `+${minutes} Min`
+  if (minutes < 1440) return `+${Math.round(minutes / 60)} Std`
+  const days = Math.round(minutes / 1440)
+  return `+${days} ${days === 1 ? 'Tag' : 'Tage'}`
+}
 
 export function MobileTimeBar({
   now,

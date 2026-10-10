@@ -116,7 +116,7 @@ function yearRange(dataYears: Record<string, number>, indicator: string) {
   if (!years.length) return 'Jahr unbekannt'
   const min = Math.min(...years)
   const max = Math.max(...years)
-  return `Daten ${min}${min === max ? '' : `–${max}`}`
+  return `Datenjahr ${min}${min === max ? '' : `–${max}`}`
 }
 
 function freshness(date: string) {
@@ -125,7 +125,8 @@ function freshness(date: string) {
   if (minutes < 60) return `vor ${minutes} Min`
   const hours = Math.round(minutes / 60)
   if (hours < 48) return `vor ${hours} Std`
-  return `vor ${Math.round(hours / 24)} T`
+  const days = Math.round(hours / 24)
+  return `vor ${days} ${days === 1 ? 'Tag' : 'Tagen'}`
 }
 
 function Header({
@@ -157,7 +158,7 @@ function Header({
         <button
           className="freshness"
           onClick={onRefresh}
-          title={`Automatischer Abruf alle ${MODEL_CONFIG.liveRefreshMinutes} Min. · Klick für Sofort-Update`}
+          title={`Automatischer Abruf alle ${MODEL_CONFIG.liveRefreshMinutes} Min. · Klick lädt sofort neu`}
         >
           <i className={snapshot.generatedAt ? '' : 'offline'} />
           {snapshot.generatedAt
@@ -846,6 +847,7 @@ export default function App() {
           </main>
           <SiteFooter
             worldBankFreshness={freshness(snapshot.sources.worldBank.fetchedAt)}
+            worldBankYears={yearRange(snapshot.dataYears, 'internet')}
             wikimediaFreshness={freshness(snapshot.sources.wikimedia.fetchedAt)}
           />
           <MobileTimeBar

@@ -242,7 +242,7 @@ export function formatOffset(ms: number) {
   const hours = Math.floor((totalMinutes % 1440) / 60)
   const minutes = totalMinutes % 60
   const parts = days
-    ? [`${days} T`, hours ? `${hours} h` : '']
-    : [hours ? `${hours} h` : '', minutes ? `${minutes} min` : '']
+    ? [`${days} ${days === 1 ? 'Tag' : 'Tagen'}`, hours ? `${hours} Std` : '']
+    : [hours ? `${hours} Std` : '', minutes ? `${minutes} Min` : '']
   return `${ms < 0 ? 'vor' : 'in'} ${parts.filter(Boolean).join(' ')}`
 }
