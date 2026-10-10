@@ -1,0 +1,398 @@
+{
+  "version": 2,
+  "aiGenerated": true,
+  "digitalSourceType": "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia",
+  "generatedAt": "2026-10-24T23:00:53.967Z",
+  "model": "gemma4:12b-it-qat",
+  "source": "llm",
+  "durationSeconds": 362,
+  "snapshotGeneratedAt": "2026-10-24T03:33:42.785Z",
+  "run": {
+    "startedAt": "2026-10-24T23:00:53.935Z",
+    "endedAt": "2026-10-24T23:06:57.157Z",
+    "durationSeconds": 363,
+    "attempts": 2,
+    "rejections": [
+      {
+        "attempt": 1,
+        "category": "pruefer",
+        "reason": "Ein Prüfer fand Aussagen, die den Daten widersprechen: Tokio ist mit 19 Prozent Abweichung ungewöhnlich aktiv laut Wikipedia-Aufrufen (Beric"
+      }
+    ],
+    "source": "llm",
+    "models": {
+      "writer": "gemma4:12b-it-qat",
+      "checker": "qwen3.5:9b"
+    },
+    "modelCalls": [
+      {
+        "model": "gemma4:12b-it-qat",
+        "role": "classifier",
+        "attempt": 1,
+        "durationMs": 31856,
+        "ok": true
+      },
+      {
+        "model": "gemma4:12b-it-qat",
+        "role": "classifier",
+        "attempt": 1,
+        "durationMs": 13208,
+        "ok": true
+      },
+      {
+        "model": "gemma4:12b-it-qat",
+        "role": "writer",
+        "attempt": 1,
+        "durationMs": 34235,
+        "ok": true
+      },
+      {
+        "model": "qwen3.5:9b",
+        "role": "checker",
+        "attempt": 1,
+        "durationMs": 76530,
+        "ok": true
+      },
+      {
+        "model": "gemma4:12b-it-qat",
+        "role": "writer",
+        "attempt": 2,
+        "durationMs": 76862,
+        "ok": true
+      },
+      {
+        "model": "qwen3.5:9b",
+        "role": "checker",
+        "attempt": 2,
+        "durationMs": 80646,
+        "ok": true
+      },
+      {
+        "model": "gemma4:12b-it-qat",
+        "role": "translator",
+        "attempt": 1,
+        "durationMs": 48537,
+        "ok": true
+      }
+    ],
+    "liveSignals": 5,
+    "dataFetchErrors": []
+  },
+  "facts": {
+    "zeitpunkt": "01:00 MESZ",
+    "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+    "gesamt": {
+      "score": 56,
+      "status": "Im Aufbau",
+      "empfehlung": "Noch etwas warten"
+    },
+    "trendNaechsteStunden": [
+      {
+        "inStunden": 1,
+        "score": 57
+      },
+      {
+        "inStunden": 2,
+        "score": 56
+      },
+      {
+        "inStunden": 3,
+        "score": 49
+      }
+    ],
+    "besteFenster24h": [
+      {
+        "von": "20:15",
+        "bis": "21:45",
+        "score": 73,
+        "primetimeIn": [
+          "London",
+          "Berlin"
+        ]
+      },
+      {
+        "von": "01:15",
+        "bis": "02:45",
+        "score": 57,
+        "primetimeIn": [
+          "New York",
+          "São Paulo"
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Transatlantik",
+        "von": "20:00",
+        "bis": "21:30",
+        "score": 85
+      },
+      {
+        "name": "USA coast-to-coast",
+        "von": "01:30",
+        "bis": "02:00",
+        "score": 88
+      },
+      {
+        "name": "Ost-Welle",
+        "von": "19:45",
+        "bis": "21:15",
+        "score": 70
+      }
+    ],
+    "zielgruppen": [
+      {
+        "name": "Global",
+        "scoreJetzt": 56,
+        "status": "Im Aufbau",
+        "besteZeit": "20:15–21:45",
+        "besteZeitScore": 73
+      },
+      {
+        "name": "DACH & Europa",
+        "scoreJetzt": 23,
+        "status": "Ruhephase",
+        "besteZeit": "19:45–21:15",
+        "besteZeitScore": 95
+      },
+      {
+        "name": "USA",
+        "scoreJetzt": 83,
+        "status": "Hochphase",
+        "besteZeit": "01:30–02:00",
+        "besteZeitScore": 88
+      },
+      {
+        "name": "Transatlantik",
+        "scoreJetzt": 51,
+        "status": "Im Aufbau",
+        "besteZeit": "20:00–21:30",
+        "besteZeitScore": 85
+      },
+      {
+        "name": "Ost-Welle",
+        "scoreJetzt": 28,
+        "status": "Ruhephase",
+        "besteZeit": "19:45–21:15",
+        "besteZeitScore": 70
+      }
+    ],
+    "regionen": [
+      {
+        "id": "us_east",
+        "flagge": "us",
+        "ort": "New York",
+        "region": "USA Ost",
+        "ortszeit": "19:00",
+        "phase": "Primetime",
+        "score": 88,
+        "gewichtProzent": 26,
+        "beitragPunkte": 23
+      },
+      {
+        "id": "us_west",
+        "flagge": "us",
+        "ort": "Los Angeles",
+        "region": "USA West",
+        "ortszeit": "16:00",
+        "phase": "Aktiver Tag",
+        "score": 74,
+        "gewichtProzent": 16,
+        "beitragPunkte": 12
+      },
+      {
+        "id": "latam",
+        "flagge": "br",
+        "ort": "São Paulo",
+        "region": "Lateinamerika",
+        "ortszeit": "20:00",
+        "phase": "Primetime",
+        "score": 96,
+        "gewichtProzent": 8,
+        "beitragPunkte": 8
+      },
+      {
+        "id": "eu_central",
+        "flagge": "eu",
+        "ort": "Berlin",
+        "region": "Europa Zentral",
+        "ortszeit": "01:00",
+        "phase": "Nachtruhe",
+        "score": 23,
+        "gewichtProzent": 27,
+        "beitragPunkte": 6
+      },
+      {
+        "id": "east_asia",
+        "flagge": "jp",
+        "ort": "Tokio",
+        "region": "Ostasien",
+        "ortszeit": "08:00",
+        "phase": "Morgen",
+        "score": 41,
+        "gewichtProzent": 8,
+        "beitragPunkte": 3
+      },
+      {
+        "id": "mena",
+        "flagge": "ae",
+        "ort": "Dubai",
+        "region": "Nahost & Nordafrika",
+        "ortszeit": "03:00",
+        "phase": "Nachtruhe",
+        "score": 47,
+        "gewichtProzent": 5,
+        "beitragPunkte": 2
+      },
+      {
+        "id": "eu_uk",
+        "flagge": "gb",
+        "ort": "London",
+        "region": "UK & Irland",
+        "ortszeit": "00:00",
+        "phase": "Nachtruhe",
+        "score": 23,
+        "gewichtProzent": 6,
+        "beitragPunkte": 1
+      },
+      {
+        "id": "india",
+        "flagge": "in",
+        "ort": "Mumbai",
+        "region": "Südasien",
+        "ortszeit": "04:30",
+        "phase": "Nachtruhe",
+        "score": 18,
+        "gewichtProzent": 5,
+        "beitragPunkte": 1
+      }
+    ],
+    "liveSignale": [
+      {
+        "ort": "São Paulo",
+        "letzteStundeOrtszeit": "16:00",
+        "aufrufe": 263423,
+        "typisch": 304807,
+        "abweichungProzent": -14
+      },
+      {
+        "ort": "Berlin",
+        "letzteStundeOrtszeit": "21:00",
+        "aufrufe": 1926477,
+        "typisch": 1641197,
+        "abweichungProzent": 17,
+        "themen": [
+          "unterhaltung",
+          "musik"
+        ]
+      },
+      {
+        "ort": "Dubai",
+        "letzteStundeOrtszeit": "23:00",
+        "aufrufe": 175500,
+        "typisch": 171913,
+        "abweichungProzent": 2
+      },
+      {
+        "ort": "Mumbai",
+        "letzteStundeOrtszeit": "00:00",
+        "aufrufe": 9131,
+        "typisch": 9488,
+        "abweichungProzent": -4
+      },
+      {
+        "ort": "Tokio",
+        "letzteStundeOrtszeit": "04:00",
+        "aufrufe": 381018,
+        "typisch": 318847,
+        "abweichungProzent": 19,
+        "themen": [
+          "unterhaltung",
+          "sport"
+        ]
+      }
+    ],
+    "feiertage": [],
+    "gedaechtnis": {
+      "stundenImGedaechtnis": 340,
+      "gesternGleicheZeit": 57,
+      "differenzZuGestern": -1,
+      "wochenmittelGleicheStunde": 56,
+      "wochenhoch": 76,
+      "wochentief": 33
+    },
+    "phasen": [
+      "Nachtruhe 0–6 Uhr",
+      "Morgen 6–9 Uhr",
+      "Aktiver Tag 9–18 Uhr",
+      "Primetime 18–22 Uhr",
+      "Spätabend 22–24 Uhr"
+    ]
+  },
+  "report": {
+    "schlagzeile": "Der globale Score liegt bei 56 und befindet sich im Aufbau",
+    "empfehlung": "Noch etwas warten. Das beste Fenster liegt zwischen 20:15 und 21:45 Uhr.",
+    "analyse": "New York trägt mit 23 Punkten den größten Beitrag zum aktuellen Wert. Der Score wird in der nächsten Stunde auf 57 ansteigen, bevor er nach drei Stunden auf 49 sinkt. Für Creator bedeutet dies eine stabile Phase in den USA während Europa in der Nachtruhe liegt. Der Wert entspricht dem Wochenmittel von 56.",
+    "punkte": [
+      "New York erreicht einen Score von 88 in der Primetime",
+      "Berlin zeigt eine Abweichung von 17 Prozent",
+      "Tokio ist mit 19 Prozent Abweichung ungewöhnlich aktiv laut Aufrufen"
+    ],
+    "zielgruppen": [
+      {
+        "name": "Global",
+        "urteil": "Jetzt posten nicht, warten bis 20:15 Uhr."
+      },
+      {
+        "name": "DACH & Europa",
+        "urteil": "Jetzt posten nicht, beste Zeit ist 19:45–21:15 Uhr."
+      },
+      {
+        "name": "USA",
+        "urteil": "Jetzt posten, beste Zeit ist 01:30–02:00 Uhr."
+      },
+      {
+        "name": "Transatlantik",
+        "urteil": "Jetzt posten nicht, beste Zeit ist 20:00–21:30 Uhr."
+      },
+      {
+        "name": "Ost-Welle",
+        "urteil": "Jetzt posten nicht, beste Zeit ist 19:45–21:15 Uhr."
+      }
+    ],
+    "attempts": 2
+  },
+  "reportEn": {
+    "schlagzeile": "The global score is 56 and is currently building",
+    "empfehlung": "Wait a little longer. The best window is between 20:15 and 21:45.",
+    "analyse": "New York contributes the most to the current value with 23 points. The score will rise to 57 in the next hour before dropping to 49 after three hours. For creators, this means a stable phase in the USA while Europe is at rest. The value corresponds to the weekly average of 56.",
+    "punkte": [
+      "New York reaches a score of 88 in primetime",
+      "Berlin shows a deviation of 17 percent",
+      "Tokyo is unusually active with a 19 percent deviation in views"
+    ],
+    "zielgruppen": [
+      {
+        "name": "Global",
+        "urteil": "Do not post now, wait until 20:15."
+      },
+      {
+        "name": "DACH & Europa",
+        "urteil": "Do not post now, best time is 19:45–21:15."
+      },
+      {
+        "name": "USA",
+        "urteil": "Post now, best time is 01:30–02:00."
+      },
+      {
+        "name": "Transatlantik",
+        "urteil": "Do not post now, best time is 20:00–21:30."
+      },
+      {
+        "name": "Ost-Welle",
+        "urteil": "Do not post now, best time is 19:45–21:15."
+      }
+    ]
+  },
+  "sourceEn": "llm"
+}
