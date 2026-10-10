@@ -30,6 +30,8 @@ export const DATA_SOURCES = {
   worldBankGdpPerCapita: 'https://data.worldbank.org/indicator/NY.GDP.PCAP.CD',
   wikimedia: 'https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate',
   diagramDesign: 'https://github.com/cathrynlavery/diagram-design',
+  liveAnalysis:
+    'https://raw.githubusercontent.com/BEKO2210/global-audience-pulse/live-analysis/analysis.json',
 } as const
 
 export const SERIES = [

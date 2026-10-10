@@ -1,6 +1,12 @@
 import { expect, type BrowserContext, type Page } from '@playwright/test'
 
 export async function openReady(page: Page) {
+  // The Lagebericht lives on the live-analysis branch; tests stay offline unless a spec serves one.
+  await page.route('https://raw.githubusercontent.com/**/analysis.json*', (route) =>
+    (page as Page & { __reportServed?: boolean }).__reportServed
+      ? route.fallback()
+      : route.fulfill({ status: 200, json: {} }),
+  )
   await page.goto('')
   await expect(page.getByRole('heading', { name: /Jetzt posten oder warten/i })).toBeVisible()
   await expect(page.locator('.hero-score')).not.toContainText('—')

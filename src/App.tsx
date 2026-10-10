@@ -7,6 +7,7 @@ import { PRESETS, REGIONS, REGION_BY_ID, type RegionId } from './config/regions'
 import { useAudience } from './hooks/useAudience'
 import { useLiveData } from './hooks/useLiveData'
 import { useScoreGrid } from './hooks/useScoreGrid'
+import { LiveReport } from './components/LiveReport'
 import {
   circularMean,
   fastZonedParts,
@@ -529,6 +530,7 @@ export default function App() {
                 </dl>
               </div>
             </Section>
+            <LiveReport now={minuteNow} />
             <div className="desktop-grid">
               <Section className="map-slot" delay={MOTION.stagger * 3}>
                 <Suspense

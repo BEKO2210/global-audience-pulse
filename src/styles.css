@@ -1829,7 +1829,7 @@ button:active {
   bottom: 0;
   z-index: 30;
   display: grid;
-  grid-template-columns: 64px minmax(0, 1fr) auto 46px;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
   align-items: center;
   gap: 10px;
   height: calc(var(--mobile-bar-height) + env(safe-area-inset-bottom));
@@ -1993,11 +1993,13 @@ button:active {
 }
 .mobile-bar-score > span {
   font:
-    500 9px/1.1 'Geist Variable',
+    500 9px/1.15 'Geist Variable',
     sans-serif;
   color: var(--ink);
   text-align: right;
-  white-space: nowrap;
+  /* Long status words ("Gutes Momentum") wrap to two short lines instead of being cut off. */
+  max-width: 7.5ch;
+  white-space: normal;
 }
 .mobile-bar-score.strong b {
   color: var(--accent-ink);
@@ -2014,5 +2016,83 @@ button:active {
 @media (min-width: 1024px) {
   .mobile-bar {
     display: none;
+  }
+}
+
+/* Hourly Lagebericht written by the operator's local model (reads like an editorial note). */
+.live-report {
+  margin: 8px 16px 24px;
+  padding: 20px 0 18px;
+  border-top: 1px solid var(--rule-solid);
+  border-bottom: 1px solid var(--rule);
+  max-width: 72ch;
+}
+.live-report-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+.live-report-time {
+  font:
+    11px 'Geist Mono Variable',
+    monospace;
+  color: var(--muted);
+}
+.live-report h2 {
+  font:
+    400 clamp(26px, 6.4vw, 38px) / 1.05 'Instrument Serif',
+    serif;
+  margin: 10px 0 12px;
+  letter-spacing: -0.01em;
+}
+.live-report-verdict {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 10px;
+}
+.live-report-body {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink);
+  margin: 0 0 12px;
+}
+.live-report ul {
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+.live-report li {
+  font-size: 14px;
+  line-height: 1.45;
+  padding-left: 16px;
+  position: relative;
+}
+.live-report li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 7px;
+  height: 1px;
+  background: var(--accent);
+}
+.live-report-note {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+}
+.live-report.is-stale h2,
+.live-report.is-stale .live-report-verdict,
+.live-report.is-stale .live-report-body,
+.live-report.is-stale li {
+  color: var(--muted);
+}
+@media (min-width: 1024px) {
+  .live-report {
+    margin: 8px 48px 32px;
   }
 }
