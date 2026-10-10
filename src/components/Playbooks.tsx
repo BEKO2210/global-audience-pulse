@@ -20,6 +20,7 @@ import {
   blockScores,
   citedSources,
   describeCells,
+  describeDaily,
   describePeaks,
   describeWindows,
   formatSourceDate,
@@ -85,12 +86,10 @@ function Heatmap({ times, name }: { times: readonly StudyTimes[]; name: string }
     <figure className="pb-heat">
       {strongest.length > 0 && (
         <p className="pb-heat-headline">
-          <span>Am stärksten</span>
-          <strong>
-            {strongestText.split(' · ').map((group) => (
-              <span key={group}>{group}</span>
-            ))}
-          </strong>
+          <span className="pb-ramp-focal" aria-hidden="true" />
+          <span>
+            Am stärksten: <strong>{strongestText}</strong>
+          </span>
         </p>
       )}
       <motion.div
@@ -100,7 +99,7 @@ function Heatmap({ times, name }: { times: readonly StudyTimes[]; name: string }
         whileInView="shown"
         viewport={{ once: true, amount: 0.2 }}
         role="img"
-        aria-label={`Empfohlene Zeiten bei ${name} nach Wochentag und Tageszeit. Am stärksten: ${strongestText}.`}
+        aria-label={`Empfohlene Stunden bei ${name} je Wochentag und 4-Stunden-Block, summiert über die Studien. Am stärksten: ${strongestText}.`}
       >
         <span className="pb-heat-corner" aria-hidden="true" />
         {BLOCKS.map((start) => (
@@ -140,17 +139,10 @@ function Heatmap({ times, name }: { times: readonly StudyTimes[]; name: string }
               <i key={o} style={{ ['--fill' as string]: String(o) }} />
             ))}
           </span>
-          weniger → mehr Studien-Stunden
+          mehr empfohlene Stunden
         </span>
-        <span className="pb-legend-item">
-          <span className="pb-ramp-focal" aria-hidden="true" />
-          stärkstes Fenster
-        </span>
+        <span className="pb-legend-item">Ortszeit deines Publikums</span>
       </figcaption>
-      <p className="pb-heat-note">
-        Wert je Feld: Stunden, die die Studien in diesem 4-Stunden-Block empfehlen; jede Spitzenzeit
-        zählt als eine Stunde. Uhrzeiten in der Ortszeit deines Publikums.
-      </p>
     </figure>
   )
 }
@@ -178,8 +170,19 @@ function StudyList({ times }: { times: readonly StudyTimes[] }) {
                     ))}
                 </span>
               )}
+              {t.daily.length > 0 && (
+                <span className="pb-chips" aria-label="Beste Zeit je Tag">
+                  {describeDaily(t)
+                    .split(' · ')
+                    .map((part) => (
+                      <span key={part} className="pb-chip is-daily">
+                        {part}
+                      </span>
+                    ))}
+                </span>
+              )}
               {t.peaks.length > 0 && (
-                <span className="pb-chips">
+                <span className="pb-chips" aria-label="Beste Zeiten der Woche">
                   {describePeaks(t)
                     .split(' · ')
                     .map((peak) => {
@@ -269,7 +272,7 @@ function Panel({
     <div id={panelId} role="tabpanel" aria-labelledby={tabId} className="pb-panel">
       <div className="pb-body">
         <section className="pb-col" aria-label={`Ranking bei ${playbook.name}`}>
-          <h3>Was der Algorithmus belohnt</h3>
+          <h3>Ranking</h3>
           <FactList
             title="Belohnt"
             facts={playbook.rewards}
@@ -287,11 +290,24 @@ function Panel({
           {gapInFacts && <p className="pb-gap">{playbook.gap}</p>}
         </section>
         <section className="pb-col" aria-label={`Posting-Zeiten bei ${playbook.name}`}>
-          <h3>Beste Zeiten laut Studien</h3>
+          <h3>
+            Beste Zeiten
+            {playbook.times.length > 0 && (
+              <small>
+                laut{' '}
+                {[
+                  ...new Set(playbook.times.map((t) => SOURCE_BY_ID.get(t.source)!.publisher)),
+                ].join(' und ')}
+              </small>
+            )}
+          </h3>
           {playbook.times.length > 0 && (
             <>
               <Heatmap times={playbook.times} name={playbook.name} />
-              <StudyList times={playbook.times} />
+              <details className="pb-details">
+                <summary>Zeiten der Studien im Detail</summary>
+                <StudyList times={playbook.times} />
+              </details>
             </>
           )}
           {playbook.gap && !gapInFacts && <p className="pb-gap">{playbook.gap}</p>}

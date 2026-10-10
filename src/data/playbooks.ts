@@ -41,8 +41,10 @@ export interface StudyTimes {
   /** short label in the legend, e.g. "Sprout Social" or "Buffer · Shorts" */
   label: string
   windows: readonly TimeWindow[]
-  /** top slots in rank order */
+  /** top slots of the whole week, in rank order */
   peaks: readonly { day: Weekday; hour: number }[]
+  /** top slots per weekday, in rank order (Buffer publishes three per day) */
+  daily: readonly { day: Weekday; hours: readonly number[] }[]
   weak?: string
 }
 
@@ -55,9 +57,6 @@ export interface Playbook {
   /** shown when a part could not be sourced cleanly */
   gap?: string
 }
-
-const range = (days: readonly Weekday[], from: number, to: number): TimeWindow[] =>
-  days.map((day) => ({ day, from, to }))
 
 const SPROUT_BASIS = '≈ 2 Mrd. Interaktionen · ≈ 307.000 Profile · 27.11.2025–27.02.2026'
 
@@ -210,10 +209,6 @@ export const SOURCES: readonly Source[] = [
   },
 ]
 
-const TUE_THU: Weekday[] = [1, 2, 3]
-const WEEKDAYS: Weekday[] = [0, 1, 2, 3, 4]
-const ALL_DAYS: Weekday[] = [0, 1, 2, 3, 4, 5, 6]
-
 export const PLAYBOOKS: readonly Playbook[] = [
   {
     id: 'instagram',
@@ -255,10 +250,12 @@ export const PLAYBOOKS: readonly Playbook[] = [
           { day: 0, from: 14, to: 16 },
           { day: 1, from: 13, to: 19 },
           { day: 2, from: 12, to: 21 },
+          { day: 2, from: 23, to: 24 },
           { day: 3, from: 12, to: 14 },
         ],
         peaks: [],
-        weak: 'Wochenende',
+        daily: [],
+        weak: 'Freitag bis Sonntag',
       },
       {
         source: 'buffer-instagram',
@@ -268,6 +265,15 @@ export const PLAYBOOKS: readonly Playbook[] = [
           { day: 3, hour: 9 },
           { day: 2, hour: 12 },
           { day: 2, hour: 18 },
+        ],
+        daily: [
+          { day: 0, hours: [19, 18, 20] },
+          { day: 1, hours: [19, 15, 17] },
+          { day: 2, hours: [12, 18, 8] },
+          { day: 3, hours: [9, 8, 7] },
+          { day: 4, hours: [22, 21] },
+          { day: 5, hours: [21, 22, 20] },
+          { day: 6, hours: [21, 22, 20] },
         ],
       },
     ],
@@ -303,18 +309,42 @@ export const PLAYBOOKS: readonly Playbook[] = [
       {
         source: 'sprout-tiktok',
         label: 'Sprout Social',
-        windows: range(TUE_THU, 14, 18),
+        windows: [
+          { day: 0, from: 15, to: 17 },
+          { day: 1, from: 14, to: 18 },
+          { day: 2, from: 13, to: 20 },
+          { day: 3, from: 13, to: 17 },
+          { day: 4, from: 15, to: 17 },
+        ],
         peaks: [],
+        daily: [],
         weak: 'Wochenende',
       },
       {
         source: 'buffer-tiktok',
         label: 'Buffer',
-        windows: range(ALL_DAYS, 18, 23),
+        windows: [
+          { day: 0, from: 18, to: 23 },
+          { day: 1, from: 18, to: 23 },
+          { day: 2, from: 18, to: 23 },
+          { day: 3, from: 18, to: 23 },
+          { day: 4, from: 18, to: 23 },
+          { day: 5, from: 18, to: 23 },
+          { day: 6, from: 18, to: 23 },
+        ],
         peaks: [
           { day: 6, hour: 9 },
           { day: 0, hour: 13 },
           { day: 6, hour: 13 },
+        ],
+        daily: [
+          { day: 0, hours: [13, 11, 8] },
+          { day: 1, hours: [6, 22, 7] },
+          { day: 2, hours: [22, 6, 21] },
+          { day: 3, hours: [13, 22, 6] },
+          { day: 4, hours: [18, 22, 20] },
+          { day: 5, hours: [17, 16, 15] },
+          { day: 6, hours: [9, 13, 12] },
         ],
       },
     ],
@@ -346,6 +376,15 @@ export const PLAYBOOKS: readonly Playbook[] = [
         label: 'Buffer · Langvideos',
         windows: [],
         peaks: [{ day: 6, hour: 10 }],
+        daily: [
+          { day: 0, hours: [9, 22, 7] },
+          { day: 1, hours: [9, 11, 8] },
+          { day: 2, hours: [7, 15, 17] },
+          { day: 3, hours: [17, 18, 7] },
+          { day: 4, hours: [12, 11, 15] },
+          { day: 5, hours: [12, 10, 15] },
+          { day: 6, hours: [10, 9, 12] },
+        ],
       },
       {
         source: 'buffer-youtube',
@@ -355,6 +394,15 @@ export const PLAYBOOKS: readonly Playbook[] = [
           { day: 4, hour: 16 },
           { day: 4, hour: 18 },
           { day: 4, hour: 19 },
+        ],
+        daily: [
+          { day: 0, hours: [20, 17, 18] },
+          { day: 1, hours: [20, 21, 19] },
+          { day: 2, hours: [19, 20, 21] },
+          { day: 3, hours: [19, 20, 21] },
+          { day: 4, hours: [16, 18, 19] },
+          { day: 5, hours: [19, 11, 18] },
+          { day: 6, hours: [19, 20, 17] },
         ],
       },
     ],
@@ -406,16 +454,32 @@ export const PLAYBOOKS: readonly Playbook[] = [
           { day: 4, from: 13, to: 14 },
         ],
         peaks: [],
+        daily: [],
         weak: 'Wochenende',
       },
       {
         source: 'buffer-linkedin',
         label: 'Buffer',
-        windows: range(WEEKDAYS, 15, 20),
+        windows: [
+          { day: 0, from: 15, to: 20 },
+          { day: 1, from: 15, to: 20 },
+          { day: 2, from: 15, to: 20 },
+          { day: 3, from: 15, to: 20 },
+          { day: 4, from: 15, to: 20 },
+        ],
         peaks: [
           { day: 2, hour: 16 },
           { day: 4, hour: 15 },
           { day: 4, hour: 16 },
+        ],
+        daily: [
+          { day: 0, hours: [22, 17, 21] },
+          { day: 1, hours: [16, 17, 22] },
+          { day: 2, hours: [16, 15, 17] },
+          { day: 3, hours: [17, 19, 21] },
+          { day: 4, hours: [15, 16, 17] },
+          { day: 5, hours: [9, 18, 22] },
+          { day: 6, hours: [22, 21, 6] },
         ],
       },
     ],
@@ -461,8 +525,17 @@ export const PLAYBOOKS: readonly Playbook[] = [
       {
         source: 'sprout-x',
         label: 'Sprout Social',
-        windows: range(TUE_THU, 12, 18),
+        windows: [
+          { day: 0, from: 14, to: 15 },
+          { day: 0, from: 17, to: 18 },
+          { day: 1, from: 12, to: 18 },
+          { day: 2, from: 12, to: 18 },
+          { day: 3, from: 12, to: 18 },
+          { day: 4, from: 12, to: 18 },
+          { day: 6, from: 14, to: 18 },
+        ],
         peaks: [],
+        daily: [],
         weak: 'Samstag',
       },
       {
@@ -473,6 +546,15 @@ export const PLAYBOOKS: readonly Playbook[] = [
           { day: 1, hour: 9 },
           { day: 2, hour: 10 },
           { day: 2, hour: 9 },
+        ],
+        daily: [
+          { day: 0, hours: [9, 10, 8] },
+          { day: 1, hours: [9, 10, 11] },
+          { day: 2, hours: [10, 9, 11] },
+          { day: 3, hours: [9, 10, 8] },
+          { day: 4, hours: [9, 10, 11] },
+          { day: 5, hours: [9, 10, 11] },
+          { day: 6, hours: [9, 10, 8] },
         ],
         weak: 'abends 18–23 Uhr, Wochenende',
       },
@@ -487,11 +569,26 @@ export const PLAYBOOKS: readonly Playbook[] = [
       {
         source: 'buffer-threads',
         label: 'Buffer',
-        windows: range(WEEKDAYS, 6, 11),
+        windows: [
+          { day: 0, from: 6, to: 11 },
+          { day: 1, from: 6, to: 11 },
+          { day: 2, from: 6, to: 11 },
+          { day: 3, from: 6, to: 11 },
+          { day: 4, from: 6, to: 11 },
+        ],
         peaks: [
           { day: 3, hour: 9 },
           { day: 2, hour: 12 },
           { day: 2, hour: 9 },
+        ],
+        daily: [
+          { day: 0, hours: [12] },
+          { day: 1, hours: [10] },
+          { day: 2, hours: [12] },
+          { day: 3, hours: [9] },
+          { day: 4, hours: [10] },
+          { day: 5, hours: [10] },
+          { day: 6, hours: [11] },
         ],
         weak: 'abends 18–23 Uhr, Wochenende',
       },
@@ -603,30 +700,52 @@ export function describePeaks(study: StudyTimes) {
 /** Six 4-hour blocks per day: the heatmap's columns (diagram-design: 3–8 columns). */
 export const BLOCKS = [0, 4, 8, 12, 16, 20] as const
 
-/**
- * Study-hours per day × block: hours the studies' windows cover inside the block, plus one hour for each ranked
- * peak that falls outside a window. Summed over all studies of a platform.
- */
+/** Hours one study recommends on a weekday: its windows, weekly peaks and daily top slots, without double counting. */
+export function studyHours(study: StudyTimes, day: Weekday): Set<number> {
+  const hours = new Set<number>()
+  for (const w of study.windows) if (w.day === day) for (let h = w.from; h < w.to; h++) hours.add(h)
+  for (const p of study.peaks) if (p.day === day) hours.add(p.hour)
+  for (const d of study.daily) if (d.day === day) d.hours.forEach((h) => hours.add(h))
+  return hours
+}
+
+/** Study-hours per day × 4-hour block, summed over all studies of a platform. */
 export function blockScores(times: readonly StudyTimes[]): number[][] {
-  return DAYS.map((_, day) =>
-    BLOCKS.map((start) => {
-      let score = 0
-      for (const study of times) {
-        const covered = (hour: number) =>
-          study.windows.some((w) => w.day === day && hour >= w.from && hour < w.to)
-        for (let hour = start; hour < start + 4; hour++) if (covered(hour)) score++
-        for (const peak of study.peaks)
-          if (
-            peak.day === day &&
-            peak.hour >= start &&
-            peak.hour < start + 4 &&
-            !covered(peak.hour)
-          )
-            score++
-      }
-      return score
-    }),
-  )
+  return DAYS.map((_, dayIndex) => {
+    const day = dayIndex as Weekday
+    const perStudy = times.map((t) => studyHours(t, day))
+    return BLOCKS.map((start) =>
+      perStudy.reduce((sum, hours) => {
+        let n = 0
+        for (let h = start; h < start + 4; h++) if (hours.has(h)) n++
+        return sum + n
+      }, 0),
+    )
+  })
+}
+
+/** "Mo 9 · Di 9 · …": each day's top slot, for the study list. */
+export function describeDaily(study: StudyTimes) {
+  return study.daily
+    .filter((d) => d.hours.length)
+    .map((d) => `${DAYS[d.day]} ${d.hours[0]} Uhr`)
+    .join(' · ')
+}
+
+/** "Di–Do" for consecutive days, "Mo, Mi" otherwise. */
+export function dayRange(days: readonly Weekday[]) {
+  const sorted = [...days].sort((a, b) => a - b)
+  const runs: Weekday[][] = []
+  for (const d of sorted) {
+    const run = runs.at(-1)
+    if (run && d === run.at(-1)! + 1) run.push(d)
+    else runs.push([d])
+  }
+  return runs
+    .map((run) =>
+      run.length > 2 ? `${DAYS[run[0]!]}–${DAYS[run.at(-1)!]}` : run.map((d) => DAYS[d]).join(', '),
+    )
+    .join(', ')
 }
 
 /** All cells sharing the highest score (empty when nothing is recommended). */
@@ -650,7 +769,7 @@ export function describeCells(cells: readonly { day: Weekday; block: number }[])
     .sort(([a], [b]) => a - b)
     .map(([block, days]) => {
       const start = BLOCKS[block]!
-      return `${days.map((d) => DAYS[d]).join(', ')} ${start}–${start + 4} Uhr`
+      return `${dayRange(days)} ${start}–${start + 4} Uhr`
     })
     .join(' · ')
 }

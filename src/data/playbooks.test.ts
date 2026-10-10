@@ -76,23 +76,22 @@ describe('describeWindows / describePeaks', () => {
 })
 
 describe('heatmap scores', () => {
-  it('sums study-hours per 4-hour block and names the strongest cells', async () => {
-    const { blockScores, strongestCells, describeCells } = await import('./playbooks')
+  it('unions windows, weekly peaks and daily slots per study and names the strongest cells', async () => {
+    const { blockScores, strongestCells, describeCells, studyHours } = await import('./playbooks')
     const x = PLAYBOOKS.find((p) => p.id === 'x')!
+    // Tuesday: Sprout 12–18; Buffer daily 9, 10, 11 (weekly peak 9 is one of them, counted once).
+    expect([...studyHours(x.times[1]!, 1)].sort((a, b) => a - b)).toEqual([9, 10, 11])
     const scores = blockScores(x.times)
-    // Sprout: Tue–Thu 12–18 → 4 h in 12–16, 2 h in 16–20. Buffer peaks: Tue 9, Wed 10, Wed 9.
-    expect(scores[1]).toEqual([0, 0, 1, 4, 2, 0])
-    expect(scores[2]).toEqual([0, 0, 2, 4, 2, 0])
-    expect(scores[5]).toEqual([0, 0, 0, 0, 0, 0])
-    const strongest = strongestCells(scores)
-    expect(describeCells(strongest)).toBe('Di, Mi, Do 12–16 Uhr')
+    expect(scores[1]).toEqual([0, 0, 3, 4, 2, 0])
+    expect(scores[5]).toEqual([0, 0, 3, 0, 0, 0]) // Saturday: Buffer only
+    expect(describeCells(strongestCells(scores))).toBe('Di–Fr 12–16 Uhr')
     expect(strongestCells([[0, 0]])).toEqual([])
   })
 
-  it('counts a peak inside a window only once', async () => {
-    const { blockScores } = await import('./playbooks')
-    const linkedin = PLAYBOOKS.find((p) => p.id === 'linkedin')!
-    // Wed: Sprout 11–16 (1 h in 8–12, 4 h in 12–16) + Buffer 15–20 (1 h in 12–16, 4 h in 16–20); peak Wed 16 inside.
-    expect(blockScores(linkedin.times)[2]).toEqual([0, 0, 1, 5, 4, 0])
+  it('formats day ranges', async () => {
+    const { dayRange } = await import('./playbooks')
+    expect(dayRange([1, 2, 3])).toBe('Di–Do')
+    expect(dayRange([0, 2])).toBe('Mo, Mi')
+    expect(dayRange([0, 1, 4, 5, 6])).toBe('Mo, Di, Fr–So')
   })
 })

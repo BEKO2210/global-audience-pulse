@@ -38,6 +38,7 @@ test('switching platforms by click and arrow keys updates the panel', async ({ p
   const section = await openPlaybooks(page)
   await section.getByRole('tab', { name: 'LinkedIn' }).click()
   const panel = section.getByRole('tabpanel')
+  await panel.getByText('Zeiten der Studien im Detail').click()
   await expect(panel).toContainText('Mo–Fr 15–20 Uhr')
   await expect(panel.locator('.pb-heat-headline')).toContainText('Am stärksten')
   await expect(panel.locator('[data-focal]').first()).toBeVisible()
