@@ -7,6 +7,7 @@ import { PLATFORMS, resolveSelection } from './platforms.mjs'
 import { ollamaProvider } from './providers.mjs'
 import { errorResult, validateResult } from './schema.mjs'
 import { combine, parseRedditAtom, parseRss, parseTrends24 } from './sources.mjs'
+import { parseAnswer } from './ui.mjs'
 
 const good = (platform = 'X (Twitter)') => ({
   platform,
@@ -139,6 +140,17 @@ describe('parseRss / parseTrends24', () => {
       '<ol class=trend-card__list><li><a class=trend-link href=#>#Eins</a></li><li><a class=trend-link href=#>Zwei</a></li><li><a class=trend-link>#Eins</a></li></ol>' +
       '<ol class=trend-card__list><li><a class=trend-link>Alt</a></li></ol>'
     expect(parseTrends24(html)).toEqual(['#Eins', 'Zwei'])
+  })
+})
+
+describe('parseAnswer', () => {
+  it('reads plain selections and pasted command lines', () => {
+    expect(parseAnswer('  ')).toEqual({ selection: 'all' })
+    expect(parseAnswer('1,7')).toEqual({ selection: '1,7' })
+    expect(
+      parseAnswer('npm run research -- --platforms x,instagram --topic "Content Creator"'),
+    ).toEqual({ selection: 'x,instagram', topic: 'Content Creator' })
+    expect(parseAnswer("--topic 'KI'")).toEqual({ selection: 'all', topic: 'KI' })
   })
 })
 

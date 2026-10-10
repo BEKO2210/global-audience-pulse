@@ -1,30 +1,56 @@
 // Terminal interface: platform picker, live status board, result cards.
 import { createInterface } from 'node:readline/promises'
-import { CATEGORIES, PLATFORMS } from './platforms.mjs'
+import { CATEGORIES, PLATFORMS, resolveSelection } from './platforms.mjs'
 import { STATES } from './orchestrator.mjs'
 
 const tty = process.stdout.isTTY && !process.env.NO_COLOR
 const c = (code) => (s) => (tty ? `\x1b[${code}m${s}\x1b[0m` : s)
 export const style = { dim: c(2), bold: c(1), green: c(32), red: c(31), yellow: c(33), cyan: c(36) }
 
-export async function askSelection() {
+/**
+ * Read the picker answer. Accepts a plain selection ("1,7", "tech reddit", "all") or a pasted command line
+ * ("npm run research -- --platforms x --topic \"…\""), so copying the example into the prompt also works.
+ */
+export function parseAnswer(answer) {
+  const text = answer.trim()
+  if (!text) return { selection: 'all' }
+  if (!/--(platforms|topic)\b/.test(text)) return { selection: text }
+  const value = (flag) => text.match(new RegExp(`--${flag}\\s+(?:"([^"]*)"|'([^']*)'|(\\S+))`))
+  const pick = (m) => (m ? (m[1] ?? m[2] ?? m[3]) : undefined)
+  return { selection: pick(value('platforms')) ?? 'all', topic: pick(value('topic')) }
+}
+
+/** Interactive picker: re-asks on typos instead of aborting, then asks for an optional niche. */
+export async function askRun({ topic } = {}) {
   const lines = [style.bold('Plattformen'), '']
   for (const [key, label] of Object.entries(CATEGORIES)) {
     lines.push(`  ${style.cyan(key.padEnd(9))} ${label}`)
     PLATFORMS.forEach((p, i) => {
-      if (p.category === key) lines.push(`    ${String(i + 1).padStart(2)}  ${p.name.padEnd(22)} `)
+      if (p.category === key) lines.push(`    ${String(i + 1).padStart(2)}  ${p.name}`)
     })
   }
   lines.push(
     '',
     style.dim(
-      'Auswahl: Nummern, IDs oder Kategorien, kombinierbar – z. B. "1,7", "tech", "social reddit", "all"',
+      'Auswahl: Nummern, Namen oder Kategorien, kombinierbar – z. B. "1,7", "tech", "social reddit".',
     ),
+    style.dim('Enter = alle 10.'),
   )
   console.log(lines.join('\n'))
   const rl = createInterface({ input: process.stdin, output: process.stdout })
   try {
-    return (await rl.question('> ')).trim() || 'all'
+    for (;;) {
+      const answer = parseAnswer(await rl.question('Plattformen > '))
+      try {
+        const platforms = resolveSelection(answer.selection)
+        let chosen = answer.topic ?? topic
+        if (chosen === undefined)
+          chosen = (await rl.question('Thema/Nische (Enter = allgemein) > ')).trim() || undefined
+        return { platforms, topic: chosen }
+      } catch (e) {
+        console.log(style.red(`${e.message} – bitte nochmal.`))
+      }
+    }
   } finally {
     rl.close()
   }

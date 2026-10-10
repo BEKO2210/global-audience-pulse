@@ -23,8 +23,8 @@ export const MIN_EVIDENCE = 5
 
 export const CATEGORIES = {
   social: 'Social Media',
-  tech: 'Tech & Dev',
   longform: 'Long-Form & Community',
+  tech: 'Tech & Dev',
 }
 
 /** The 10 platform specialists. `live(topic)` pulls key-less live evidence; `domains` = sources named in the prompt. */

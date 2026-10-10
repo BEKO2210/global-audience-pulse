@@ -13,7 +13,7 @@ import { cacheKey, dispatch, loadReusable, saveRun } from './orchestrator.mjs'
 import { resolveSelection } from './platforms.mjs'
 import { ollamaProvider } from './providers.mjs'
 import { validateResult } from './schema.mjs'
-import { askSelection, renderCard, statusBoard, style } from './ui.mjs'
+import { askRun, renderCard, statusBoard, style } from './ui.mjs'
 
 const CACHE_DIR = join(process.cwd(), '.cache')
 
@@ -34,8 +34,11 @@ export function parseArgs(argv) {
 
 async function main() {
   const opts = parseArgs(process.argv.slice(2))
-  const selection = opts.platforms ?? (process.stdin.isTTY ? await askSelection() : 'all')
-  const platforms = resolveSelection(selection)
+  let platforms
+  if (opts.platforms) platforms = resolveSelection(opts.platforms)
+  else if (process.stdin.isTTY)
+    ({ platforms, topic: opts.topic } = await askRun({ topic: opts.topic }))
+  else platforms = resolveSelection('all')
   const provider = ollamaProvider({ model: opts.model })
   const today = new Date().toISOString().slice(0, 10)
   const key = cacheKey(opts.topic, `${provider.name}:${provider.model}`)
