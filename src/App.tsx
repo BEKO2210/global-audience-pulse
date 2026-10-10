@@ -7,7 +7,7 @@ import { PRESETS, REGIONS, REGION_BY_ID, type RegionId } from './config/regions'
 import { useAudience } from './hooks/useAudience'
 import { useLiveData } from './hooks/useLiveData'
 import { useScoreGrid } from './hooks/useScoreGrid'
-import { LiveReport } from './components/LiveReport'
+import { LiveReport, ReportTeaser, useLiveReport } from './components/LiveReport'
 import {
   circularMean,
   fastZonedParts,
@@ -188,6 +188,7 @@ export default function App() {
   const [snapshot, setSnapshot] = useState<Snapshot>(FALLBACK_SNAPSHOT)
   const [snapshotState, setSnapshotState] = useState<'loading' | 'live' | 'fallback'>('loading')
   const [minuteNow, setMinuteNow] = useState(() => new Date())
+  const liveReport = useLiveReport()
   const [scrubbed, setScrubbed] = useState<Date | null>(null)
   const [detail, setDetail] = useState<RegionId | null>(null)
   const sheetRef = useRef<HTMLElement>(null)
@@ -478,6 +479,7 @@ export default function App() {
                 )}
               </div>
               <div className="hero-aside">
+                <ReportTeaser data={liveReport} now={minuteNow} />
                 <div className="hero-recommendation">
                   <span className="eyebrow">Optimales Zeitfenster</span>
                   <div className="hero-window-time">
@@ -530,7 +532,6 @@ export default function App() {
                 </dl>
               </div>
             </Section>
-            <LiveReport now={minuteNow} />
             <div className="desktop-grid">
               <Section className="map-slot" delay={MOTION.stagger * 3}>
                 <Suspense
@@ -552,6 +553,7 @@ export default function App() {
                 />
               </Section>
             </div>
+            <LiveReport now={minuteNow} data={liveReport} />
             <Section>
               <div className="insight-strip">
                 <div>

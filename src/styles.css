@@ -2280,3 +2280,52 @@ button:active {
     margin: 8px var(--gutter) 32px;
   }
 }
+
+/* Hero teaser for the Lagebericht: fixed height reserved before the report arrives (no CLS). */
+.report-teaser {
+  display: grid;
+  gap: 3px;
+  min-height: 46px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--rule);
+  color: inherit;
+  text-decoration: none;
+}
+.report-teaser.is-empty {
+  pointer-events: none;
+}
+.report-teaser-label {
+  font:
+    11px 'Geist Mono Variable',
+    monospace;
+  color: var(--muted);
+}
+.report-teaser-text {
+  /* Kept small on purpose: it arrives after a network fetch and must not become the LCP element. */
+  font:
+    500 14px/1.3 'Geist Variable',
+    sans-serif;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.report-teaser:hover .report-teaser-text,
+.report-teaser:focus-visible .report-teaser-text {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+/* Visible AI disclosure (EU AI Act Art. 50(4)/(5)): plain text, readable, next to the headline. */
+.ai-badge {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 2px 7px;
+  border: 1px solid var(--rule-solid);
+  font:
+    500 10px/1.4 'Geist Variable',
+    sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink);
+  vertical-align: 1px;
+}

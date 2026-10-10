@@ -9,14 +9,23 @@ import { TrendChart } from './report/TrendChart'
 import type { LiveAnalysisPayload } from './report/types'
 import './LiveReport.css'
 
+/**
+ * EU AI Act Art. 50(2) machine-readable marking of AI-generated text (IPTC digital source type, the
+ * vocabulary C2PA uses); Art. 50(4)/(5) visible disclosure is the "Automatische AI-Analyse" label.
+ */
+const AI_MARK = {
+  'data-ai-generated': 'true',
+  'data-digital-source-type':
+    'http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia',
+} as const
+
 /** Reports older than this are shown as paused (the operator's PC is off); older than a day: hidden. */
 const STALE_HOURS = 3
 const HIDE_HOURS = 24
 
-export function LiveReport({ now }: { now: Date }) {
+/** Fetches the hourly report once and every 10 minutes; shared by the hero teaser and the full report. */
+export function useLiveReport() {
   const [data, setData] = useState<LiveAnalysisPayload | null>(null)
-  const [entered, setEntered] = useState(false)
-
   useEffect(() => {
     let cancelled = false
     const load = () =>
@@ -33,6 +42,29 @@ export function LiveReport({ now }: { now: Date }) {
       clearInterval(id)
     }
   }, [])
+  return data
+}
+
+/** One reserved line in the hero: never shifts the layout while the report loads. */
+export function ReportTeaser({ data, now }: { data: LiveAnalysisPayload | null; now: Date }) {
+  const zone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  const generated = data ? new Date(data.generatedAt) : null
+  const fresh = generated && (now.getTime() - generated.getTime()) / 3_600_000 <= HIDE_HOURS
+  if (!fresh || !data || !generated)
+    return <div className="report-teaser is-empty" aria-hidden="true" />
+  const ai = data.source === 'llm'
+  return (
+    <a className="report-teaser" href="#lagebericht" {...(ai ? AI_MARK : {})}>
+      <span className="report-teaser-label">
+        {ai ? 'Automatische AI-Analyse' : 'Lagebericht'} · {formatTime(generated, zone)}
+      </span>
+      <span className="report-teaser-text">{data.report.schlagzeile}</span>
+    </a>
+  )
+}
+
+export function LiveReport({ now, data }: { now: Date; data: LiveAnalysisPayload | null }) {
+  const [entered, setEntered] = useState(false)
 
   useEffect(() => {
     if (!data) return
@@ -56,11 +88,16 @@ export function LiveReport({ now }: { now: Date }) {
 
   return (
     <section
+      id="lagebericht"
       className={`live-report lr-root${stale ? ' is-stale' : ''}${entered ? ' is-entered' : ''}`}
       aria-labelledby="live-report-title"
+      {...(data.source === 'llm' ? AI_MARK : {})}
     >
       <div className="live-report-head">
-        <p className="eyebrow">Lagebericht</p>
+        <p className="eyebrow">
+          Lagebericht
+          {data.source === 'llm' && <span className="ai-badge">Automatische AI-Analyse</span>}
+        </p>
         <span className="live-report-time">
           {stale ? 'Pausiert seit ' : 'Stand '}
           {formatTime(generated, zone)} {timeZoneName(generated, zone)}
@@ -106,7 +143,7 @@ export function LiveReport({ now }: { now: Date }) {
 
       <p className="live-report-note">
         {data.source === 'llm'
-          ? `Automatisch geschrieben von einem lokalen KI-Modell (${data.model}) aus den Zahlen dieser Seite, vor ${relativeTime(now, generated)}. Jede Zahl im Text wird gegen die Daten geprüft; Einschätzungen können trotzdem danebenliegen.`
+          ? `Automatische AI-Analyse aus den Zahlen dieser Seite, vor ${relativeTime(now, generated)}, ohne menschliche Prüfung. Jede Zahl wird automatisch gegen die Daten geprüft; Einschätzungen können trotzdem danebenliegen.`
           : 'Automatisch aus den Zahlen dieser Seite zusammengestellt (Vorlage, ohne KI).'}
         {stale &&
           ' Neue Berichte erscheinen stündlich, sobald der Rechner des Betreibers wieder läuft.'}

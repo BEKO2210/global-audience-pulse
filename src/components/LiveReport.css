@@ -283,14 +283,20 @@
 
 @media (min-width: 900px) {
   .lr-audience-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
-@media (min-width: 1200px) {
-  .lr-audience-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
+/* "Global" leads as a full-width tile; the four audiences below form an even 2×2 / 1×4 grid. */
+.lr-audience-tile:first-child {
+  grid-column: 1 / -1;
+  padding: 16px 16px 18px;
+}
+.lr-audience-tile:first-child .lr-audience-score .lr-mono {
+  font-size: 44px;
+}
+.lr-audience-tile:first-child .lr-audience-name {
+  font-size: 15px;
 }
 
 .lr-audience-tile {

@@ -128,6 +128,20 @@ function Datenschutz() {
         </p>
       </section>
       <section>
+        <h2>Automatische AI-Analyse (Transparenz nach Art. 50 KI-Verordnung)</h2>
+        <p>
+          Der Lagebericht wird stündlich automatisch von einem KI-Sprachmodell erzeugt, das lokal
+          auf dem Rechner des Betreibers läuft. Es erhält ausschließlich die aggregierten Zahlen
+          dieser Seite (Aktivitätswerte, Ortszeiten, öffentliche Wikimedia- und
+          Weltbank-Statistiken) und keine personenbezogenen Daten von Besuchenden. Der Text wird
+          nicht von Menschen redigiert; jede Zahl wird automatisch gegen die Daten geprüft, ein
+          zweites Modell prüft die Aussagen. Auf der Seite ist der Text sichtbar als „Automatische
+          AI-Analyse“ gekennzeichnet und im Quelltext maschinenlesbar markiert (
+          <code>data-ai-generated</code>, IPTC <code>trainedAlgorithmicMedia</code>). Die Analyse
+          ist eine Einschätzung, keine Beratung.
+        </p>
+      </section>
+      <section>
         <h2>Schriften (self-hosted)</h2>
         <p>
           Alle verwendeten Schriften werden zusammen mit der Website ausgeliefert. Es entstehen

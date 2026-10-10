@@ -68,7 +68,11 @@ test('renders visual blocks from the v2 fixture', async ({ page }) => {
   await expect(section.getByText('Später posten zwischen 19:45 und 21:15 Uhr')).toBeVisible()
 
   await expect(section.getByText('Ganze Analyse lesen')).toBeVisible()
-  await expect(section).toContainText('lokalen KI-Modell (gemma4:12b-it-qat)')
+  // EU AI Act Art. 50: visible disclosure at first exposure + machine-readable marking.
+  await expect(section.locator('.ai-badge')).toHaveText('Automatische AI-Analyse')
+  await expect(section).toHaveAttribute('data-ai-generated', 'true')
+  await expect(section).toHaveAttribute('data-digital-source-type', /trainedAlgorithmicMedia/)
+  await expect(page.locator('.report-teaser-label')).toContainText('Automatische AI-Analyse')
   await expect(section).not.toHaveClass(/is-stale/)
 })
 

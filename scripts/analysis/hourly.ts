@@ -345,6 +345,11 @@ async function main() {
   }
   const result = {
     version: 2,
+    // EU AI Act Art. 50(2): machine-readable marking of AI-generated text.
+    aiGenerated: report !== null,
+    digitalSourceType: report
+      ? 'http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia'
+      : null,
     generatedAt: now.toISOString(),
     model: report ? MODEL : null,
     source: report ? 'llm' : 'template',
