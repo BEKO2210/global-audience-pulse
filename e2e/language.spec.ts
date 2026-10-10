@@ -18,7 +18,11 @@ test.describe('English system language', () => {
 
   test('leaves no German UI text outside the German-only AI briefing', async ({ page }) => {
     await openReady(page)
-    await page.mouse.wheel(0, 20_000)
+    // Scroll through so deferred sections mount (mobile WebKit has no mouse wheel).
+    for (let y = 0; y < 20_000; y += 800) {
+      await page.evaluate((top) => window.scrollTo(0, top), y)
+      await page.waitForTimeout(40)
+    }
     await page.waitForTimeout(800)
     const leftovers = await page.evaluate(() => {
       const found: string[] = []

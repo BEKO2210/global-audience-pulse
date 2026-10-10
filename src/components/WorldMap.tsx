@@ -24,7 +24,7 @@ const DE = {
 }
 const EN: typeof DE = {
   eyebrow: 'Live map',
-  title: 'Where the world is awake right now',
+  title: 'Who’s awake right now',
   mapLabel: 'World map with day–night line and activity points',
   pin: (region, score) => `${region}: ${score}% activity`,
   day: 'Day',
