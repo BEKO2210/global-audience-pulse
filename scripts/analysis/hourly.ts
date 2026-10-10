@@ -19,9 +19,11 @@ import {
 } from '../../src/lib/model'
 import { parseSnapshot, type Snapshot } from '../../src/lib/snapshot'
 import { formatTime, localDecimalHour, timeZoneName } from '../../src/lib/time'
+import { compare, liveSignals, readHistory, writeHistory, type LiveSignal } from './signals'
 
 const OLLAMA = process.env.OLLAMA_URL ?? 'http://127.0.0.1:11434'
 const MODEL = process.env.ANALYSIS_MODEL ?? 'gemma4:12b-it-qat'
+const CHECKER = process.env.CHECKER_MODEL ?? 'qwen3.5:9b'
 const SNAPSHOT_URL =
   process.env.SNAPSHOT_URL ?? 'https://beko2210.github.io/global-audience-pulse/data/snapshot.json'
 const ZONE = 'Europe/Berlin'
@@ -58,7 +60,12 @@ function gpuBusy() {
   }
 }
 
-function buildFacts(snapshot: Snapshot, now: Date) {
+function buildFacts(
+  snapshot: Snapshot,
+  now: Date,
+  live: LiveSignal[],
+  memory: ReturnType<typeof compare>,
+) {
   const ids = REGIONS.map((r) => r.id)
   const weights = normalizedWeights(ids, snapshot)
   const scoreAt = (d: Date) => globalActivity(REGIONS, ids, d, snapshot)
@@ -67,6 +74,8 @@ function buildFacts(snapshot: Snapshot, now: Date) {
   const regions = REGIONS.map((region) => {
     const hour = localDecimalHour(now, region.timeZone)
     return {
+      id: region.id,
+      flagge: region.flag,
       ort: region.city,
       region: region.name,
       ortszeit: formatTime(now, region.timeZone),
@@ -101,6 +110,23 @@ function buildFacts(snapshot: Snapshot, now: Date) {
       ? { name: preset.name, von: hm(best.start), bis: hm(best.end), score: round(best.score) }
       : { name: preset.name }
   })
+  const audiences = [
+    { name: 'Global', ids },
+    { name: 'DACH & Europa', ids: ['eu_central'] as const },
+    { name: 'USA', ids: ['us_east', 'us_west'] as const },
+    ...PRESETS.filter((preset) => preset.ids.length > 2),
+  ].map((audience) => {
+    const audienceScore = (d: Date) => globalActivity(REGIONS, audience.ids, d, snapshot)
+    const nowScore = round(audienceScore(now))
+    const best = findBestWindows(audienceScore, now, 24, undefined, 1)[0]
+    return {
+      name: audience.name,
+      scoreJetzt: nowScore,
+      status: statusFor(nowScore).label,
+      besteZeit: best ? `${hm(best.start)}–${hm(best.end)}` : null,
+      besteZeitScore: best ? round(best.score) : null,
+    }
+  })
   return {
     zeitpunkt: `${hm(now)} ${timeZoneName(now, ZONE)}`,
     gewichtung: 'Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)',
@@ -108,7 +134,10 @@ function buildFacts(snapshot: Snapshot, now: Date) {
     trendNaechsteStunden: trend,
     besteFenster24h: windows,
     presets,
+    zielgruppen: audiences,
     regionen: regions,
+    liveSignale: live,
+    gedaechtnis: memory,
     phasen: PHASES.map((p) => `${p.name} ${p.from}–${p.to} Uhr`),
   }
 }
@@ -122,8 +151,16 @@ const SCHEMA = {
     empfehlung: { type: 'string' },
     analyse: { type: 'string' },
     punkte: { type: 'array', items: { type: 'string' }, minItems: 3, maxItems: 3 },
+    zielgruppen: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: { name: { type: 'string' }, urteil: { type: 'string' } },
+        required: ['name', 'urteil'],
+      },
+    },
   },
-  required: ['schlagzeile', 'empfehlung', 'analyse', 'punkte'],
+  required: ['schlagzeile', 'empfehlung', 'analyse', 'punkte', 'zielgruppen'],
 }
 
 const PROMPT = (
@@ -137,7 +174,9 @@ Regeln:
 - schlagzeile: höchstens 70 Zeichen, die Lage in einem Satz.
 - empfehlung: 1–2 Sätze, konkret: jetzt posten oder wann (bestes Fenster nennen).
 - analyse: 3–4 Sätze: welche Märkte tragen den Wert gerade (größter beitragPunkte, nicht gewichtProzent), wohin entwickelt er sich in den nächsten Stunden, was bedeutet das für Creator.
-- punkte: genau 3 kurze Stichpunkte mit konkreten Fakten aus den Daten.
+- punkte: genau 3 kurze Stichpunkte mit konkreten Fakten aus den Daten. Wenn liveSignale eine Region mit großer Abweichung (mehr als 15 Prozent) zeigen, ist das einer der Punkte ("gerade ungewöhnlich aktiv/ruhig laut Wikipedia-Aufrufen").
+- Wenn gedaechtnis Werte enthält, vergleiche in der analyse mit gestern oder dem Wochenmittel derselben Stunde. Sind sie null, erwähne das Gedächtnis nicht.
+- zielgruppen: für jede Zielgruppe aus den Daten ein Urteil in höchstens 12 Wörtern (jetzt posten oder wann), gleicher name wie in den Daten.
 
 Daten (JSON):
 ${JSON.stringify(facts, null, 1)}`
@@ -185,17 +224,82 @@ async function generate(facts: Facts) {
       empfehlung: string
       analyse: string
       punkte: string[]
+      zielgruppen: { name: string; urteil: string }[]
     }
-    const text = [report.schlagzeile, report.empfehlung, report.analyse, ...report.punkte].join(' ')
+    const text = [
+      report.schlagzeile,
+      report.empfehlung,
+      report.analyse,
+      ...report.punkte,
+      ...report.zielgruppen.map((z) => z.urteil),
+    ].join(' ')
     const bad = invalidNumbers(text, allowed)
-    if (!bad.length && report.schlagzeile.length <= 90 && report.punkte.length === 3)
-      return { ...report, attempts: attempt }
+    const shapeOk = report.schlagzeile.length <= 90 && report.punkte.length === 3
+    const claims = !bad.length && shapeOk ? await checkClaims(facts, report) : []
+    if (!bad.length && shapeOk && !claims.length) return { ...report, attempts: attempt }
     lastProblem = bad.length
       ? `Diese Zahlen stehen nicht in den Daten: ${[...new Set(bad)].join(', ')}`
-      : 'Schlagzeile zu lang oder nicht genau 3 Punkte'
+      : !shapeOk
+        ? 'Schlagzeile zu lang oder nicht genau 3 Punkte'
+        : `Ein Prüfer fand Aussagen, die den Daten widersprechen: ${claims.join('; ')}`
     console.warn(`Versuch ${attempt} verworfen: ${lastProblem}`)
   }
   return null
+}
+
+/**
+ * Second opinion from a smaller local model: does any statement contradict the data (wrong place,
+ * wrong phase, wrong direction of the trend, a market that does not carry the score...)?
+ */
+async function checkClaims(facts: Facts, report: object): Promise<string[]> {
+  try {
+    const response = await fetch(`${OLLAMA}/api/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: CHECKER,
+        stream: false,
+        think: false,
+        keep_alive: '2m',
+        options: { temperature: 0, num_ctx: 8192 },
+        format: {
+          type: 'object',
+          properties: {
+            pruefungen: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  aussage: { type: 'string' },
+                  widerspruch: { type: 'boolean' },
+                  grund: { type: 'string' },
+                },
+                required: ['aussage', 'widerspruch', 'grund'],
+              },
+            },
+          },
+          required: ['pruefungen'],
+        },
+        messages: [
+          {
+            role: 'user',
+            content: `Prüfe jede Aussage des Berichts gegen die Daten. Setze widerspruch nur dann auf true, wenn die Aussage den Daten eindeutig widerspricht (falscher Ort, falsche Phase, falsche Trendrichtung, Wert einer anderen Region zugeordnet). Vereinfachungen, Bewertungen und Formulierungen sind KEIN Widerspruch. "Berlin" steht für die Region Europa Zentral.\n\nDATEN:\n${JSON.stringify(facts)}\n\nBERICHT:\n${JSON.stringify(report)}`,
+          },
+        ],
+      }),
+    })
+    if (!response.ok) return []
+    const data = await response.json()
+    const result = JSON.parse(data.message.content) as {
+      pruefungen: { aussage: string; widerspruch: boolean; grund: string }[]
+    }
+    return result.pruefungen
+      .filter((item) => item.widerspruch)
+      .map((item) => `${item.aussage} (${item.grund})`)
+      .slice(0, 4)
+  } catch {
+    return [] // checker unavailable: the number guard still applies
+  }
 }
 
 /** Deterministic fallback so the page never shows an unchecked text. */
@@ -211,19 +315,27 @@ function template(facts: Facts) {
     punkte: facts.regionen
       .slice(0, 3)
       .map((r) => `${r.ort}: ${r.phase}, ${r.ortszeit} Uhr, Score ${r.score}`),
+    zielgruppen: facts.zielgruppen.map((z) => ({
+      name: z.name,
+      urteil: z.besteZeit ? `Bestes Fenster ${z.besteZeit} Uhr` : z.status,
+    })),
     attempts: 0,
   }
 }
 
 async function main() {
   const out = process.argv[2] ?? 'analysis.json'
+  const historyPath = process.argv[3]
   if (gpuBusy() && !process.env.FORCE) {
     console.log('GPU belegt (Training/llama-server) – diese Stunde übersprungen.')
     process.exit(3)
   }
   const now = new Date()
   const snapshot = await loadSnapshot()
-  const facts = buildFacts(snapshot, now)
+  const history = await readHistory(historyPath)
+  const ids = REGIONS.map((r) => r.id)
+  const scoreNow = round(globalActivity(REGIONS, ids, now, snapshot))
+  const facts = buildFacts(snapshot, now, await liveSignals(now), compare(history, now, scoreNow))
   const started = Date.now()
   let report = null
   try {
@@ -232,7 +344,7 @@ async function main() {
     console.warn(`LLM nicht erreichbar: ${(error as Error).message}`)
   }
   const result = {
-    version: 1,
+    version: 2,
     generatedAt: now.toISOString(),
     model: report ? MODEL : null,
     source: report ? 'llm' : 'template',
@@ -242,6 +354,12 @@ async function main() {
     report: report ?? template(facts),
   }
   await writeFile(out, `${JSON.stringify(result, null, 2)}\n`)
+  if (historyPath)
+    await writeHistory(historyPath, history, {
+      t: now.toISOString(),
+      score: facts.gesamt.score,
+      regions: Object.fromEntries(facts.regionen.map((r) => [r.id, r.score])),
+    })
   console.log(`${result.source} · ${result.report.schlagzeile}`)
 }
 

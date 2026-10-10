@@ -24,7 +24,7 @@ npx esbuild scripts/analysis/hourly.ts --bundle --platform=node --format=esm --t
   --outfile="$OUT/hourly.mjs" --log-level=warning
 
 set +e
-node "$OUT/hourly.mjs" "$OUT/analysis.json"
+node "$OUT/hourly.mjs" "$OUT/analysis.json" "$OUT/history.jsonl"
 code=$?
 set -e
 if [ "$code" -eq 3 ]; then exit 0; fi # GPU busy: skip this hour, keep the last report
@@ -43,11 +43,13 @@ fi
 
 cd "$BRANCH_DIR"
 cp "$OUT/analysis.json" analysis.json
+[ -f "$OUT/history.jsonl" ] && cp "$OUT/history.jsonl" history.jsonl
 cat > README.md <<'EOF'
 Automatisch erzeugter Lagebericht für Global Audience Pulse (stündlich von einem lokalen Modell
 auf dem Rechner des Betreibers, nur solange dieser läuft). Wird bei jedem Lauf überschrieben.
 EOF
 git add analysis.json README.md
+[ -f history.jsonl ] && git add history.jsonl
 # One commit only: amend and force-push so the data branch never grows.
 if git rev-parse -q --verify HEAD >/dev/null; then
   git -c user.name="Global Audience Pulse Bot" -c user.email="nullmesh@protonmail.com" \

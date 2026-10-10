@@ -1,0 +1,277 @@
+{
+  "version": 2,
+  "generatedAt": "2026-10-10T07:57:49.000Z",
+  "model": "gemma4:12b-it-qat",
+  "source": "llm",
+  "durationSeconds": 63,
+  "snapshotGeneratedAt": "2026-10-10T07:50:03.364Z",
+  "facts": {
+    "zeitpunkt": "09:57 MESZ",
+    "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+    "gesamt": {
+      "score": 36,
+      "status": "Ruhephase",
+      "empfehlung": "Später posten"
+    },
+    "trendNaechsteStunden": [
+      {
+        "inStunden": 1,
+        "score": 39
+      },
+      {
+        "inStunden": 2,
+        "score": 42
+      },
+      {
+        "inStunden": 3,
+        "score": 45
+      }
+    ],
+    "besteFenster24h": [
+      {
+        "von": "20:00",
+        "bis": "21:30",
+        "score": 72,
+        "primetimeIn": ["Berlin", "London"]
+      },
+      {
+        "von": "01:00",
+        "bis": "02:30",
+        "score": 57,
+        "primetimeIn": ["New York", "São Paulo"]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Transatlantik",
+        "von": "20:00",
+        "bis": "21:30",
+        "score": 84
+      },
+      {
+        "name": "USA coast-to-coast",
+        "von": "01:30",
+        "bis": "03:00",
+        "score": 88
+      },
+      {
+        "name": "Ost-Welle",
+        "von": "19:30",
+        "bis": "21:00",
+        "score": 73
+      }
+    ],
+    "zielgruppen": [
+      {
+        "name": "Global",
+        "scoreJetzt": 36,
+        "status": "Ruhephase",
+        "besteZeit": "20:00–21:30",
+        "besteZeitScore": 72
+      },
+      {
+        "name": "DACH & Europa",
+        "scoreJetzt": 54,
+        "status": "Im Aufbau",
+        "besteZeit": "19:45–21:15",
+        "besteZeitScore": 95
+      },
+      {
+        "name": "USA",
+        "scoreJetzt": 14,
+        "status": "Ruhephase",
+        "besteZeit": "01:30–03:00",
+        "besteZeitScore": 88
+      },
+      {
+        "name": "Transatlantik",
+        "scoreJetzt": 32,
+        "status": "Ruhephase",
+        "besteZeit": "20:00–21:30",
+        "besteZeitScore": 84
+      },
+      {
+        "name": "Ost-Welle",
+        "scoreJetzt": 61,
+        "status": "Im Aufbau",
+        "besteZeit": "19:30–21:00",
+        "besteZeitScore": 73
+      }
+    ],
+    "regionen": [
+      {
+        "id": "eu_central",
+        "flagge": "eu",
+        "ort": "Berlin",
+        "region": "Europa Zentral",
+        "ortszeit": "09:57",
+        "phase": "Aktiver Tag",
+        "score": 54,
+        "gewichtProzent": 27,
+        "beitragPunkte": 14
+      },
+      {
+        "id": "east_asia",
+        "flagge": "jp",
+        "ort": "Tokio",
+        "region": "Ostasien",
+        "ortszeit": "16:57",
+        "phase": "Aktiver Tag",
+        "score": 75,
+        "gewichtProzent": 8,
+        "beitragPunkte": 6
+      },
+      {
+        "id": "india",
+        "flagge": "in",
+        "ort": "Mumbai",
+        "region": "Südasien",
+        "ortszeit": "13:27",
+        "phase": "Aktiver Tag",
+        "score": 77,
+        "gewichtProzent": 5,
+        "beitragPunkte": 4
+      },
+      {
+        "id": "us_west",
+        "flagge": "us",
+        "ort": "Los Angeles",
+        "region": "USA West",
+        "ortszeit": "00:57",
+        "phase": "Nachtruhe",
+        "score": 21,
+        "gewichtProzent": 16,
+        "beitragPunkte": 3
+      },
+      {
+        "id": "mena",
+        "flagge": "ae",
+        "ort": "Dubai",
+        "region": "Nahost & Nordafrika",
+        "ortszeit": "11:57",
+        "phase": "Aktiver Tag",
+        "score": 62,
+        "gewichtProzent": 5,
+        "beitragPunkte": 3
+      },
+      {
+        "id": "us_east",
+        "flagge": "us",
+        "ort": "New York",
+        "region": "USA Ost",
+        "ortszeit": "03:57",
+        "phase": "Nachtruhe",
+        "score": 9,
+        "gewichtProzent": 26,
+        "beitragPunkte": 2
+      },
+      {
+        "id": "eu_uk",
+        "flagge": "gb",
+        "ort": "London",
+        "region": "UK & Irland",
+        "ortszeit": "08:57",
+        "phase": "Morgen",
+        "score": 32,
+        "gewichtProzent": 6,
+        "beitragPunkte": 2
+      },
+      {
+        "id": "latam",
+        "flagge": "br",
+        "ort": "São Paulo",
+        "region": "Lateinamerika",
+        "ortszeit": "04:57",
+        "phase": "Nachtruhe",
+        "score": 16,
+        "gewichtProzent": 8,
+        "beitragPunkte": 1
+      }
+    ],
+    "liveSignale": [
+      {
+        "ort": "Berlin",
+        "letzteStundeOrtszeit": "06:00",
+        "aufrufe": 276795,
+        "typisch": 385123,
+        "abweichungProzent": -28
+      },
+      {
+        "ort": "São Paulo",
+        "letzteStundeOrtszeit": "01:00",
+        "aufrufe": 121904,
+        "typisch": 113212,
+        "abweichungProzent": 8
+      },
+      {
+        "ort": "Dubai",
+        "letzteStundeOrtszeit": "08:00",
+        "aufrufe": 78972,
+        "typisch": 74559,
+        "abweichungProzent": 6
+      },
+      {
+        "ort": "Mumbai",
+        "letzteStundeOrtszeit": "09:00",
+        "aufrufe": 22618,
+        "typisch": 22786,
+        "abweichungProzent": -1
+      },
+      {
+        "ort": "Tokio",
+        "letzteStundeOrtszeit": "13:00",
+        "aufrufe": 1338881,
+        "typisch": 1354426,
+        "abweichungProzent": -1
+      }
+    ],
+    "gedaechtnis": {
+      "stundenImGedaechtnis": 1,
+      "gesternGleicheZeit": null,
+      "differenzZuGestern": null,
+      "wochenmittelGleicheStunde": null,
+      "wochenhoch": 36,
+      "wochentief": 36
+    },
+    "phasen": [
+      "Nachtruhe 0–6 Uhr",
+      "Morgen 6–9 Uhr",
+      "Aktiver Tag 9–18 Uhr",
+      "Primetime 18–22 Uhr",
+      "Spätabend 22–24 Uhr"
+    ]
+  },
+  "report": {
+    "schlagzeile": "Aktueller Gesamtwert von 36 Punkten in der Ruhephase",
+    "empfehlung": "Später posten. Bestes Fenster liegt zwischen 20:00 und 21:30 Uhr.",
+    "analyse": "Europa Zentral trägt mit 14 Punkten den größten Beitrag zum aktuellen Wert. Der Score wird in den nächsten drei Stunden kontinuierlich auf 45 Punkte ansteigen. Für Creator bedeutet dies eine zunehmende Aktivität im europäischen Raum.",
+    "punkte": [
+      "Europa Zentral trägt 14 Punkte zum Gesamtwert bei",
+      "Der Score steigt in 3 Stunden auf 45 Punkte",
+      "Berlin zeigt eine Abweichung von -28 Prozent gegenüber den typischen Aufrufen"
+    ],
+    "zielgruppen": [
+      {
+        "name": "Global",
+        "urteil": "Später posten zwischen 20:00 und 21:30 Uhr"
+      },
+      {
+        "name": "DACH & Europa",
+        "urteil": "Später posten zwischen 19:45 und 21:15 Uhr"
+      },
+      {
+        "name": "USA",
+        "urteil": "Später posten zwischen 01:30 und 03:00 Uhr"
+      },
+      {
+        "name": "Transatlantik",
+        "urteil": "Später posten zwischen 20:00 und 21:30 Uhr"
+      },
+      {
+        "name": "Ost-Welle",
+        "urteil": "Später posten zwischen 19:30 und 21:00 Uhr"
+      }
+    ],
+    "attempts": 1
+  }
+}
