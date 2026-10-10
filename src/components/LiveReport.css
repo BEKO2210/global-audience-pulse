@@ -454,7 +454,7 @@
 }
 
 .lr-live-val-active {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .lr-live-val-quiet {

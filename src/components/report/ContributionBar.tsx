@@ -43,26 +43,17 @@ export function ContributionBar({ facts }: { facts: AnalysisFacts }) {
           return (
             <span
               key={r.id}
-              role="button"
-              tabIndex={0}
+              // Segments are a visual summary only (too small for touch targets); the rows below
+              // are the interactive, labelled controls. Mouse hover still pairs segment and row.
+              aria-hidden="true"
               className={`lr-contrib-segment${isActive ? ' is-active' : ''}${isDimmed ? ' is-dimmed' : ''}`}
               style={{
                 width: `${widthPct}%`,
                 backgroundColor: color,
               }}
               title={`${r.ort}: ${r.beitragPunkte} Punkte`}
-              aria-label={`${r.ort}: ${r.beitragPunkte} von ${gesamt} Punkten`}
               onMouseEnter={() => setActiveId(r.id)}
               onMouseLeave={() => setActiveId(null)}
-              onFocus={() => setActiveId(r.id)}
-              onBlur={() => setActiveId(null)}
-              onClick={() => handleToggle(r.id)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault()
-                  handleToggle(r.id)
-                }
-              }}
             >
               {widthPct >= 8 && (
                 <span className="lr-contrib-segment-flag" aria-hidden="true">

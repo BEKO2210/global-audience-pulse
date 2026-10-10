@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
 import { openReady } from './helpers'
 
@@ -144,3 +145,23 @@ test('hides reports older than a day and still renders v1 text-only payloads', a
   await expect(page.locator('.lr-contrib-bar')).toHaveCount(0)
   await expect(page.locator('.live-report li')).toHaveCount(3)
 })
+
+for (const theme of ['light', 'dark'] as const) {
+  test(`visual report has no serious axe violations incl. WCAG 2.2 (${theme})`, async ({
+    page,
+  }) => {
+    await page.addInitScript((value) => localStorage.setItem('gap-theme', value), theme)
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    await serve(page, withFreshTimestamp({ ...analysisV2, source: 'llm' }))
+    await openReady(page)
+    const section = page.locator('.live-report')
+    await section.scrollIntoViewIfNeeded()
+    const results = await new AxeBuilder({ page })
+      .include('.live-report')
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+      .analyze()
+    expect(
+      results.violations.filter((item) => ['serious', 'critical'].includes(item.impact ?? '')),
+    ).toEqual([])
+  })
+}

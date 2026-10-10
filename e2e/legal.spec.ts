@@ -41,7 +41,9 @@ for (const legal of pages) {
       /\/global-audience-pulse\//,
     )
 
-    const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()
+    const results = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+      .analyze()
     expect(
       results.violations.filter((item) => ['serious', 'critical'].includes(item.impact ?? '')),
     ).toEqual([])

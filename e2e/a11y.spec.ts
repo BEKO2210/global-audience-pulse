@@ -16,7 +16,9 @@ for (const theme of ['light', 'dark'] as const) {
     // Audit the settled UI: entrance fades would otherwise be sampled mid-opacity (flaky contrast).
     await page.emulateMedia({ reducedMotion: 'reduce' })
     await openReady(page)
-    const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze()
+    const results = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+      .analyze()
     expect(
       results.violations.filter((item) => ['serious', 'critical'].includes(item.impact ?? '')),
     ).toEqual([])
