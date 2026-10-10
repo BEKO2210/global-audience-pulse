@@ -70,5 +70,8 @@ export default defineConfig({
       },
     }),
   ],
-  test: { environment: 'node', include: ['src/**/*.test.ts', 'scripts/**/*.test.mjs'] },
+  test: {
+    environment: 'node',
+    include: ['src/**/*.test.ts', 'scripts/**/*.test.ts', 'scripts/**/*.test.mjs'],
+  },
 })
