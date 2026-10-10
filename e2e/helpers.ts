@@ -15,7 +15,7 @@ export async function openReady(page: Page, interceptAnalytics = true) {
   await page.route('https://raw.githubusercontent.com/**/health.json*', (route) =>
     (page as Page & { __healthServed?: boolean }).__healthServed
       ? route.fallback()
-      : route.fulfill({ status: 404, body: '' }),
+      : route.fulfill({ status: 200, json: {} }),
   )
   await page.goto('')
   await expect(page.getByRole('heading', { name: /Jetzt posten oder warten/i })).toBeVisible()

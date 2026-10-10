@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { reportStatus } from '../../src/components/ReportHealth'
+import { reportStatus } from '../../src/lib/pipeline'
 import {
   nextExpectedAt,
   summarizeRuns,

@@ -1,0 +1,435 @@
+/* KI-Pipeline – a technical desk in the diagram-design system: hairlines, mono for numbers, one accent. */
+
+.ai-pipeline {
+  --aip-ok: color-mix(in srgb, var(--ink) 62%, var(--paper));
+  --aip-retry: var(--accent);
+  --aip-warn: var(--series-2);
+  --aip-fail: var(--series-5);
+  --aip-skip: color-mix(in srgb, var(--ink) 14%, var(--paper));
+}
+
+.aip-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--rule-solid);
+  font:
+    600 11px/1 'Geist Mono Variable',
+    monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.aip-status i {
+  width: 8px;
+  height: 8px;
+  background: var(--muted);
+}
+.aip-status.is-active i {
+  background: var(--series-3);
+  animation: aip-blink 2.4s ease-in-out infinite;
+}
+.aip-status.is-delayed i {
+  background: var(--series-2);
+}
+.aip-fresh {
+  margin: -8px 0 24px;
+  color: var(--muted);
+  font:
+    12px/1.5 'Geist Mono Variable',
+    monospace;
+}
+
+/* KPI ledger */
+.aip-kpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0 0 32px;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule-solid);
+  border-left: 1px solid var(--rule);
+}
+.aip-kpis li {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.aip-kpis b {
+  white-space: nowrap;
+  font:
+    500 22px/1 'Geist Mono Variable',
+    monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.aip-kpis span {
+  color: var(--muted);
+  font-size: 12px;
+}
+@media (min-width: 720px) {
+  .aip-kpis {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .aip-kpis b {
+    font-size: 26px;
+  }
+}
+@media (min-width: 1100px) {
+  .aip-kpis {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+/* Pipeline: five stations, vertical on phones, one row from 900 px; links carry a flow token while active. */
+.aip-flow {
+  display: grid;
+  gap: 0;
+  margin-bottom: 32px;
+}
+.aip-flow-cell {
+  display: grid;
+  grid-template-rows: auto 28px;
+}
+.aip-flow-cell:last-of-type {
+  grid-template-rows: auto;
+}
+.aip-node {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 16px;
+  border: 1px solid var(--rule-solid);
+  background: var(--paper);
+}
+.aip-node::before {
+  content: '';
+  position: absolute;
+  inset: -1px auto -1px -1px;
+  width: 3px;
+  background: var(--aip-ok);
+}
+.aip-node.is-retry::before {
+  background: var(--aip-retry);
+}
+.aip-node.is-warn::before {
+  background: var(--aip-warn);
+}
+.aip-node.is-fail::before {
+  background: var(--aip-fail);
+}
+.aip-node.is-skip::before {
+  background: var(--aip-skip);
+}
+.aip-node.is-template::before {
+  background: var(--link);
+}
+.aip-step {
+  color: var(--muted);
+  font:
+    500 11px/1 'Geist Mono Variable',
+    monospace;
+}
+.aip-node strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+.aip-detail,
+.aip-sub {
+  color: var(--muted);
+  font-size: 12px;
+}
+.aip-node-name,
+.aip-node-value {
+  display: grid;
+  gap: 3px;
+}
+.aip-node-value {
+  justify-items: end;
+  text-align: right;
+}
+.aip-metric {
+  font:
+    500 16px/1.2 'Geist Mono Variable',
+    monospace;
+  font-variant-numeric: tabular-nums;
+}
+.aip-link {
+  position: relative;
+  justify-self: center;
+  width: 1px;
+  height: 100%;
+  background: var(--rule-solid);
+  overflow: hidden;
+}
+.aip-link i {
+  position: absolute;
+  left: -2px;
+  width: 5px;
+  height: 5px;
+  background: var(--accent);
+  animation: aip-flow-v 3s linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+.aip-loop {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.aip-loop span {
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+@media (min-width: 900px) {
+  .aip-flow {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .aip-node {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    padding: 14px 16px;
+  }
+  .aip-node-value {
+    justify-items: start;
+    text-align: left;
+    margin-top: 4px;
+  }
+  .aip-flow-cell {
+    grid-template-rows: none;
+    grid-template-columns: minmax(0, 1fr) 24px;
+  }
+  .aip-flow-cell:last-of-type {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .aip-link {
+    align-self: center;
+    justify-self: stretch;
+    width: 100%;
+    height: 1px;
+  }
+  .aip-link i {
+    top: -2px;
+    left: auto;
+    animation-name: aip-flow-h;
+  }
+  .aip-loop {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Matrix + compute bars side by side on wide screens */
+.aip-grid {
+  display: grid;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+@media (min-width: 1000px) {
+  .aip-grid {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 48px;
+  }
+}
+.ai-pipeline figure {
+  margin: 0;
+}
+.ai-pipeline figcaption {
+  margin-bottom: 12px;
+  color: var(--muted);
+  font:
+    500 11px/1.3 'Geist Mono Variable',
+    monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.aip-matrix-body {
+  display: grid;
+  gap: 3px;
+}
+.aip-matrix-row {
+  display: grid;
+  grid-template-columns: 92px repeat(var(--runs), minmax(0, 1fr));
+  gap: 3px;
+  align-items: center;
+}
+.aip-matrix-label {
+  color: var(--muted);
+  font-size: 12px;
+}
+.aip-matrix-row i {
+  height: 18px;
+  background: var(--aip-ok);
+}
+.aip-matrix-row i.is-retry,
+.aip-legend i.is-retry {
+  background: var(--aip-retry);
+}
+.aip-matrix-row i.is-warn,
+.aip-legend i.is-warn {
+  background: var(--aip-warn);
+}
+.aip-matrix-row i.is-fail,
+.aip-legend i.is-fail {
+  background: var(--aip-fail);
+}
+.aip-matrix-row i.is-skip,
+.aip-legend i.is-skip {
+  background: repeating-linear-gradient(45deg, var(--aip-skip) 0 3px, transparent 3px 6px);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+.aip-matrix-row i.is-template,
+.aip-legend i.is-template {
+  background: var(--link);
+}
+.aip-legend i.is-ok {
+  background: var(--aip-ok);
+}
+.aip-matrix-axis {
+  grid-template-columns: 92px 1fr 1fr;
+  color: var(--muted);
+  font:
+    11px/1 'Geist Mono Variable',
+    monospace;
+}
+.aip-axis-end {
+  text-align: right;
+}
+.aip-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font-size: 12px;
+}
+.aip-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.aip-legend i {
+  width: 10px;
+  height: 10px;
+}
+.aip-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 120px;
+  border-bottom: 1px solid var(--rule-solid);
+}
+.aip-bar {
+  display: flex;
+  flex: 1;
+  flex-direction: column-reverse;
+  justify-content: flex-start;
+  height: 100%;
+}
+.aip-bar i.is-writer,
+.aip-legend i.is-writer {
+  background: var(--ink);
+}
+.aip-bar i.is-checker,
+.aip-legend i.is-checker {
+  background: var(--link);
+}
+.aip-bar i {
+  display: block;
+  width: 100%;
+}
+.aip-bars-axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  color: var(--muted);
+  font:
+    11px/1 'Geist Mono Variable',
+    monospace;
+}
+
+/* Run log: terminal register */
+.aip-log ol {
+  margin: 0;
+  padding: 12px 16px;
+  list-style: none;
+  border: 1px solid var(--rule-solid);
+  background: color-mix(in srgb, var(--ink) 4%, var(--paper));
+  font:
+    12px/1.7 'Geist Mono Variable',
+    monospace;
+}
+.aip-log li {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 12px;
+  padding: 2px 0;
+}
+.aip-log-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 12px;
+}
+.aip-log time {
+  color: var(--muted);
+}
+/* status as a coloured mark; the text stays ink so it keeps 4.5:1 on the tinted log */
+.aip-log-outcome {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink);
+}
+.aip-log-outcome::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  background: var(--aip-ok);
+}
+.aip-log-outcome.is-published::before {
+  background: var(--series-3);
+}
+.aip-log-outcome.is-template::before {
+  background: var(--link);
+}
+.aip-log-outcome.is-skipped-gpu::before {
+  background: var(--aip-skip);
+}
+.aip-log-outcome.is-failed::before {
+  background: var(--aip-fail);
+}
+.aip-log-note {
+  color: var(--accent-ink);
+}
+
+@keyframes aip-flow-h {
+  from {
+    left: -6px;
+  }
+  to {
+    left: 100%;
+  }
+}
+@keyframes aip-flow-v {
+  from {
+    top: -6px;
+  }
+  to {
+    top: 100%;
+  }
+}
+@keyframes aip-blink {
+  50% {
+    opacity: 0.35;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aip-status.is-active i,
+  .aip-link i {
+    animation: none;
+  }
+}

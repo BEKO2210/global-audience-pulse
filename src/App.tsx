@@ -10,7 +10,7 @@ import { useScoreGrid } from './hooks/useScoreGrid'
 import { useDeferredMount } from './hooks/useDeferredMount'
 import { ReportTeaser, useLiveReport } from './components/reportShared'
 const LiveReport = lazy(() => import('./components/LiveReport'))
-const ReportHealth = lazy(() => import('./components/ReportHealth'))
+const AiPipeline = lazy(() => import('./components/AiPipeline'))
 import {
   circularMean,
   fastZonedParts,
@@ -624,6 +624,11 @@ export default function App() {
                 <LiveReport now={minuteNow} data={liveReport} />
               </Suspense>
             )}
+            <Section defer placeholderHeight={1100}>
+              <Suspense fallback={null}>
+                <AiPipeline />
+              </Suspense>
+            </Section>
             <Section>
               <div className="insight-strip">
                 <div>
@@ -780,9 +785,6 @@ export default function App() {
                   </h2>
                 </div>
                 <div className="method-copy">
-                  <Suspense fallback={null}>
-                    <ReportHealth />
-                  </Suspense>
                   <div className="weighting">
                     <span className="weighting-label" id="weighting-label">
                       Gewichtung der Regionen
