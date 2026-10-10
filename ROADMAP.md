@@ -22,10 +22,10 @@ Auftragsdateien: T-001, T-010, T-011, T-012 liegen bereit; für die übrigen leg
 
 ### Phase A – Lagebericht sichtbar machen (jetzt)
 
-| ID    | Aufgabe                                                                                                                    | Agenten                               | Status |
-| ----- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | ------ |
-| T-001 | Lagebericht-Visualisierung v2: Farbe↔Land eindeutig, Ranking-Balken statt Liste, besserer Trend, lesbares Live-Signal      | Antigravity → Cursor → Codex → Claude | offen  |
-| T-002 | Bericht-Gesundheit: Job-Status (letzter Lauf, Dauer, Versuche, Prüfer-Ablehnungen) als `health.json` + Anzeige in Methodik | Codex → Cursor → Claude               | offen  |
+| ID    | Aufgabe                                                                                                                    | Agenten                               | Status                                          |
+| ----- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | ----------------------------------------------- |
+| T-001 | Lagebericht-Visualisierung v2: Farbe↔Land eindeutig, Ranking-Balken statt Liste, besserer Trend, lesbares Live-Signal      | Antigravity → Cursor → Codex → Claude | in Arbeit (Antigravity, 2. Versuch, 2026-10-10) |
+| T-002 | Bericht-Gesundheit: Job-Status (letzter Lauf, Dauer, Versuche, Prüfer-Ablehnungen) als `health.json` + Anzeige in Methodik | Codex → Cursor → Claude               | offen                                           |
 
 ### Phase B – Lokale Intelligenz vertiefen (Job auf pop-os, `scripts/analysis/`)
 
