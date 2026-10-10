@@ -7,7 +7,8 @@ import { PRESETS, REGIONS, REGION_BY_ID, type RegionId } from './config/regions'
 import { useAudience } from './hooks/useAudience'
 import { useLiveData } from './hooks/useLiveData'
 import { useScoreGrid } from './hooks/useScoreGrid'
-import { LiveReport, ReportTeaser, useLiveReport } from './components/LiveReport'
+import { ReportTeaser, useLiveReport } from './components/reportShared'
+const LiveReport = lazy(() => import('./components/LiveReport'))
 import {
   circularMean,
   fastZonedParts,
@@ -553,7 +554,11 @@ export default function App() {
                 />
               </Section>
             </div>
-            <LiveReport now={minuteNow} data={liveReport} />
+            {liveReport && (
+              <Suspense fallback={null}>
+                <LiveReport now={minuteNow} data={liveReport} />
+              </Suspense>
+            )}
             <Section>
               <div className="insight-strip">
                 <div>
