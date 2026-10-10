@@ -38,3 +38,29 @@ describe('findBestWindows', () => {
       )
   })
 })
+
+describe('Feiertage im Modell', () => {
+  it('rechnet einen bundesweiten Feiertag wie einen Sonntag', async () => {
+    const { regionActivity } = await import('./model')
+    const { FALLBACK_SNAPSHOT } = await import('./snapshot')
+    const { REGION_BY_ID } = await import('../config/regions')
+    const berlin = REGION_BY_ID.eu_central
+    // Thursday 2026-12-24 12:00 Berlin (a weekday) vs. the same moment marked as a holiday.
+    const at = new Date('2026-12-24T11:00:00Z')
+    const workday = regionActivity(berlin, at, FALLBACK_SNAPSHOT)
+    const holiday = regionActivity(berlin, at, {
+      ...FALLBACK_SNAPSHOT,
+      holidays: { eu_central: [{ date: '2026-12-24', name: 'Test' }] },
+    })
+    const sunday = regionActivity(berlin, new Date('2026-12-27T11:00:00Z'), FALLBACK_SNAPSHOT)
+    expect(holiday).not.toBe(workday)
+    expect(holiday).toBeCloseTo(sunday, 5)
+    // Another region's holiday changes nothing for Berlin.
+    expect(
+      regionActivity(berlin, at, {
+        ...FALLBACK_SNAPSHOT,
+        holidays: { us_east: [{ date: '2026-12-24', name: 'Test' }] },
+      }),
+    ).toBe(workday)
+  })
+})

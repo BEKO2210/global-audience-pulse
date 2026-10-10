@@ -9,5 +9,5 @@ Third-party material keeps its own license:
 - Flags: flag-icons (https://github.com/lipis/flag-icons), MIT License.
 - Icons: Phosphor Icons (https://github.com/phosphor-icons/react), MIT License.
 - Map data: world-atlas / Natural Earth (public domain), ISC-licensed package.
-- Data: World Bank Open Data (CC BY 4.0), Wikimedia pageview statistics (CC0).
+- Data: World Bank Open Data (CC BY 4.0), Wikimedia pageview statistics (CC0), public holidays from Nager.Date (https://date.nager.at, MIT-licensed project).
 - npm dependencies: see each package's license in node_modules.

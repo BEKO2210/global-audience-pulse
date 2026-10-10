@@ -4,6 +4,7 @@ import { REGIONS, type RegionId } from '../config/regions'
 import type { LiveMeasure } from '../hooks/useLiveData'
 import { normalizedWeights, phaseAt, type ScoreGrid } from '../lib/model'
 import type { Snapshot } from '../lib/snapshot'
+import { holidayAt } from '../lib/holidays'
 import { localDecimalHourFast } from '../lib/time'
 import { Sparkline } from './Sparkline'
 import { Flag } from './Flag'
@@ -112,6 +113,7 @@ export function RegionCards({
           const index = REGIONS.findIndex((item) => item.id === region.id)
           const score = grid.activityAt(region.id, date)
           const phase = phaseAt(localDecimalHourFast(date, region.timeZone))
+          const holiday = holidayAt(snapshot.holidays, region, date)
           const measured = Boolean(snapshot.profiles[region.id])
           const values = Array.from({ length: 48 }, (_, i) =>
             grid.activityAt(region.id, new Date(date.getTime() + (i - 12) * 30 * 60_000)),
@@ -140,6 +142,7 @@ export function RegionCards({
                     <b>{region.city}</b>
                     <small>
                       <PhaseIcon icon={phase.icon} /> {phase.name}
+                      {holiday && <span className="holiday-mark"> · Feiertag</span>}
                     </small>
                     {liveStatus === 'fallback' && region.project && (
                       <small className="compact-profile">Profil (Snapshot)</small>
@@ -172,6 +175,11 @@ export function RegionCards({
                   <p className="phase">
                     <PhaseIcon icon={phase.icon} /> {phase.name}
                   </p>
+                  {holiday && (
+                    <p className="holiday-note">
+                      Feiertag: {holiday.name} – wird wie ein Sonntag gerechnet
+                    </p>
+                  )}
                   <div className="card-score">
                     <strong>
                       <AnimatedNumber value={score} />

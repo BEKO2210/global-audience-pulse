@@ -14,7 +14,7 @@ export function Flag({
     <img
       className="flag-image"
       src={FLAG_URLS[code]}
-      alt={`${label} Flagge`}
+      alt={label ? `${label} Flagge` : ''}
       width={size}
       height={Math.round((size * 3) / 4)}
     />

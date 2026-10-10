@@ -1,3 +1,4 @@
+import type { Holidays } from './holidays'
 import type { RegionId } from '../config/regions'
 
 export type WeightingMode = 'reach' | 'value'
@@ -13,11 +14,13 @@ export interface SourceMeta {
 }
 export interface Snapshot {
   generatedAt: string
-  sources: { worldBank: SourceMeta; wikimedia: SourceMeta }
+  sources: { worldBank: SourceMeta; wikimedia: SourceMeta; holidays?: SourceMeta }
   weights: Record<WeightingMode, Record<RegionId, number>>
   weightingMode: WeightingMode
   profiles: Partial<Record<RegionId, Profile>>
   dataYears: Record<string, number>
+  /** nationwide public holidays per region, treated like a Sunday by the model */
+  holidays?: Holidays
 }
 
 const fallbackReach = {
@@ -96,7 +99,26 @@ export function parseSnapshot(input: unknown): Snapshot {
     weightingMode: raw.weightingMode === 'reach' ? 'reach' : 'value',
     profiles,
     dataYears: raw.dataYears && typeof raw.dataYears === 'object' ? raw.dataYears : {},
+    holidays: parseHolidays(raw.holidays),
   }
+}
+
+/** Keep only well-formed { date: YYYY-MM-DD, name } entries for known regions. */
+function parseHolidays(input: unknown): Holidays {
+  if (!input || typeof input !== 'object') return {}
+  const out: Holidays = {}
+  for (const [id, list] of Object.entries(input as Record<string, unknown>)) {
+    if (!Array.isArray(list)) continue
+    const clean = list.filter(
+      (h): h is { date: string; name: string } =>
+        !!h &&
+        typeof h === 'object' &&
+        /^\d{4}-\d{2}-\d{2}$/.test((h as { date?: unknown }).date as string) &&
+        typeof (h as { name?: unknown }).name === 'string',
+    )
+    if (clean.length) out[id as RegionId] = clean
+  }
+  return out
 }
 
 export async function loadSnapshot(base = import.meta.env.BASE_URL, fresh = false) {

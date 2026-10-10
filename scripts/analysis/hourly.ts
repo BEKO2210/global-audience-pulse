@@ -18,6 +18,7 @@ import {
   normalizedWeights,
 } from '../../src/lib/model'
 import { parseSnapshot, type Snapshot } from '../../src/lib/snapshot'
+import { holidayAt } from '../../src/lib/holidays'
 import { formatTime, localDecimalHour, timeZoneName } from '../../src/lib/time'
 import { compare, liveSignals, readHistory, writeHistory, type LiveSignal } from './signals'
 import type { AnalysisRun, DataFetchError, ModelCall, RunRejection } from './health'
@@ -174,6 +175,20 @@ function buildFacts(
     zielgruppen: audiences,
     regionen: regions,
     liveSignale: live,
+    // Nationwide public holidays today/tomorrow by each region's own calendar date (the model already counts
+    // them as a Sunday). Empty when none – the report must not invent one.
+    feiertage: REGIONS.flatMap((region) =>
+      (['heute', 'morgen'] as const).flatMap((wann, offset) => {
+        const h = holidayAt(
+          snapshot.holidays,
+          region,
+          new Date(now.getTime() + offset * 86_400_000),
+        )
+        return h
+          ? [{ ort: region.city, flagge: region.flag, wann, datum: h.date, name: h.name }]
+          : []
+      }),
+    ),
     gedaechtnis: memory,
     phasen: PHASES.map((p) => `${p.name} ${p.from}–${p.to} Uhr`),
   }
@@ -231,6 +246,9 @@ Regeln:
 - analyse: 3–4 Sätze: welche Märkte tragen den Wert gerade (größter beitragPunkte, nicht gewichtProzent), wohin entwickelt er sich in den nächsten Stunden, was bedeutet das für Creator.
 - punkte: genau 3 kurze Stichpunkte mit konkreten Fakten aus den Daten. Wenn liveSignale eine Region mit großer Abweichung (mehr als 15 Prozent) zeigen, ist das einer der Punkte ("gerade ungewöhnlich aktiv/ruhig laut Wikipedia-Aufrufen").
 - Wenn gedaechtnis Werte enthält, vergleiche in der analyse mit gestern oder dem Wochenmittel derselben Stunde. Sind sie null, erwähne das Gedächtnis nicht.
+- Wenn feiertage Einträge enthält, nenne sie sachlich in der analyse (Ort, heute/morgen, Name). Der Gesamtwert
+  berücksichtigt sie bereits wie einen Sonntag. Erfinde keine Wirkung, die nicht aus den Zahlen folgt. Ist die Liste
+  leer, erwähne keine Feiertage.
 - zielgruppen: für jede Zielgruppe aus den Daten ein Urteil in höchstens 12 Wörtern (jetzt posten oder wann), gleicher name wie in den Daten.
 
 Daten (JSON):

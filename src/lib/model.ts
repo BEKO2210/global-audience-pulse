@@ -54,7 +54,10 @@ function activityFromParts(
   snapshot: Snapshot,
 ) {
   const hour = parts.hour + parts.minute / 60 + parts.second / 3600
-  const weekend = parts.weekday === 'Sat' || parts.weekday === 'Sun'
+  // A nationwide public holiday behaves like a Sunday: same baseline and measured weekend profile.
+  const day = `${parts.year}-${String(parts.month).padStart(2, '0')}-${String(parts.day).padStart(2, '0')}`
+  const holiday = snapshot.holidays?.[region.id]?.some((h) => h.date === day) ?? false
+  const weekend = parts.weekday === 'Sat' || parts.weekday === 'Sun' || holiday
   const baseline = baselineActivity(hour, weekend)
   const profile = snapshot.profiles[region.id]
   if (!profile) return baseline

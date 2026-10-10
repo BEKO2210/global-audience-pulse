@@ -38,6 +38,7 @@ export const DATA_SOURCES = {
   worldBankGdpPerCapita: 'https://data.worldbank.org/indicator/NY.GDP.PCAP.CD',
   wikimedia: 'https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate',
   diagramDesign: 'https://github.com/cathrynlavery/diagram-design',
+  holidays: 'https://date.nager.at',
   liveAnalysis:
     'https://raw.githubusercontent.com/BEKO2210/global-audience-pulse/live-analysis/analysis.json',
   analysisHealth:

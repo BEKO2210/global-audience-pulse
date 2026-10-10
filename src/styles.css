@@ -2372,3 +2372,15 @@ button:active {
     height: 240px;
   }
 }
+
+/* T-011: nationwide public holiday on the region's local date */
+.holiday-mark {
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+.holiday-note {
+  margin: 4px 0 0;
+  color: var(--accent-ink);
+  font-size: 12px;
+  line-height: 1.4;
+}

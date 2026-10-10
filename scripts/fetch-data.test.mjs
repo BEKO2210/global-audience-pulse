@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { localParts } from './fetch-data.mjs'
+import { localParts, pickHolidays } from './fetch-data.mjs'
 
 describe('Wikimedia-Zeitstempel', () => {
   it('ordnet ein bekanntes API-Format DST-korrekt der lokalen Stunde zu', () => {
@@ -9,5 +9,27 @@ describe('Wikimedia-Zeitstempel', () => {
 
   it('weist abweichende Formate zurück', () => {
     expect(() => localParts('2026-10-25', 'Europe/Berlin')).toThrow(/Zeitstempel/)
+  })
+})
+
+describe('Feiertage', () => {
+  it('übernimmt nur bundesweite gesetzliche Feiertage', () => {
+    const items = [
+      {
+        date: '2026-10-03',
+        localName: 'Tag der Deutschen Einheit',
+        global: true,
+        types: ['Public'],
+      },
+      { date: '2026-10-31', localName: 'Reformationstag', global: false, types: ['Public'] },
+      { date: '2026-12-24', localName: 'Heiligabend', global: true, types: ['Observance'] },
+    ]
+    expect(pickHolidays(items)).toEqual([{ date: '2026-10-03', name: 'Tag der Deutschen Einheit' }])
+  })
+
+  it('zählt Stunden eines Feiertags zum Wochenendprofil', () => {
+    // Saturday 2026-10-03 is a weekend anyway; Thursday 2026-12-24 12:00 Berlin is a weekday unless listed.
+    expect(localParts('2026122411', 'Europe/Berlin').weekend).toBe(false)
+    expect(localParts('2026122411', 'Europe/Berlin', new Set(['2026-12-24'])).weekend).toBe(true)
   })
 })

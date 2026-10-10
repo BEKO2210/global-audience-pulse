@@ -8,6 +8,7 @@ const userAgent = 'GlobalAudiencePulse/1.0 (https://github.com/BEKO2210/global-a
 const regions = REGIONS
 const wbRoot = 'https://api.worldbank.org/v2/country'
 const wikiRoot = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate'
+const holidayRoot = 'https://date.nager.at/api/v3/PublicHolidays'
 
 async function json(url) {
   const response = await fetch(url, { headers: { 'User-Agent': userAgent } })
@@ -24,7 +25,40 @@ async function worldBank(indicator) {
 
 const stamp = (date) => date.toISOString().replace(/[-:T]/g, '').slice(0, 10)
 
-export function localParts(timestamp, zone) {
+/**
+ * Nationwide public holidays per region from Nager.Date (no CORS, so fetched here at build time). Only entries
+ * that apply to the whole country (`global`) and are public holidays; regional days like Reformationstag are not.
+ */
+export function pickHolidays(items) {
+  return items
+    .filter((h) => h.global && (h.types ?? ['Public']).includes('Public'))
+    .map((h) => ({ date: h.date, name: h.localName }))
+}
+
+async function holidays(years) {
+  const byCountry = {}
+  const urls = []
+  for (const country of [...new Set(regions.map((r) => r.holidayCountry).filter(Boolean))]) {
+    byCountry[country] = []
+    for (const year of years) {
+      const url = `${holidayRoot}/${year}/${country}`
+      urls.push(url)
+      try {
+        byCountry[country].push(...pickHolidays(await json(url)))
+      } catch (error) {
+        console.warn(`Warnung: Feiertage ${country} ${year}: ${error.message}`)
+      }
+    }
+  }
+  const perRegion = Object.fromEntries(
+    regions
+      .filter((r) => r.holidayCountry && byCountry[r.holidayCountry]?.length)
+      .map((r) => [r.id, byCountry[r.holidayCountry]]),
+  )
+  return { perRegion, urls }
+}
+
+export function localParts(timestamp, zone, holidayDates = new Set()) {
   if (!/^\d{10}$/.test(timestamp)) throw new Error(`Ungültiger Wikimedia-Zeitstempel: ${timestamp}`)
   const date = new Date(
     `${timestamp.slice(0, 4)}-${timestamp.slice(4, 6)}-${timestamp.slice(6, 8)}T${timestamp.slice(8, 10)}:00:00Z`,
@@ -33,19 +67,25 @@ export function localParts(timestamp, zone) {
     timeZone: zone,
     hour: 'numeric',
     weekday: 'short',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
     hourCycle: 'h23',
   }).formatToParts(date)
+  const get = (type) => parts.find((p) => p.type === type)?.value
+  const day = `${get('year')}-${get('month')}-${get('day')}`
   return {
-    hour: Number(parts.find((p) => p.type === 'hour')?.value),
-    weekend: ['Sat', 'Sun'].includes(parts.find((p) => p.type === 'weekday')?.value),
+    hour: Number(get('hour')),
+    // A public holiday's hours go into the weekend profile: people behave like on a Sunday.
+    weekend: ['Sat', 'Sun'].includes(get('weekday')) || holidayDates.has(day),
   }
 }
 
-function profile(items, zone) {
+function profile(items, zone, holidayDates = new Set()) {
   const sums = { weekday: Array(24).fill(0), weekend: Array(24).fill(0) }
   const counts = { weekday: Array(24).fill(0), weekend: Array(24).fill(0) }
   for (const item of items) {
-    const p = localParts(item.timestamp, zone)
+    const p = localParts(item.timestamp, zone, holidayDates)
     const kind = p.weekend ? 'weekend' : 'weekday'
     sums[kind][p.hour] += item.views
     counts[kind][p.hour] += 1
@@ -75,6 +115,9 @@ async function main() {
       worldBank('IT.NET.USER.ZS'),
       worldBank('NY.GDP.PCAP.CD'),
     ])
+    // Last year (for the 28-day profile window around New Year), this year and next (7-day forecasts in December).
+    const year = now.getUTCFullYear()
+    const holidayData = await holidays([year - 1, year, year + 1])
     const byCode = (rows) =>
       Object.fromEntries(rows.filter((r) => r.countryiso3code).map((r) => [r.countryiso3code, r]))
     const pop = byCode(population.rows)
@@ -120,7 +163,11 @@ async function main() {
           try {
             const body = await json(url)
             profiles[region.id] = {
-              ...profile(body.items ?? [], region.timeZone),
+              ...profile(
+                body.items ?? [],
+                region.timeZone,
+                new Set((holidayData.perRegion[region.id] ?? []).map((h) => h.date)),
+              ),
               lastMeasuredAt: lastFullHour.toISOString(),
             }
           } catch (error) {
@@ -134,11 +181,13 @@ async function main() {
       sources: {
         worldBank: { fetchedAt, urls: [population.url, internet.url, gdp.url] },
         wikimedia: { fetchedAt, urls: wikiUrls },
+        holidays: { fetchedAt, urls: holidayData.urls },
       },
       weights,
       weightingMode: 'value',
       profiles,
       dataYears,
+      holidays: holidayData.perRegion,
     }
     await mkdir(dirname(output), { recursive: true })
     await writeFile(output, `${JSON.stringify(snapshot, null, 2)}\n`)

@@ -26,6 +26,11 @@ for (const [id, profile] of Object.entries(snapshot.profiles ?? {})) {
     }
   }
 }
+for (const [id, list] of Object.entries(snapshot.holidays ?? {})) {
+  if (!ids.includes(id)) errors.push(`Unbekannte Feiertags-Region: ${id}`)
+  if (!Array.isArray(list) || list.some((h) => !/^\d{4}-\d{2}-\d{2}$/.test(h?.date) || !h?.name))
+    errors.push(`holidays.${id} muss { date: JJJJ-MM-TT, name } enthalten`)
+}
 if (!Object.keys(snapshot.profiles ?? {}).length)
   errors.push('Mindestens ein Messprofil ist erforderlich')
 

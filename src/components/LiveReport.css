@@ -688,3 +688,10 @@
 .lr-nowrap {
   white-space: nowrap;
 }
+
+.lr-holiday {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--rule-solid));
+}

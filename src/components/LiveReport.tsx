@@ -4,6 +4,7 @@ import { AudienceGrid } from './report/AudienceGrid'
 import { ContributionBar } from './report/ContributionBar'
 import { LiveSignals } from './report/LiveSignals'
 import { MemoryBadges } from './report/MemoryBadges'
+import { HolidayChips } from './report/HolidayChips'
 import { TrendChart } from './report/TrendChart'
 import type { LiveAnalysisPayload } from './report/types'
 import './LiveReport.css'
@@ -56,6 +57,7 @@ export default function LiveReport({ now, data }: { now: Date; data: LiveAnalysi
         <h2 id="live-report-title">{report.schlagzeile}</h2>
         <p className="live-report-verdict">{report.empfehlung}</p>
         {facts ? <MemoryBadges facts={facts} /> : null}
+        {facts ? <HolidayChips facts={facts} /> : null}
       </div>
 
       {hasVisuals && facts ? (

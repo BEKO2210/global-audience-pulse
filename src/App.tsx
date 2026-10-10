@@ -865,6 +865,9 @@ export default function App() {
                       Abruf: Weltbank {freshness(snapshot.sources.worldBank.fetchedAt)} · Wikimedia{' '}
                       {freshness(snapshot.sources.wikimedia.fetchedAt)}
                     </div>
+                    <a href={DATA_SOURCES.holidays}>
+                      Nager.Date · Feiertage <span>bundesweit, beim Build</span>
+                    </a>
                     <a href={DATA_SOURCES.diagramDesign}>
                       diagram-design, MIT <span>Design-Tokens</span>
                     </a>
@@ -873,7 +876,9 @@ export default function App() {
                     Wikipedia ist ein Aktivitäts-Proxy, keine Social-Plattform-Messung.
                     Englischsprachige Wikipedia wird bewusst nicht für USA/UK verwendet, da sie
                     Zeitzonen mischt. Ländergruppen und der dokumentierte US-Split approximieren
-                    globale Zielgruppen; sie ersetzen keine eigenen Analytics.
+                    globale Zielgruppen; sie ersetzen keine eigenen Analytics. Bundesweite Feiertage
+                    (USA, Brasilien, UK, Deutschland, Japan) werden wie ein Sonntag gerechnet; für
+                    Nahost und Indien liefert die Quelle keine Feiertage.
                   </p>
                 </div>
               </section>

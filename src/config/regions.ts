@@ -13,6 +13,8 @@ export interface RegionConfig {
   countries: readonly string[]
   project?: string
   usShare?: number
+  /** ISO 3166-1 alpha-2 country whose nationwide public holidays apply (Nager.Date); none = not covered */
+  holidayCountry?: string
 }
 
 export const US_SPLIT_SOURCE =
@@ -25,6 +27,7 @@ const REGION_DEFINITIONS: readonly RegionConfig[] = [
     city: 'Los Angeles',
     flag: 'us',
     timeZone: 'America/Los_Angeles',
+    holidayCountry: 'US',
     coordinates: [-118.244, 34.052],
     countries: ['USA'],
     usShare: 0.38,
@@ -35,6 +38,7 @@ const REGION_DEFINITIONS: readonly RegionConfig[] = [
     city: 'New York',
     flag: 'us',
     timeZone: 'America/New_York',
+    holidayCountry: 'US',
     coordinates: [-74.006, 40.713],
     countries: ['USA'],
     usShare: 0.62,
@@ -45,6 +49,7 @@ const REGION_DEFINITIONS: readonly RegionConfig[] = [
     city: 'São Paulo',
     flag: 'br',
     timeZone: 'America/Sao_Paulo',
+    holidayCountry: 'BR',
     coordinates: [-46.633, -23.55],
     countries: [
       'BRA',
@@ -74,6 +79,7 @@ const REGION_DEFINITIONS: readonly RegionConfig[] = [
     city: 'London',
     flag: 'gb',
     timeZone: 'Europe/London',
+    holidayCountry: 'GB',
     coordinates: [-0.128, 51.507],
     countries: ['GBR', 'IRL'],
   },
@@ -83,6 +89,7 @@ const REGION_DEFINITIONS: readonly RegionConfig[] = [
     city: 'Berlin',
     flag: 'eu',
     timeZone: 'Europe/Berlin',
+    holidayCountry: 'DE',
     coordinates: [13.405, 52.52],
     countries: [
       'DEU',
@@ -143,6 +150,7 @@ const REGION_DEFINITIONS: readonly RegionConfig[] = [
     city: 'Tokio',
     flag: 'jp',
     timeZone: 'Asia/Tokyo',
+    holidayCountry: 'JP',
     coordinates: [139.692, 35.69],
     countries: ['JPN', 'KOR', 'TWN'],
     project: 'ja.wikipedia',

@@ -22,6 +22,13 @@ export interface AnalysisFacts {
     besteZeit: string | null
     besteZeitScore: number | null
   }[]
+  feiertage?: {
+    ort: string
+    flagge: FlagCode
+    wann: 'heute' | 'morgen'
+    datum: string
+    name: string
+  }[]
   liveSignale?: {
     ort: string
     letzteStundeOrtszeit: string
