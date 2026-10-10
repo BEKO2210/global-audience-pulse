@@ -1,0 +1,2161 @@
+{
+  "version": 1,
+  "updatedAt": "2026-11-07T11:05:14.000Z",
+  "runs": [
+    {
+      "startedAt": "2026-10-26T17:00:23.318Z",
+      "endedAt": "2026-10-26T17:02:05.786Z",
+      "durationSeconds": 102,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 34573,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 38614,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 27800,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-26T23:00:56.623Z",
+      "endedAt": "2026-10-26T23:03:02.588Z",
+      "durationSeconds": 126,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "classifier",
+          "attempt": 1,
+          "durationMs": 28174,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 29078,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 43939,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 23168,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-27T05:00:21.891Z",
+      "endedAt": "2026-10-27T05:02:10.809Z",
+      "durationSeconds": 109,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "classifier",
+          "attempt": 1,
+          "durationMs": 16375,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 26868,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 38778,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 25426,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-27T11:01:11.206Z",
+      "endedAt": "2026-10-27T11:03:51.972Z",
+      "durationSeconds": 161,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "classifier",
+          "attempt": 1,
+          "durationMs": 28919,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 35320,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 55534,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 39324,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-27T17:01:07.608Z",
+      "endedAt": "2026-10-27T17:03:14.246Z",
+      "durationSeconds": 127,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 45389,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 39325,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 40059,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-27T23:01:26.381Z",
+      "endedAt": "2026-10-27T23:04:12.961Z",
+      "durationSeconds": 167,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 58670,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 61320,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 44754,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-28T05:00:20.024Z",
+      "endedAt": "2026-10-28T05:03:15.436Z",
+      "durationSeconds": 175,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "classifier",
+          "attempt": 1,
+          "durationMs": 29756,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 45643,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 47797,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 50637,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-28T11:07:11.541Z",
+      "endedAt": "2026-10-28T11:15:40.949Z",
+      "durationSeconds": 509,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 148503,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 265883,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 93000,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-28T17:01:05.068Z",
+      "endedAt": "2026-10-28T17:08:45.173Z",
+      "durationSeconds": 460,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 181471,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 210411,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 66083,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-28T23:03:09.698Z",
+      "endedAt": "2026-10-28T23:06:08.526Z",
+      "durationSeconds": 179,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 112040,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 31595,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 32957,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-29T05:00:04.292Z",
+      "endedAt": "2026-10-29T05:02:01.210Z",
+      "durationSeconds": 117,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 40043,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 44076,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 31235,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-29T11:00:27.688Z",
+      "endedAt": "2026-10-29T11:01:56.116Z",
+      "durationSeconds": 88,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 25156,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 32652,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 28764,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-29T17:00:53.302Z",
+      "endedAt": "2026-10-29T17:02:36.545Z",
+      "durationSeconds": 103,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 35879,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 28632,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 36762,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-29T23:00:50.372Z",
+      "endedAt": "2026-10-29T23:02:47.849Z",
+      "durationSeconds": 117,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 40228,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 31699,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 43705,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-30T05:01:08.688Z",
+      "endedAt": "2026-10-30T05:02:51.295Z",
+      "durationSeconds": 103,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 31985,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 35086,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 33583,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-30T11:00:49.732Z",
+      "endedAt": "2026-10-30T11:02:51.619Z",
+      "durationSeconds": 122,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "classifier",
+          "attempt": 1,
+          "durationMs": 16224,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 32351,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 40333,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 31228,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-30T17:00:16.194Z",
+      "endedAt": "2026-10-30T17:02:04.759Z",
+      "durationSeconds": 109,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "classifier",
+          "attempt": 1,
+          "durationMs": 12982,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 30543,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 32234,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 30946,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-30T23:00:12.807Z",
+      "endedAt": "2026-10-30T23:01:54.956Z",
+      "durationSeconds": 102,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 35040,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 34717,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 30448,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-31T05:00:43.358Z",
+      "endedAt": "2026-10-31T05:02:25.316Z",
+      "durationSeconds": 102,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 35580,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 35326,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 29240,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-31T11:00:21.786Z",
+      "endedAt": "2026-10-31T11:03:34.017Z",
+      "durationSeconds": 192,
+      "attempts": 2,
+      "rejections": [
+        {
+          "attempt": 1,
+          "category": "pruefer",
+          "reason": "Ein Prüfer fand Aussagen, die den Daten widersprechen: Meistgelesen gestern: Unterhaltung, Politik. (Bericht: Top Themen gestern = Unterhalt"
+        }
+      ],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "classifier",
+          "attempt": 1,
+          "durationMs": 14478,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "classifier",
+          "attempt": 1,
+          "durationMs": 11013,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 29000,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 43804,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 2,
+          "durationMs": 33609,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 2,
+          "durationMs": 29950,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 28628,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-31T17:01:04.704Z",
+      "endedAt": "2026-10-31T17:03:24.888Z",
+      "durationSeconds": 140,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "classifier",
+          "attempt": 1,
+          "durationMs": 22577,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "classifier",
+          "attempt": 1,
+          "durationMs": 10757,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 28836,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 35691,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 40715,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-31T23:00:22.643Z",
+      "endedAt": "2026-10-31T23:02:25.828Z",
+      "durationSeconds": 123,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "classifier",
+          "attempt": 1,
+          "durationMs": 23589,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 30503,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 38526,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 28657,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-01T05:00:34.974Z",
+      "endedAt": "2026-11-01T05:02:37.312Z",
+      "durationSeconds": 122,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "classifier",
+          "attempt": 1,
+          "durationMs": 23951,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 31291,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 41895,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 23330,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-01T11:01:33.986Z",
+      "endedAt": "2026-11-01T11:03:21.868Z",
+      "durationSeconds": 108,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "classifier",
+          "attempt": 1,
+          "durationMs": 11603,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 27511,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 34758,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 32204,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-01T17:01:11.508Z",
+      "endedAt": "2026-11-01T17:03:31.700Z",
+      "durationSeconds": 140,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "classifier",
+          "attempt": 1,
+          "durationMs": 32543,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 28758,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 41325,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 35609,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-01T23:00:52.365Z",
+      "endedAt": "2026-11-01T23:03:24.261Z",
+      "durationSeconds": 152,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "classifier",
+          "attempt": 1,
+          "durationMs": 32816,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 35666,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 44968,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 36659,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-02T05:01:06.513Z",
+      "endedAt": "2026-11-02T05:03:15.728Z",
+      "durationSeconds": 129,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 40519,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 47535,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 39160,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-02T11:01:13.610Z",
+      "endedAt": "2026-11-02T11:03:13.364Z",
+      "durationSeconds": 120,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 40827,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 38941,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 38295,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-02T17:00:27.893Z",
+      "endedAt": "2026-11-02T17:04:16.219Z",
+      "durationSeconds": 228,
+      "attempts": 2,
+      "rejections": [
+        {
+          "attempt": 1,
+          "category": "pruefer",
+          "reason": "Ein Prüfer fand Aussagen, die den Daten widersprechen: Der aktuelle Score von 66 liegt über dem Wert von gestern zur gleichen Zeit sowie übe"
+        }
+      ],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "classifier",
+          "attempt": 1,
+          "durationMs": 33481,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 30970,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 40800,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 2,
+          "durationMs": 40816,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 2,
+          "durationMs": 44631,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 35501,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-02T23:00:27.091Z",
+      "endedAt": "2026-11-02T23:05:21.819Z",
+      "durationSeconds": 295,
+      "attempts": 3,
+      "rejections": [
+        {
+          "attempt": 1,
+          "category": "pruefer",
+          "reason": "Ein Prüfer fand Aussagen, die den Daten widersprechen: Fokus auf USA Ost (Bericht: Der Bericht impliziert einen Fokus auf die Region 'USA Os"
+        },
+        {
+          "attempt": 2,
+          "category": "pruefer",
+          "reason": "Ein Prüfer fand Aussagen, die den Daten widersprechen: Fokus auf Lateinamerika (Bericht: Der Bericht suggeriert einen Fokus auf Lateinamerik"
+        }
+      ],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 35750,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 53630,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 2,
+          "durationMs": 38835,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 2,
+          "durationMs": 53571,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 3,
+          "durationMs": 37634,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 3,
+          "durationMs": 45081,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 28441,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-03T05:00:54.582Z",
+      "endedAt": "2026-11-03T05:02:53.629Z",
+      "durationSeconds": 119,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "classifier",
+          "attempt": 1,
+          "durationMs": 12479,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 29483,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 47189,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 27867,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-03T11:01:32.200Z",
+      "endedAt": "2026-11-03T11:03:31.770Z",
+      "durationSeconds": 120,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 56157,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 30029,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 31646,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-03T17:00:11.498Z",
+      "endedAt": "2026-11-03T17:02:25.393Z",
+      "durationSeconds": 134,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 52678,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 40177,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 39556,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-03T23:01:29.327Z",
+      "endedAt": "2026-11-03T23:03:09.774Z",
+      "durationSeconds": 100,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 34365,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 40282,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 24481,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-04T05:01:17.044Z",
+      "endedAt": "2026-11-04T05:02:34.226Z",
+      "durationSeconds": 77,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 28715,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 22527,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 24679,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-04T11:01:04.679Z",
+      "endedAt": "2026-11-04T11:02:38.592Z",
+      "durationSeconds": 94,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 33161,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 35838,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 23523,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-04T17:00:44.289Z",
+      "endedAt": "2026-11-04T17:02:20.078Z",
+      "durationSeconds": 96,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 28553,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 35364,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 30704,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-04T23:01:01.531Z",
+      "endedAt": "2026-11-04T23:04:37.034Z",
+      "durationSeconds": 216,
+      "attempts": 3,
+      "rejections": [
+        {
+          "attempt": 1,
+          "category": "pruefer",
+          "reason": "Ein Prüfer fand Aussagen, die den Daten widersprechen: Fokus auf USA Ost (Bericht: Der Bericht impliziert einen Fokus auf die Region 'USA Os"
+        },
+        {
+          "attempt": 2,
+          "category": "pruefer",
+          "reason": "Ein Prüfer fand Aussagen, die den Daten widersprechen: Für Creator bedeutet dies eine Phase geringer Dynamik vor dem nächsten Anstieg. (Date"
+        },
+        {
+          "attempt": 3,
+          "category": "pruefer",
+          "reason": "Ein Prüfer fand Aussagen, die den Daten widersprechen: Für Creator bedeutet dies eine Phase geringer Dynamik vor dem nächsten Anstieg. (Date"
+        }
+      ],
+      "source": "template",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 28448,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 38622,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 2,
+          "durationMs": 33036,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 2,
+          "durationMs": 38013,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 3,
+          "durationMs": 35643,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 3,
+          "durationMs": 40290,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-05T05:01:35.160Z",
+      "endedAt": "2026-11-05T05:03:12.328Z",
+      "durationSeconds": 97,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 34237,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 29441,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 32154,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-05T11:00:12.549Z",
+      "endedAt": "2026-11-05T11:01:42.120Z",
+      "durationSeconds": 90,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 31623,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 30513,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 25797,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-05T17:00:37.388Z",
+      "endedAt": "2026-11-05T17:02:17.336Z",
+      "durationSeconds": 100,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 40187,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 30004,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 28249,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-05T23:01:19.573Z",
+      "endedAt": "2026-11-05T23:04:05.628Z",
+      "durationSeconds": 166,
+      "attempts": 2,
+      "rejections": [
+        {
+          "attempt": 1,
+          "category": "pruefer",
+          "reason": "Ein Prüfer fand Aussagen, die den Daten widersprechen: Fokus auf USA Ost (Bericht: Der Bericht behauptet einen Fokus auf die Region 'USA Ost"
+        }
+      ],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 33037,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 36349,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 2,
+          "durationMs": 33714,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 2,
+          "durationMs": 35678,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 25954,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-06T05:01:33.807Z",
+      "endedAt": "2026-11-06T05:03:58.130Z",
+      "durationSeconds": 144,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "classifier",
+          "attempt": 1,
+          "durationMs": 20308,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 36113,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 46985,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 39515,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-06T11:00:14.762Z",
+      "endedAt": "2026-11-06T11:01:52.230Z",
+      "durationSeconds": 97,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 35395,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 33102,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 27102,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-06T17:00:36.791Z",
+      "endedAt": "2026-11-06T17:02:20.997Z",
+      "durationSeconds": 104,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 35672,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 43311,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 23782,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-06T23:01:13.943Z",
+      "endedAt": "2026-11-06T23:02:54.759Z",
+      "durationSeconds": 101,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 36598,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 39795,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 23080,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-07T05:01:17.170Z",
+      "endedAt": "2026-11-07T05:03:06.977Z",
+      "durationSeconds": 110,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "classifier",
+          "attempt": 1,
+          "durationMs": 15221,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 27886,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 29999,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 35364,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-11-07T11:00:57.847Z",
+      "endedAt": "2026-11-07T11:05:14.451Z",
+      "durationSeconds": 257,
+      "attempts": 3,
+      "rejections": [
+        {
+          "attempt": 1,
+          "category": "pruefer",
+          "reason": "Ein Prüfer fand Aussagen, die den Daten widersprechen: Zielgruppe Ost-Welle: Urteil 'Jetzt posten' (Bericht: Die Zielgruppe 'Ost-Welle' hat "
+        },
+        {
+          "attempt": 2,
+          "category": "pruefer",
+          "reason": "Ein Prüfer fand Aussagen, die den Daten widersprechen: Ost-Welle: Urteil 'Noch etwas warten, beste Zeit 12:45–14:15' (Bericht: Zielgruppe Os"
+        }
+      ],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "classifier",
+          "attempt": 1,
+          "durationMs": 22104,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 23204,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 37009,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 2,
+          "durationMs": 37662,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 2,
+          "durationMs": 36522,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 3,
+          "durationMs": 39207,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 3,
+          "durationMs": 33299,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "translator",
+          "attempt": 1,
+          "durationMs": 26065,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    }
+  ],
+  "summary24h": {
+    "runs": 4,
+    "published": 4,
+    "successRatePercent": 100,
+    "templateSharePercent": 0,
+    "skipped": 0,
+    "failed": 0,
+    "averageDurationSeconds": 143,
+    "rejections": {
+      "zahlen": 0,
+      "form": 0,
+      "pruefer": 2
+    },
+    "lastSuccess": "2026-11-07T11:05:14.451Z",
+    "nextExpectedAt": "2026-11-07T12:02:00.000Z"
+  }
+}
