@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import { motionStudio } from 'motion-studio'
+import { resolve } from 'node:path'
 
 export default defineConfig({
   base: '/global-audience-pulse/',
@@ -10,6 +11,11 @@ export default defineConfig({
   build: {
     chunkSizeWarningLimit: 500,
     rollupOptions: {
+      input: {
+        main: resolve(import.meta.dirname, 'index.html'),
+        impressum: resolve(import.meta.dirname, 'impressum/index.html'),
+        datenschutz: resolve(import.meta.dirname, 'datenschutz/index.html'),
+      },
       output: {
         manualChunks(id) {
           if (id.includes('node_modules/react') || id.includes('node_modules/scheduler'))
@@ -49,6 +55,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2,json}'],
+        navigateFallbackDenylist: [/\/(?:impressum|datenschutz)\/?$/],
         runtimeCaching: [
           {
             urlPattern: /\/data\/snapshot\.json$/,

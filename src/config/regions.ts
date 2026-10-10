@@ -18,17 +18,7 @@ export interface RegionConfig {
 export const US_SPLIT_SOURCE =
   'https://www.census.gov/data/tables/time-series/demo/popest/2020s-state-total.html'
 
-export const REGIONS: readonly RegionConfig[] = [
-  {
-    id: 'us_east',
-    name: 'USA Ost',
-    city: 'New York',
-    flag: 'us',
-    timeZone: 'America/New_York',
-    coordinates: [-74.006, 40.713],
-    countries: ['USA'],
-    usShare: 0.62,
-  },
+const REGION_DEFINITIONS: readonly RegionConfig[] = [
   {
     id: 'us_west',
     name: 'USA West',
@@ -40,39 +30,14 @@ export const REGIONS: readonly RegionConfig[] = [
     usShare: 0.38,
   },
   {
-    id: 'eu_central',
-    name: 'Europa Zentral',
-    city: 'Berlin',
-    flag: 'eu',
-    timeZone: 'Europe/Berlin',
-    coordinates: [13.405, 52.52],
-    countries: [
-      'DEU',
-      'AUT',
-      'CHE',
-      'FRA',
-      'NLD',
-      'BEL',
-      'POL',
-      'ITA',
-      'ESP',
-      'PRT',
-      'CZE',
-      'DNK',
-      'SWE',
-      'NOR',
-      'FIN',
-    ],
-    project: 'de.wikipedia',
-  },
-  {
-    id: 'eu_uk',
-    name: 'UK & Irland',
-    city: 'London',
-    flag: 'gb',
-    timeZone: 'Europe/London',
-    coordinates: [-0.128, 51.507],
-    countries: ['GBR', 'IRL'],
+    id: 'us_east',
+    name: 'USA Ost',
+    city: 'New York',
+    flag: 'us',
+    timeZone: 'America/New_York',
+    coordinates: [-74.006, 40.713],
+    countries: ['USA'],
+    usShare: 0.62,
   },
   {
     id: 'latam',
@@ -102,6 +67,41 @@ export const REGIONS: readonly RegionConfig[] = [
       'URY',
     ],
     project: 'pt.wikipedia',
+  },
+  {
+    id: 'eu_uk',
+    name: 'UK & Irland',
+    city: 'London',
+    flag: 'gb',
+    timeZone: 'Europe/London',
+    coordinates: [-0.128, 51.507],
+    countries: ['GBR', 'IRL'],
+  },
+  {
+    id: 'eu_central',
+    name: 'Europa Zentral',
+    city: 'Berlin',
+    flag: 'eu',
+    timeZone: 'Europe/Berlin',
+    coordinates: [13.405, 52.52],
+    countries: [
+      'DEU',
+      'AUT',
+      'CHE',
+      'FRA',
+      'NLD',
+      'BEL',
+      'POL',
+      'ITA',
+      'ESP',
+      'PRT',
+      'CZE',
+      'DNK',
+      'SWE',
+      'NOR',
+      'FIN',
+    ],
+    project: 'de.wikipedia',
   },
   {
     id: 'mena',
@@ -149,13 +149,49 @@ export const REGIONS: readonly RegionConfig[] = [
   },
 ] as const
 
+/** Current offset keeps the west-to-east order correct across DST boundaries. */
+export function currentUtcOffsetMinutes(timeZone: string, at = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hourCycle: 'h23',
+  }).formatToParts(at)
+  const value = (type: Intl.DateTimeFormatPartTypes) =>
+    Number(parts.find((part) => part.type === type)?.value ?? 0)
+  const wallAsUtc = Date.UTC(
+    value('year'),
+    value('month') - 1,
+    value('day'),
+    value('hour'),
+    value('minute'),
+    value('second'),
+  )
+  return Math.round((wallAsUtc - Math.floor(at.getTime() / 1_000) * 1_000) / 60_000)
+}
+
+/** Derives the single canonical presentation order: west to east at the given instant. */
+export function regionsWestToEast(at = new Date()): readonly RegionConfig[] {
+  return [...REGION_DEFINITIONS].sort(
+    (a, b) =>
+      currentUtcOffsetMinutes(a.timeZone, at) - currentUtcOffsetMinutes(b.timeZone, at) ||
+      a.coordinates[0] - b.coordinates[0],
+  )
+}
+
+export const REGIONS = regionsWestToEast()
+
 export const REGION_BY_ID = Object.fromEntries(REGIONS.map((r) => [r.id, r])) as Record<
   RegionId,
   RegionConfig
 >
 
 export const PRESETS = [
-  { name: 'Transatlantik', ids: ['eu_central', 'eu_uk', 'us_east'] },
-  { name: 'USA coast-to-coast', ids: ['us_east', 'us_west'] },
-  { name: 'Ost-Welle', ids: ['india', 'east_asia', 'mena', 'eu_central'] },
+  { name: 'Transatlantik', ids: ['us_east', 'eu_uk', 'eu_central'] },
+  { name: 'USA coast-to-coast', ids: ['us_west', 'us_east'] },
+  { name: 'Ost-Welle', ids: ['eu_central', 'mena', 'india', 'east_asia'] },
 ] as const satisfies readonly { name: string; ids: readonly RegionId[] }[]

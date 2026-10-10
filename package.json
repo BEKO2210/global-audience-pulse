@@ -7,9 +7,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build --configLoader runner",
     "preview": "vite preview",
-    "test": "vitest run",
+    "test": "vitest run --configLoader runner",
     "lint": "eslint .",
     "typecheck": "tsc -b --pretty false",
     "fetch-data": "node scripts/fetch-data.mjs",

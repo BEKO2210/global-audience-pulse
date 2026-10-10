@@ -98,6 +98,20 @@ export function Dial({
               </g>
             )
           })}
+          {selectedRegions.map((region, index) => {
+            const radius = 108 - index * 7
+            return (
+              <text
+                key={`ring-number-${region.id}`}
+                x={cx}
+                y={cy - radius + 2}
+                textAnchor="middle"
+                className="dial-ring-number"
+              >
+                {index + 1}
+              </text>
+            )
+          })}
           {[0, 6, 12, 18].map((hour) => {
             const point = polar(cx, cy, 141, hour)
             return (
@@ -119,6 +133,20 @@ export function Dial({
         <p className="dial-explainer">
           Jedes Ringsegment zeigt die Aktivitätsphase zur lokalen Stunde.
         </p>
+        <div className="phase-colour-legend" aria-label="Aktivitätsphasen">
+          {PHASES.map((phase) => (
+            <span key={phase.id}>
+              <i style={{ background: phase.color }} />
+              {phase.name} · {String(phase.from).padStart(2, '0')}–
+              {String(phase.to).padStart(2, '0')} Uhr
+            </span>
+          ))}
+        </div>
+        {selectedRegions.length > 0 && (
+          <p className="ring-direction">
+            Außen {selectedRegions[0]?.city}, innen {selectedRegions.at(-1)?.city}
+          </p>
+        )}
         <div className="dial-legend" aria-label="Ringreihenfolge außen nach innen">
           {selectedRegions.map((region, index) => (
             <button

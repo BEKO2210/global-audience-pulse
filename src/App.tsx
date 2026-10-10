@@ -774,7 +774,10 @@ export default function App() {
               </section>
             </Section>
           </main>
-          <SiteFooter />
+          <SiteFooter
+            worldBankFreshness={freshness(snapshot.sources.worldBank.fetchedAt)}
+            wikimediaFreshness={freshness(snapshot.sources.wikimedia.fetchedAt)}
+          />
           <MobileTimeBar
             now={minuteNow}
             selectedDate={date}

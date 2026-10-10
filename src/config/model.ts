@@ -23,6 +23,14 @@ export const STATUS_LEVELS = [
   { min: 0, label: 'Ruhephase', verdict: 'Später posten', tone: 'quiet' },
 ] as const
 
+export const ACTIVITY_LEVELS = [
+  { min: 0, max: 19, label: '0–19' },
+  { min: 20, max: 39, label: '20–39' },
+  { min: 40, max: 59, label: '40–59' },
+  { min: 60, max: 79, label: '60–79' },
+  { min: 80, max: 100, label: '80–100' },
+] as const
+
 export const DATA_SOURCES = {
   worldBank: 'https://api.worldbank.org/v2/country',
   worldBankPopulation: 'https://data.worldbank.org/indicator/SP.POP.TOTL',

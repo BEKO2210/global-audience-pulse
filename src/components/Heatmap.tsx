@@ -3,6 +3,7 @@ import { REGIONS, type RegionId } from '../config/regions'
 import type { ScoreGrid } from '../lib/model'
 import { formatTime } from '../lib/time'
 import { Flag } from './Flag'
+import { ACTIVITY_LEVELS } from '../config/model'
 
 // Props only change per minute or on audience change, not while scrubbing.
 export const Heatmap = memo(function Heatmap({
@@ -23,7 +24,10 @@ export const Heatmap = memo(function Heatmap({
   const regions = REGIONS.filter((region) => selected.includes(region.id))
   const [activeCell, setActiveCell] = useState({ row: 0, column: 0 })
   const cellRefs = useRef(new Map<string, HTMLButtonElement>())
-  const heatLevel = (score: number) => Math.min(4, Math.floor(score / 20))
+  const heatLevel = (score: number) => {
+    const index = ACTIVITY_LEVELS.findIndex((level) => score >= level.min && score <= level.max)
+    return index < 0 ? ACTIVITY_LEVELS.length - 1 : index
+  }
   const selectedRatio = Math.min(
     1,
     Math.max(0, (selectedDate.getTime() - start.getTime()) / (23 * 3_600_000)),
@@ -113,12 +117,14 @@ export const Heatmap = memo(function Heatmap({
           ))}
         </div>
       </div>
-      <div className="heat-legend" aria-label="Aktivitätsskala">
-        <span>Niedrig</span>
-        {[0, 1, 2, 3, 4].map((level) => (
-          <i key={level} className={`heat-${level}`} />
+      <div className="heat-legend" aria-label="Aktivität 0 bis 100">
+        <strong>Aktivität 0–100</strong>
+        {ACTIVITY_LEVELS.map((level, index) => (
+          <span key={level.min} title={level.label}>
+            <i className={`heat-${index}`} />
+            <span className="sr-only">{level.label}</span>
+          </span>
         ))}
-        <span>Hoch</span>
       </div>
     </section>
   )

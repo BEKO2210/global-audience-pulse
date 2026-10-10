@@ -125,8 +125,7 @@ export function Planner({
               </p>
               <small className="window-markets">
                 <Fire size={14} weight="regular" aria-hidden="true" /> Im Peak:{' '}
-                {selected
-                  .map((id) => REGIONS.find((region) => region.id === id)!)
+                {REGIONS.filter((region) => selected.includes(region.id))
                   .filter((region) =>
                     ['prime', 'day'].includes(
                       phaseAt(localDecimalHourFast(window.start, region.timeZone)).id,
