@@ -40,6 +40,8 @@ import { PhaseIcon } from './components/PhaseIcon'
 import { MobileTimeBar } from './components/MobileTimeBar'
 import { SiteFooter } from './components/SiteFooter'
 import { Playbooks } from './components/Playbooks'
+import { PostingPlan } from './components/PostingPlan'
+import { pickPostingTimes } from './lib/postingPlan'
 import { Wordmark } from './components/LogoMark'
 import { UpdateToast } from './components/UpdateToast'
 
@@ -380,6 +382,22 @@ export default function App() {
     ({ region }) => phaseAt(localDecimalHourFast(date, region.timeZone)).id === 'prime',
   ).length
   const weights = normalizedWeights(selected, activeSnapshot)
+  // T-072: next good + study-backed hour per platform, recomputed each minute (not while scrubbing).
+  const postingPicks = useMemo(() => {
+    if (!scoreGridReady) return []
+    const audienceWeights = normalizedWeights(selected, activeSnapshot)
+    return pickPostingTimes({
+      scoreAt: (d) => scoreGrid.globalAt(selected, d),
+      regions: selected.map((id) => ({
+        id,
+        city: REGION_BY_ID[id].city,
+        timeZone: REGION_BY_ID[id].timeZone,
+        weight: audienceWeights[id] ?? 0,
+      })),
+      from: minuteNow,
+      goodScore: STATUS_LEVELS[1].min,
+    })
+  }, [scoreGridReady, scoreGrid, selected, activeSnapshot, minuteNow])
   const worldMean = circularMean(
     selected.map((id) => localDecimalHourFast(date, REGION_BY_ID[id].timeZone)),
     selected.map((id) => weights[id] ?? 0),
@@ -735,6 +753,18 @@ export default function App() {
             </Section>
             <Section defer placeholderHeight={640}>
               <Planner windowSets={plannerSets} selected={selected} dst={dst} />
+            </Section>
+            <Section defer placeholderHeight={640}>
+              <PostingPlan
+                picks={postingPicks}
+                now={minuteNow}
+                regionCount={selected.length}
+                goodScore={STATUS_LEVELS[1].min}
+                onJump={(at) => {
+                  scrubTo(at)
+                  window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' })
+                }}
+              />
             </Section>
             <Section defer placeholderHeight={1200}>
               <Playbooks />

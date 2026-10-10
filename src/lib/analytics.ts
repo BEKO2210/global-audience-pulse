@@ -25,6 +25,7 @@ export interface AnalyticsEvents {
   'Region Details': { region: Exclude<Region, 'alle'> }
   Rechtsseite: { seite: 'impressum' | 'datenschutz' }
   Playbook: { plattform: PlatformId }
+  'Termin angesehen': { plattform: PlatformId }
   'Web Vitals': {
     metric: 'LCP' | 'CLS' | 'INP' | 'FCP' | 'TTFB'
     rating: 'good' | 'needs-improvement' | 'poor'
@@ -75,6 +76,9 @@ const allowedValues = {
   },
   Rechtsseite: { seite: ['impressum', 'datenschutz'] },
   Playbook: {
+    plattform: ['instagram', 'tiktok', 'youtube', 'linkedin', 'x', 'threads', 'hackernews'],
+  },
+  'Termin angesehen': {
     plattform: ['instagram', 'tiktok', 'youtube', 'linkedin', 'x', 'threads', 'hackernews'],
   },
   'Web Vitals': {

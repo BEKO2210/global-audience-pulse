@@ -1,15 +1,6 @@
 import { useId, useRef, useState, type KeyboardEvent } from 'react'
 import { motion, useReducedMotion, type Variants } from 'motion/react'
-import {
-  InstagramLogo,
-  LinkedinLogo,
-  Newspaper,
-  ThreadsLogo,
-  TiktokLogo,
-  XLogo,
-  YoutubeLogo,
-  type Icon,
-} from '@phosphor-icons/react'
+import { PLATFORM_ICONS as ICONS } from './platformIcons'
 import {
   BLOCKS,
   DAYS,
@@ -32,16 +23,6 @@ import {
 } from '../data/playbooks'
 import { track } from '../lib/analytics'
 import './Playbooks.css'
-
-const ICONS: Record<PlatformId, Icon> = {
-  instagram: InstagramLogo,
-  tiktok: TiktokLogo,
-  youtube: YoutubeLogo,
-  linkedin: LinkedinLogo,
-  x: XLogo,
-  threads: ThreadsLogo,
-  hackernews: Newspaper,
-}
 
 // diagram-design motion clock: one reveal, ≤ 8 steps, ≤ 8 px travel, no springs.
 const EASE = [0.2, 0.8, 0.2, 1] as const
