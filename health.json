@@ -1,0 +1,354 @@
+{
+  "version": 1,
+  "updatedAt": "2026-10-10T17:03:43.000Z",
+  "runs": [
+    {
+      "startedAt": "2026-10-10T10:51:21.490Z",
+      "endedAt": "2026-10-10T10:53:23.448Z",
+      "durationSeconds": 122,
+      "attempts": 2,
+      "rejections": [
+        {
+          "attempt": 1,
+          "category": "pruefer",
+          "reason": "Ein Prüfer fand Aussagen, die den Daten widersprechen: Berlin trägt mit 16 Punkten den größten Beitrag zum aktuellen Wert. (Laut Daten trägt"
+        }
+      ],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 35245,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 32713,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 2,
+          "durationMs": 34582,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 2,
+          "durationMs": 19077,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-10T11:00:51.362Z",
+      "endedAt": "2026-10-10T11:02:04.149Z",
+      "durationSeconds": 73,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 44686,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 26495,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-10T12:01:12.781Z",
+      "endedAt": "2026-10-10T12:02:36.379Z",
+      "durationSeconds": 84,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 51823,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 30288,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-10T13:00:34.376Z",
+      "endedAt": "2026-10-10T13:01:45.961Z",
+      "durationSeconds": 72,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 41487,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 28181,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-10T14:00:35.199Z",
+      "endedAt": "2026-10-10T14:01:48.055Z",
+      "durationSeconds": 73,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 36867,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 34531,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-10T15:00:32.814Z",
+      "endedAt": "2026-10-10T15:01:46.002Z",
+      "durationSeconds": 73,
+      "attempts": 1,
+      "rejections": [],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 43217,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 28488,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-10T16:00:24.564Z",
+      "endedAt": "2026-10-10T16:04:05.345Z",
+      "durationSeconds": 221,
+      "attempts": 3,
+      "rejections": [
+        {
+          "attempt": 1,
+          "category": "pruefer",
+          "reason": "Ein Prüfer fand Aussagen, die den Daten widersprechen: Der aktuelle Score von 62 entspricht dem bisherigen Wochenhoch. (Die Daten zeigen: 'g"
+        },
+        {
+          "attempt": 2,
+          "category": "pruefer",
+          "reason": "Ein Prüfer fand Aussagen, die den Daten widersprechen: Globaler Score von 62 erreicht das aktuelle Wochenhoch (Der Bericht behauptet, der Sc"
+        },
+        {
+          "attempt": 3,
+          "category": "pruefer",
+          "reason": "Ein Prüfer fand Aussagen, die den Daten widersprechen: Globaler Score von 62 erreicht das aktuelle Wochenhoch (Der Bericht behauptet, der Sc"
+        }
+      ],
+      "source": "template",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 40261,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 37988,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 2,
+          "durationMs": 34543,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 2,
+          "durationMs": 38631,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 3,
+          "durationMs": 32287,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 3,
+          "durationMs": 35681,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    },
+    {
+      "startedAt": "2026-10-10T17:01:22.222Z",
+      "endedAt": "2026-10-10T17:03:43.086Z",
+      "durationSeconds": 141,
+      "attempts": 2,
+      "rejections": [
+        {
+          "attempt": 1,
+          "category": "pruefer",
+          "reason": "Ein Prüfer fand Aussagen, die den Daten widersprechen: Der aktuelle Score von 67 entspricht dem bisherigen Wochenhoch. (Die Daten zeigen: ge"
+        }
+      ],
+      "source": "llm",
+      "models": {
+        "writer": "gemma4:12b-it-qat",
+        "checker": "qwen3.5:9b"
+      },
+      "modelCalls": [
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 1,
+          "durationMs": 37596,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 1,
+          "durationMs": 36386,
+          "ok": true
+        },
+        {
+          "model": "gemma4:12b-it-qat",
+          "role": "writer",
+          "attempt": 2,
+          "durationMs": 39223,
+          "ok": true
+        },
+        {
+          "model": "qwen3.5:9b",
+          "role": "checker",
+          "attempt": 2,
+          "durationMs": 26181,
+          "ok": true
+        }
+      ],
+      "liveSignals": 5,
+      "dataFetchErrors": [],
+      "outcome": "published"
+    }
+  ],
+  "summary24h": {
+    "runs": 8,
+    "published": 8,
+    "successRatePercent": 100,
+    "templateSharePercent": 13,
+    "skipped": 0,
+    "failed": 0,
+    "averageDurationSeconds": 107,
+    "rejections": {
+      "zahlen": 0,
+      "form": 0,
+      "pruefer": 5
+    },
+    "lastSuccess": "2026-10-10T17:03:43.086Z",
+    "nextExpectedAt": "2026-10-10T18:02:00.000Z"
+  }
+}

@@ -1,0 +1,11 @@
+{"t":"2026-10-10T08:00:33.355Z","score":36,"regions":{"eu_central":54,"east_asia":75,"india":77,"us_west":21,"mena":63,"us_east":9,"eu_uk":33,"latam":16}}
+{"t":"2026-10-10T09:00:13.953Z","score":39,"regions":{"eu_central":59,"east_asia":78,"india":76,"us_west":17,"eu_uk":52,"mena":67,"us_east":10,"latam":22}}
+{"t":"2026-10-10T10:01:09.957Z","score":42,"regions":{"eu_central":60,"east_asia":87,"us_east":15,"eu_uk":62,"india":77,"mena":71,"us_west":12,"latam":30}}
+{"t":"2026-10-10T10:51:21.526Z","score":45,"regions":{"eu_central":62,"east_asia":97,"us_east":20,"eu_uk":63,"mena":75,"india":76,"latam":37,"us_west":10}}
+{"t":"2026-10-10T11:00:51.392Z","score":45,"regions":{"eu_central":62,"east_asia":98,"us_east":20,"eu_uk":64,"mena":76,"india":76,"latam":38,"us_west":9}}
+{"t":"2026-10-10T12:01:12.809Z","score":47,"regions":{"eu_central":63,"east_asia":96,"us_east":23,"latam":49,"eu_uk":67,"mena":78,"india":78,"us_west":10}}
+{"t":"2026-10-10T13:00:34.407Z","score":52,"regions":{"eu_central":64,"us_east":33,"east_asia":84,"latam":62,"eu_uk":68,"mena":79,"india":87,"us_west":15}}
+{"t":"2026-10-10T14:00:35.227Z","score":58,"regions":{"eu_central":67,"us_east":52,"latam":68,"east_asia":69,"eu_uk":70,"mena":80,"india":95,"us_west":20}}
+{"t":"2026-10-10T15:00:32.839Z","score":60,"regions":{"eu_central":69,"us_east":62,"latam":71,"eu_uk":74,"india":98,"us_west":23,"mena":82,"east_asia":45}}
+{"t":"2026-10-10T16:00:24.590Z","score":62,"regions":{"eu_central":71,"us_east":64,"latam":74,"us_west":33,"eu_uk":76,"mena":88,"india":86,"east_asia":34}}
+{"t":"2026-10-10T17:01:22.250Z","score":67,"regions":{"eu_central":79,"us_east":67,"us_west":53,"latam":76,"eu_uk":80,"mena":89,"india":64,"east_asia":25}}
