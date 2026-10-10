@@ -1,0 +1,23 @@
+name: Report watch
+# T-033: one issue while the local-LLM report job is broken; closes itself when reports resume.
+on:
+  schedule:
+    - cron: '41 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+concurrency:
+  group: report-watch
+  cancel-in-progress: false
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: node scripts/ci/report-watch.mjs
+        env:
+          GH_TOKEN: ${{ github.token }}
