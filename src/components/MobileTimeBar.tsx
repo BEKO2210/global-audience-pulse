@@ -7,6 +7,7 @@ import { statusFor, type PostingWindow } from '../lib/model'
 import { formatOffset, formatTime } from '../lib/time'
 import type { ForecastPoint } from './Forecast'
 import { AnimatedNumber } from './AnimatedNumber'
+import { track } from '../lib/analytics'
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value))
 
@@ -120,6 +121,12 @@ export function MobileTimeBar({
   const userZone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const live = displayedMinutes === 0
   const cursorY = height - 5 - (score / 100) * (height - 12)
+  const trackScrub = (quelle: 'leiste' | 'tastatur') =>
+    track('Scrub', {
+      quelle,
+      horizont: horizon === 24 ? '24h' : '7d',
+      offsetStunden: Math.round(pending.current / 60),
+    })
 
   return (
     <div className="mobile-bar" role="region" aria-label="Zeit vorspulen">
@@ -188,10 +195,19 @@ export function MobileTimeBar({
             setLocalMinutes(externalMinutes)
             setDragging(true)
           }}
-          onPointerUp={() => setDragging(false)}
+          onPointerUp={() => {
+            setDragging(false)
+            trackScrub('leiste')
+          }}
           onPointerCancel={() => setDragging(false)}
           onBlur={() => setDragging(false)}
           onChange={(event) => update(Number(event.target.value))}
+          onKeyUp={(event) => {
+            if (
+              ['ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home', 'End'].includes(event.key)
+            )
+              trackScrub('tastatur')
+          }}
         />
       </div>
 

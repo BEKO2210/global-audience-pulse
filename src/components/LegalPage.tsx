@@ -86,7 +86,8 @@ function Datenschutz() {
       <h1>Datenschutz</h1>
       <p className="legal-intro">
         Diese Hinweise erklären, welche technischen Daten beim Besuch von Global Audience Pulse
-        verarbeitet werden. Die Anwendung verwendet weder Analysewerkzeuge noch Werbe-Tracking.
+        verarbeitet werden. Die Anwendung setzt keine Cookies, verfolgt dich nicht über Websites
+        hinweg und verwendet eine anonyme Reichweitenmessung.
       </p>
       <section>
         <h2>Verantwortlicher</h2>
@@ -128,6 +129,42 @@ function Datenschutz() {
         </p>
       </section>
       <section>
+        <h2>Reichweitenmessung (Plausible)</h2>
+        <p>
+          Zur Verbesserung der App nutzen wir Plausible Community Edition auf einer vom Betreiber
+          selbst gehosteten Statistik-Instanz in Deutschland. Plausible setzt keine Cookies,
+          speichert nichts auf deinem Gerät und speichert keine IP-Adressen. Die IP-Adresse wird nur
+          kurzfristig zusammen mit einem täglich neu erzeugten und anschließend gelöschten Salt zu
+          einem Tages-Hash verarbeitet. Dadurch können Besuche gezählt, aber nicht über verschiedene
+          Tage hinweg wiedererkannt werden.
+        </p>
+        <p>
+          Erfasst werden die besuchte Seite, die verweisende Seite (Referrer), das Land sowie grobe
+          Angaben zu Gerätetyp, Browser und Betriebssystem. Zusätzlich messen wir Bedienereignisse
+          für Zeitwahl und Horizont, Gewichtung und Zielgruppe, Presets, Planer-Tabs,
+          Kalender-Downloads, Kopieren und Teilen, aufgeklappte Berichte, Darstellung,
+          Regionsdetails und Rechtsseiten sowie gerundete technische Web-Vitals-Werte. Freie Texte
+          und personenbezogene Inhalte werden nicht übermittelt.
+        </p>
+        <p>
+          Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse besteht
+          darin, Nutzung und technische Qualität der App aggregiert zu verstehen und sie zu
+          verbessern. Die Ergebnisse werden ausschließlich aggregiert und ohne feste Löschfrist
+          gespeichert; eine Zuordnung zu einzelnen Personen ist nicht möglich. Der Verarbeitung
+          kannst du jederzeit formlos per E-Mail an{' '}
+          <a href={`mailto:${contact.email}`}>{contact.email}</a> widersprechen.
+        </p>
+        <p>
+          Die Statistik-Instanz wird durch Cloudflare als Proxy ausgeliefert und geschützt. Dabei
+          verarbeitet Cloudflare, Inc. in den USA insbesondere die IP-Adresse und technische
+          Verbindungsdaten. Die Übermittlung in die USA stützt sich auf die Zertifizierung von
+          Cloudflare nach dem EU-US Data Privacy Framework. Weitere Informationen enthält die{' '}
+          <a href={LEGAL.cloudflarePrivacy}>Datenschutzerklärung von Cloudflare</a>; die
+          Zertifizierung ist in der{' '}
+          <a href={LEGAL.dataPrivacyFramework}>Data Privacy Framework List</a> dokumentiert.
+        </p>
+      </section>
+      <section>
         <h2>Automatische AI-Analyse (Transparenz nach Art. 50 KI-Verordnung)</h2>
         <p>
           Der Lagebericht wird stündlich automatisch von einem KI-Sprachmodell erzeugt, das lokal
@@ -160,8 +197,9 @@ function Datenschutz() {
       <section>
         <h2>Keine Cookies/kein Tracking</h2>
         <p>
-          Global Audience Pulse setzt keine Cookies und verwendet keine Analytics, keine
-          personalisierte Werbung und kein sonstiges Nutzer-Tracking.
+          Global Audience Pulse setzt keine Cookies, betreibt kein Tracking über Websites hinweg und
+          verwendet keine personalisierte Werbung. Die anonyme Reichweitenmessung ist auf diese App
+          beschränkt.
         </p>
       </section>
       <section>

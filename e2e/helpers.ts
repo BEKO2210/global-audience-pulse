@@ -1,6 +1,11 @@
 import { expect, type BrowserContext, type Page } from '@playwright/test'
 
-export async function openReady(page: Page) {
+export async function openReady(page: Page, interceptAnalytics = true) {
+  if (interceptAnalytics) {
+    await page.route('https://stats.it-handwerk-stuttgart.de/**', (route) =>
+      route.fulfill({ status: 202, body: '' }),
+    )
+  }
   // The Lagebericht lives on the live-analysis branch; tests stay offline unless a spec serves one.
   await page.route('https://raw.githubusercontent.com/**/analysis.json*', (route) =>
     (page as Page & { __reportServed?: boolean }).__reportServed

@@ -62,6 +62,10 @@ export default defineConfig({
         navigateFallbackDenylist: [/\/(?:impressum|datenschutz)\/?$/],
         runtimeCaching: [
           {
+            urlPattern: ({ url }) => url.hostname === 'stats.it-handwerk-stuttgart.de',
+            handler: 'NetworkOnly',
+          },
+          {
             urlPattern: /\/data\/snapshot\.json$/,
             handler: 'NetworkFirst',
             options: { cacheName: 'audience-snapshot', networkTimeoutSeconds: 3 },

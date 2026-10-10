@@ -7,6 +7,11 @@ export interface LegalContact {
   phone?: string
 }
 
+export const ANALYTICS = {
+  domain: 'beko2210.github.io',
+  host: 'https://stats.it-handwerk-stuttgart.de',
+} as const
+
 export const LEGAL = {
   pricingNotice:
     'Global Audience Pulse ist derzeit kostenlos nutzbar. Umfang, Funktionen und Bedingungen können sich künftig ändern.',
@@ -21,4 +26,6 @@ export const LEGAL = {
   githubPrivacy:
     'https://docs.github.com/de/site-policy/privacy-policies/github-general-privacy-statement',
   wikimediaPrivacy: 'https://foundation.wikimedia.org/wiki/Policy:Privacy_policy/de',
+  cloudflarePrivacy: 'https://www.cloudflare.com/de-de/privacypolicy/',
+  dataPrivacyFramework: 'https://www.dataprivacyframework.gov/list',
 } as const

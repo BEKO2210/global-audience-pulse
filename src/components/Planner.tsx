@@ -10,6 +10,7 @@ import {
   timeZoneName,
 } from '../lib/time'
 import { AnimatedNumber } from './AnimatedNumber'
+import { track } from '../lib/analytics'
 
 function icsUtcDate(date: Date) {
   return date
@@ -60,6 +61,8 @@ export function Planner({
   const [scope, setScope] = useState<keyof typeof windowSets>('today')
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const windows = windowSets[scope]
+  const zielgruppe =
+    selected.length === 0 ? 'leer' : selected.length === REGIONS.length ? 'alle' : 'eigene-auswahl'
   const plan = windows
     .map(
       (w, i) =>
@@ -79,14 +82,18 @@ export function Planner({
     }
     setMessage('Plan kopiert')
     setCopied(true)
+    track('Plan kopiert')
     window.setTimeout(() => setCopied(false), 2_200)
   }
   const share = async () => {
     const data = { title: 'Mein Posting-Plan', text: plan, url: location.href }
-    if (navigator.share) await navigator.share(data)
-    else {
+    if (navigator.share) {
+      await navigator.share(data)
+      track('Link geteilt', { methode: 'native' })
+    } else {
       await navigator.clipboard.writeText(location.href)
       setMessage('Link kopiert')
+      track('Link geteilt', { methode: 'zwischenablage' })
     }
   }
   return (
@@ -100,17 +107,34 @@ export function Planner({
       </div>
       <p className="planner-zone-note">Kalendertage in deiner Zeitzone</p>
       <div className="filter-row planner-tabs" role="tablist" aria-label="Planungszeitraum">
-        <button role="tab" onClick={() => setScope('today')} aria-selected={scope === 'today'}>
+        <button
+          role="tab"
+          onClick={() => {
+            setScope('today')
+            track('Planer Tab', { tab: 'heute' })
+          }}
+          aria-selected={scope === 'today'}
+        >
           Heute ({windowSets.today.length})
         </button>
         <button
           role="tab"
-          onClick={() => setScope('tomorrow')}
+          onClick={() => {
+            setScope('tomorrow')
+            track('Planer Tab', { tab: 'morgen' })
+          }}
           aria-selected={scope === 'tomorrow'}
         >
           Morgen ({windowSets.tomorrow.length})
         </button>
-        <button role="tab" onClick={() => setScope('week')} aria-selected={scope === 'week'}>
+        <button
+          role="tab"
+          onClick={() => {
+            setScope('week')
+            track('Planer Tab', { tab: '7-tage' })
+          }}
+          aria-selected={scope === 'week'}
+        >
           7 Tage ({windowSets.week.length})
         </button>
       </div>
@@ -141,7 +165,10 @@ export function Planner({
             </div>
             <button
               className="icon-button"
-              onClick={() => downloadIcs(window, zone)}
+              onClick={() => {
+                downloadIcs(window, zone)
+                track('ICS Download', { zielgruppe })
+              }}
               aria-label="Als Kalenderdatei laden"
             >
               <DownloadSimple size={19} weight="regular" aria-hidden="true" />

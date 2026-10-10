@@ -28,7 +28,8 @@ for (const legal of pages) {
     await expect(page.getByText(LEGAL.contact.name, { exact: true })).toBeVisible()
     await expect(page.getByText(LEGAL.contact.street, { exact: true })).toBeVisible()
     await expect(page.getByText(LEGAL.contact.postalCodeCity, { exact: true })).toBeVisible()
-    await expect(page.getByRole('link', { name: LEGAL.contact.email })).toHaveAttribute(
+    // The address appears as contact and again in the objection notice; check the first.
+    await expect(page.getByRole('link', { name: LEGAL.contact.email }).first()).toHaveAttribute(
       'href',
       `mailto:${LEGAL.contact.email}`,
     )

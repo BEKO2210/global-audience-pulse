@@ -26,6 +26,7 @@ import {
 } from './lib/time'
 
 import { findBestWindows, normalizedWeights, phaseAt, statusFor } from './lib/model'
+import { initWebVitals, track } from './lib/analytics'
 import { FALLBACK_SNAPSHOT, loadSnapshot, type Snapshot } from './lib/snapshot'
 import { Dial } from './components/Dial'
 import { Forecast } from './components/Forecast'
@@ -228,6 +229,7 @@ export default function App() {
   })
   const { selected, toggle, selectAll, setSelected, weightingMode, setWeightingMode } =
     useAudience()
+  useEffect(() => initWebVitals(), [])
   const refreshSnapshot = useCallback(() => {
     void loadSnapshot(import.meta.env.BASE_URL, true).then((next) => {
       setSnapshot(next)
@@ -411,6 +413,14 @@ export default function App() {
     [minuteNow, scoreGrid],
   )
   const detailRegion = detail ? REGION_BY_ID[detail] : null
+  const showRegionDetails = (region: RegionId) => {
+    track('Region Details', { region })
+    setDetail(region)
+  }
+  const changeWeighting = (modus: 'value' | 'reach') => {
+    track('Gewichtung', { modus })
+    setWeightingMode(modus)
+  }
   return (
     <MotionConfig reducedMotion="user" transition={reduceMotion ? { duration: 0 } : undefined}>
       <>
@@ -418,7 +428,10 @@ export default function App() {
           <Header
             snapshot={snapshot}
             themePreference={themePreference}
-            onTheme={setThemePreference}
+            onTheme={(theme) => {
+              track('Theme', { wert: theme })
+              setThemePreference(theme)
+            }}
             onRefresh={refreshSnapshot}
           />
           <main>
@@ -439,7 +452,17 @@ export default function App() {
                     <p>
                       Wähle mindestens einen Markt aus, um weltweite Posting-Fenster zu berechnen.
                     </p>
-                    <button className="button primary" onClick={selectAll}>
+                    <button
+                      className="button primary"
+                      onClick={() => {
+                        track('Zielgruppe', {
+                          region: 'alle',
+                          aktiv: true,
+                          anzahl: REGIONS.length,
+                        })
+                        selectAll()
+                      }}
+                    >
                       Alle Regionen aktivieren
                     </button>
                   </div>
@@ -554,7 +577,12 @@ export default function App() {
                 <Suspense
                   fallback={<div className="panel map-skeleton" aria-label="Karte wird geladen" />}
                 >
-                  <WorldMap date={date} grid={scoreGrid} selected={selected} onRegion={setDetail} />
+                  <WorldMap
+                    date={date}
+                    grid={scoreGrid}
+                    selected={selected}
+                    onRegion={showRegionDetails}
+                  />
                 </Suspense>
               </Section>
               <Section className="forecast-slot" delay={MOTION.stagger * 4}>
@@ -564,7 +592,10 @@ export default function App() {
                   windows={windows24}
                   minuteNow={minuteNow}
                   onScrub={scrubTo}
-                  onLive={() => setScrubbed(null)}
+                  onLive={() => {
+                    track('Live zurück')
+                    setScrubbed(null)
+                  }}
                   isLive={!scrubbed}
                   recommendationThreshold={STATUS_LEVELS[1].min}
                 />
@@ -619,7 +650,10 @@ export default function App() {
                         key={preset.name}
                         className={active ? 'preset-card active' : 'preset-card'}
                         aria-pressed={active}
-                        onClick={() => setSelected([...preset.ids])}
+                        onClick={() => {
+                          track('Preset', { name: preset.name })
+                          setSelected([...preset.ids])
+                        }}
                       >
                         <span className="eyebrow">{preset.ids.length} Regionen</span>
                         <h3>{preset.name}</h3>
@@ -684,7 +718,17 @@ export default function App() {
                 isLive={!scrubbed}
               />
               {selected.length < REGIONS.length && (
-                <button className="text-button" onClick={selectAll}>
+                <button
+                  className="text-button"
+                  onClick={() => {
+                    track('Zielgruppe', {
+                      region: 'alle',
+                      aktiv: true,
+                      anzahl: REGIONS.length,
+                    })
+                    selectAll()
+                  }}
+                >
                   Alle {REGIONS.length} Regionen aktivieren
                 </button>
               )}
@@ -717,14 +761,14 @@ export default function App() {
                     >
                       <button
                         aria-pressed={weightingMode === 'value'}
-                        onClick={() => setWeightingMode('value')}
+                        onClick={() => changeWeighting('value')}
                       >
                         Werbewert
                         <small>nach Kaufkraft</small>
                       </button>
                       <button
                         aria-pressed={weightingMode === 'reach'}
-                        onClick={() => setWeightingMode('reach')}
+                        onClick={() => changeWeighting('reach')}
                       >
                         Reichweite
                         <small>nach Nutzerzahl</small>
@@ -811,9 +855,15 @@ export default function App() {
             points={mobileForecast}
             windows={mobileHorizon === 24 ? windows24 : plannerSets.week}
             ready={scoreGridReady}
-            onHorizon={setMobileHorizon}
+            onHorizon={(hours) => {
+              track('Horizont', { wert: hours === 24 ? '24h' : '7d' })
+              setMobileHorizon(hours)
+            }}
             onScrub={scrubTo}
-            onLive={() => setScrubbed(null)}
+            onLive={() => {
+              track('Live zurück')
+              setScrubbed(null)
+            }}
           />
         </div>
         <AnimatePresence>
@@ -872,7 +922,14 @@ export default function App() {
                 <button
                   className="button primary"
                   onClick={() => {
-                    if (!selected.includes(detailRegion.id)) toggle(detailRegion.id)
+                    if (!selected.includes(detailRegion.id)) {
+                      track('Zielgruppe', {
+                        region: detailRegion.id,
+                        aktiv: true,
+                        anzahl: selected.length + 1,
+                      })
+                      toggle(detailRegion.id)
+                    }
                     setDetail(null)
                   }}
                 >

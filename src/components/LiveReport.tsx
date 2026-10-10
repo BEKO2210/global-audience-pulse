@@ -9,6 +9,7 @@ import type { LiveAnalysisPayload } from './report/types'
 import './LiveReport.css'
 
 import { AI_MARK, HIDE_HOURS, STALE_HOURS } from './reportShared'
+import { track } from '../lib/analytics'
 
 export default function LiveReport({ now, data }: { now: Date; data: LiveAnalysisPayload | null }) {
   const [entered, setEntered] = useState(false)
@@ -60,7 +61,12 @@ export default function LiveReport({ now, data }: { now: Date; data: LiveAnalysi
       {hasVisuals && facts ? (
         <div className="lr-layout">
           <div className="lr-text-col">
-            <details className="lr-details">
+            <details
+              className="lr-details"
+              onToggle={(event) => {
+                if (event.currentTarget.open) track('Bericht aufgeklappt')
+              }}
+            >
               <summary>Ganze Analyse lesen</summary>
               <p className="live-report-body">{report.analyse}</p>
               <ul>

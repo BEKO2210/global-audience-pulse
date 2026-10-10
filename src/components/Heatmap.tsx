@@ -5,6 +5,7 @@ import { formatTime } from '../lib/time'
 import { Flag } from './Flag'
 import { ACTIVITY_LEVELS } from '../config/model'
 import './Heatmap.css'
+import { track } from '../lib/analytics'
 
 const HEATMAP_LABEL_WIDTH = 'var(--heatmap-label-width)'
 const HOUR_MS = 3_600_000
@@ -142,7 +143,14 @@ export const Heatmap = memo(function Heatmap({
                     aria-label={`${region.city}, ${formatTime(date, userZone)}: ${Math.round(score)} Prozent`}
                     onFocus={() => setActiveCell({ row, column })}
                     onKeyDown={(event) => onCellKeyDown(event, row, column)}
-                    onClick={() => onScrub(date)}
+                    onClick={() => {
+                      onScrub(date)
+                      track('Scrub', {
+                        quelle: 'heatmap',
+                        horizont: '24h',
+                        offsetStunden: Math.round((date.getTime() - start.getTime()) / HOUR_MS),
+                      })
+                    }}
                   />
                 )
               })}

@@ -10,6 +10,7 @@ import { Flag } from './Flag'
 import { PhaseIcon } from './PhaseIcon'
 import { AnimatedNumber } from './AnimatedNumber'
 import { RegionClock } from './Clock'
+import { track } from '../lib/analytics'
 
 function measuredAge(iso: string) {
   const minutes = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60_000))
@@ -50,6 +51,15 @@ export function RegionCards({
         ? Boolean(snapshot.profiles[region.id])
         : !snapshot.profiles[region.id]),
   )
+  const toggleRegion = (region: RegionId) => {
+    const aktiv = !selected.includes(region)
+    track('Zielgruppe', {
+      region,
+      aktiv,
+      anzahl: selected.length + (aktiv ? 1 : -1),
+    })
+    onToggle(region)
+  }
 
   return (
     <section
@@ -66,10 +76,22 @@ export function RegionCards({
           <span className="micro">
             {selected.length} von {REGIONS.length} aktiv
           </span>
-          <button className="text-button" onClick={onSelectAll}>
+          <button
+            className="text-button"
+            onClick={() => {
+              track('Zielgruppe', { region: 'alle', aktiv: true, anzahl: REGIONS.length })
+              onSelectAll()
+            }}
+          >
             Alle auswählen
           </button>
-          <button className="text-button" onClick={onReset}>
+          <button
+            className="text-button"
+            onClick={() => {
+              track('Zielgruppe', { region: 'alle', aktiv: false, anzahl: 0 })
+              onReset()
+            }}
+          >
             Auswahl zurücksetzen
           </button>
         </div>
@@ -104,7 +126,10 @@ export function RegionCards({
             >
               <button
                 className="card-main"
-                onClick={() => setExpanded(isExpanded ? null : region.id)}
+                onClick={() => {
+                  if (!isExpanded) track('Region Details', { region: region.id })
+                  setExpanded(isExpanded ? null : region.id)
+                }}
                 aria-expanded={isExpanded}
               >
                 <div className="compact-card">
@@ -186,7 +211,7 @@ export function RegionCards({
               </button>
               <button
                 className="compact-toggle"
-                onClick={() => onToggle(region.id)}
+                onClick={() => toggleRegion(region.id)}
                 aria-pressed={selected.includes(region.id)}
                 aria-label={`${region.city} ${selected.includes(region.id) ? 'abwählen' : 'auswählen'}`}
               >
@@ -194,7 +219,7 @@ export function RegionCards({
               </button>
               <button
                 className="include-button"
-                onClick={() => onToggle(region.id)}
+                onClick={() => toggleRegion(region.id)}
                 aria-pressed={selected.includes(region.id)}
                 aria-label={`${region.city} ${selected.includes(region.id) ? 'abwählen' : 'auswählen'}`}
               >

@@ -6,6 +6,7 @@ import type { PostingWindow } from '../lib/model'
 import { MODEL_CONFIG } from '../config/model'
 import { MOTION } from '../config/motion'
 import { formatDateTime, formatTime, snapToMinutes } from '../lib/time'
+import { track } from '../lib/analytics'
 
 export interface ForecastPoint {
   date: Date
@@ -55,6 +56,7 @@ export function Forecast({
       .y1((d) => y(d.score))
       .curve(curveMonotoneX)(points) ?? ''
   const touchStart = useRef<{ x: number; y: number; scrubbing: boolean } | null>(null)
+  const lastScrub = useRef<Date | null>(null)
   const scrub = (clientX: number) => {
     const rect = ref.current?.getBoundingClientRect()
     if (!rect) return
@@ -62,8 +64,16 @@ export function Forecast({
       width - pad.r,
       Math.max(pad.l, ((clientX - rect.left) / rect.width) * width),
     )
-    onScrub(snapToMinutes(x.invert(px), MODEL_CONFIG.scanStepMinutes))
+    const next = snapToMinutes(x.invert(px), MODEL_CONFIG.scanStepMinutes)
+    lastScrub.current = next
+    onScrub(next)
   }
+  const trackScrub = (quelle: 'prognose' | 'tastatur', next: Date) =>
+    track('Scrub', {
+      quelle,
+      horizont: '24h',
+      offsetStunden: Math.round((next.getTime() - minuteNow.getTime()) / 3_600_000),
+    })
   const ticks = x.ticks(5)
   const selectedInDomain = new Date(
     Math.min(domain[1].getTime(), Math.max(domain[0].getTime(), selectedDate.getTime())),
@@ -105,6 +115,7 @@ export function Forecast({
           // Mouse/pen scrub immediately. Touch waits for intent: the browser keeps vertical
           // pans (touch-action: pan-y) so scrolling over the chart scrolls the page.
           touchStart.current = { x: e.clientX, y: e.clientY, scrubbing: false }
+          lastScrub.current = null
           if (e.pointerType !== 'touch') {
             e.currentTarget.setPointerCapture(e.pointerId)
             scrub(e.clientX)
@@ -134,6 +145,7 @@ export function Forecast({
           )
             scrub(e.clientX)
           touchStart.current = null
+          if (lastScrub.current) trackScrub('prognose', lastScrub.current)
         }}
         onPointerCancel={() => {
           touchStart.current = null
@@ -141,11 +153,22 @@ export function Forecast({
         onKeyDown={(e) => {
           if (['ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home'].includes(e.key))
             e.preventDefault()
-          if (e.key === 'ArrowLeft') onScrub(new Date(selectedDate.getTime() - 15 * 60_000))
-          if (e.key === 'ArrowRight') onScrub(new Date(selectedDate.getTime() + 15 * 60_000))
-          if (e.key === 'PageUp') onScrub(new Date(selectedDate.getTime() + 12 * 3_600_000))
-          if (e.key === 'PageDown') onScrub(new Date(selectedDate.getTime() - 12 * 3_600_000))
-          if (e.key === 'Home') onScrub(minuteNow)
+          const next =
+            e.key === 'ArrowLeft'
+              ? new Date(selectedDate.getTime() - 15 * 60_000)
+              : e.key === 'ArrowRight'
+                ? new Date(selectedDate.getTime() + 15 * 60_000)
+                : e.key === 'PageUp'
+                  ? new Date(selectedDate.getTime() + 12 * 3_600_000)
+                  : e.key === 'PageDown'
+                    ? new Date(selectedDate.getTime() - 12 * 3_600_000)
+                    : e.key === 'Home'
+                      ? minuteNow
+                      : null
+          if (next) {
+            onScrub(next)
+            trackScrub('tastatur', next)
+          }
         }}
       >
         {[25, 50, 75].map((v) => (
