@@ -40,7 +40,7 @@ import { PhaseIcon } from './components/PhaseIcon'
 import { MobileTimeBar } from './components/MobileTimeBar'
 import { SiteFooter } from './components/SiteFooter'
 import { Playbooks } from './components/Playbooks'
-import { LogoMark } from './components/LogoMark'
+import { Wordmark } from './components/LogoMark'
 
 const WorldMap = lazy(() =>
   import('./components/WorldMap').then((module) => ({ default: module.WorldMap })),
@@ -150,14 +150,7 @@ function Header({
       // No entrance: the static shell in index.html already shows the header before React runs.
       initial={false}
     >
-      <a className="wordmark" href="#top" aria-label="Global Audience Pulse Start">
-        <LogoMark score={liveScore} />
-        <span>
-          Global Audience
-          <br />
-          Pulse
-        </span>
-      </a>
+      <Wordmark score={liveScore} />
       <div className="header-actions">
         <button
           className="freshness"

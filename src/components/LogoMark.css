@@ -3,7 +3,13 @@
 .logo-mark {
   display: block;
   flex: none;
+  width: var(--logo-size, 40px);
+  height: var(--logo-size, 40px);
   --turn: 18s;
+}
+.logo-meridians {
+  /* non-scaling stroke is in screen px: 2 of 64 viewBox units at the rendered size */
+  stroke-width: calc(var(--logo-size, 40px) / 32);
 }
 
 /* Static mark (also the reduced-motion and no-animation state): one lens meridian, like the favicon. */
@@ -31,27 +37,28 @@
   .logo-meridian:not(:first-child) {
     opacity: 1;
     animation: logo-turn var(--turn) ease-in-out infinite;
-    animation-delay: calc(var(--i) * var(--turn) / -6);
+    animation-delay: calc(var(--i) * var(--turn) / -6 - var(--elapsed, 0ms));
   }
 
   .logo-beat {
     opacity: 1;
-    animation: logo-beat var(--beat) cubic-bezier(0.4, 0, 0.2, 1) 1.6s infinite;
+    animation: logo-beat var(--beat) cubic-bezier(0.4, 0, 0.2, 1) calc(1.6s - var(--elapsed, 0ms))
+      infinite;
   }
 
   .has-intro .logo-draw {
     stroke-dasharray: 1;
-    animation: logo-draw 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation: logo-draw 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) calc(0s - var(--elapsed, 0ms)) both;
   }
   .has-intro .logo-equator {
-    animation-delay: 0.25s;
+    animation-delay: calc(0.25s - var(--elapsed, 0ms));
   }
   .has-intro .logo-pulse {
     animation-duration: 0.6s;
-    animation-delay: 0.7s;
+    animation-delay: calc(0.7s - var(--elapsed, 0ms));
   }
   .has-intro .logo-meridians {
-    animation: logo-fade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.35s both;
+    animation: logo-fade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) calc(0.35s - var(--elapsed, 0ms)) both;
   }
 }
 
@@ -91,5 +98,46 @@
   }
   to {
     opacity: 1;
+  }
+}
+
+/* Name beside the mark: larger, and each word rises in once while the pulse draws (80 ms apart). */
+a.wordmark {
+  --logo-size: 40px;
+  gap: 12px;
+}
+a.wordmark .wordmark-text {
+  font:
+    650 15px/1.08 'Geist Variable',
+    system-ui,
+    sans-serif;
+  letter-spacing: -0.02em;
+}
+.wm-word {
+  display: inline-block;
+}
+@media (min-width: 720px) {
+  a.wordmark {
+    --logo-size: 44px;
+    gap: 14px;
+  }
+  a.wordmark .wordmark-text {
+    font-size: 17px;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .wordmark-text.has-intro .wm-word {
+    animation: wm-rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(0.45s + var(--w) * 80ms - var(--elapsed, 0ms));
+  }
+}
+@keyframes wm-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }

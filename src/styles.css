@@ -2333,3 +2333,30 @@ button:active {
 .deferred-placeholder {
   content-visibility: auto;
 }
+
+/* T-060: the hero score sits centred in its own field – two columns divided by a hairline, number centred
+   horizontally and vertically, the verdict column vertically centred beside it, on every width. */
+.score-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  align-items: stretch;
+  gap: 0;
+}
+.score-row .hero-score {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  align-self: center;
+  min-width: 0;
+  padding: 0 8px;
+}
+.score-row .score-meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  max-width: none;
+  min-width: 0;
+  padding: 4px 0 4px 20px;
+  border-left: 1px solid var(--rule);
+}

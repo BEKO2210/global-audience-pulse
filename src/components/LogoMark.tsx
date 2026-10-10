@@ -1,30 +1,23 @@
-import type { CSSProperties } from 'react'
+import { useState, type CSSProperties } from 'react'
 import { beatSeconds } from '../lib/beat'
 import './LogoMark.css'
 
 const MERIDIANS = [0, 1, 2]
 
 /**
+ * Keep in sync with the static copy in index.html (first paint before React). Size comes from CSS
+ * (--logo-size); intro timings subtract --elapsed so React continues the shell's animation seamlessly.
+ *
  * The globe-and-pulse mark, inline so it can move: drawn once on load, then the meridians turn like a sphere
  * (cosine sweep, 60° apart) and a light point runs along the pulse line at the live score's beat.
  * prefers-reduced-motion shows the static mark.
  */
-export function LogoMark({
-  size = 32,
-  score,
-  intro = true,
-}: {
-  size?: number
-  score?: number
-  intro?: boolean
-}) {
+export function LogoMark({ score, intro = true }: { score?: number; intro?: boolean }) {
   const style = { '--beat': `${beatSeconds(score).toFixed(1)}s` } as CSSProperties
   return (
     <svg
       className={`logo-mark${intro ? ' has-intro' : ''}`}
       viewBox="0 0 64 64"
-      width={size}
-      height={size}
       style={style}
       aria-hidden="true"
       focusable="false"
@@ -32,8 +25,7 @@ export function LogoMark({
       <rect width="64" height="64" rx="14" fill="#11110f" />
       <g fill="none" stroke="#f3efe6">
         <circle className="logo-draw" cx="32" cy="32" r="20" strokeWidth="3" pathLength={1} />
-        {/* non-scaling stroke is in screen px: 2 viewBox units at this size */}
-        <g className="logo-meridians" strokeWidth={(2 * size) / 64}>
+        <g className="logo-meridians">
           {MERIDIANS.map((i) => (
             <ellipse
               key={i}
@@ -69,5 +61,41 @@ export function LogoMark({
         pathLength={100}
       />
     </svg>
+  )
+}
+
+/** Logo + name. `--elapsed` is the time since navigation start, so the intro picks up where the static
+ * first-paint copy in index.html already is instead of restarting when React mounts. */
+export function Wordmark({
+  score,
+  intro = true,
+  className = '',
+}: {
+  score?: number
+  intro?: boolean
+  className?: string
+}) {
+  const [elapsed] = useState(() => Math.round(performance.now()))
+  return (
+    <a
+      className={`wordmark ${className}`.trim()}
+      href="#top"
+      aria-label="Global Audience Pulse Start"
+      style={{ '--elapsed': `${elapsed}ms` } as CSSProperties}
+    >
+      <LogoMark score={score} intro={intro} />
+      <span className={`wordmark-text${intro ? ' has-intro' : ''}`}>
+        <span className="wm-word" style={{ '--w': 0 } as CSSProperties}>
+          Global
+        </span>{' '}
+        <span className="wm-word" style={{ '--w': 1 } as CSSProperties}>
+          Audience
+        </span>
+        <br />
+        <span className="wm-word" style={{ '--w': 2 } as CSSProperties}>
+          Pulse
+        </span>
+      </span>
+    </a>
   )
 }

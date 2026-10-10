@@ -1,5 +1,5 @@
 import { LEGAL } from '../config/legal'
-import { LogoMark } from './LogoMark'
+import { Wordmark } from './LogoMark'
 import { DATA_SOURCES } from '../config/model'
 
 export function SiteFooter({
@@ -15,18 +15,7 @@ export function SiteFooter({
   return (
     <footer className="site-footer">
       <div className="footer-brand">
-        <a
-          className="wordmark footer-wordmark"
-          href="#top"
-          aria-label="Global Audience Pulse Start"
-        >
-          <LogoMark intro={false} />
-          <span>
-            Global Audience
-            <br />
-            Pulse
-          </span>
-        </a>
+        <Wordmark className="footer-wordmark" intro={false} />
         <p>Die Live-Weltuhr für bessere globale Veröffentlichungszeitpunkte.</p>
         <p className="footer-pricing">{LEGAL.pricingNotice}</p>
       </div>
