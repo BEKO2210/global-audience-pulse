@@ -3,6 +3,7 @@ import healthFixture from '../../e2e/fixtures/health-v2.json'
 import {
   isHealthPayload,
   logLines,
+  oneDecimal,
   runCells,
   runSeconds,
   stationStats,
@@ -47,5 +48,15 @@ describe('pipeline derivations (real runs from 2026-10-10)', () => {
     expect(lines[0]!.steps).toBe('Schreiber 37,6 s · Prüfer 23,9 s · 1 Versuch')
     expect(lines[1]!.note).toBe('V1 abgelehnt (Prüfer)')
     expect(lines[2]!.steps).toMatch(/übersprungen/)
+  })
+
+  it('writes English log lines with a decimal point', () => {
+    const lines = logLines(fixture.runs, 'Europe/Berlin', 3, 'en')
+    expect(lines[0]).toMatchObject({ time: '22:04', outcome: 'published', note: '' })
+    expect(lines[0]!.steps).toBe('Writer 37.6 s · Checker 23.9 s · 1 attempt')
+    expect(lines[1]!.note).toBe('Attempt 1 rejected (checker)')
+    expect(lines[2]!.steps).toBe('GPU busy – hour skipped')
+    expect(oneDecimal(1.25, 'en')).toBe('1.3')
+    expect(oneDecimal(1.25)).toBe('1,3')
   })
 })

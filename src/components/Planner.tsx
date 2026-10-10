@@ -11,6 +11,77 @@ import {
 } from '../lib/time'
 import { AnimatedNumber } from './AnimatedNumber'
 import { track } from '../lib/analytics'
+import { useLocale, useMessages } from '../i18n/LocaleProvider'
+import type { Locale, Messages } from '../i18n/locale'
+import { cityName, phaseName } from '../i18n/labels'
+
+const DE = {
+  icsSummary: 'Optimales Posting-Fenster',
+  icsFile: 'posting-fenster.ics',
+  planCopied: 'Plan kopiert',
+  shareTitle: 'Mein Posting-Plan',
+  linkCopied: 'Link kopiert',
+  eyebrow: '7-Tage-Planer',
+  title: 'Die nächsten starken Fenster',
+  zoneNote: 'Kalendertage in deiner Zeitzone',
+  period: 'Planungszeitraum',
+  today: (n: number) => `Heute (${n})`,
+  tomorrow: (n: number) => `Morgen (${n})`,
+  week: (n: number) => `7 Tage (${n})`,
+  until: 'bis',
+  atPeak: 'Im Peak:',
+  noPeak: 'Kein Kernmarkt in der Hochphase',
+  download: 'Als Kalenderdatei laden',
+  copiedToClipboard: 'In Zwischenablage kopiert',
+  copyPlan: 'Plan kopieren',
+  shareLink: 'Link teilen',
+  nextDst: 'Nächste Zeitumstellung:',
+}
+const EN: typeof DE = {
+  icsSummary: 'Optimal posting window',
+  icsFile: 'posting-window.ics',
+  planCopied: 'Plan copied',
+  shareTitle: 'My posting plan',
+  linkCopied: 'Link copied',
+  eyebrow: '7-day planner',
+  title: 'The next strong windows',
+  zoneNote: 'Calendar days in your time zone',
+  period: 'Planning period',
+  today: (n) => `Today (${n})`,
+  tomorrow: (n) => `Tomorrow (${n})`,
+  week: (n) => `7 days (${n})`,
+  until: 'until',
+  atPeak: 'At peak:',
+  noPeak: 'No core market at its peak',
+  download: 'Download as calendar file',
+  copiedToClipboard: 'Copied to clipboard',
+  copyPlan: 'Copy plan',
+  shareLink: 'Share link',
+  nextDst: 'Next clock change:',
+}
+const M: Messages<typeof DE> = { de: DE, en: EN }
+
+const dateTimeFormats = new Map<string, Intl.DateTimeFormat>()
+/** German keeps the shared formatDateTime; English gets the same fields in en-GB order. */
+function formatStart(date: Date, timeZone: string, locale: Locale, intl: string) {
+  if (locale === 'de') return formatDateTime(date, timeZone)
+  const key = `${intl}|${timeZone}`
+  let format = dateTimeFormats.get(key)
+  if (!format) {
+    format = new Intl.DateTimeFormat(intl, {
+      timeZone,
+      weekday: 'short',
+      day: '2-digit',
+      month: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23',
+      timeZoneName: 'short',
+    })
+    dateTimeFormats.set(key, format)
+  }
+  return format.format(date)
+}
 
 function icsUtcDate(date: Date) {
   return date
@@ -22,7 +93,11 @@ function icsLocalDate(date: Date, timeZone: string) {
   const p = fastZonedParts(date, timeZone)
   return `${p.year}${String(p.month).padStart(2, '0')}${String(p.day).padStart(2, '0')}T${String(p.hour).padStart(2, '0')}${String(p.minute).padStart(2, '0')}${String(p.second).padStart(2, '0')}`
 }
-function downloadIcs(window: PostingWindow, timeZone: string) {
+function downloadIcs(
+  window: PostingWindow,
+  timeZone: string,
+  text: { icsSummary: string; icsFile: string },
+) {
   const body = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
@@ -32,13 +107,13 @@ function downloadIcs(window: PostingWindow, timeZone: string) {
     `DTSTAMP:${icsUtcDate(new Date())}`,
     `DTSTART;TZID=${timeZone}:${icsLocalDate(window.start, timeZone)}`,
     `DTEND;TZID=${timeZone}:${icsLocalDate(window.end, timeZone)}`,
-    'SUMMARY:Optimales Posting-Fenster',
+    `SUMMARY:${text.icsSummary}`,
     'END:VEVENT',
     'END:VCALENDAR',
   ].join('\r\n')
   const a = document.createElement('a')
   a.href = URL.createObjectURL(new Blob([body], { type: 'text/calendar' }))
-  a.download = 'posting-fenster.ics'
+  a.download = text.icsFile
   a.click()
   URL.revokeObjectURL(a.href)
 }
@@ -56,6 +131,8 @@ export function Planner({
   selected: readonly RegionId[]
   dst?: { region: RegionConfig; date: Date }
 }) {
+  const t = useMessages(M)
+  const { locale, intl } = useLocale()
   const [message, setMessage] = useState('')
   const [copied, setCopied] = useState(false)
   const [scope, setScope] = useState<keyof typeof windowSets>('today')
@@ -66,7 +143,7 @@ export function Planner({
   const plan = windows
     .map(
       (w, i) =>
-        `${i + 1}. ${formatDateTime(w.start, zone)}–${formatTime(w.end, zone)} (${Math.round(w.score)}/100)`,
+        `${i + 1}. ${formatStart(w.start, zone, locale, intl)}–${formatTime(w.end, zone)} (${Math.round(w.score)}/100)`,
     )
     .join('\n')
   const copy = async () => {
@@ -80,19 +157,19 @@ export function Planner({
       document.execCommand('copy')
       ta.remove()
     }
-    setMessage('Plan kopiert')
+    setMessage(t.planCopied)
     setCopied(true)
     track('Plan kopiert')
     window.setTimeout(() => setCopied(false), 2_200)
   }
   const share = async () => {
-    const data = { title: 'Mein Posting-Plan', text: plan, url: location.href }
+    const data = { title: t.shareTitle, text: plan, url: location.href }
     if (navigator.share) {
       await navigator.share(data)
       track('Link geteilt', { methode: 'native' })
     } else {
       await navigator.clipboard.writeText(location.href)
-      setMessage('Link kopiert')
+      setMessage(t.linkCopied)
       track('Link geteilt', { methode: 'zwischenablage' })
     }
   }
@@ -100,13 +177,13 @@ export function Planner({
     <section className="panel planner" aria-labelledby="planner-title">
       <div className="section-head">
         <div>
-          <p className="eyebrow">7-Tage-Planer</p>
-          <h2 id="planner-title">Die nächsten starken Fenster</h2>
+          <p className="eyebrow">{t.eyebrow}</p>
+          <h2 id="planner-title">{t.title}</h2>
         </div>
-        <span className="micro">{timeZoneName(new Date(), zone)}</span>
+        <span className="micro">{timeZoneName(new Date(), zone, intl)}</span>
       </div>
-      <p className="planner-zone-note">Kalendertage in deiner Zeitzone</p>
-      <div className="filter-row planner-tabs" role="tablist" aria-label="Planungszeitraum">
+      <p className="planner-zone-note">{t.zoneNote}</p>
+      <div className="filter-row planner-tabs" role="tablist" aria-label={t.period}>
         <button
           role="tab"
           onClick={() => {
@@ -115,7 +192,7 @@ export function Planner({
           }}
           aria-selected={scope === 'today'}
         >
-          Heute ({windowSets.today.length})
+          {t.today(windowSets.today.length)}
         </button>
         <button
           role="tab"
@@ -125,7 +202,7 @@ export function Planner({
           }}
           aria-selected={scope === 'tomorrow'}
         >
-          Morgen ({windowSets.tomorrow.length})
+          {t.tomorrow(windowSets.tomorrow.length)}
         </button>
         <button
           role="tab"
@@ -135,7 +212,7 @@ export function Planner({
           }}
           aria-selected={scope === 'week'}
         >
-          7 Tage ({windowSets.week.length})
+          {t.week(windowSets.week.length)}
         </button>
       </div>
       <div className="planner-list" role="tabpanel">
@@ -143,12 +220,13 @@ export function Planner({
           <article key={window.start.toISOString()}>
             <span className="window-index">{String(i + 1).padStart(2, '0')}</span>
             <div>
-              <strong>{formatDateTime(window.start, zone)}</strong>
+              <strong>{formatStart(window.start, zone, locale, intl)}</strong>
               <p>
-                bis {formatTime(window.end, zone)} · Score <AnimatedNumber value={window.score} />
+                {t.until} {formatTime(window.end, zone)} · Score{' '}
+                <AnimatedNumber value={window.score} />
               </p>
               <small className="window-markets">
-                <Fire size={14} weight="regular" aria-hidden="true" /> Im Peak:{' '}
+                <Fire size={14} weight="regular" aria-hidden="true" /> {t.atPeak}{' '}
                 {REGIONS.filter((region) => selected.includes(region.id))
                   .filter((region) =>
                     ['prime', 'day'].includes(
@@ -156,20 +234,20 @@ export function Planner({
                     ),
                   )
                   .slice(0, 4)
-                  .map(
-                    (region) =>
-                      `${region.city} (${formatTime(window.start, region.timeZone)} ${phaseAt(localDecimalHourFast(window.start, region.timeZone)).name})`,
-                  )
-                  .join(' · ') || 'Kein Kernmarkt in der Hochphase'}
+                  .map((region) => {
+                    const phase = phaseAt(localDecimalHourFast(window.start, region.timeZone))
+                    return `${cityName(region.id, region.city, locale)} (${formatTime(window.start, region.timeZone)} ${phaseName(phase.id, phase.name, locale)})`
+                  })
+                  .join(' · ') || t.noPeak}
               </small>
             </div>
             <button
               className="icon-button"
               onClick={() => {
-                downloadIcs(window, zone)
+                downloadIcs(window, zone, t)
                 track('ICS Download', { zielgruppe })
               }}
-              aria-label="Als Kalenderdatei laden"
+              aria-label={t.download}
             >
               <DownloadSimple size={19} weight="regular" aria-hidden="true" />
             </button>
@@ -179,16 +257,16 @@ export function Planner({
       <div className="planner-actions">
         <button className={`button primary${copied ? ' copied' : ''}`} onClick={copy}>
           {copied && <Check size={18} weight="regular" aria-hidden="true" />}{' '}
-          {copied ? 'In Zwischenablage kopiert' : 'Plan kopieren'}
+          {copied ? t.copiedToClipboard : t.copyPlan}
         </button>
         <button className="button" onClick={share}>
-          <ShareNetwork size={18} weight="regular" aria-hidden="true" /> Link teilen
+          <ShareNetwork size={18} weight="regular" aria-hidden="true" /> {t.shareLink}
         </button>
       </div>
       {dst && (
         <p className="dst-note">
-          Nächste Zeitumstellung: {dst.region.city} ·{' '}
-          {dst.date.toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })}
+          {t.nextDst} {cityName(dst.region.id, dst.region.city, locale)} ·{' '}
+          {dst.date.toLocaleDateString(intl, { day: '2-digit', month: 'long', year: 'numeric' })}
         </p>
       )}
       <span className="sr-only" aria-live="polite">

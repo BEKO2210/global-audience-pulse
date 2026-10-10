@@ -8,16 +8,50 @@ import { formatOffset, formatTime } from '../lib/time'
 import type { ForecastPoint } from './Forecast'
 import { AnimatedNumber } from './AnimatedNumber'
 import { track } from '../lib/analytics'
+import { useLocale, useMessages } from '../i18n/LocaleProvider'
+import type { Messages } from '../i18n/locale'
+import { statusText } from '../i18n/labels'
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value))
 
-/** Compact distance for the slim bar: "+45 Min", "+15 Std", "+3 Tage". */
-const shortOffset = (minutes: number) => {
-  if (minutes < 60) return `+${minutes} Min`
-  if (minutes < 1440) return `+${Math.round(minutes / 60)} Std`
-  const days = Math.round(minutes / 1440)
-  return `+${days} ${days === 1 ? 'Tag' : 'Tage'}`
+const DE = {
+  /** Compact distance for the slim bar: "+45 Min", "+15 Std", "+3 Tage". */
+  shortOffset: (minutes: number) => {
+    if (minutes < 60) return `+${minutes} Min`
+    if (minutes < 1440) return `+${Math.round(minutes / 60)} Std`
+    const days = Math.round(minutes / 1440)
+    return `+${days} ${days === 1 ? 'Tag' : 'Tage'}`
+  },
+  region: 'Zeit vorspulen',
+  backToNow: (offset: string) => `Zurück zu jetzt (gewählt: ${offset})`,
+  now: 'Jetzt',
+  slider: 'Mobile Zeitmaschine',
+  horizon24: 'Zeitraum: 24 Stunden, auf 7 Tage umschalten',
+  horizon7: 'Zeitraum: 7 Tage, auf 24 Stunden umschalten',
+  short24: '24 h',
+  short7: '7 T',
+  total: 'Gesamtwert',
+  bestFrom: (min: number) => `Beste Fenster beginnen ab Score ${min}.`,
 }
+const EN: typeof DE = {
+  shortOffset: (minutes) => {
+    if (minutes < 60) return `+${minutes} min`
+    if (minutes < 1440) return `+${Math.round(minutes / 60)} h`
+    const days = Math.round(minutes / 1440)
+    return `+${days} ${days === 1 ? 'day' : 'days'}`
+  },
+  region: 'Scrub through time',
+  backToNow: (offset) => `Back to now (selected: ${offset})`,
+  now: 'Now',
+  slider: 'Mobile time machine',
+  horizon24: 'Range: 24 hours, switch to 7 days',
+  horizon7: 'Range: 7 days, switch to 24 hours',
+  short24: '24 h',
+  short7: '7 d',
+  total: 'Overall score',
+  bestFrom: (min) => `Best windows start at score ${min}.`,
+}
+const M: Messages<typeof DE> = { de: DE, en: EN }
 
 export function MobileTimeBar({
   now,
@@ -40,6 +74,8 @@ export function MobileTimeBar({
   onScrub: (date: Date) => void
   onLive: () => void
 }) {
+  const t = useMessages(M)
+  const { locale, intl } = useLocale()
   const reduceMotion = useReducedMotion()
   const maxMinutes = horizon * 60
   const externalMinutes = clamp(
@@ -92,13 +128,13 @@ export function MobileTimeBar({
         label:
           horizon === 24
             ? formatTime(cursor, Intl.DateTimeFormat().resolvedOptions().timeZone)
-            : cursor.toLocaleDateString('de-DE', { weekday: 'short' }),
+            : cursor.toLocaleDateString(intl, { weekday: 'short' }),
       })
       if (horizon === 24) cursor.setHours(cursor.getHours() + 6)
       else cursor.setDate(cursor.getDate() + 1)
     }
     return result
-  }, [horizon, now])
+  }, [horizon, now, intl])
 
   const update = (minutes: number) => {
     const next = clamp(minutes, 0, maxMinutes)
@@ -129,7 +165,7 @@ export function MobileTimeBar({
     })
 
   return (
-    <div className="mobile-bar" role="region" aria-label="Zeit vorspulen">
+    <div className="mobile-bar" role="region" aria-label={t.region}>
       <div className="mobile-bar-when">
         <span className="mobile-bar-readout">{formatTime(live ? now : date, userZone)}</span>
         {live ? (
@@ -140,10 +176,10 @@ export function MobileTimeBar({
           <button
             className="mobile-bar-live"
             onClick={onLive}
-            aria-label={`Zurück zu jetzt (gewählt: ${formatOffset(date.getTime() - now.getTime())})`}
+            aria-label={t.backToNow(formatOffset(date.getTime() - now.getTime(), locale))}
           >
-            {shortOffset(displayedMinutes)}
-            <span className="mobile-bar-back">Jetzt</span>
+            {t.shortOffset(displayedMinutes)}
+            <span className="mobile-bar-back">{t.now}</span>
           </button>
         )}
       </div>
@@ -184,8 +220,8 @@ export function MobileTimeBar({
           </span>
         </div>
         <input
-          aria-label="Mobile Zeitmaschine"
-          aria-valuetext={`${date.toLocaleString('de-DE', { weekday: 'long', hour: '2-digit', minute: '2-digit' })}, Score ${Math.round(score)}`}
+          aria-label={t.slider}
+          aria-valuetext={`${date.toLocaleString(intl, { weekday: 'long', hour: '2-digit', minute: '2-digit' })}, Score ${Math.round(score)}`}
           type="range"
           min={0}
           max={maxMinutes}
@@ -214,19 +250,15 @@ export function MobileTimeBar({
       <button
         className="mobile-horizon-toggle"
         onClick={() => onHorizon(horizon === 24 ? 168 : 24)}
-        aria-label={
-          horizon === 24
-            ? 'Zeitraum: 24 Stunden, auf 7 Tage umschalten'
-            : 'Zeitraum: 7 Tage, auf 24 Stunden umschalten'
-        }
+        aria-label={horizon === 24 ? t.horizon24 : t.horizon7}
       >
-        {horizon === 24 ? '24 h' : '7 T'}
+        {horizon === 24 ? t.short24 : t.short7}
       </button>
-      <div className={`mobile-bar-score ${status.tone}`} aria-label="Gesamtwert">
+      <div className={`mobile-bar-score ${status.tone}`} aria-label={t.total}>
         <b>{ready ? <AnimatedNumber value={score} /> : '—'}</b>
-        <span>{status.label}</span>
+        <span>{statusText(status.tone, locale).label}</span>
       </div>
-      <span className="sr-only">Beste Fenster beginnen ab Score {STATUS_LEVELS[1].min}.</span>
+      <span className="sr-only">{t.bestFrom(STATUS_LEVELS[1].min)}</span>
     </div>
   )
 }

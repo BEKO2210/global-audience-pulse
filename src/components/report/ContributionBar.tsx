@@ -2,14 +2,46 @@ import { useState } from 'react'
 import { Flag } from '../Flag'
 import type { AnalysisFacts } from './types'
 import { seriesColorForRegion } from './regionSeries'
+import { useLocale, useMessages } from '../../i18n/LocaleProvider'
+import type { Messages } from '../../i18n/locale'
+import { cityName } from '../../i18n/labels'
+import type { RegionId } from '../../config/regions'
+
+const DE = {
+  title: 'Wer trägt den Wert',
+  carries: 'trägt',
+  of: 'von',
+  points: 'Punkten',
+  groupLabel: (total: number) => `Beitrag der Regionen zum Gesamtwert ${total} Punkte`,
+  pointsOf: (city: string, points: number) => `${city}: ${points} Punkte`,
+  caption: 'Regionaler Beitrag zum Gesamtwert',
+  place: 'Ort',
+  pointsHead: 'Punkte',
+}
+const EN: typeof DE = {
+  title: 'Who drives the score',
+  carries: 'contributes',
+  of: 'of',
+  points: 'points',
+  groupLabel: (total) => `Regional contributions to the overall score of ${total} points`,
+  pointsOf: (city, points) => `${city}: ${points} points`,
+  caption: 'Regional contribution to the overall score',
+  place: 'Place',
+  pointsHead: 'Points',
+}
+const M: Messages<typeof DE> = { de: DE, en: EN }
 
 export function ContributionBar({ facts }: { facts: AnalysisFacts }) {
   const [activeId, setActiveId] = useState<string | null>(null)
+  const t = useMessages(M)
+  const { locale } = useLocale()
   const gesamt = facts.gesamt?.score
   const regionen = facts.regionen?.filter((r) => r.beitragPunkte > 0) ?? []
   if (gesamt == null || regionen.length === 0) return null
 
-  const sorted = [...regionen].sort((a, b) => b.beitragPunkte - a.beitragPunkte)
+  const sorted = [...regionen]
+    .sort((a, b) => b.beitragPunkte - a.beitragPunkte)
+    .map((r) => ({ ...r, ort: cityName(r.id as RegionId, r.ort, locale) }))
   const topRegion = sorted[0]
   const maxBeitrag = topRegion?.beitragPunkte || 1
 
@@ -20,19 +52,19 @@ export function ContributionBar({ facts }: { facts: AnalysisFacts }) {
   return (
     <section className="lr-block" aria-labelledby="lr-contribution-title">
       <h3 id="lr-contribution-title" className="lr-block-title">
-        Wer trägt den Wert
+        {t.title}
       </h3>
       {topRegion && (
         <p className="lr-block-total" role="heading" aria-level={4}>
-          <strong>{topRegion.ort}</strong> trägt{' '}
-          <span className="lr-mono">{topRegion.beitragPunkte}</span> von{' '}
-          <span className="lr-mono">{gesamt}</span> Punkten
+          <strong>{topRegion.ort}</strong> {t.carries}{' '}
+          <span className="lr-mono">{topRegion.beitragPunkte}</span> {t.of}{' '}
+          <span className="lr-mono">{gesamt}</span> {t.points}
         </p>
       )}
       <div
         className={`lr-contrib-bar${activeId != null ? ' has-active' : ''}`}
         role="group"
-        aria-label={`Beitrag der Regionen zum Gesamtwert ${gesamt} Punkte`}
+        aria-label={t.groupLabel(gesamt)}
       >
         {sorted.map((r) => {
           const widthPct = (r.beitragPunkte / gesamt) * 100
@@ -51,7 +83,7 @@ export function ContributionBar({ facts }: { facts: AnalysisFacts }) {
                 width: `${widthPct}%`,
                 backgroundColor: color,
               }}
-              title={`${r.ort}: ${r.beitragPunkte} Punkte`}
+              title={t.pointsOf(r.ort, r.beitragPunkte)}
               onMouseEnter={() => setActiveId(r.id)}
               onMouseLeave={() => setActiveId(null)}
             >
@@ -87,7 +119,7 @@ export function ContributionBar({ facts }: { facts: AnalysisFacts }) {
                   handleToggle(r.id)
                 }
               }}
-              aria-label={`${r.ort}: ${r.beitragPunkte} Punkte`}
+              aria-label={t.pointsOf(r.ort, r.beitragPunkte)}
             >
               <div className="lr-contrib-meta">
                 <Flag code={r.flagge} label={r.ort} size={16} />
@@ -108,11 +140,11 @@ export function ContributionBar({ facts }: { facts: AnalysisFacts }) {
         })}
       </ul>
       <table className="sr-only">
-        <caption>Regionaler Beitrag zum Gesamtwert</caption>
+        <caption>{t.caption}</caption>
         <thead>
           <tr>
-            <th>Ort</th>
-            <th>Punkte</th>
+            <th>{t.place}</th>
+            <th>{t.pointsHead}</th>
           </tr>
         </thead>
         <tbody>

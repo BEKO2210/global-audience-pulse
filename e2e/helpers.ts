@@ -1,6 +1,6 @@
 import { expect, type BrowserContext, type Page } from '@playwright/test'
 
-export async function openReady(page: Page, interceptAnalytics = true) {
+export async function openReady(page: Page, interceptAnalytics = true, path = '') {
   if (interceptAnalytics) {
     await page.route('https://stats.it-handwerk-stuttgart.de/**', (route) =>
       route.fulfill({ status: 202, body: '' }),
@@ -17,8 +17,10 @@ export async function openReady(page: Page, interceptAnalytics = true) {
       ? route.fallback()
       : route.fulfill({ status: 200, json: {} }),
   )
-  await page.goto('')
-  await expect(page.getByRole('heading', { name: /Jetzt posten oder warten/i })).toBeVisible()
+  await page.goto(path)
+  await expect(
+    page.getByRole('heading', { name: /Jetzt posten oder warten|Post now or wait/i }),
+  ).toBeVisible()
   await expect(page.locator('.hero-score')).not.toContainText('—')
 }
 

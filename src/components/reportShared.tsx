@@ -2,6 +2,29 @@ import { useEffect, useState } from 'react'
 import { DATA_SOURCES } from '../config/model'
 import { formatTime } from '../lib/time'
 import type { LiveAnalysisPayload } from './report/types'
+import { useLocale, useMessages } from '../i18n/LocaleProvider'
+import type { Messages } from '../i18n/locale'
+
+const DE = {
+  aiAnalysis: 'Automatische AI-Analyse',
+  report: 'Lagebericht',
+}
+const EN: typeof DE = {
+  aiAnalysis: 'Automated AI analysis',
+  report: 'Briefing',
+}
+const M: Messages<typeof DE> = { de: DE, en: EN }
+
+/** The model writes the report in German only (until T-015); English readers get a short note. */
+export function GermanReportNote() {
+  const { locale } = useLocale()
+  if (locale === 'de') return null
+  return (
+    <p className="live-report-note report-language-note" lang="en">
+      The AI briefing is written in German for now.
+    </p>
+  )
+}
 
 /**
  * EU AI Act Art. 50(2) machine-readable marking of AI-generated text (IPTC digital source type, the
@@ -41,6 +64,7 @@ export function useLiveReport() {
 
 /** One reserved line in the hero: never shifts the layout while the report loads. */
 export function ReportTeaser({ data, now }: { data: LiveAnalysisPayload | null; now: Date }) {
+  const t = useMessages(M)
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const generated = data ? new Date(data.generatedAt) : null
   const fresh = generated && (now.getTime() - generated.getTime()) / 3_600_000 <= HIDE_HOURS
@@ -50,9 +74,11 @@ export function ReportTeaser({ data, now }: { data: LiveAnalysisPayload | null; 
   return (
     <a className="report-teaser" href="#lagebericht" {...(ai ? AI_MARK : {})}>
       <span className="report-teaser-label">
-        {ai ? 'Automatische AI-Analyse' : 'Lagebericht'} · {formatTime(generated, zone)}
+        {ai ? t.aiAnalysis : t.report} · {formatTime(generated, zone)}
       </span>
-      <span className="report-teaser-text">{data.report.schlagzeile}</span>
+      <span className="report-teaser-text" lang="de">
+        {data.report.schlagzeile}
+      </span>
     </a>
   )
 }

@@ -1,22 +1,51 @@
 import { STATUS_LEVELS } from '../../config/model'
 import { useSvgBox } from '../../hooks/useSvgBox'
 import type { AnalysisFacts } from './types'
+import { useLocale, useMessages } from '../../i18n/LocaleProvider'
+import type { Messages } from '../../i18n/locale'
+import { statusText } from '../../i18n/labels'
+
+const DE = {
+  title: 'Trend',
+  now: 'jetzt',
+  change: (delta: string) => `Veränderung ${delta}`,
+  chartLabel: (now: number, later: number, hours: number) =>
+    `Score von ${now} jetzt auf ${later} in ${hours} Stunden`,
+  from: (label: string, min: number) => `${label} ab ${min}`,
+  caption: 'Score-Trend nächste Stunden',
+  time: 'Zeit',
+  score: 'Score',
+}
+const EN: typeof DE = {
+  title: 'Trend',
+  now: 'now',
+  change: (delta) => `Change ${delta}`,
+  chartLabel: (now, later, hours) =>
+    `Score from ${now} now to ${later} in ${hours} ${hours === 1 ? 'hour' : 'hours'}`,
+  from: (label, min) => `${label} from ${min}`,
+  caption: 'Score trend for the next hours',
+  time: 'Time',
+  score: 'Score',
+}
+const M: Messages<typeof DE> = { de: DE, en: EN }
 
 const PAD = { t: 26, r: 34, b: 24, l: 24 }
 
 export function TrendChart({ facts }: { facts: AnalysisFacts }) {
   // 1 SVG unit = 1 CSS px (height from CSS), so labels keep their size on every screen.
   const { ref, width: W, height: H } = useSvgBox<SVGSVGElement>({ width: 360, height: 180 })
+  const t = useMessages(M)
+  const { locale } = useLocale()
   const now = facts.gesamt?.score
   const trend = facts.trendNaechsteStunden
   if (now == null || !trend?.length) return null
 
   const points = [
-    { label: 'jetzt', h: 0, score: now },
-    ...trend.map((t) => ({
-      label: `+${t.inStunden} h`,
-      h: t.inStunden,
-      score: t.score,
+    { label: t.now, h: 0, score: now },
+    ...trend.map((step) => ({
+      label: `+${step.inStunden} h`,
+      h: step.inStunden,
+      score: step.score,
     })),
   ]
 
@@ -58,9 +87,9 @@ export function TrendChart({ facts }: { facts: AnalysisFacts }) {
     <section className="lr-block" aria-labelledby="lr-trend-title">
       <div className="lr-block-head">
         <h3 id="lr-trend-title" className="lr-block-title">
-          Trend
+          {t.title}
         </h3>
-        <span className={`lr-delta lr-delta-${deltaDir}`} aria-label={`Veränderung ${deltaLabel}`}>
+        <span className={`lr-delta lr-delta-${deltaDir}`} aria-label={t.change(deltaLabel)}>
           {deltaDir === 'up' ? '↑' : deltaDir === 'down' ? '↓' : '→'} {deltaLabel}
         </span>
       </div>
@@ -70,7 +99,7 @@ export function TrendChart({ facts }: { facts: AnalysisFacts }) {
           viewBox={`0 0 ${W} ${H}`}
           className="lr-trend-svg"
           role="img"
-          aria-label={`Score von ${now} jetzt auf ${last.score} in ${last.inStunden} Stunden`}
+          aria-label={t.chartLabel(now, last.score, last.inStunden)}
         >
           <polygon className="lr-trend-area" points={area} />
           {visibleLevels.map((lvl) => {
@@ -109,18 +138,21 @@ export function TrendChart({ facts }: { facts: AnalysisFacts }) {
               .map((lvl) => (
                 <span key={lvl.min} className="lr-trend-legend-item">
                   <span className="lr-trend-legend-swatch" aria-hidden="true" />
-                  {lvl.label} ab {lvl.min}
+                  {t.from(
+                    locale === 'de' ? lvl.label : statusText(lvl.tone, locale).label,
+                    lvl.min,
+                  )}
                 </span>
               ))}
           </figcaption>
         )}
       </figure>
       <table className="sr-only">
-        <caption>Score-Trend nächste Stunden</caption>
+        <caption>{t.caption}</caption>
         <thead>
           <tr>
-            <th>Zeit</th>
-            <th>Score</th>
+            <th>{t.time}</th>
+            <th>{t.score}</th>
           </tr>
         </thead>
         <tbody>

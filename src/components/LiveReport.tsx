@@ -9,11 +9,39 @@ import { TrendChart } from './report/TrendChart'
 import type { LiveAnalysisPayload } from './report/types'
 import './LiveReport.css'
 
-import { AI_MARK, HIDE_HOURS, STALE_HOURS } from './reportShared'
+import { AI_MARK, GermanReportNote, HIDE_HOURS, STALE_HOURS } from './reportShared'
 import { track } from '../lib/analytics'
+import { useLocale, useMessages } from '../i18n/LocaleProvider'
+import type { Messages } from '../i18n/locale'
+
+const DE = {
+  report: 'Lagebericht',
+  aiAnalysis: 'Automatische AI-Analyse',
+  pausedSince: 'Pausiert seit ',
+  asOf: 'Stand ',
+  readAll: 'Ganze Analyse lesen',
+  noteLlm: (ago: string) =>
+    `Automatische AI-Analyse aus den Zahlen dieser Seite, vor ${ago}, ohne menschliche Prüfung. Jede Zahl wird automatisch gegen die Daten geprüft; Einschätzungen können trotzdem danebenliegen.`,
+  noteTemplate: 'Automatisch aus den Zahlen dieser Seite zusammengestellt (Vorlage, ohne KI).',
+  noteStale: ' Neue Berichte erscheinen stündlich, sobald der Rechner des Betreibers wieder läuft.',
+}
+const EN: typeof DE = {
+  report: 'Briefing',
+  aiAnalysis: 'Automated AI analysis',
+  pausedSince: 'Paused since ',
+  asOf: 'As of ',
+  readAll: 'Read the full analysis',
+  noteLlm: (ago) =>
+    `Automated AI analysis of the figures on this page, ${ago} ago, without human review. Every number is checked against the data automatically; assessments can still be off.`,
+  noteTemplate: 'Compiled automatically from the figures on this page (template, no AI).',
+  noteStale: ' New reports appear hourly once the operator’s computer is running again.',
+}
+const M: Messages<typeof DE> = { de: DE, en: EN }
 
 export default function LiveReport({ now, data }: { now: Date; data: LiveAnalysisPayload | null }) {
   const [entered, setEntered] = useState(false)
+  const t = useMessages(M)
+  const { locale, intl } = useLocale()
 
   useEffect(() => {
     if (!data) return
@@ -44,18 +72,23 @@ export default function LiveReport({ now, data }: { now: Date; data: LiveAnalysi
     >
       <div className="live-report-head">
         <p className="eyebrow">
-          Lagebericht
-          {data.source === 'llm' && <span className="ai-badge">Automatische AI-Analyse</span>}
+          {t.report}
+          {data.source === 'llm' && <span className="ai-badge">{t.aiAnalysis}</span>}
         </p>
         <span className="live-report-time">
-          {stale ? 'Pausiert seit ' : 'Stand '}
-          {formatTime(generated, zone)} {timeZoneName(generated, zone)}
+          {stale ? t.pausedSince : t.asOf}
+          {formatTime(generated, zone)} {timeZoneName(generated, zone, intl)}
         </span>
       </div>
+      <GermanReportNote />
 
       <div className="lr-intro">
-        <h2 id="live-report-title">{report.schlagzeile}</h2>
-        <p className="live-report-verdict">{report.empfehlung}</p>
+        <h2 id="live-report-title" lang="de">
+          {report.schlagzeile}
+        </h2>
+        <p className="live-report-verdict" lang="de">
+          {report.empfehlung}
+        </p>
         {facts ? <MemoryBadges facts={facts} /> : null}
         {facts ? <HolidayChips facts={facts} /> : null}
       </div>
@@ -69,9 +102,11 @@ export default function LiveReport({ now, data }: { now: Date; data: LiveAnalysi
                 if (event.currentTarget.open) track('Bericht aufgeklappt')
               }}
             >
-              <summary>Ganze Analyse lesen</summary>
-              <p className="live-report-body">{report.analyse}</p>
-              <ul>
+              <summary>{t.readAll}</summary>
+              <p className="live-report-body" lang="de">
+                {report.analyse}
+              </p>
+              <ul lang="de">
                 {report.punkte.map((point) => (
                   <li key={point}>{point}</li>
                 ))}
@@ -87,8 +122,10 @@ export default function LiveReport({ now, data }: { now: Date; data: LiveAnalysi
         </div>
       ) : (
         <>
-          <p className="live-report-body">{report.analyse}</p>
-          <ul>
+          <p className="live-report-body" lang="de">
+            {report.analyse}
+          </p>
+          <ul lang="de">
             {report.punkte.map((point) => (
               <li key={point}>{point}</li>
             ))}
@@ -97,11 +134,8 @@ export default function LiveReport({ now, data }: { now: Date; data: LiveAnalysi
       )}
 
       <p className="live-report-note">
-        {data.source === 'llm'
-          ? `Automatische AI-Analyse aus den Zahlen dieser Seite, vor ${relativeTime(now, generated)}, ohne menschliche Prüfung. Jede Zahl wird automatisch gegen die Daten geprüft; Einschätzungen können trotzdem danebenliegen.`
-          : 'Automatisch aus den Zahlen dieser Seite zusammengestellt (Vorlage, ohne KI).'}
-        {stale &&
-          ' Neue Berichte erscheinen stündlich, sobald der Rechner des Betreibers wieder läuft.'}
+        {data.source === 'llm' ? t.noteLlm(relativeTime(now, generated, locale)) : t.noteTemplate}
+        {stale && t.noteStale}
       </p>
     </section>
   )

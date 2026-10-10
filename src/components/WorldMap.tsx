@@ -9,6 +9,29 @@ import { antipode, solarElevation, subsolarPoint } from '../lib/solar'
 import { localDecimalHourFast } from '../lib/time'
 import { MOTION } from '../config/motion'
 import { useSvgBox } from '../hooks/useSvgBox'
+import { useLocale, useMessages } from '../i18n/LocaleProvider'
+import type { Messages } from '../i18n/locale'
+import { cityName, regionName } from '../i18n/labels'
+
+const DE = {
+  eyebrow: 'Live-Karte',
+  title: 'Wo die Welt gerade wach ist',
+  mapLabel: 'Weltkarte mit Tag-Nacht-Grenze und Aktivitätspunkten',
+  pin: (region: string, score: number) => `${region}: ${score} Prozent Aktivität`,
+  day: 'Tag',
+  twilight: 'Dämmerung',
+  night: 'Nacht',
+}
+const EN: typeof DE = {
+  eyebrow: 'Live map',
+  title: 'Where the world is awake right now',
+  mapLabel: 'World map with day–night line and activity points',
+  pin: (region, score) => `${region}: ${score}% activity`,
+  day: 'Day',
+  twilight: 'Twilight',
+  night: 'Night',
+}
+const M: Messages<typeof DE> = { de: DE, en: EN }
 
 const projection = geoEqualEarth().fitExtent(
   [
@@ -44,6 +67,8 @@ export function WorldMap({
   selected: readonly RegionId[]
   onRegion: (id: RegionId) => void
 }) {
+  const t = useMessages(M)
+  const { locale, intl } = useLocale()
   const reduceMotion = useReducedMotion()
   // The map scales with its panel; k converts CSS px to map units so labels stay 11 px and pin hit areas
   // stay ≥ 44 px on every screen.
@@ -66,11 +91,11 @@ export function WorldMap({
     >
       <div className="section-head">
         <div>
-          <p className="eyebrow">Live-Karte</p>
-          <h2 id="map-title">Wo die Welt gerade wach ist</h2>
+          <p className="eyebrow">{t.eyebrow}</p>
+          <h2 id="map-title">{t.title}</h2>
         </div>
         <span className="micro">
-          {date.toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: 'short' })}
+          {date.toLocaleDateString(intl, { weekday: 'short', day: '2-digit', month: 'short' })}
         </span>
       </div>
       <svg
@@ -78,7 +103,7 @@ export function WorldMap({
         viewBox="0 0 800 400"
         className="world-map"
         role="group"
-        aria-label="Weltkarte mit Tag-Nacht-Grenze und Aktivitätspunkten"
+        aria-label={t.mapLabel}
       >
         <defs>
           <clipPath id="sphere">
@@ -132,7 +157,7 @@ export function WorldMap({
               onClick={() => onRegion(region.id)}
               role="button"
               tabIndex={0}
-              aria-label={`${region.name}: ${Math.round(score)} Prozent Aktivität`}
+              aria-label={t.pin(regionName(region.id, locale), Math.round(score))}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault()
@@ -161,7 +186,7 @@ export function WorldMap({
                 className="map-pin-label"
                 style={{ fontSize: 11 * k, strokeWidth: 3 * k }}
               >
-                {region.city}
+                {cityName(region.id, region.city, locale)}
               </text>
             </motion.g>
           )
@@ -170,15 +195,15 @@ export function WorldMap({
       <div className="map-key">
         <span>
           <i className="day-dot" />
-          Tag
+          {t.day}
         </span>
         <span>
           <i className="twilight-dot" />
-          Dämmerung
+          {t.twilight}
         </span>
         <span>
           <i className="night-dot" />
-          Nacht
+          {t.night}
         </span>
       </div>
     </section>

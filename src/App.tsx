@@ -316,9 +316,11 @@ function Header({
           title={t.refreshTitle(MODEL_CONFIG.liveRefreshMinutes)}
         >
           <i className={snapshot.generatedAt ? '' : 'offline'} />
-          {snapshot.generatedAt
-            ? t.measured(freshness(snapshot.sources.wikimedia.fetchedAt, locale))
-            : t.noData}
+          <span className="freshness-text">
+            {snapshot.generatedAt
+              ? t.measured(freshness(snapshot.sources.wikimedia.fetchedAt, locale))
+              : t.noData}
+          </span>
         </button>
         <LiveClock />
         <div className="lang-toggle" aria-label={t.language} role="group">

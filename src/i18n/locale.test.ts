@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { detectLocale, fromLanguages } from './locale'
+import html from '../../index.html?raw'
+import { SEO, detectLocale, fromLanguages, localeUrl } from './locale'
 
 describe('locale detection', () => {
   it('follows the system language: German → de, anything else → en', () => {
@@ -14,5 +15,19 @@ describe('locale detection', () => {
     expect(detectLocale({ search: '?lang=en', stored: 'de', languages: ['de-DE'] })).toBe('en')
     expect(detectLocale({ search: '', stored: 'de', languages: ['en-US'] })).toBe('de')
     expect(detectLocale({ search: '?lang=xx', stored: null, languages: ['de-CH'] })).toBe('de')
+  })
+})
+
+describe('static shell and SEO', () => {
+  it('index.html carries the same title and description as the app for both languages', () => {
+    for (const locale of ['de', 'en'] as const) {
+      expect(html).toContain(SEO[locale].title)
+      expect(html).toContain(SEO[locale].description)
+    }
+  })
+
+  it('links both language URLs as hreflang alternates', () => {
+    expect(localeUrl('de')).toBe('https://beko2210.github.io/global-audience-pulse/')
+    expect(html).toContain(`hreflang="en"\n      href="${localeUrl('en')}"`)
   })
 })

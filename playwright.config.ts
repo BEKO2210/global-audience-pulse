@@ -26,6 +26,7 @@ export default defineConfig({
   use: {
     baseURL: externalBaseUrl ?? 'http://127.0.0.1:4173/global-audience-pulse/',
     timezoneId: 'Europe/Berlin',
+    locale: 'de-DE',
     trace: 'on-first-retry',
   },
   webServer: externalBaseUrl

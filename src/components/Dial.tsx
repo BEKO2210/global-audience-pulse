@@ -3,6 +3,37 @@ import { PHASES } from '../config/model'
 import { REGIONS, type RegionId } from '../config/regions'
 import { formatDecimalHour, localDecimalHourFast } from '../lib/time'
 import { Flag } from './Flag'
+import { useLocale, useMessages } from '../i18n/LocaleProvider'
+import type { Messages } from '../i18n/locale'
+import { cityName, phaseName, regionName } from '../i18n/labels'
+
+const DE = {
+  eyebrow: '24-Stunden-Aktivitätsrad',
+  title: 'Wann deine Märkte wach sind',
+  dialLabel: 'Aktivitätsphasen der ausgewählten Märkte über 24 Stunden',
+  ring: (n: number, region: string, city: string) => `Ring ${n}: ${region} (${city})`,
+  centre: 'Schwerpunkt',
+  markets: (n: number) => `${n} ${n === 1 ? 'Markt' : 'Märkte'}`,
+  explainer: 'Jedes Ringsegment zeigt die Aktivitätsphase zur lokalen Stunde.',
+  phases: 'Aktivitätsphasen',
+  phaseRange: (from: string, to: string) => `${from}–${to} Uhr`,
+  direction: (outer: string, inner: string) => `Außen ${outer}, innen ${inner}`,
+  order: 'Ringreihenfolge außen nach innen',
+}
+const EN: typeof DE = {
+  eyebrow: '24-hour activity wheel',
+  title: 'When your markets are awake',
+  dialLabel: 'Activity phases of the selected markets over 24 hours',
+  ring: (n, region, city) => `Ring ${n}: ${region} (${city})`,
+  centre: 'Centre',
+  markets: (n) => `${n} ${n === 1 ? 'market' : 'markets'}`,
+  explainer: 'Each ring segment shows the activity phase at the local hour.',
+  phases: 'Activity phases',
+  phaseRange: (from, to) => `${from}–${to}`,
+  direction: (outer, inner) => `Outer ${outer}, inner ${inner}`,
+  order: 'Ring order, outer to inner',
+}
+const M: Messages<typeof DE> = { de: DE, en: EN }
 
 const polar = (cx: number, cy: number, radius: number, hour: number) => {
   const angle = (hour / 24) * Math.PI * 2 - Math.PI / 2
@@ -24,25 +55,25 @@ export function Dial({
   selected: readonly RegionId[]
   worldMean: number
 }) {
+  const t = useMessages(M)
+  const { locale } = useLocale()
+  const city = (region: (typeof REGIONS)[number]) => cityName(region.id, region.city, locale)
   const cx = 150
   const cy = 150
   const selectedRegions = REGIONS.filter((region) => selected.includes(region.id))
   const [highlighted, setHighlighted] = useState<RegionId | null>(null)
+  const outer = selectedRegions[0]
+  const inner = selectedRegions.at(-1)
   return (
     <section className="panel dial-panel" aria-labelledby="dial-title">
       <div className="section-head">
         <div>
-          <p className="eyebrow">24-Stunden-Aktivitätsrad</p>
-          <h2 id="dial-title">Wann deine Märkte wach sind</h2>
+          <p className="eyebrow">{t.eyebrow}</p>
+          <h2 id="dial-title">{t.title}</h2>
         </div>
       </div>
       <div className="dial-wrap">
-        <svg
-          viewBox="0 0 300 300"
-          className="dial"
-          role="img"
-          aria-label="Aktivitätsphasen der ausgewählten Märkte über 24 Stunden"
-        >
+        <svg viewBox="0 0 300 300" className="dial" role="img" aria-label={t.dialLabel}>
           {Array.from({ length: 24 }, (_, hour) => {
             const outer = polar(cx, cy, 130, hour)
             const inner = polar(cx, cy, hour % 6 === 0 ? 119 : 124, hour)
@@ -69,9 +100,7 @@ export function Dial({
                   highlighted && highlighted !== region.id ? 'dial-region muted' : 'dial-region'
                 }
               >
-                <title>
-                  Ring {index + 1}: {region.name} ({region.city})
-                </title>
+                <title>{t.ring(index + 1, regionName(region.id, locale), city(region))}</title>
                 {PHASES.map((phase) => {
                   const from = (((phase.from - offset) % 24) + 24) % 24
                   const duration = phase.to - phase.from
@@ -121,33 +150,29 @@ export function Dial({
             )
           })}
           <text x={cx} y={cy - 10} textAnchor="middle" className="dial-center-label">
-            Schwerpunkt
+            {t.centre}
           </text>
           <text x={cx} y={cy + 14} textAnchor="middle" className="dial-mean">
             {formatDecimalHour(worldMean)}
           </text>
           <text x={cx} y={cy + 30} textAnchor="middle" className="dial-date">
-            {selected.length} {selected.length === 1 ? 'Markt' : 'Märkte'}
+            {t.markets(selected.length)}
           </text>
         </svg>
-        <p className="dial-explainer">
-          Jedes Ringsegment zeigt die Aktivitätsphase zur lokalen Stunde.
-        </p>
-        <div className="phase-colour-legend" aria-label="Aktivitätsphasen">
+        <p className="dial-explainer">{t.explainer}</p>
+        <div className="phase-colour-legend" aria-label={t.phases}>
           {PHASES.map((phase) => (
             <span key={phase.id}>
               <i style={{ background: phase.color }} />
-              {phase.name} · {String(phase.from).padStart(2, '0')}–
-              {String(phase.to).padStart(2, '0')} Uhr
+              {phaseName(phase.id, phase.name, locale)} ·{' '}
+              {t.phaseRange(String(phase.from).padStart(2, '0'), String(phase.to).padStart(2, '0'))}
             </span>
           ))}
         </div>
-        {selectedRegions.length > 0 && (
-          <p className="ring-direction">
-            Außen {selectedRegions[0]?.city}, innen {selectedRegions.at(-1)?.city}
-          </p>
+        {outer && inner && (
+          <p className="ring-direction">{t.direction(city(outer), city(inner))}</p>
         )}
-        <div className="dial-legend" aria-label="Ringreihenfolge außen nach innen">
+        <div className="dial-legend" aria-label={t.order}>
           {selectedRegions.map((region, index) => (
             <button
               key={region.id}
@@ -158,8 +183,8 @@ export function Dial({
               onPointerLeave={() => setHighlighted(null)}
             >
               <span>{index + 1}</span>
-              <Flag code={region.flag} label={region.name} size={16} />
-              {region.city}
+              <Flag code={region.flag} label={regionName(region.id, locale)} size={16} />
+              {city(region)}
             </button>
           ))}
         </div>

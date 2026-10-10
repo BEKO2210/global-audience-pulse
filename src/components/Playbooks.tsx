@@ -3,26 +3,89 @@ import { motion, useReducedMotion, type Variants } from 'motion/react'
 import { PLATFORM_ICONS as ICONS } from './platformIcons'
 import {
   BLOCKS,
-  DAYS,
   DEFAULT_PLAYBOOK,
   PLAYBOOKS,
   RESEARCHED_AT,
   SOURCE_BY_ID,
   blockScores,
   citedSources,
+  dayNames,
   describeCells,
   describeDaily,
   describePeaks,
   describeWindows,
   formatSourceDate,
   strongestCells,
+  tr,
   type Fact,
   type PlatformId,
   type Playbook,
   type StudyTimes,
 } from '../data/playbooks'
 import { track } from '../lib/analytics'
+import { useLocale, useMessages } from '../i18n/LocaleProvider'
+import type { Messages } from '../i18n/locale'
 import './Playbooks.css'
+
+const DE = {
+  strongest: 'Am stärksten:',
+  heatLabel: (name: string, strongest: string) =>
+    `Empfohlene Stunden bei ${name} je Wochentag und 4-Stunden-Block, summiert über die Studien. Am stärksten: ${strongest}.`,
+  moreHours: 'mehr empfohlene Stunden',
+  localTime: 'Ortszeit deines Publikums',
+  bestPerDay: 'Beste Zeit je Tag',
+  bestOfWeek: 'Beste Zeiten der Woche',
+  rank: 'Platz ',
+  weak: 'Schwach:',
+  source: 'Quelle ',
+  rankingOn: (name: string) => `Ranking bei ${name}`,
+  ranking: 'Ranking',
+  rewards: 'Belohnt',
+  limits: 'Bremst oder zählt nicht',
+  timesOn: (name: string) => `Posting-Zeiten bei ${name}`,
+  bestTimes: 'Beste Zeiten',
+  per: 'laut',
+  and: ' und ',
+  studyDetails: 'Zeiten der Studien im Detail',
+  sources: 'Quellen',
+  official: 'Offizielle Dokumentation',
+  study: 'Studie',
+  eyebrow: 'Plattform-Playbooks',
+  title: 'Was die Algorithmen belohnen',
+  asOf: (date: string) => `Stand ${date}`,
+  lede: 'Aus der Dokumentation der Plattformen und aus Studien mit offengelegter Methodik. Mit KI recherchiert, jede Aussage an der Quelle geprüft – keine Live-Daten.',
+  platform: 'Plattform',
+}
+const EN: typeof DE = {
+  strongest: 'Strongest:',
+  heatLabel: (name, strongest) =>
+    `Recommended hours on ${name} per weekday and 4-hour block, summed across the studies. Strongest: ${strongest}.`,
+  moreHours: 'more recommended hours',
+  localTime: 'your audience’s local time',
+  bestPerDay: 'Best time per day',
+  bestOfWeek: 'Best times of the week',
+  rank: 'Rank ',
+  weak: 'Weak:',
+  source: 'Source ',
+  rankingOn: (name) => `Ranking on ${name}`,
+  ranking: 'Ranking',
+  rewards: 'Rewards',
+  limits: 'Holds back or doesn’t count',
+  timesOn: (name) => `Posting times on ${name}`,
+  bestTimes: 'Best times',
+  per: 'according to',
+  and: ' and ',
+  studyDetails: 'Study times in detail',
+  sources: 'Sources',
+  official: 'Official documentation',
+  study: 'Study',
+  eyebrow: 'Platform playbooks',
+  title: 'What the algorithms reward',
+  asOf: (date) => `As of ${date}`,
+  lede: 'From the platforms’ own documentation and from studies with a published methodology. Researched with AI, every statement checked against its source – no live data.',
+  platform: 'Platform',
+}
+const M: Messages<typeof DE> = { de: DE, en: EN }
 
 // diagram-design motion clock: one reveal, ≤ 8 steps, ≤ 8 px travel, no springs.
 const EASE = [0.2, 0.8, 0.2, 1] as const
@@ -53,6 +116,8 @@ function rampOpacity(value: number, maxNonFocal: number) {
 function Heatmap({ times, name }: { times: readonly StudyTimes[]; name: string }) {
   // Own variants override MotionConfig, so reduced motion is honoured here explicitly.
   const reduce = useReducedMotion()
+  const t = useMessages(M)
+  const { locale } = useLocale()
   const scores = blockScores(times)
   const strongest = strongestCells(scores)
   const isFocal = (day: number, block: number) =>
@@ -61,7 +126,7 @@ function Heatmap({ times, name }: { times: readonly StudyTimes[]; name: string }
     0,
     ...scores.flatMap((row, day) => row.filter((_, block) => !isFocal(day, block))),
   )
-  const strongestText = describeCells(strongest)
+  const strongestText = describeCells(strongest, locale)
 
   return (
     <figure className="pb-heat">
@@ -69,7 +134,7 @@ function Heatmap({ times, name }: { times: readonly StudyTimes[]; name: string }
         <p className="pb-heat-headline">
           <span className="pb-ramp-focal" aria-hidden="true" />
           <span>
-            Am stärksten: <strong>{strongestText}</strong>
+            {t.strongest} <strong>{strongestText}</strong>
           </span>
         </p>
       )}
@@ -80,7 +145,7 @@ function Heatmap({ times, name }: { times: readonly StudyTimes[]; name: string }
         whileInView="shown"
         viewport={{ once: true, amount: 0.2 }}
         role="img"
-        aria-label={`Empfohlene Stunden bei ${name} je Wochentag und 4-Stunden-Block, summiert über die Studien. Am stärksten: ${strongestText}.`}
+        aria-label={t.heatLabel(name, strongestText)}
       >
         <span className="pb-heat-corner" aria-hidden="true" />
         {BLOCKS.map((start) => (
@@ -88,7 +153,7 @@ function Heatmap({ times, name }: { times: readonly StudyTimes[]; name: string }
             {String(start).padStart(2, '0')}
           </span>
         ))}
-        {DAYS.map((label, day) => (
+        {dayNames(locale).map((label, day) => (
           <motion.div key={label} className="pb-heat-row" variants={rowReveal} aria-hidden="true">
             <span className="pb-heat-day">{label}</span>
             {BLOCKS.map((start, block) => {
@@ -120,29 +185,32 @@ function Heatmap({ times, name }: { times: readonly StudyTimes[]; name: string }
               <i key={o} style={{ ['--fill' as string]: String(o) }} />
             ))}
           </span>
-          mehr empfohlene Stunden
+          {t.moreHours}
         </span>
-        <span className="pb-legend-item">Ortszeit deines Publikums</span>
+        <span className="pb-legend-item">{t.localTime}</span>
       </figcaption>
     </figure>
   )
 }
 
 function StudyList({ times }: { times: readonly StudyTimes[] }) {
+  const t = useMessages(M)
+  const { locale } = useLocale()
   return (
     <dl className="pb-studies">
-      {times.map((t) => {
-        const source = SOURCE_BY_ID.get(t.source)!
+      {times.map((study) => {
+        const source = SOURCE_BY_ID.get(study.source)!
+        const label = tr(study.label, locale)
         return (
-          <div key={`${t.source}-${t.label}`} className="pb-study">
+          <div key={`${study.source}-${label}`} className="pb-study">
             <dt>
-              <strong>{t.label}</strong>
-              <span>{formatSourceDate(source.date)}</span>
+              <strong>{label}</strong>
+              <span>{formatSourceDate(source.date, locale)}</span>
             </dt>
             <dd>
-              {t.windows.length > 0 && (
+              {study.windows.length > 0 && (
                 <span className="pb-chips">
-                  {describeWindows(t)
+                  {describeWindows(study, locale)
                     .split(' · ')
                     .map((part) => (
                       <span key={part} className="pb-chip">
@@ -151,9 +219,9 @@ function StudyList({ times }: { times: readonly StudyTimes[] }) {
                     ))}
                 </span>
               )}
-              {t.daily.length > 0 && (
-                <span className="pb-chips" aria-label="Beste Zeit je Tag">
-                  {describeDaily(t)
+              {study.daily.length > 0 && (
+                <span className="pb-chips" aria-label={t.bestPerDay}>
+                  {describeDaily(study, locale)
                     .split(' · ')
                     .map((part) => (
                       <span key={part} className="pb-chip is-daily">
@@ -162,9 +230,9 @@ function StudyList({ times }: { times: readonly StudyTimes[] }) {
                     ))}
                 </span>
               )}
-              {t.peaks.length > 0 && (
-                <span className="pb-chips" aria-label="Beste Zeiten der Woche">
-                  {describePeaks(t)
+              {study.peaks.length > 0 && (
+                <span className="pb-chips" aria-label={t.bestOfWeek}>
+                  {describePeaks(study, locale)
                     .split(' · ')
                     .map((peak) => {
                       const [rank = '', ...rest] = peak.split(' ')
@@ -172,7 +240,7 @@ function StudyList({ times }: { times: readonly StudyTimes[] }) {
                       return (
                         <span key={peak} className="pb-chip is-peak">
                           <b>
-                            <span className="sr-only">Platz </span>
+                            <span className="sr-only">{t.rank}</span>
                             {place}
                           </b>
                           {rest.join(' ')}
@@ -181,7 +249,11 @@ function StudyList({ times }: { times: readonly StudyTimes[] }) {
                     })}
                 </span>
               )}
-              {t.weak && <span className="pb-weak">Schwach: {t.weak}</span>}
+              {study.weak && (
+                <span className="pb-weak">
+                  {t.weak} {study.weak[locale]}
+                </span>
+              )}
             </dd>
           </div>
         )
@@ -204,6 +276,8 @@ function FactList({
   offset: number
 }) {
   const reduce = useReducedMotion()
+  const t = useMessages(M)
+  const { locale } = useLocale()
   if (!facts.length) return null
   return (
     <div className={`pb-list is-${tone}`}>
@@ -216,17 +290,17 @@ function FactList({
       <ul>
         {facts.map((f, i) => (
           <motion.li
-            key={f.text}
+            key={f.text.de}
             variants={reveal}
             custom={offset + i}
             initial={reduce ? false : 'hidden'}
             animate="shown"
           >
-            <strong>{f.lead}</strong>
+            <strong>{f.lead[locale]}</strong>
             <p>
-              {f.text}
+              {f.text[locale]}
               <a className="pb-ref" href={`#pb-src-${f.source}`}>
-                <span className="sr-only">Quelle </span>
+                <span className="sr-only">{t.source}</span>
                 {sourceNumber(f.source)}
               </a>
             </p>
@@ -246,39 +320,43 @@ function Panel({
   tabId: string
   panelId: string
 }) {
+  const t = useMessages(M)
+  const { locale } = useLocale()
   const sources = citedSources(playbook)
   const sourceNumber = (id: string) => sources.findIndex((s) => s.id === id) + 1
   const gapInFacts = Boolean(playbook.gap && !playbook.rewards.length)
   return (
     <div id={panelId} role="tabpanel" aria-labelledby={tabId} className="pb-panel">
       <div className="pb-body">
-        <section className="pb-col" aria-label={`Ranking bei ${playbook.name}`}>
-          <h3>Ranking</h3>
+        <section className="pb-col" aria-label={t.rankingOn(playbook.name)}>
+          <h3>{t.ranking}</h3>
           <FactList
-            title="Belohnt"
+            title={t.rewards}
             facts={playbook.rewards}
             tone="plus"
             sourceNumber={sourceNumber}
             offset={0}
           />
           <FactList
-            title="Bremst oder zählt nicht"
+            title={t.limits}
             facts={playbook.limits}
             tone="minus"
             sourceNumber={sourceNumber}
             offset={playbook.rewards.length}
           />
-          {gapInFacts && <p className="pb-gap">{playbook.gap}</p>}
+          {gapInFacts && <p className="pb-gap">{playbook.gap?.[locale]}</p>}
         </section>
-        <section className="pb-col" aria-label={`Posting-Zeiten bei ${playbook.name}`}>
+        <section className="pb-col" aria-label={t.timesOn(playbook.name)}>
           <h3>
-            Beste Zeiten
+            {t.bestTimes}
             {playbook.times.length > 0 && (
               <small>
-                laut{' '}
+                {t.per}{' '}
                 {[
-                  ...new Set(playbook.times.map((t) => SOURCE_BY_ID.get(t.source)!.publisher)),
-                ].join(' und ')}
+                  ...new Set(
+                    playbook.times.map((study) => SOURCE_BY_ID.get(study.source)!.publisher),
+                  ),
+                ].join(t.and)}
               </small>
             )}
           </h3>
@@ -286,27 +364,27 @@ function Panel({
             <>
               <Heatmap times={playbook.times} name={playbook.name} />
               <details className="pb-details">
-                <summary>Zeiten der Studien im Detail</summary>
+                <summary>{t.studyDetails}</summary>
                 <StudyList times={playbook.times} />
               </details>
             </>
           )}
-          {playbook.gap && !gapInFacts && <p className="pb-gap">{playbook.gap}</p>}
+          {playbook.gap && !gapInFacts && <p className="pb-gap">{playbook.gap[locale]}</p>}
         </section>
       </div>
-      <ol className="pb-sources" aria-label="Quellen">
+      <ol className="pb-sources" aria-label={t.sources}>
         {sources.map((s, i) => (
           <li key={s.id} id={`pb-src-${s.id}`}>
             <span className="pb-source-num">{i + 1}</span>
             <div>
               <a href={s.url} target="_blank" rel="noopener noreferrer">
-                {s.title}
+                {tr(s.title, locale)}
               </a>
               <span>
-                {s.publisher} · {s.kind === 'offiziell' ? 'Offizielle Dokumentation' : 'Studie'} ·{' '}
-                {formatSourceDate(s.date)}
+                {s.publisher} · {s.kind === 'offiziell' ? t.official : t.study} ·{' '}
+                {formatSourceDate(s.date, locale)}
               </span>
-              {s.basis && <span>{s.basis}</span>}
+              {s.basis && <span>{tr(s.basis, locale)}</span>}
             </div>
           </li>
         ))}
@@ -316,6 +394,8 @@ function Panel({
 }
 
 export function Playbooks() {
+  const t = useMessages(M)
+  const { locale } = useLocale()
   const [active, setActive] = useState<PlatformId>(DEFAULT_PLAYBOOK.id)
   const tabs = useRef<Partial<Record<PlatformId, HTMLButtonElement | null>>>({})
   const base = useId()
@@ -348,16 +428,13 @@ export function Playbooks() {
     <section className="panel playbooks" aria-labelledby="playbooks-title">
       <div className="section-head">
         <div>
-          <p className="eyebrow">Plattform-Playbooks</p>
-          <h2 id="playbooks-title">Was die Algorithmen belohnen</h2>
+          <p className="eyebrow">{t.eyebrow}</p>
+          <h2 id="playbooks-title">{t.title}</h2>
         </div>
-        <span className="micro">Stand {formatSourceDate(RESEARCHED_AT)}</span>
+        <span className="micro">{t.asOf(formatSourceDate(RESEARCHED_AT, locale))}</span>
       </div>
-      <p className="pb-lede">
-        Aus der Dokumentation der Plattformen und aus Studien mit offengelegter Methodik. Mit KI
-        recherchiert, jede Aussage an der Quelle geprüft – keine Live-Daten.
-      </p>
-      <div className="pb-tabs" role="tablist" aria-label="Plattform" onKeyDown={onKey}>
+      <p className="pb-lede">{t.lede}</p>
+      <div className="pb-tabs" role="tablist" aria-label={t.platform} onKeyDown={onKey}>
         {PLAYBOOKS.map((p) => {
           const PlatformIcon = ICONS[p.id]
           const selected = p.id === active

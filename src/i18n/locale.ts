@@ -29,5 +29,26 @@ export function detectLocale(input: {
 /** BCP 47 tag for Intl formatting; en-GB keeps the 24-hour clock and day-month order. */
 export const INTL_LOCALE: Record<Locale, string> = { de: 'de-DE', en: 'en-GB' }
 
+export const SITE_URL = 'https://beko2210.github.io/global-audience-pulse/'
+
+/** German is the root URL, English lives at ?lang=en (one page, two hreflang alternates). */
+export const localeUrl = (locale: Locale) => (locale === 'de' ? SITE_URL : `${SITE_URL}?lang=en`)
+
+/** Page title and description per language; index.html repeats them for the static shell (checked by a test). */
+export const SEO: Record<Locale, { title: string; description: string; ogLocale: string }> = {
+  de: {
+    title: 'Beste Posting-Zeit weltweit, live – Global Audience Pulse',
+    description:
+      'Live-Weltuhr für Creator: Wann ist dein Publikum in Europa, Amerika und Asien wach? Score, 7-Tage-Planer und geprüfte Posting-Zeiten für Instagram, TikTok & Co.',
+    ogLocale: 'de_DE',
+  },
+  en: {
+    title: 'Best time to post worldwide, live – Global Audience Pulse',
+    description:
+      'Live world clock for creators: when is your audience in Europe, the Americas and Asia awake? Score, 7-day planner and sourced posting times for Instagram, TikTok and more.',
+    ogLocale: 'en_GB',
+  },
+}
+
 /** Per-component messages: the English object must have exactly the German keys. */
 export type Messages<T> = { de: T; en: T }

@@ -1,9 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { ArrowClockwise } from '@phosphor-icons/react'
+import { useMessages } from '../i18n/LocaleProvider'
+import type { Messages } from '../i18n/locale'
 import './UpdateToast.css'
 
 const CHECK_EVERY_MS = 60 * 60_000
+
+const DE = { available: 'Neue Version verfügbar', reload: 'Neu laden', later: 'Später' }
+const EN: typeof DE = { available: 'New version available', reload: 'Reload', later: 'Later' }
+const M: Messages<typeof DE> = { de: DE, en: EN }
 
 /**
  * Registers the service worker after the page is idle (keeps it off the critical path) and shows a quiet
@@ -11,6 +17,7 @@ const CHECK_EVERY_MS = 60 * 60_000
  * Checks for updates hourly and whenever the tab becomes visible again.
  */
 export function UpdateToast() {
+  const t = useMessages(M)
   const [ready, setReady] = useState(false)
   const update = useRef<((reload?: boolean) => Promise<void>) | null>(null)
 
@@ -72,13 +79,13 @@ export function UpdateToast() {
           exit={{ opacity: 0, y: 8 }}
           transition={{ duration: 0.32, ease: [0.2, 0.8, 0.2, 1] }}
         >
-          <span>Neue Version verfügbar</span>
+          <span>{t.available}</span>
           <button type="button" className="update-toast-reload" onClick={reload}>
             <ArrowClockwise size={16} weight="bold" aria-hidden="true" />
-            Neu laden
+            {t.reload}
           </button>
           <button type="button" className="update-toast-later" onClick={() => setReady(false)}>
-            Später
+            {t.later}
           </button>
         </motion.div>
       )}

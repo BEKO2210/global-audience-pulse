@@ -1,8 +1,14 @@
 import { useState, type CSSProperties } from 'react'
 import { beatSeconds } from '../lib/beat'
+import { useMessages } from '../i18n/LocaleProvider'
+import type { Messages } from '../i18n/locale'
 import './LogoMark.css'
 
 const MERIDIANS = [0, 1, 2]
+
+const DE = { home: 'Global Audience Pulse Start' }
+const EN: typeof DE = { home: 'Global Audience Pulse home' }
+const M: Messages<typeof DE> = { de: DE, en: EN }
 
 /**
  * Keep in sync with the static copy in index.html (first paint before React). Size comes from CSS
@@ -75,12 +81,13 @@ export function Wordmark({
   intro?: boolean
   className?: string
 }) {
+  const t = useMessages(M)
   const [elapsed] = useState(() => Math.round(performance.now()))
   return (
     <a
       className={`wordmark ${className}`.trim()}
       href="#top"
-      aria-label="Global Audience Pulse Start"
+      aria-label={t.home}
       style={{ '--elapsed': `${elapsed}ms` } as CSSProperties}
     >
       <LogoMark score={score} intro={intro} />

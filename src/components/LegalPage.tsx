@@ -1,5 +1,6 @@
 import { LEGAL } from '../config/legal'
 import { DATA_SOURCES } from '../config/model'
+import { initialLocale } from '../i18n/LocaleProvider'
 
 type LegalPageKind = 'impressum' | 'datenschutz'
 
@@ -231,7 +232,17 @@ export function LegalPage({ kind }: { kind: LegalPageKind }) {
   return (
     <div className="legal-page-shell">
       <LegalHeader />
-      <main className="legal-page">{kind === 'impressum' ? <Impressum /> : <Datenschutz />}</main>
+      <main className="legal-page">
+        {initialLocale() === 'en' && (
+          <p className="legal-en-note" lang="en">
+            {kind === 'impressum' ? 'Legal notice' : 'Privacy policy'}: this page is provided in
+            German, the binding language for the provider&rsquo;s details under German law.
+            Questions in English are welcome at{' '}
+            <a href={`mailto:${LEGAL.contact.email}`}>{LEGAL.contact.email}</a>.
+          </p>
+        )}
+        {kind === 'impressum' ? <Impressum /> : <Datenschutz />}
+      </main>
       <LegalFooter />
     </div>
   )

@@ -6,6 +6,7 @@ import {
   STATIONS,
   isHealthPayload,
   logLines,
+  oneDecimal,
   reportStatus,
   runCells,
   runSeconds,
@@ -14,32 +15,135 @@ import {
   type HealthPayload,
   type Station,
 } from '../lib/pipeline'
+import { useLocale, useMessages } from '../i18n/LocaleProvider'
+import type { Messages } from '../i18n/locale'
 import './AiPipeline.css'
 
-const STATUS_LABEL = { active: 'Aktiv', delayed: 'Verzögert', paused: 'Pausiert' } as const
-const STATION_LABEL: Record<Station, string> = {
-  daten: 'Daten',
-  schreiber: 'Schreiber',
-  zahlen: 'Zahlenprüfung',
-  pruefer: 'Prüfer',
-  ergebnis: 'Ergebnis',
+const DE = {
+  status: { active: 'Aktiv', delayed: 'Verzögert', paused: 'Pausiert' },
+  station: {
+    daten: 'Daten',
+    schreiber: 'Schreiber',
+    zahlen: 'Zahlenprüfung',
+    pruefer: 'Prüfer',
+    ergebnis: 'Ergebnis',
+  } as Record<Station, string>,
+  cell: {
+    ok: 'bestanden',
+    retry: 'abgelehnt, neu geschrieben',
+    warn: 'eingeschränkt',
+    skip: 'GPU belegt',
+    fail: 'fehlgeschlagen',
+    template: 'Vorlage statt KI-Text',
+  } as Record<Cell, string>,
+  outcome: {
+    published: 'veröffentlicht',
+    template: 'Vorlage',
+    'skipped-gpu': 'übersprungen',
+    failed: 'fehlgeschlagen',
+  } as Record<string, string>,
+  dataDetail: 'Weltbank · Wikimedia',
+  liveSignals: (n: number | string) => `${n} Live-Signale`,
+  fetchErrors: (n: number) => `${n} Abruffehler`,
+  noFetchErrors: 'ohne Abruffehler',
+  drafts: (n: number) => `${n} Entwürfe`,
+  numberDetail: 'jede Zahl gegen die Daten',
+  rejected: (n: number) => `${n} abgelehnt`,
+  ruleBased: 'regelbasiert',
+  resultDetail: 'Lagebericht auf der Seite',
+  published: (n: number) => `${n} veröffentlicht`,
+  templates: (n: number) => `${n}× Vorlage`,
+  onlyAi: 'nur KI-Texte',
+  eyebrow: 'KI-Pipeline · lokal',
+  title: 'So entsteht der Lagebericht',
+  lastReport: (ago: string) => `Letzter Bericht vor ${ago}`,
+  noReport: 'Noch kein erfolgreicher Bericht',
+  nextRun: (time: string) =>
+    `· nächster Lauf ${time} · stündlich, solange der Rechner des Betreibers läuft`,
+  kpisLabel: 'Kennzahlen der letzten 24 Stunden',
+  kpiRuns: 'Läufe 24 h',
+  kpiPublished: 'veröffentlicht',
+  kpiAiShare: 'KI-Text statt Vorlage',
+  kpiDuration: 'Ø Dauer je Lauf',
+  kpiRejections: 'Ablehnungen',
+  kpiRetries: 'Läufe mit Neuversuch',
+  flowLabel: 'Stationen der Pipeline, letzte 24 Stunden',
+  loop: (retries: number, runs: number) =>
+    `Bei Ablehnung schreibt das Modell neu (höchstens 3 Versuche, danach Vorlage): ${retries} von ${runs} Läufen in 24 h`,
+  matrixCaption: 'Jeder Lauf, Station für Station',
+  matrixLabel: (runs: number, published: number, retries: number, skipped: number) =>
+    `Letzte ${runs} Läufe: ${published} veröffentlicht, ${retries} mit Neuversuch, ${skipped} übersprungen.`,
+  computeCaption: 'Rechenzeit je Lauf (Sekunden, alle Versuche)',
+  computeLabel: (writer: string, checker: string) =>
+    `Schreiber im Mittel ${writer} je Entwurf, Prüfer ${checker} je Prüfung.`,
+  writer: 'Schreiber',
+  checker: 'Prüfer',
+  log: 'Lauf-Log',
+  avg: 'Ø',
 }
-const CELL_LABEL: Record<Cell, string> = {
-  ok: 'bestanden',
-  retry: 'abgelehnt, neu geschrieben',
-  warn: 'eingeschränkt',
-  skip: 'GPU belegt',
-  fail: 'fehlgeschlagen',
-  template: 'Vorlage statt KI-Text',
+const EN: typeof DE = {
+  status: { active: 'Active', delayed: 'Delayed', paused: 'Paused' },
+  station: {
+    daten: 'Data',
+    schreiber: 'Writer',
+    zahlen: 'Number check',
+    pruefer: 'Checker',
+    ergebnis: 'Result',
+  },
+  cell: {
+    ok: 'passed',
+    retry: 'rejected, rewritten',
+    warn: 'limited',
+    skip: 'GPU busy',
+    fail: 'failed',
+    template: 'template instead of AI text',
+  },
+  outcome: {
+    published: 'published',
+    template: 'template',
+    'skipped-gpu': 'skipped',
+    failed: 'failed',
+  },
+  dataDetail: 'World Bank · Wikimedia',
+  liveSignals: (n) => `${n} live signals`,
+  fetchErrors: (n) => `${n} fetch ${n === 1 ? 'error' : 'errors'}`,
+  noFetchErrors: 'no fetch errors',
+  drafts: (n) => `${n} ${n === 1 ? 'draft' : 'drafts'}`,
+  numberDetail: 'every number checked against the data',
+  rejected: (n) => `${n} rejected`,
+  ruleBased: 'rule-based',
+  resultDetail: 'Briefing on the page',
+  published: (n) => `${n} published`,
+  templates: (n) => `${n}× template`,
+  onlyAi: 'AI texts only',
+  eyebrow: 'AI pipeline · local',
+  title: 'How the briefing is made',
+  lastReport: (ago) => `Last report ${ago} ago`,
+  noReport: 'No successful report yet',
+  nextRun: (time) => `· next run ${time} · hourly, while the operator’s computer is on`,
+  kpisLabel: 'Key figures for the last 24 hours',
+  kpiRuns: 'runs 24 h',
+  kpiPublished: 'published',
+  kpiAiShare: 'AI text instead of template',
+  kpiDuration: 'avg. duration per run',
+  kpiRejections: 'rejections',
+  kpiRetries: 'runs with a retry',
+  flowLabel: 'Pipeline stations, last 24 hours',
+  loop: (retries, runs) =>
+    `If rejected, the model rewrites (at most 3 attempts, then a template): ${retries} of ${runs} runs in 24 h`,
+  matrixCaption: 'Every run, station by station',
+  matrixLabel: (runs, published, retries, skipped) =>
+    `Last ${runs} runs: ${published} published, ${retries} with a retry, ${skipped} skipped.`,
+  computeCaption: 'Compute time per run (seconds, all attempts)',
+  computeLabel: (writer, checker) =>
+    `Writer averages ${writer} per draft, checker ${checker} per check.`,
+  writer: 'Writer',
+  checker: 'Checker',
+  log: 'Run log',
+  avg: 'avg.',
 }
-const OUTCOME_LABEL: Record<string, string> = {
-  published: 'veröffentlicht',
-  template: 'Vorlage',
-  'skipped-gpu': 'übersprungen',
-  failed: 'fehlgeschlagen',
-}
-const sec = (value: number | null) =>
-  value == null ? '–' : `${value.toFixed(1).replace('.', ',')} s`
+const M: Messages<typeof DE> = { de: DE, en: EN }
+
 const shortModel = (model?: string) => model?.split(':')[0] ?? '–'
 
 /**
@@ -51,6 +155,9 @@ export default function AiPipeline() {
   const [health, setHealth] = useState<HealthPayload | null>(null)
   const [now] = useState(() => Date.now())
   const reduce = useReducedMotion()
+  const t = useMessages(M)
+  const { locale, intl } = useLocale()
+  const sec = (value: number | null) => (value == null ? '–' : `${oneDecimal(value, locale)} s`)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -76,12 +183,12 @@ export default function AiPipeline() {
   const cells = runs.map(runCells)
   const seconds = runs.map(runSeconds)
   const maxSeconds = Math.max(1, ...seconds.map((s) => s.writer + s.checker))
-  const lines = logLines(runs, zone)
+  const lines = logLines(runs, zone, 6, locale)
   const llmShare = summary.published
     ? Math.round(((summary.published - stats.templates) / summary.published) * 100)
     : 0
   const time = (iso: string) =>
-    new Date(iso).toLocaleTimeString('de-DE', {
+    new Date(iso).toLocaleTimeString(intl, {
       hour: '2-digit',
       minute: '2-digit',
       timeZone: zone,
@@ -91,38 +198,38 @@ export default function AiPipeline() {
   const nodes: { id: Station; title: string; detail: string; metric: string; sub: string }[] = [
     {
       id: 'daten',
-      title: 'Daten',
-      detail: 'Weltbank · Wikimedia',
-      metric: `${stats.liveSignals ?? '–'} Live-Signale`,
-      sub: stats.fetchErrors ? `${stats.fetchErrors} Abruffehler` : 'ohne Abruffehler',
+      title: t.station.daten,
+      detail: t.dataDetail,
+      metric: t.liveSignals(stats.liveSignals ?? '–'),
+      sub: stats.fetchErrors ? t.fetchErrors(stats.fetchErrors) : t.noFetchErrors,
     },
     {
       id: 'schreiber',
-      title: 'Schreiber',
+      title: t.station.schreiber,
       detail: shortModel(last?.models?.writer),
-      metric: `Ø ${sec(stats.writerSeconds)}`,
-      sub: `${stats.writerCalls} Entwürfe`,
+      metric: `${t.avg} ${sec(stats.writerSeconds)}`,
+      sub: t.drafts(stats.writerCalls),
     },
     {
       id: 'zahlen',
-      title: 'Zahlenprüfung',
-      detail: 'jede Zahl gegen die Daten',
-      metric: `${stats.numberRejections} abgelehnt`,
-      sub: 'regelbasiert',
+      title: t.station.zahlen,
+      detail: t.numberDetail,
+      metric: t.rejected(stats.numberRejections),
+      sub: t.ruleBased,
     },
     {
       id: 'pruefer',
-      title: 'Prüfer',
+      title: t.station.pruefer,
       detail: shortModel(last?.models?.checker),
-      metric: `${stats.checkerRejections} abgelehnt`,
-      sub: `Ø ${sec(stats.checkerSeconds)}`,
+      metric: t.rejected(stats.checkerRejections),
+      sub: `${t.avg} ${sec(stats.checkerSeconds)}`,
     },
     {
       id: 'ergebnis',
-      title: 'Ergebnis',
-      detail: 'Lagebericht auf der Seite',
-      metric: `${summary.published} veröffentlicht`,
-      sub: stats.templates ? `${stats.templates}× Vorlage` : 'nur KI-Texte',
+      title: t.station.ergebnis,
+      detail: t.resultDetail,
+      metric: t.published(summary.published),
+      sub: stats.templates ? t.templates(stats.templates) : t.onlyAi,
     },
   ]
 
@@ -130,30 +237,29 @@ export default function AiPipeline() {
     <section className={`panel ai-pipeline is-${status}`} aria-labelledby="ai-pipeline-title">
       <div className="section-head">
         <div>
-          <p className="eyebrow">KI-Pipeline · lokal</p>
-          <h2 id="ai-pipeline-title">So entsteht der Lagebericht</h2>
+          <p className="eyebrow">{t.eyebrow}</p>
+          <h2 id="ai-pipeline-title">{t.title}</h2>
         </div>
         <span className={`aip-status is-${status}`}>
           <i aria-hidden="true" />
-          {STATUS_LABEL[status]}
+          {t.status[status]}
         </span>
       </div>
       <p className="aip-fresh">
         {summary.lastSuccess
-          ? `Letzter Bericht vor ${humanAgo(minutesAgo(summary.lastSuccess, now))}`
-          : 'Noch kein erfolgreicher Bericht'}{' '}
-        · nächster Lauf {time(summary.nextExpectedAt)} · stündlich, solange der Rechner des
-        Betreibers läuft
+          ? t.lastReport(humanAgo(minutesAgo(summary.lastSuccess, now), locale))
+          : t.noReport}{' '}
+        {t.nextRun(time(summary.nextExpectedAt))}
       </p>
 
-      <ul className="aip-kpis" aria-label="Kennzahlen der letzten 24 Stunden">
+      <ul className="aip-kpis" aria-label={t.kpisLabel}>
         {[
-          [`${summary.runs}`, 'Läufe 24 h'],
-          [`${summary.successRatePercent} %`, 'veröffentlicht'],
-          [`${llmShare} %`, 'KI-Text statt Vorlage'],
-          [formatDuration(summary.averageDurationSeconds), 'Ø Dauer je Lauf'],
-          [`${stats.checkerRejections + stats.numberRejections}`, 'Ablehnungen'],
-          [`${stats.retries}`, 'Läufe mit Neuversuch'],
+          [`${summary.runs}`, t.kpiRuns],
+          [`${summary.successRatePercent} %`, t.kpiPublished],
+          [`${llmShare} %`, t.kpiAiShare],
+          [formatDuration(summary.averageDurationSeconds, locale), t.kpiDuration],
+          [`${stats.checkerRejections + stats.numberRejections}`, t.kpiRejections],
+          [`${stats.retries}`, t.kpiRetries],
         ].map(([value, label]) => (
           <li key={label}>
             <b>{value}</b>
@@ -162,7 +268,7 @@ export default function AiPipeline() {
         ))}
       </ul>
 
-      <div className="aip-flow" role="list" aria-label="Stationen der Pipeline, letzte 24 Stunden">
+      <div className="aip-flow" role="list" aria-label={t.flowLabel}>
         {nodes.map((node, i) => (
           <div key={node.id} className="aip-flow-cell" role="listitem">
             <motion.div
@@ -192,28 +298,27 @@ export default function AiPipeline() {
           </div>
         ))}
         <p className="aip-loop">
-          <span aria-hidden="true">↺</span> Bei Ablehnung schreibt das Modell neu (höchstens 3
-          Versuche, danach Vorlage): {stats.retries} von {runs.length} Läufen in 24 h
+          <span aria-hidden="true">↺</span> {t.loop(stats.retries, runs.length)}
         </p>
       </div>
 
       <div className="aip-grid">
         <figure className="aip-matrix">
-          <figcaption>Jeder Lauf, Station für Station</figcaption>
+          <figcaption>{t.matrixCaption}</figcaption>
           <div
             className="aip-matrix-body"
             style={{ '--runs': runs.length } as CSSProperties}
             role="img"
-            aria-label={`Letzte ${runs.length} Läufe: ${stats.published} veröffentlicht, ${stats.retries} mit Neuversuch, ${summary.skipped} übersprungen.`}
+            aria-label={t.matrixLabel(runs.length, stats.published, stats.retries, summary.skipped)}
           >
             {STATIONS.map((station) => (
               <div key={station} className="aip-matrix-row">
-                <span className="aip-matrix-label">{STATION_LABEL[station]}</span>
+                <span className="aip-matrix-label">{t.station[station]}</span>
                 {cells.map((c, i) => (
                   <i
                     key={runs[i]!.startedAt}
                     className={`is-${c[station]}`}
-                    title={`${time(runs[i]!.startedAt)} · ${STATION_LABEL[station]}: ${CELL_LABEL[c[station]]}`}
+                    title={`${time(runs[i]!.startedAt)} · ${t.station[station]}: ${t.cell[c[station]]}`}
                   />
                 ))}
               </div>
@@ -228,24 +333,24 @@ export default function AiPipeline() {
             {(['ok', 'retry', 'template', 'skip', 'warn', 'fail'] as const).map((c) => (
               <li key={c}>
                 <i className={`is-${c}`} aria-hidden="true" />
-                {CELL_LABEL[c]}
+                {t.cell[c]}
               </li>
             ))}
           </ul>
         </figure>
 
         <figure className="aip-compute">
-          <figcaption>Rechenzeit je Lauf (Sekunden, alle Versuche)</figcaption>
+          <figcaption>{t.computeCaption}</figcaption>
           <div
             className="aip-bars"
             role="img"
-            aria-label={`Schreiber im Mittel ${sec(stats.writerSeconds)} je Entwurf, Prüfer ${sec(stats.checkerSeconds)} je Prüfung.`}
+            aria-label={t.computeLabel(sec(stats.writerSeconds), sec(stats.checkerSeconds))}
           >
             {seconds.map((s, i) => (
               <span
                 key={runs[i]!.startedAt}
                 className="aip-bar"
-                title={`${time(runs[i]!.startedAt)} · Schreiber ${sec(s.writer)} · Prüfer ${sec(s.checker)}`}
+                title={`${time(runs[i]!.startedAt)} · ${t.writer} ${sec(s.writer)} · ${t.checker} ${sec(s.checker)}`}
               >
                 <i
                   className="is-checker"
@@ -263,25 +368,25 @@ export default function AiPipeline() {
           <ul className="aip-legend">
             <li>
               <i className="is-writer" aria-hidden="true" />
-              Schreiber
+              {t.writer}
             </li>
             <li>
               <i className="is-checker" aria-hidden="true" />
-              Prüfer
+              {t.checker}
             </li>
           </ul>
         </figure>
       </div>
 
       <figure className="aip-log">
-        <figcaption>Lauf-Log</figcaption>
+        <figcaption>{t.log}</figcaption>
         <ol>
           {lines.map((line, i) => (
             <li key={`${line.time}-${i}`}>
               <time>{line.time}</time>
               <span className="aip-log-body">
                 <span className={`aip-log-outcome is-${line.outcome}`}>
-                  {OUTCOME_LABEL[line.outcome] ?? line.outcome}
+                  {t.outcome[line.outcome] ?? line.outcome}
                 </span>
                 <span className="aip-log-steps">{line.steps}</span>
                 {line.note && <span className="aip-log-note">{line.note}</span>}

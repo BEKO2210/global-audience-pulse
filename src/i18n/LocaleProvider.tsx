@@ -7,7 +7,15 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { INTL_LOCALE, STORAGE_KEY, detectLocale, type Locale, type Messages } from './locale'
+import {
+  INTL_LOCALE,
+  SEO,
+  STORAGE_KEY,
+  detectLocale,
+  localeUrl,
+  type Locale,
+  type Messages,
+} from './locale'
 
 interface LocaleState {
   locale: Locale
@@ -50,6 +58,18 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   }, [])
   useEffect(() => {
     document.documentElement.lang = locale
+    const seo = SEO[locale]
+    document.title = seo.title
+    const set = (selector: string, attr: string, value: string) =>
+      document.head.querySelector(selector)?.setAttribute(attr, value)
+    set('meta[name="description"]', 'content', seo.description)
+    set('meta[property="og:title"]', 'content', seo.title)
+    set('meta[property="og:description"]', 'content', seo.description)
+    set('meta[property="og:locale"]', 'content', seo.ogLocale)
+    set('meta[property="og:url"]', 'content', localeUrl(locale))
+    set('meta[name="twitter:title"]', 'content', seo.title)
+    set('meta[name="twitter:description"]', 'content', seo.description)
+    set('link[rel="canonical"]', 'href', localeUrl(locale))
   }, [locale])
   const value = useMemo(
     () => ({ locale, intl: INTL_LOCALE[locale], setLocale }),

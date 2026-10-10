@@ -1,5 +1,7 @@
 // Derivations for the AI pipeline view from health.json (written by scripts/analysis/health.ts after each run).
 
+import { INTL_LOCALE, type Locale } from '../i18n/locale'
+
 export type Outcome = 'published' | 'skipped-gpu' | 'failed'
 export type Status = 'active' | 'delayed' | 'paused'
 export type Station = 'daten' | 'schreiber' | 'zahlen' | 'pruefer' | 'ergebnis'
@@ -123,10 +125,45 @@ export function runSeconds(run: HealthRun) {
   return { writer: sum('writer'), checker: sum('checker') }
 }
 
+/** One decimal, with a decimal comma in German: "37,6" / "37.6". */
+export function oneDecimal(value: number, locale: Locale = 'de') {
+  const text = value.toFixed(1)
+  return locale === 'de' ? text.replace('.', ',') : text
+}
+
+const LOG_TEXT = {
+  de: {
+    skipped: 'GPU belegt – Stunde übersprungen',
+    writer: 'Schreiber',
+    checker: 'Prüfer',
+    attempts: (n: number) => (n > 1 ? `${n} Versuche` : '1 Versuch'),
+    rejected: (attempt: number, what: string) => `V${attempt} abgelehnt (${what})`,
+    category: { pruefer: 'Prüfer', zahlen: 'Zahlen', form: 'Form' },
+  },
+  en: {
+    skipped: 'GPU busy – hour skipped',
+    writer: 'Writer',
+    checker: 'Checker',
+    attempts: (n: number) => (n > 1 ? `${n} attempts` : '1 attempt'),
+    rejected: (attempt: number, what: string) => `Attempt ${attempt} rejected (${what})`,
+    category: { pruefer: 'checker', zahlen: 'numbers', form: 'format' },
+  },
+} as const
+
 /** One log line per run, newest first: time, steps, outcome, first rejection reason. */
-export function logLines(runs: readonly HealthRun[], timeZone: string, max = 6) {
+export function logLines(
+  runs: readonly HealthRun[],
+  timeZone: string,
+  max = 6,
+  locale: Locale = 'de',
+) {
+  const text = LOG_TEXT[locale]
   const time = (iso: string) =>
-    new Date(iso).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', timeZone })
+    new Date(iso).toLocaleTimeString(INTL_LOCALE[locale], {
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone,
+    })
   return [...runs]
     .reverse()
     .slice(0, max)
@@ -134,21 +171,19 @@ export function logLines(runs: readonly HealthRun[], timeZone: string, max = 6) 
       if (run.outcome === 'skipped-gpu')
         return {
           time: time(run.startedAt),
-          steps: 'GPU belegt – Stunde übersprungen',
+          steps: text.skipped,
           outcome: run.outcome,
           note: '',
         }
       const s = runSeconds(run)
       const attempts = run.attempts ?? 1
       const steps = [
-        `Schreiber ${s.writer.toFixed(1).replace('.', ',')} s`,
-        `Prüfer ${s.checker.toFixed(1).replace('.', ',')} s`,
-        attempts > 1 ? `${attempts} Versuche` : '1 Versuch',
+        `${text.writer} ${oneDecimal(s.writer, locale)} s`,
+        `${text.checker} ${oneDecimal(s.checker, locale)} s`,
+        text.attempts(attempts),
       ].join(' · ')
       const first = run.rejections?.[0]
-      const note = first
-        ? `V${first.attempt} abgelehnt (${first.category === 'pruefer' ? 'Prüfer' : first.category === 'zahlen' ? 'Zahlen' : 'Form'})`
-        : ''
+      const note = first ? text.rejected(first.attempt, text.category[first.category]) : ''
       return {
         time: time(run.endedAt),
         steps,

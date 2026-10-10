@@ -6,8 +6,30 @@ import { motion, useReducedMotion } from 'motion/react'
 import type { PostingWindow } from '../lib/model'
 import { MODEL_CONFIG } from '../config/model'
 import { MOTION } from '../config/motion'
-import { formatDateTime, formatTime, snapToMinutes } from '../lib/time'
+import { formatTime, snapToMinutes } from '../lib/time'
 import { track } from '../lib/analytics'
+import { useLocale, useMessages } from '../i18n/LocaleProvider'
+import type { Messages } from '../i18n/locale'
+
+const DE = {
+  eyebrow: '24-Stunden-Prognose',
+  title: 'Das nächste Momentum',
+  scale: 'Skala: 0–100 Aktivitäts-Score',
+  timeMachine: 'Zeitmaschine',
+  windowNo: (n: number) => `Nr. ${n}`,
+  legend: (min: number) => `Optimales Posting-Fenster (Score ab ${min})`,
+  hint: 'Ziehen · Pfeiltasten',
+}
+const EN: typeof DE = {
+  eyebrow: '24-hour forecast',
+  title: 'The next momentum',
+  scale: 'Scale: 0–100 activity score',
+  timeMachine: 'Time machine',
+  windowNo: (n) => `No. ${n}`,
+  legend: (min) => `Optimal posting window (score from ${min})`,
+  hint: 'Drag · arrow keys',
+}
+const M: Messages<typeof DE> = { de: DE, en: EN }
 
 export interface ForecastPoint {
   date: Date
@@ -33,6 +55,8 @@ export function Forecast({
   isLive: boolean
   recommendationThreshold: number
 }) {
+  const t = useMessages(M)
+  const { intl } = useLocale()
   const reduceMotion = useReducedMotion()
   // 1 SVG unit = 1 CSS px: the height is set in CSS, the width follows the panel.
   const { ref, width, height } = useSvgBox<SVGSVGElement>({ width: 720, height: 240 })
@@ -92,10 +116,10 @@ export function Forecast({
     <section className="panel forecast-panel" aria-labelledby="forecast-title">
       <div className="section-head">
         <div>
-          <p className="eyebrow">24-Stunden-Prognose</p>
-          <h2 id="forecast-title">Das nächste Momentum</h2>
+          <p className="eyebrow">{t.eyebrow}</p>
+          <h2 id="forecast-title">{t.title}</h2>
         </div>
-        <span className="micro">Skala: 0–100 Aktivitäts-Score</span>
+        <span className="micro">{t.scale}</span>
       </div>
       <svg
         ref={ref}
@@ -103,14 +127,19 @@ export function Forecast({
         viewBox={`0 0 ${width} ${height}`}
         role="slider"
         tabIndex={0}
-        aria-label="Zeitmaschine"
+        aria-label={t.timeMachine}
         aria-valuemin={domain[0].getTime()}
         aria-valuemax={domain[1].getTime()}
         aria-valuenow={selectedInDomain.getTime()}
-        aria-valuetext={formatDateTime(
-          selectedDate,
-          Intl.DateTimeFormat().resolvedOptions().timeZone,
-        )}
+        aria-valuetext={selectedDate.toLocaleString(intl, {
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          weekday: 'short',
+          day: '2-digit',
+          month: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZoneName: 'short',
+        })}
         onPointerDown={(e) => {
           // Mouse/pen scrub immediately. Touch waits for intent: the browser keeps vertical
           // pans (touch-action: pan-y) so scrolling over the chart scrolls the page.
@@ -194,7 +223,7 @@ export function Forecast({
               textAnchor="middle"
               className="window-band-label"
             >
-              Nr. {index + 1}
+              {t.windowNo(index + 1)}
             </text>
           </g>
         ))}
@@ -242,18 +271,18 @@ export function Forecast({
         />
       </svg>
       <div className="forecast-legend">
-        <i /> Optimales Posting-Fenster (Score ab {recommendationThreshold})
+        <i /> {t.legend(recommendationThreshold)}
       </div>
       <div className="scrub-readout">
-        <span>Zeitmaschine</span>
+        <span>{t.timeMachine}</span>
         <strong>
-          {selectedDate.toLocaleString('de-DE', {
+          {selectedDate.toLocaleString(intl, {
             weekday: 'short',
             hour: '2-digit',
             minute: '2-digit',
           })}
         </strong>
-        <span>Ziehen · Pfeiltasten</span>
+        <span>{t.hint}</span>
         <button type="button" onClick={onLive} disabled={isLive}>
           Live
         </button>
