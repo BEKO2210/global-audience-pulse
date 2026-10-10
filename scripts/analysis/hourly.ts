@@ -208,7 +208,7 @@ async function generate(facts: Facts) {
         think: false,
         format: SCHEMA,
         options: { temperature: 0.4, num_ctx: 8192 },
-        keep_alive: '2m',
+        keep_alive: 0, // unload right after use: the job must not hold RAM/VRAM between hours
         messages: [
           { role: 'user', content: PROMPT(facts) },
           ...(lastProblem
@@ -260,7 +260,7 @@ async function checkClaims(facts: Facts, report: object): Promise<string[]> {
         model: CHECKER,
         stream: false,
         think: false,
-        keep_alive: '2m',
+        keep_alive: 0, // unload right after use: the job must not hold RAM/VRAM between hours
         options: { temperature: 0, num_ctx: 8192 },
         format: {
           type: 'object',
