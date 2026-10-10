@@ -16,7 +16,7 @@ kommt (RTX 3070, Ollama), ohne Cloud-Kosten, transparent gekennzeichnet (EU AI A
   E2E Chromium mobil+desktop (2×), Lighthouse-Budget, Screenshots 360/390/1440 px hell+dunkel.
 - Eine Aufgabe nach der anderen auf `main`; parallele Arbeit nur in getrennten `git worktree`s mit getrennten Dateien.
 
-Auftragsdateien: T-001, T-010, T-011, T-012 liegen bereit; für die übrigen legt der übernehmende Agent die Datei nach dem Muster von `docs/tasks/T-001.md` an, bevor er beginnt.
+Auftragsdateien: T-001, T-002, T-010, T-011, T-012 liegen bereit; für die übrigen legt der übernehmende Agent die Datei nach dem Muster von `docs/tasks/T-001.md` an, bevor er beginnt.
 
 ## Phasen
 
