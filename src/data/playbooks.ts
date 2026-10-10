@@ -23,6 +23,8 @@ export interface Source {
 }
 
 export interface Fact {
+  /** two-to-three-word key shown in bold, e.g. "Reels" */
+  lead: string
   text: string
   source: string
 }
@@ -218,25 +220,30 @@ export const PLAYBOOKS: readonly Playbook[] = [
     name: 'Instagram',
     rewards: [
       {
-        text: 'Feed: deine Aktivität, Infos zum Post – etwa wie schnell er Likes bekommt – und dein bisheriger Austausch mit dem Account.',
+        lead: 'Feed',
+        text: 'Deine Aktivität, Signale zum Post – etwa wie schnell er Likes bekommt – und dein bisheriger Austausch mit dem Account.',
         source: 'instagram-ranking',
       },
       {
-        text: 'Reels: Likes, Teilen und Ansehen, Infos zum Reel und die Beliebtheit des Creators.',
+        lead: 'Reels',
+        text: 'Likes, Teilen und Ansehen, Infos zum Reel und die Beliebtheit des Creators.',
         source: 'instagram-ranking',
       },
       {
-        text: 'Entdecken: Die Beliebtheit eines Posts zählt hier deutlich stärker.',
+        lead: 'Entdecken',
+        text: 'Die Beliebtheit eines Posts zählt hier deutlich stärker.',
         source: 'instagram-ranking',
       },
     ],
     limits: [
       {
+        lead: 'Qualität',
         text: 'Reels in niedriger Auflösung oder mit Wasserzeichen, stumme Reels und Videos, die überwiegend aus Text bestehen, werden seltener gezeigt.',
         source: 'instagram-ranking',
       },
       {
-        text: 'Verstöße gegen die Empfehlungsrichtlinien: weniger Empfehlungen in Entdecken, Reels und Suche.',
+        lead: 'Richtlinien',
+        text: 'Verstöße gegen die Empfehlungsrichtlinien bedeuten weniger Empfehlungen in Entdecken, Reels und Suche.',
         source: 'instagram-ranking',
       },
     ],
@@ -270,21 +277,25 @@ export const PLAYBOOKS: readonly Playbook[] = [
     name: 'TikTok',
     rewards: [
       {
-        text: 'Interaktionen: Likes, Teilen, Kommentare, gefolgte Accounts und eigene Videos.',
+        lead: 'Interaktionen',
+        text: 'Likes, Teilen, Kommentare, gefolgte Accounts und eigene Videos.',
         source: 'tiktok-newsroom',
       },
       {
-        text: 'Video-Informationen wie Captions, Sounds und Hashtags.',
+        lead: 'Video-Infos',
+        text: 'Captions, Sounds und Hashtags.',
         source: 'tiktok-newsroom',
       },
       {
-        text: 'Starkes Signal: ob ein längeres Video bis zum Ende angesehen wird.',
+        lead: 'Zu Ende geschaut',
+        text: 'Ob ein längeres Video vollständig angesehen wird, ist ein starkes Signal.',
         source: 'tiktok-newsroom',
       },
     ],
     limits: [
       {
-        text: 'Follower-Zahl und frühere Erfolgsvideos sind keine direkten Faktoren.',
+        lead: 'Kein direkter Faktor',
+        text: 'Follower-Zahl und frühere Erfolgsvideos.',
         source: 'tiktok-newsroom',
       },
     ],
@@ -313,14 +324,17 @@ export const PLAYBOOKS: readonly Playbook[] = [
     name: 'YouTube',
     rewards: [
       {
-        text: 'Empfehlungen stützen sich auf Wiedergabeverhalten, Likes, Dislikes, Abos und Feedback der Zuschauer.',
+        lead: 'Verhalten',
+        text: 'Wiedergabeverhalten, Likes, Dislikes, Abos und Feedback der Zuschauer.',
         source: 'youtube-how',
       },
       {
+        lead: 'Zufriedenheit',
         text: 'Ergebnisse von Zufriedenheitsumfragen fließen ein.',
         source: 'youtube-how',
       },
       {
+        lead: 'Kanal',
         text: 'Reputation und Qualität eines Kanals bestimmen mit, wie, wann und wem Inhalte gezeigt werden.',
         source: 'youtube-how',
       },
@@ -351,24 +365,29 @@ export const PLAYBOOKS: readonly Playbook[] = [
     name: 'LinkedIn',
     rewards: [
       {
-        text: 'Inhalt: wie oft ein Post angesehen wird und Interaktionen bekommt, wie aktuell er ist und wie konstruktiv die Unterhaltung verläuft.',
+        lead: 'Inhalt',
+        text: 'Wie oft ein Post angesehen wird und Interaktionen bekommt, wie aktuell er ist und wie konstruktiv die Unterhaltung verläuft.',
         source: 'linkedin-help',
       },
       {
-        text: 'Aktivität des Lesers: mit wem und womit er häufig interagiert und was er am längsten ansieht.',
+        lead: 'Aktivität',
+        text: 'Mit wem und womit der Leser häufig interagiert und was er am längsten ansieht.',
         source: 'linkedin-help',
       },
       {
-        text: 'Identität: Profilangaben wie Ort, Arbeitgeber und Fähigkeiten.',
+        lead: 'Identität',
+        text: 'Profilangaben wie Ort, Arbeitgeber und Fähigkeiten.',
         source: 'linkedin-help',
       },
     ],
     limits: [
       {
+        lead: 'Qualität',
         text: 'Minderwertige oder unsichere Inhalte werden herausgefiltert oder in der Verbreitung gedrosselt.',
         source: 'linkedin-help',
       },
       {
+        lead: 'Überspringen',
         text: 'Beiträge mit hoher vorhergesagter Überspring-Wahrscheinlichkeit rutschen im Feed nach unten.',
         source: 'linkedin-dwell',
       },
@@ -406,29 +425,35 @@ export const PLAYBOOKS: readonly Playbook[] = [
     name: 'X',
     rewards: [
       {
-        text: 'Der Für-dich-Feed sagt je Post voraus, wie wahrscheinlich Like, Antwort, Repost, Zitat und Teilen sind – auch per DM oder Link.',
+        lead: 'Interaktion',
+        text: 'Für jeden Post wird vorhergesagt, wie wahrscheinlich Like, Antwort, Repost, Zitat und Teilen sind – auch per DM oder Link.',
         source: 'x-algorithm',
       },
       {
-        text: 'Aufmerksamkeit zählt mit: Verweildauer, Weiterschauen bei Videos und Zeit auf dem Profil.',
+        lead: 'Aufmerksamkeit',
+        text: 'Verweildauer, Weiterschauen bei Videos und Zeit auf dem Profil.',
         source: 'x-algorithm',
       },
       {
-        text: 'Accounts mit wenigen Impressionen bekommen einen Schub in Richtung einer Zielposition.',
+        lead: 'Neue Accounts',
+        text: 'Wer wenige Impressionen hat, bekommt einen Schub in Richtung einer Zielposition.',
         source: 'x-algorithm',
       },
     ],
     limits: [
       {
-        text: 'Negative Signale senken den Score: „Kein Interesse“, Stummschalten, Blockieren, Melden und Nicht-Verweilen.',
+        lead: 'Negative Signale',
+        text: '„Kein Interesse“, Stummschalten, Blockieren, Melden und Nicht-Verweilen senken den Score.',
         source: 'x-algorithm',
       },
       {
+        lead: 'Vielfalt',
         text: 'Jeder weitere Post desselben Accounts im Feed wird schrittweise abgewertet.',
         source: 'x-algorithm',
       },
       {
-        text: 'Posts an Nicht-Follower werden mit einem Faktor unter 1 gewichtet.',
+        lead: 'Nicht-Follower',
+        text: 'Posts an Accounts, die dir nicht folgen, werden mit einem Faktor unter 1 gewichtet.',
         source: 'x-algorithm',
       },
     ],
@@ -478,20 +503,24 @@ export const PLAYBOOKS: readonly Playbook[] = [
     name: 'Hacker News',
     rewards: [
       {
-        text: 'Grundformel: Punkte geteilt durch eine Potenz der Zeit seit dem Einreichen.',
+        lead: 'Formel',
+        text: 'Punkte geteilt durch eine Potenz der Zeit seit dem Einreichen.',
         source: 'hn-faq',
       },
       {
-        text: 'Show HN ist für eigene Arbeiten und hat eigene Regeln, Ask HN für Fragen.',
+        lead: 'Formate',
+        text: 'Show HN für eigene Arbeiten mit eigenen Regeln, Ask HN für Fragen.',
         source: 'hn-faq',
       },
     ],
     limits: [
       {
-        text: 'Weitere Faktoren: Nutzer-Flags, Anti-Missbrauch-Software, Abwertung hitziger Diskussionen, Gewichtung von Accounts und Domains, Moderation.',
+        lead: 'Weitere Faktoren',
+        text: 'Nutzer-Flags, Anti-Missbrauch-Software, Abwertung hitziger Diskussionen, Gewichtung von Accounts und Domains, Moderation.',
         source: 'hn-faq',
       },
       {
+        lead: 'Karma',
         text: 'Mehr Karma bringt eigenen Beiträgen keinen Ranking-Vorteil.',
         source: 'hn-faq',
       },
@@ -569,4 +598,59 @@ export function describeWindows(study: StudyTimes) {
 
 export function describePeaks(study: StudyTimes) {
   return study.peaks.map((p, i) => `${i + 1}. ${DAYS[p.day]} ${p.hour} Uhr`).join(' · ')
+}
+
+/** Six 4-hour blocks per day: the heatmap's columns (diagram-design: 3–8 columns). */
+export const BLOCKS = [0, 4, 8, 12, 16, 20] as const
+
+/**
+ * Study-hours per day × block: hours the studies' windows cover inside the block, plus one hour for each ranked
+ * peak that falls outside a window. Summed over all studies of a platform.
+ */
+export function blockScores(times: readonly StudyTimes[]): number[][] {
+  return DAYS.map((_, day) =>
+    BLOCKS.map((start) => {
+      let score = 0
+      for (const study of times) {
+        const covered = (hour: number) =>
+          study.windows.some((w) => w.day === day && hour >= w.from && hour < w.to)
+        for (let hour = start; hour < start + 4; hour++) if (covered(hour)) score++
+        for (const peak of study.peaks)
+          if (
+            peak.day === day &&
+            peak.hour >= start &&
+            peak.hour < start + 4 &&
+            !covered(peak.hour)
+          )
+            score++
+      }
+      return score
+    }),
+  )
+}
+
+/** All cells sharing the highest score (empty when nothing is recommended). */
+export function strongestCells(scores: readonly (readonly number[])[]) {
+  const max = Math.max(0, ...scores.flat())
+  if (!max) return []
+  const cells: { day: Weekday; block: number }[] = []
+  scores.forEach((row, day) =>
+    row.forEach((value, block) => {
+      if (value === max) cells.push({ day: day as Weekday, block })
+    }),
+  )
+  return cells
+}
+
+/** "Di, Mi, Do 12–16 Uhr" or "Mi 12–16 Uhr · Do 8–12 Uhr" for the strongest cells. */
+export function describeCells(cells: readonly { day: Weekday; block: number }[]) {
+  const byBlock = new Map<number, Weekday[]>()
+  for (const c of cells) byBlock.set(c.block, [...(byBlock.get(c.block) ?? []), c.day])
+  return [...byBlock.entries()]
+    .sort(([a], [b]) => a - b)
+    .map(([block, days]) => {
+      const start = BLOCKS[block]!
+      return `${days.map((d) => DAYS[d]).join(', ')} ${start}–${start + 4} Uhr`
+    })
+    .join(' · ')
 }

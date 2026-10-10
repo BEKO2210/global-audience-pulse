@@ -1,5 +1,5 @@
 import { useId, useRef, useState, type KeyboardEvent } from 'react'
-import { motion } from 'motion/react'
+import { motion, useReducedMotion, type Variants } from 'motion/react'
 import {
   InstagramLogo,
   LinkedinLogo,
@@ -11,19 +11,23 @@ import {
   type Icon,
 } from '@phosphor-icons/react'
 import {
+  BLOCKS,
+  DAYS,
   DEFAULT_PLAYBOOK,
   PLAYBOOKS,
   RESEARCHED_AT,
+  SOURCE_BY_ID,
+  blockScores,
   citedSources,
+  describeCells,
+  describePeaks,
+  describeWindows,
   formatSourceDate,
+  strongestCells,
   type Fact,
   type PlatformId,
   type Playbook,
   type StudyTimes,
-  type Weekday,
-  DAYS,
-  describePeaks,
-  describeWindows,
 } from '../data/playbooks'
 import { track } from '../lib/analytics'
 import './Playbooks.css'
@@ -38,142 +42,211 @@ const ICONS: Record<PlatformId, Icon> = {
   hackernews: Newspaper,
 }
 
-const HOURS = Array.from({ length: 24 }, (_, h) => h)
-const AXIS = [0, 6, 12, 18, 24]
-/** Two studies at most per platform; the overlap gets the accent. */
-const STUDY_CLASS = ['is-a', 'is-b'] as const
-
-function covers(study: StudyTimes, day: Weekday, hour: number) {
-  return study.windows.some((w) => w.day === day && hour >= w.from && hour < w.to)
+// diagram-design motion clock: one reveal, ≤ 8 steps, ≤ 8 px travel, no springs.
+const EASE = [0.2, 0.8, 0.2, 1] as const
+const STEP = 0.06
+const stagger: Variants = {
+  hidden: {},
+  shown: { transition: { staggerChildren: STEP } },
+}
+const rowReveal: Variants = {
+  hidden: { opacity: 0, y: 8 },
+  shown: { opacity: 1, y: 0, transition: { duration: 0.48, ease: EASE } },
+}
+const reveal: Variants = {
+  hidden: { opacity: 0, y: 8 },
+  shown: (step: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.48, ease: EASE, delay: step * STEP },
+  }),
 }
 
-/** Keeps each "Di 11–17 Uhr" together; lines only break between the parts. */
-function Parts({ text, label = '' }: { text: string; label?: string }) {
-  const parts = text.split(' · ')
+/** Ink ramp per diagram-design heatmap: ≥ 0.07 for the weakest recommended cell, ≤ 0.65 below the focal accent. */
+function rampOpacity(value: number, maxNonFocal: number) {
+  if (!value) return 0
+  return Math.max(0.07, (value / Math.max(1, maxNonFocal)) * 0.65)
+}
+
+function Heatmap({ times, name }: { times: readonly StudyTimes[]; name: string }) {
+  // Own variants override MotionConfig, so reduced motion is honoured here explicitly.
+  const reduce = useReducedMotion()
+  const scores = blockScores(times)
+  const strongest = strongestCells(scores)
+  const isFocal = (day: number, block: number) =>
+    strongest.some((c) => c.day === day && c.block === block)
+  const maxNonFocal = Math.max(
+    0,
+    ...scores.flatMap((row, day) => row.filter((_, block) => !isFocal(day, block))),
+  )
+  const strongestText = describeCells(strongest)
+
   return (
-    <span className="week-parts">
-      {label}
-      {parts.map((part, i) => (
-        <span key={part}>
-          <span className="week-part">{part}</span>
-          {i < parts.length - 1 ? ' · ' : ''}
+    <figure className="pb-heat">
+      {strongest.length > 0 && (
+        <p className="pb-heat-headline">
+          <span>Am stärksten</span>
+          <strong>
+            {strongestText.split(' · ').map((group) => (
+              <span key={group}>{group}</span>
+            ))}
+          </strong>
+        </p>
+      )}
+      <motion.div
+        className="pb-heat-grid"
+        variants={stagger}
+        initial={reduce ? false : 'hidden'}
+        whileInView="shown"
+        viewport={{ once: true, amount: 0.2 }}
+        role="img"
+        aria-label={`Empfohlene Zeiten bei ${name} nach Wochentag und Tageszeit. Am stärksten: ${strongestText}.`}
+      >
+        <span className="pb-heat-corner" aria-hidden="true" />
+        {BLOCKS.map((start) => (
+          <span key={start} className="pb-heat-col" aria-hidden="true">
+            {String(start).padStart(2, '0')}
+          </span>
+        ))}
+        {DAYS.map((label, day) => (
+          <motion.div key={label} className="pb-heat-row" variants={rowReveal} aria-hidden="true">
+            <span className="pb-heat-day">{label}</span>
+            {BLOCKS.map((start, block) => {
+              const value = scores[day]![block]!
+              const focal = isFocal(day, block)
+              return (
+                <span
+                  key={start}
+                  className={`pb-heat-cell${focal ? ' is-focal' : ''}`}
+                  data-row={label}
+                  data-col={start}
+                  data-value={value}
+                  data-focal={focal || undefined}
+                  style={
+                    focal
+                      ? undefined
+                      : { ['--fill' as string]: String(rampOpacity(value, maxNonFocal)) }
+                  }
+                />
+              )
+            })}
+          </motion.div>
+        ))}
+      </motion.div>
+      <figcaption className="pb-heat-legend">
+        <span className="pb-legend-item">
+          <span className="pb-ramp" aria-hidden="true">
+            {[0.12, 0.3, 0.48, 0.65].map((o) => (
+              <i key={o} style={{ ['--fill' as string]: String(o) }} />
+            ))}
+          </span>
+          weniger → mehr Studien-Stunden
         </span>
-      ))}
-    </span>
+        <span className="pb-legend-item">
+          <span className="pb-ramp-focal" aria-hidden="true" />
+          stärkstes Fenster
+        </span>
+      </figcaption>
+      <p className="pb-heat-note">
+        Wert je Feld: Stunden, die die Studien in diesem 4-Stunden-Block empfehlen; jede Spitzenzeit
+        zählt als eine Stunde. Uhrzeiten in der Ortszeit deines Publikums.
+      </p>
+    </figure>
   )
 }
 
-function WeekGrid({ times }: { times: readonly StudyTimes[] }) {
-  const [first, second] = times
-  const overlap = Boolean(first?.windows.length && second?.windows.length)
+function StudyList({ times }: { times: readonly StudyTimes[] }) {
   return (
-    <figure className="week-grid">
-      <div className="week-grid-chart" aria-hidden="true">
-        {DAYS.map((label, dayIndex) => {
-          const day = dayIndex as Weekday
-          return (
-            <div className="week-row" key={label}>
-              <span className="week-day">{label}</span>
-              <div className="week-track">
-                {HOURS.map((hour) => {
-                  const hits = times.map((t) => covers(t, day, hour))
-                  const cls =
-                    hits.length === 2 && hits[0] && hits[1]
-                      ? 'is-both'
-                      : hits[0]
-                        ? STUDY_CLASS[0]
-                        : hits[1]
-                          ? STUDY_CLASS[1]
-                          : ''
-                  return <i key={hour} className={cls} />
-                })}
-                {times.flatMap((t, ti) =>
-                  t.peaks
-                    .map((p, rank) => ({ ...p, rank }))
-                    .filter((p) => p.day === day)
-                    .map((p) => (
-                      <b
-                        key={`${ti}-${p.rank}`}
-                        className={`week-peak ${STUDY_CLASS[ti]}`}
-                        style={{ left: `${((p.hour + 0.5) / 24) * 100}%` }}
-                      >
-                        {p.rank + 1}
-                      </b>
-                    )),
-                )}
-              </div>
-            </div>
-          )
-        })}
-        <div className="week-axis">
-          {AXIS.map((h) => (
-            <span key={h} style={{ left: `${(h / 24) * 100}%` }}>
-              {String(h).padStart(2, '0')}
-            </span>
-          ))}
-        </div>
-      </div>
-      <figcaption className="week-legend">
-        {times.map((t, i) => (
-          <div className="week-legend-item" key={`${t.source}-${t.label}`}>
-            <span
-              className={`week-swatch ${STUDY_CLASS[i]} ${t.windows.length ? '' : 'is-dot'}`}
-              aria-hidden="true"
-            />
-            <div>
+    <dl className="pb-studies">
+      {times.map((t) => {
+        const source = SOURCE_BY_ID.get(t.source)!
+        return (
+          <div key={`${t.source}-${t.label}`} className="pb-study">
+            <dt>
               <strong>{t.label}</strong>
-              {t.windows.length > 0 && <Parts text={describeWindows(t)} />}
-              {t.peaks.length > 0 && <Parts label="Spitzen: " text={describePeaks(t)} />}
-              {t.weak && <span className="week-weak">Schwach: {t.weak}</span>}
-            </div>
+              <span>{formatSourceDate(source.date)}</span>
+            </dt>
+            <dd>
+              {t.windows.length > 0 && (
+                <span className="pb-chips">
+                  {describeWindows(t)
+                    .split(' · ')
+                    .map((part) => (
+                      <span key={part} className="pb-chip">
+                        {part}
+                      </span>
+                    ))}
+                </span>
+              )}
+              {t.peaks.length > 0 && (
+                <span className="pb-chips">
+                  {describePeaks(t)
+                    .split(' · ')
+                    .map((peak) => {
+                      const [rank = '', ...rest] = peak.split(' ')
+                      const place = rank.replace('.', '')
+                      return (
+                        <span key={peak} className="pb-chip is-peak">
+                          <b>
+                            <span className="sr-only">Platz </span>
+                            {place}
+                          </b>
+                          {rest.join(' ')}
+                        </span>
+                      )
+                    })}
+                </span>
+              )}
+              {t.weak && <span className="pb-weak">Schwach: {t.weak}</span>}
+            </dd>
           </div>
-        ))}
-        {overlap && (
-          <div className="week-legend-item">
-            <span className="week-swatch is-both" aria-hidden="true" />
-            <div>
-              <strong>Beide Studien</strong>
-              <span>Hier stimmen die Fenster überein.</span>
-            </div>
-          </div>
-        )}
-        <p className="week-note">Uhrzeiten in der Ortszeit deines Publikums.</p>
-      </figcaption>
-    </figure>
+        )
+      })}
+    </dl>
   )
 }
 
 function FactList({
   title,
   facts,
-  marker,
-  sourceNumber,
   tone,
+  sourceNumber,
+  offset,
 }: {
   title: string
   facts: readonly Fact[]
-  marker: string
-  sourceNumber: (id: string) => number
   tone: 'plus' | 'minus'
+  sourceNumber: (id: string) => number
+  offset: number
 }) {
+  const reduce = useReducedMotion()
   if (!facts.length) return null
   return (
-    <div className="playbook-list">
-      <h4>{title}</h4>
+    <div className={`pb-list is-${tone}`}>
+      <h4>
+        <span className="pb-list-mark" aria-hidden="true">
+          {tone === 'plus' ? '+' : '−'}
+        </span>
+        {title}
+      </h4>
       <ul>
-        {facts.map((f) => (
-          <li key={f.text} className={`is-${tone}`}>
-            <span className="playbook-marker" aria-hidden="true">
-              {marker}
-            </span>
-            <span>
+        {facts.map((f, i) => (
+          <motion.li
+            key={f.text}
+            variants={reveal}
+            custom={offset + i}
+            initial={reduce ? false : 'hidden'}
+            animate="shown"
+          >
+            <strong>{f.lead}</strong>
+            <p>
               {f.text}
-              <a className="playbook-ref" href={`#pb-src-${f.source}`}>
+              <a className="pb-ref" href={`#pb-src-${f.source}`}>
                 <span className="sr-only">Quelle </span>
                 {sourceNumber(f.source)}
               </a>
-            </span>
-          </li>
+            </p>
+          </motion.li>
         ))}
       </ul>
     </div>
@@ -191,60 +264,57 @@ function Panel({
 }) {
   const sources = citedSources(playbook)
   const sourceNumber = (id: string) => sources.findIndex((s) => s.id === id) + 1
-  const gapInFacts = playbook.gap && !playbook.rewards.length
+  const gapInFacts = Boolean(playbook.gap && !playbook.rewards.length)
   return (
-    <motion.div
-      id={panelId}
-      role="tabpanel"
-      aria-labelledby={tabId}
-      className="playbook-panel"
-      initial={{ opacity: 0, y: 4 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-    >
-      <div className="playbook-body">
-        <section className="playbook-col" aria-label={`Ranking bei ${playbook.name}`}>
+    <div id={panelId} role="tabpanel" aria-labelledby={tabId} className="pb-panel">
+      <div className="pb-body">
+        <section className="pb-col" aria-label={`Ranking bei ${playbook.name}`}>
           <h3>Was der Algorithmus belohnt</h3>
           <FactList
             title="Belohnt"
             facts={playbook.rewards}
-            marker="+"
             tone="plus"
             sourceNumber={sourceNumber}
+            offset={0}
           />
           <FactList
             title="Bremst oder zählt nicht"
             facts={playbook.limits}
-            marker="−"
             tone="minus"
             sourceNumber={sourceNumber}
+            offset={playbook.rewards.length}
           />
-          {gapInFacts && <p className="playbook-gap">{playbook.gap}</p>}
+          {gapInFacts && <p className="pb-gap">{playbook.gap}</p>}
         </section>
-        <section className="playbook-col" aria-label={`Posting-Zeiten bei ${playbook.name}`}>
+        <section className="pb-col" aria-label={`Posting-Zeiten bei ${playbook.name}`}>
           <h3>Beste Zeiten laut Studien</h3>
-          {playbook.times.length > 0 && <WeekGrid times={playbook.times} />}
-          {playbook.gap && !gapInFacts && <p className="playbook-gap">{playbook.gap}</p>}
+          {playbook.times.length > 0 && (
+            <>
+              <Heatmap times={playbook.times} name={playbook.name} />
+              <StudyList times={playbook.times} />
+            </>
+          )}
+          {playbook.gap && !gapInFacts && <p className="pb-gap">{playbook.gap}</p>}
         </section>
       </div>
-      <ol className="playbook-sources" aria-label="Quellen">
+      <ol className="pb-sources" aria-label="Quellen">
         {sources.map((s, i) => (
           <li key={s.id} id={`pb-src-${s.id}`}>
-            <span className="playbook-source-num">{i + 1}</span>
+            <span className="pb-source-num">{i + 1}</span>
             <div>
               <a href={s.url} target="_blank" rel="noopener noreferrer">
-                {s.publisher} · {s.title}
+                {s.title}
               </a>
               <span>
-                {s.kind === 'offiziell' ? 'Offizielle Dokumentation' : 'Studie'} ·{' '}
+                {s.publisher} · {s.kind === 'offiziell' ? 'Offizielle Dokumentation' : 'Studie'} ·{' '}
                 {formatSourceDate(s.date)}
-                {s.basis ? ` · ${s.basis}` : ''}
               </span>
+              {s.basis && <span>{s.basis}</span>}
             </div>
           </li>
         ))}
       </ol>
-    </motion.div>
+    </div>
   )
 }
 
@@ -265,21 +335,14 @@ export function Playbooks() {
   const onKey = (event: KeyboardEvent<HTMLDivElement>) => {
     const index = PLAYBOOKS.findIndex((p) => p.id === active)
     const last = PLAYBOOKS.length - 1
-    const next =
-      event.key === 'ArrowRight'
-        ? index === last
-          ? 0
-          : index + 1
-        : event.key === 'ArrowLeft'
-          ? index === 0
-            ? last
-            : index - 1
-          : event.key === 'Home'
-            ? 0
-            : event.key === 'End'
-              ? last
-              : -1
-    if (next < 0) return
+    const keys: Record<string, number> = {
+      ArrowRight: index === last ? 0 : index + 1,
+      ArrowLeft: index === 0 ? last : index - 1,
+      Home: 0,
+      End: last,
+    }
+    const next = keys[event.key]
+    if (next === undefined) return
     event.preventDefault()
     choose(PLAYBOOKS[next]!.id, true)
   }
@@ -293,11 +356,11 @@ export function Playbooks() {
         </div>
         <span className="micro">Stand {formatSourceDate(RESEARCHED_AT)}</span>
       </div>
-      <p className="playbooks-lede">
+      <p className="pb-lede">
         Aus der Dokumentation der Plattformen und aus Studien mit offengelegter Methodik. Mit KI
         recherchiert, jede Aussage an der Quelle geprüft – keine Live-Daten.
       </p>
-      <div className="playbook-tabs" role="tablist" aria-label="Plattform" onKeyDown={onKey}>
+      <div className="pb-tabs" role="tablist" aria-label="Plattform" onKeyDown={onKey}>
         {PLAYBOOKS.map((p) => {
           const PlatformIcon = ICONS[p.id]
           const selected = p.id === active
@@ -314,6 +377,14 @@ export function Playbooks() {
               tabIndex={selected ? 0 : -1}
               onClick={() => choose(p.id)}
             >
+              {selected && (
+                <motion.span
+                  className="pb-tab-active"
+                  layoutId={`${base}-active`}
+                  transition={{ duration: 0.32, ease: EASE }}
+                  aria-hidden="true"
+                />
+              )}
               <PlatformIcon size={18} weight={selected ? 'fill' : 'regular'} aria-hidden="true" />
               <span>{p.name}</span>
             </button>

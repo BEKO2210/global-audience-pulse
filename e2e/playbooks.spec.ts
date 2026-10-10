@@ -21,14 +21,14 @@ test('playbooks show sourced facts, study times and numbered sources', async ({ 
   await expect(tabs.first()).toHaveAttribute('aria-selected', 'true')
 
   const panel = section.getByRole('tabpanel')
-  await expect(panel.locator('.week-row')).toHaveCount(7)
-  const sources = panel.locator('.playbook-sources li')
+  await expect(panel.locator('.pb-heat-row')).toHaveCount(7)
+  const sources = panel.locator('.pb-sources li')
   expect(await sources.count()).toBeGreaterThan(0)
   for (const link of await sources.locator('a').all())
     expect(await link.getAttribute('href')).toMatch(/^https:\/\//)
 
   // Every reference number points to a source listed in this panel.
-  for (const ref of await panel.locator('.playbook-ref').all()) {
+  for (const ref of await panel.locator('.pb-ref').all()) {
     const target = (await ref.getAttribute('href'))!.slice(1)
     await expect(panel.locator(`[id="${target}"]`)).toHaveCount(1)
   }
@@ -39,7 +39,8 @@ test('switching platforms by click and arrow keys updates the panel', async ({ p
   await section.getByRole('tab', { name: 'LinkedIn' }).click()
   const panel = section.getByRole('tabpanel')
   await expect(panel).toContainText('Mo–Fr 15–20 Uhr')
-  await expect(panel).toContainText('Beide Studien')
+  await expect(panel.locator('.pb-heat-headline')).toContainText('Am stärksten')
+  await expect(panel.locator('[data-focal]').first()).toBeVisible()
 
   await section.getByRole('tab', { name: 'LinkedIn' }).press('ArrowRight')
   const x = section.getByRole('tab', { name: 'X', exact: true })
@@ -69,8 +70,13 @@ for (const scheme of ['light', 'dark'] as const) {
     await page.emulateMedia({ colorScheme: scheme })
     const section = await openPlaybooks(page)
     await section.getByRole('tab', { name: 'LinkedIn' }).click()
-    // Measure after the panel's short fade-in, not mid-transition.
-    await expect(section.getByRole('tabpanel')).toHaveCSS('opacity', '1')
+    // Measure after the staggered reveal has finished, not mid-transition.
+    await section.locator('.pb-heat-grid').scrollIntoViewIfNeeded()
+    await page.waitForFunction(() =>
+      [...document.querySelectorAll('section.playbooks li, section.playbooks .pb-heat-row')].every(
+        (el) => getComputedStyle(el).opacity === '1',
+      ),
+    )
     const results = await new AxeBuilder({ page })
       .include('section.playbooks')
       .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])

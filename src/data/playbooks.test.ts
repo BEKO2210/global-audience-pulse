@@ -74,3 +74,25 @@ describe('describeWindows / describePeaks', () => {
     expect(describeWindows(tiktok.times[1]!)).toBe('täglich 18–23 Uhr')
   })
 })
+
+describe('heatmap scores', () => {
+  it('sums study-hours per 4-hour block and names the strongest cells', async () => {
+    const { blockScores, strongestCells, describeCells } = await import('./playbooks')
+    const x = PLAYBOOKS.find((p) => p.id === 'x')!
+    const scores = blockScores(x.times)
+    // Sprout: Tue–Thu 12–18 → 4 h in 12–16, 2 h in 16–20. Buffer peaks: Tue 9, Wed 10, Wed 9.
+    expect(scores[1]).toEqual([0, 0, 1, 4, 2, 0])
+    expect(scores[2]).toEqual([0, 0, 2, 4, 2, 0])
+    expect(scores[5]).toEqual([0, 0, 0, 0, 0, 0])
+    const strongest = strongestCells(scores)
+    expect(describeCells(strongest)).toBe('Di, Mi, Do 12–16 Uhr')
+    expect(strongestCells([[0, 0]])).toEqual([])
+  })
+
+  it('counts a peak inside a window only once', async () => {
+    const { blockScores } = await import('./playbooks')
+    const linkedin = PLAYBOOKS.find((p) => p.id === 'linkedin')!
+    // Wed: Sprout 11–16 (1 h in 8–12, 4 h in 12–16) + Buffer 15–20 (1 h in 12–16, 4 h in 16–20); peak Wed 16 inside.
+    expect(blockScores(linkedin.times)[2]).toEqual([0, 0, 1, 5, 4, 0])
+  })
+})

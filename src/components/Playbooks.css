@@ -1,30 +1,32 @@
-/* Plattform-Playbooks: one platform at a time, two equal columns on wide screens, 4-px grid. */
+/* Plattform-Playbooks – diagram-design tokens, 4-px grid, one accent (the strongest window). */
 
-.playbooks-lede {
-  max-width: 64ch;
-  margin: -8px 0 20px;
+.pb-lede {
+  max-width: 62ch;
+  margin: -8px 0 24px;
   color: var(--muted);
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: 15px;
+  line-height: 1.6;
 }
 
-/* Platform picker: a horizontal strip on phones, seven equal columns from 720 px. */
-.playbook-tabs {
+/* Platform picker: strip on phones, seven equal columns from 720 px; the active pill slides (layoutId). */
+.pb-tabs {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: max-content;
   gap: 8px;
-  margin: 0 -14px 24px;
+  margin: 0 -14px 28px;
   padding: 0 14px 4px;
   overflow-x: auto;
   scroll-snap-type: x proximity;
   scroll-padding-inline: 14px;
   scrollbar-width: none;
 }
-.playbook-tabs::-webkit-scrollbar {
+.pb-tabs::-webkit-scrollbar {
   display: none;
 }
-.playbook-tabs button {
+.pb-tabs button {
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -35,316 +37,362 @@
   background: transparent;
   color: var(--muted);
   font:
-    500 13px/1 'Geist Variable',
+    500 14px/1 'Geist Variable',
     system-ui,
     sans-serif;
   white-space: nowrap;
   scroll-snap-align: start;
   cursor: pointer;
 }
-.playbook-tabs button[aria-selected='true'] {
+.pb-tabs button[aria-selected='true'] {
   color: var(--paper);
-  background: var(--ink);
   border-color: var(--ink);
 }
-.playbook-tabs button:focus-visible {
+.pb-tab-active {
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  background: var(--ink);
+}
+.pb-tabs button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 @media (min-width: 720px) {
-  .playbook-tabs {
+  .pb-tabs {
     grid-auto-flow: row;
     grid-template-columns: repeat(7, minmax(0, 1fr));
-    margin: 0 0 28px;
+    margin: 0 0 32px;
     padding: 0;
     overflow: visible;
   }
-  .playbook-tabs button {
+  .pb-tabs button {
     padding: 0 8px;
   }
 }
 
-.playbook-body {
+.pb-body {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 32px;
+  gap: 40px;
 }
 @media (min-width: 960px) {
-  .playbook-body {
+  .pb-body {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 48px;
   }
 }
-.playbook-col {
+.pb-col {
   min-width: 0;
 }
-.playbook-col > h3 {
-  margin: 0 0 16px;
+.pb-col > h3 {
+  margin: 0 0 20px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--rule-solid);
   font:
-    400 22px/1.15 'Instrument Serif',
+    400 24px/1.1 'Instrument Serif',
     serif;
   letter-spacing: -0.01em;
 }
 
-.playbook-list + .playbook-list {
-  margin-top: 24px;
+/* Facts: bold key, then the sentence; hairlines between items. */
+.pb-list + .pb-list {
+  margin-top: 28px;
 }
-.playbook-list h4 {
-  margin: 0 0 8px;
+.pb-list h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 4px;
   color: var(--muted);
   font:
     500 12px/1 'Geist Variable',
     system-ui,
     sans-serif;
+  letter-spacing: 0.02em;
 }
-.playbook-list ul {
+.pb-list-mark {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid currentColor;
+  font:
+    600 13px/1 'Geist Mono Variable',
+    monospace;
+}
+.pb-list.is-plus .pb-list-mark {
+  color: var(--accent-ink);
+}
+.pb-list.is-minus .pb-list-mark {
+  color: var(--link);
+}
+.pb-list ul {
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.playbook-list li {
+.pb-list li {
   display: grid;
-  grid-template-columns: 20px minmax(0, 1fr);
-  gap: 8px;
-  padding: 12px 0;
-  border-top: 1px solid var(--rule);
-  font-size: 15px;
-  line-height: 1.5;
-  overflow-wrap: anywhere;
+  gap: 4px;
+  padding: 16px 0 16px 28px;
+  border-bottom: 1px solid var(--rule);
 }
-.playbook-list li:first-child {
-  border-top: 0;
-  padding-top: 4px;
+.pb-list li:last-child {
+  border-bottom: 0;
 }
-.playbook-marker {
+.pb-list li strong {
   font:
-    600 15px/1.5 'Geist Mono Variable',
-    monospace;
-  text-align: center;
+    600 15px/1.3 'Geist Variable',
+    system-ui,
+    sans-serif;
+  letter-spacing: -0.005em;
 }
-.is-plus .playbook-marker {
-  color: var(--accent-ink);
+.pb-list li p {
+  margin: 0;
+  max-width: 58ch;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
 }
-.is-minus .playbook-marker {
-  color: var(--link);
-}
-.playbook-ref {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+.pb-ref {
+  display: inline-grid;
+  place-items: center;
   min-width: 18px;
   height: 18px;
-  margin-left: 6px;
+  margin-left: 8px;
   padding: 0 4px;
   border: 1px solid var(--rule-solid);
   color: var(--muted);
   font:
-    500 10px/1 'Geist Mono Variable',
+    500 11px/1 'Geist Mono Variable',
     monospace;
   text-decoration: none;
-  vertical-align: 2px;
+  vertical-align: 1px;
 }
-.playbook-ref:hover,
-.playbook-ref:focus-visible {
+.pb-ref:hover,
+.pb-ref:focus-visible {
   color: var(--ink);
   border-color: var(--ink);
 }
-.playbook-gap {
-  margin: 16px 0 0;
+.pb-gap {
+  margin: 20px 0 0;
   padding: 12px 16px;
   border-left: 2px solid var(--rule-solid);
   background: var(--paper);
   color: var(--muted);
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
-/* Week grid: 7 days × 24 hours, study A / study B / overlap, ranked peaks as numbered dots. */
-.week-grid {
+/* Heatmap (diagram-design type-heatmap): 7 rows × 6 columns, one ink ramp, accent only on the strongest cells. */
+.pb-heat {
   margin: 0;
 }
-.week-grid-chart {
+.pb-heat-headline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin: 0 0 16px;
+}
+.pb-heat-headline > span {
+  color: var(--muted);
+  font-size: 13px;
+}
+.pb-heat-headline strong {
   display: grid;
+  font:
+    400 24px/1.15 'Instrument Serif',
+    serif;
+  font-variant-numeric: tabular-nums;
+}
+.pb-heat-grid {
+  display: grid;
+  grid-template-columns: 28px repeat(6, minmax(0, 1fr));
   gap: 4px;
 }
-.week-row {
-  display: grid;
-  grid-template-columns: 28px minmax(0, 1fr);
-  align-items: center;
-  gap: 8px;
-}
-.week-day {
+.pb-heat-col {
+  padding-bottom: 4px;
   color: var(--muted);
   font:
     500 11px/1 'Geist Mono Variable',
     monospace;
 }
-.week-track {
-  position: relative;
+.pb-heat-row {
   display: grid;
-  grid-template-columns: repeat(24, minmax(0, 1fr));
-  gap: 1px;
-  height: 24px;
-  padding: 1px;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
+}
+.pb-heat-day {
+  color: var(--muted);
+  font:
+    500 11px/1 'Geist Mono Variable',
+    monospace;
+}
+.pb-heat-cell {
+  --fill: 0;
+  height: 36px;
   border: 1px solid var(--rule);
-  background:
-    linear-gradient(var(--rule), var(--rule)) calc(25% - 0.5px) 0 / 1px 100% no-repeat,
-    linear-gradient(var(--rule), var(--rule)) calc(50% - 0.5px) 0 / 1px 100% no-repeat,
-    linear-gradient(var(--rule), var(--rule)) calc(75% - 0.5px) 0 / 1px 100% no-repeat,
-    var(--paper);
+  background: color-mix(in srgb, var(--ink) calc(var(--fill) * 100%), var(--paper));
 }
-.week-track > i {
-  display: block;
-  min-width: 0;
+.pb-heat-cell.is-focal {
+  border: 1.2px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 85%, var(--paper));
 }
-.week-track > i.is-a,
-.week-swatch.is-a {
-  background: var(--series-3);
+@media (min-width: 960px) {
+  .pb-heat-cell {
+    height: 40px;
+  }
 }
-.week-track > i.is-b,
-.week-swatch.is-b {
-  background: var(--series-4);
-}
-.week-track > i.is-both,
-.week-swatch.is-both {
-  background: var(--accent);
-}
-.week-peak {
-  position: absolute;
-  top: 50%;
-  display: grid;
-  place-items: center;
-  width: 18px;
-  height: 18px;
-  border: 2px solid var(--paper-2);
-  border-radius: 50%;
-  color: var(--paper);
-  font:
-    600 9px/1 'Geist Mono Variable',
-    monospace;
-  transform: translate(-50%, -50%);
-}
-.week-peak.is-a {
-  background: var(--series-3);
-}
-.week-peak.is-b {
-  background: var(--series-4);
-}
-.week-axis {
-  position: relative;
-  height: 16px;
-  margin-left: 36px;
+.pb-heat-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-top: 16px;
   color: var(--muted);
-  font:
-    11px/1 'Geist Mono Variable',
-    monospace;
+  font-size: 13px;
 }
-.week-axis span {
-  position: absolute;
-  top: 4px;
-  transform: translateX(-50%);
+.pb-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
-.week-axis span:first-child {
-  transform: none;
+.pb-ramp {
+  display: inline-flex;
+  gap: 2px;
 }
-.week-axis span:last-child {
-  transform: translateX(-100%);
-}
-
-.week-legend {
-  display: grid;
-  gap: 12px;
-  margin-top: 20px;
-}
-.week-legend-item {
-  display: grid;
-  grid-template-columns: 16px minmax(0, 1fr);
-  gap: 12px;
-  align-items: start;
-}
-.week-legend-item > div {
-  display: grid;
-  gap: 4px;
-  font-size: 14px;
-  line-height: 1.45;
-}
-.week-legend-item strong {
-  font-weight: 600;
-}
-.week-legend-item span {
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-}
-.week-part {
-  white-space: nowrap;
-}
-.week-legend-item .week-weak {
-  color: var(--muted);
-}
-.week-swatch {
-  width: 16px;
-  height: 10px;
-  margin-top: 5px;
-}
-.week-swatch.is-dot {
+.pb-ramp i {
+  --fill: 0;
   width: 12px;
   height: 12px;
-  margin: 4px 2px 0;
-  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--ink) calc(var(--fill) * 100%), var(--paper));
 }
-.week-note {
-  margin: 4px 0 0;
+.pb-ramp-focal {
+  width: 12px;
+  height: 12px;
+  border: 1.2px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 85%, var(--paper));
+}
+.pb-heat-note {
+  margin: 12px 0 0;
   color: var(--muted);
-  font:
-    11px/1.4 'Geist Mono Variable',
-    monospace;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
-/* Sources: numbered, full width under both columns. */
-.playbook-sources {
+/* Studies behind the heatmap: name + date, then the exact windows as chips. */
+.pb-studies {
   display: grid;
-  gap: 12px;
-  margin: 32px 0 0;
-  padding: 20px 0 0;
+  gap: 16px;
+  margin: 24px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+}
+.pb-study dt {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.pb-study dt strong {
+  font:
+    600 14px/1.3 'Geist Variable',
+    system-ui,
+    sans-serif;
+}
+.pb-study dt span {
+  color: var(--muted);
+  font:
+    500 11px/1 'Geist Mono Variable',
+    monospace;
+}
+.pb-study dd {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+.pb-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.pb-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--rule-solid);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.pb-chip.is-peak b {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  font:
+    600 10px/1 'Geist Mono Variable',
+    monospace;
+}
+.pb-weak {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* Sources: numbered, two columns under both panels on wide screens. */
+.pb-sources {
+  display: grid;
+  gap: 16px;
+  margin: 40px 0 0;
+  padding: 24px 0 0;
   border-top: 1px solid var(--rule-solid);
   list-style: none;
 }
 @media (min-width: 960px) {
-  .playbook-sources {
+  .pb-sources {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     column-gap: 48px;
   }
 }
-.playbook-sources li {
+.pb-sources li {
   display: grid;
   grid-template-columns: 24px minmax(0, 1fr);
   gap: 8px;
   scroll-margin-top: 96px;
 }
-.playbook-sources li:target {
+.pb-sources li:target {
   outline: 1px solid var(--accent);
-  outline-offset: 4px;
+  outline-offset: 6px;
 }
-.playbook-source-num {
+.pb-source-num {
   color: var(--muted);
   font:
     500 12px/1.5 'Geist Mono Variable',
     monospace;
 }
-.playbook-sources li > div {
+.pb-sources li > div {
   display: grid;
   gap: 2px;
   min-width: 0;
-  font-size: 13px;
-  line-height: 1.45;
   overflow-wrap: anywhere;
 }
-.playbook-sources a {
+.pb-sources a {
   color: var(--link);
+  font-size: 14px;
+  line-height: 1.45;
 }
-.playbook-sources span {
+.pb-sources span {
   color: var(--muted);
   font-size: 12px;
+  line-height: 1.5;
 }
