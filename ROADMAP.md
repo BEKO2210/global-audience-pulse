@@ -56,6 +56,39 @@ Auftragsdateien: T-001, T-002, T-010, T-011, T-012 liegen bereit; für die übri
 | T-032 | Projekte von alten Modellen migrieren (Statim, Prompt_Academy, HeimGeist, brain, Die_Firma, OpenShorts) – je Projekt eigene Aufgabe, Reproduzierbarkeit beachten | Claude → Codex  | offen  |
 | T-033 | Benachrichtigung bei Job-Ausfall (> 3 h kein Bericht) per ntfy/Telegram an Belkis                                                                                | Codex → Claude  | offen  |
 
+### Phase E – Messen, was Nutzer tun (Plausible, selbst gehostet, rechtssicher maximal)
+
+Rechtlicher Rahmen (Stand 2026-10, Quellen: Plausible-Datenrichtlinie, TDDDG § 25, DSGVO Art. 6/7): Plausible
+arbeitet **ohne Cookies/localStorage** und speichert keine IPs (Tages-Hash mit täglich gelöschtem Salt) → **keine
+Einwilligung nötig**, Rechtsgrundlage berechtigtes Interesse, Pflicht: Hinweis in der Datenschutzerklärung.
+Alles, was **auf dem Gerät speichert oder wiedererkennt** (Cookies, Besucher-IDs über Tage, Session-Replay,
+Marketing-Pixel), braucht eine **echte Opt-in-Einwilligung** (gleichwertiger „Ablehnen“-Knopf, jederzeit widerrufbar,
+vorher nichts laden).
+
+| ID    | Aufgabe                                                                                                                                                                                                                                                                                                                                                                                                                  | Agenten                      | Status                   |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- | ------------------------ |
+| T-040 | Plausible (selbst gehostet) cookielos einbinden: Seitenaufrufe + **benannte Ereignisse** für jede Funktion (Zeitregler genutzt, 24 h/7 T, Gewichtung, Zielgruppe an/aus, Planer-Tab, .ics-Download, Plan kopieren, Teilen, Bericht aufgeklappt, Theme, Rechtsseiten, ausgehende Links, 404) mit Properties (Region, Horizont, Gerätegröße) + **Web Vitals** (LCP/CLS/INP als Ereignis-Properties); Datenschutz-Abschnitt | Codex → Cursor → Claude      | wartet auf Plausible-URL |
+| T-041 | Einwilligungs-Banner (eigener, schlanker, kein Fremdanbieter) nur für **optionale** Messung: wiederkehrende Besucher & Bindung über Tage (Plausible-Custom-Property mit zufälliger ID in localStorage **nur nach Opt-in**), Widerruf im Footer, Einwilligung versioniert; ohne Opt-in bleibt alles cookielos                                                                                                             | Codex → Antigravity → Claude | offen                    |
+| T-042 | Plausible-Ziele & Trichter: „Erstbesuch → Zeitregler → Planer → .ics“; Dashboard-Links für Belkis                                                                                                                                                                                                                                                                                                                        | Claude                       | offen                    |
+| T-043 | **Lokales LLM liest die Statistik** (Plausible Stats API, nur auf pop-os): wöchentlicher Bericht „Was Nutzer tun, was hakt, was wir verbessern sollten“ → schreibt Vorschläge als neue Aufgaben in diese Roadmap (Status `vorgeschlagen`)                                                                                                                                                                                | Claude → Codex               | offen                    |
+
+### Phase F – Lokale LLMs im Entwickler-Team (kostenlos, unbegrenzt)
+
+| ID    | Aufgabe                                                                                                                                                                                                                           | Agenten        | Status |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | ------ |
+| T-050 | **Lokaler Coding-Agent** ins Runbook: OpenCode mit `ornith:9b-agent32k` (Tool-Calling, 60 t/s) für kleine, klar umrissene Aufgaben (Texte, CSS-Feinschliff, Tests ergänzen); feste Prompt-Vorlage, Abnahme wie immer durch Claude | Claude         | offen  |
+| T-051 | **Lokaler Review-Bot**: Skript `scripts/dev/local-review.mjs` – `git diff main...` → `qwen3.5:9b` (zweite Meinung: Bugs, A11y, harte Zahlen) → `REVIEW-LOCAL.md`; läuft vor jedem Merge zusätzlich zu Copilot                     | Claude → Codex | offen  |
+| T-052 | **Lokaler Test-Schreiber**: für geänderte Module Vitest-Fälle vorschlagen (ornith), Claude übernimmt nur, was echte Fehler fangen würde                                                                                           | Claude         | offen  |
+| T-053 | **Übersetzungen & Texte** durch lokale Modelle (EN-Fassung der UI, Alt-Texte, Meta-Beschreibungen), Prüfung durch zweites Modell                                                                                                  | Codex → Claude | offen  |
+
+### Phase G – Noch mehr automatische Intelligenz auf der Seite
+
+| ID    | Aufgabe                                                                                                                                                | Agenten             | Status |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------- | ------ |
+| T-017 | **Kurz-Erklärung unter jeder Grafik** (stündlich vom lokalen Modell, geprüft): Karte, Prognose, Heatmap, Rad – je ein Satz „was man hier gerade sieht“ | Claude → Codex      | offen  |
+| T-018 | **Empfehlung je Zielgruppe & Region** vorab berechnet (alle Presets + jede Einzelregion), Seite zeigt passend zur Auswahl                              | Claude → Codex      | offen  |
+| T-019 | **Auffälligkeits-Hinweis** oben (nur bei echter Anomalie, z. B. Live-Signal > 25 % oder Feiertag): ein Satz + Link zum Bericht                         | Codex → Antigravity | offen  |
+
 ## Regeln, die für alle Aufgaben gelten
 
 - Alles Sichtbare live berechnet, keine fest eingetragenen Zahlen/Zeiten.
