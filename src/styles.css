@@ -2360,3 +2360,11 @@ button:active {
   padding: 4px 0 4px 20px;
   border-left: 1px solid var(--rule);
 }
+
+/* Content for crawlers and readers without JavaScript (index.html <noscript>). */
+.noscript {
+  max-width: 62ch;
+  padding: 0 16px 32px;
+  color: var(--muted);
+  line-height: 1.6;
+}

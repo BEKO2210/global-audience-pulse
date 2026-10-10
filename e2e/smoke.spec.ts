@@ -11,7 +11,10 @@ test('loads without runtime errors and exposes complete metadata and app icons',
   page.on('pageerror', (error) => errors.push(error.message))
   await openReady(page)
 
-  await expect(page).toHaveTitle('Global Audience Pulse')
+  await expect(page).toHaveTitle(/Global Audience Pulse/)
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /^https:\/\//)
+  const ld = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent())!)
+  expect(ld[0]['@type']).toBe('WebApplication')
   await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /.+/)
   await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', /.+/)
   await expect(page.locator('meta[property="og:description"]')).toHaveAttribute('content', /.+/)

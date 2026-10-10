@@ -4,6 +4,29 @@ import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 import { motionStudio } from 'motion-studio'
 import { resolve } from 'node:path'
+import type { Plugin } from 'vite'
+
+const SITE = 'https://beko2210.github.io/global-audience-pulse/'
+
+/** sitemap.xml with the build date: the home page plus the legal pages (those are noindex, so only home). */
+function sitemap(): Plugin {
+  return {
+    name: 'gap-sitemap',
+    apply: 'build',
+    generateBundle() {
+      const lastmod = new Date().toISOString().slice(0, 10)
+      this.emitFile({
+        type: 'asset',
+        fileName: 'sitemap.xml',
+        source: `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>${SITE}</loc><lastmod>${lastmod}</lastmod><changefreq>daily</changefreq></url>
+</urlset>
+`,
+      })
+    },
+  }
+}
 
 export default defineConfig({
   base: '/global-audience-pulse/',
@@ -34,6 +57,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     motionStudio(),
+    sitemap(),
     VitePWA({
       injectRegister: 'script-defer',
       registerType: 'autoUpdate',
@@ -41,7 +65,9 @@ export default defineConfig({
       manifest: {
         name: 'Global Audience Pulse',
         short_name: 'Audience Pulse',
-        description: 'Die Live-Weltuhr für Creator.',
+        description:
+          'Live-Weltuhr für Creator: wann dein Publikum weltweit wach ist, mit Planer und geprüften Posting-Zeiten.',
+        categories: ['productivity', 'social', 'utilities'],
         theme_color: '#11110f',
         background_color: '#11110f',
         display: 'standalone',
