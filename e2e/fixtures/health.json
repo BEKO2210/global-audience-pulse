@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "updatedAt": "2026-01-01T12:00:00.000Z",
+  "runs": [
+    {
+      "startedAt": "2026-01-01T06:00:00.000Z",
+      "endedAt": "2026-01-01T06:00:42.000Z",
+      "outcome": "published",
+      "source": "llm"
+    },
+    {
+      "startedAt": "2026-01-01T07:00:00.000Z",
+      "endedAt": "2026-01-01T07:00:08.000Z",
+      "outcome": "skipped-gpu",
+      "source": null
+    },
+    {
+      "startedAt": "2026-01-01T08:00:00.000Z",
+      "endedAt": "2026-01-01T08:00:45.000Z",
+      "outcome": "published",
+      "source": "template"
+    },
+    {
+      "startedAt": "2026-01-01T09:00:00.000Z",
+      "endedAt": "2026-01-01T09:00:41.000Z",
+      "outcome": "published",
+      "source": "llm"
+    },
+    {
+      "startedAt": "2026-01-01T10:00:00.000Z",
+      "endedAt": "2026-01-01T10:00:12.000Z",
+      "outcome": "failed",
+      "source": null
+    },
+    {
+      "startedAt": "2026-01-01T11:00:00.000Z",
+      "endedAt": "2026-01-01T11:00:39.000Z",
+      "outcome": "published",
+      "source": "llm"
+    }
+  ],
+  "summary24h": {
+    "runs": 12,
+    "published": 10,
+    "successRatePercent": 83,
+    "templateSharePercent": 20,
+    "skipped": 1,
+    "failed": 1,
+    "averageDurationSeconds": 42,
+    "rejections": { "zahlen": 4, "form": 2, "pruefer": 3 },
+    "lastSuccess": "2026-01-01T11:00:39.000Z",
+    "nextExpectedAt": "2026-01-01T13:02:00.000Z"
+  }
+}

@@ -40,6 +40,8 @@ export const DATA_SOURCES = {
   diagramDesign: 'https://github.com/cathrynlavery/diagram-design',
   liveAnalysis:
     'https://raw.githubusercontent.com/BEKO2210/global-audience-pulse/live-analysis/analysis.json',
+  analysisHealth:
+    'https://raw.githubusercontent.com/BEKO2210/global-audience-pulse/live-analysis/health.json',
 } as const
 
 export const SERIES = [

@@ -10,6 +10,7 @@ import { useScoreGrid } from './hooks/useScoreGrid'
 import { useDeferredMount } from './hooks/useDeferredMount'
 import { ReportTeaser, useLiveReport } from './components/reportShared'
 const LiveReport = lazy(() => import('./components/LiveReport'))
+const ReportHealth = lazy(() => import('./components/ReportHealth'))
 import {
   circularMean,
   fastZonedParts,
@@ -702,6 +703,9 @@ export default function App() {
                   </h2>
                 </div>
                 <div className="method-copy">
+                  <Suspense fallback={null}>
+                    <ReportHealth />
+                  </Suspense>
                   <div className="weighting">
                     <span className="weighting-label" id="weighting-label">
                       Gewichtung der Regionen

@@ -20,6 +20,7 @@ import {
 import { parseSnapshot, type Snapshot } from '../../src/lib/snapshot'
 import { formatTime, localDecimalHour, timeZoneName } from '../../src/lib/time'
 import { compare, liveSignals, readHistory, writeHistory, type LiveSignal } from './signals'
+import type { AnalysisRun, DataFetchError, ModelCall, RunRejection } from './health'
 
 const OLLAMA = process.env.OLLAMA_URL ?? 'http://127.0.0.1:11434'
 const MODEL = process.env.ANALYSIS_MODEL ?? 'gemma4:12b-it-qat'
@@ -32,15 +33,44 @@ const MAX_ATTEMPTS = 3
 const round = (n: number) => Math.round(n)
 const hm = (d: Date) => formatTime(d, ZONE)
 
-async function loadSnapshot(): Promise<Snapshot> {
+const short = (value: unknown) =>
+  String(value instanceof Error ? value.message : value)
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 140)
+
+async function loadSnapshot(errors: DataFetchError[]): Promise<Snapshot> {
   try {
     const response = await fetch(`${SNAPSHOT_URL}?t=${Date.now()}`)
     if (response.ok) return { ...parseSnapshot(await response.json()), weightingMode: 'value' }
-  } catch {
-    /* fall back to the committed snapshot */
+    errors.push({ source: 'snapshot', message: `HTTP ${response.status}` })
+  } catch (error) {
+    errors.push({ source: 'snapshot', message: short(error) })
   }
   const local = JSON.parse(await readFile('public/data/snapshot.json', 'utf8'))
   return { ...parseSnapshot(local), weightingMode: 'value' }
+}
+
+async function loadLiveSignals(now: Date, errors: DataFetchError[]) {
+  const nativeFetch = globalThis.fetch
+  globalThis.fetch = async (input, init) => {
+    const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url
+    try {
+      const response = await nativeFetch(input, init)
+      if (url.startsWith('https://wikimedia.org/') && !response.ok)
+        errors.push({ source: 'wikimedia', message: `HTTP ${response.status}` })
+      return response
+    } catch (error) {
+      if (url.startsWith('https://wikimedia.org/'))
+        errors.push({ source: 'wikimedia', message: short(error) })
+      throw error
+    }
+  }
+  try {
+    return await liveSignals(now)
+  } finally {
+    globalThis.fetch = nativeFetch
+  }
 }
 
 /** GPU guard: skip when something other than Ollama is using the card (training, llama-server). */
@@ -195,36 +225,63 @@ function invalidNumbers(text: string, allowed: Set<string>) {
   return [...text.matchAll(/\d+/g)].map((m) => String(Number(m[0]))).filter((n) => !allowed.has(n))
 }
 
-async function generate(facts: Facts) {
+interface GenerationTelemetry {
+  attempts: number
+  rejections: RunRejection[]
+  modelCalls: ModelCall[]
+}
+
+async function generate(facts: Facts, telemetry: GenerationTelemetry) {
   const allowed = allowedNumbers(facts)
   let lastProblem = ''
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt += 1) {
-    const response = await fetch(`${OLLAMA}/api/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: MODEL,
-        stream: false,
-        think: false,
-        format: SCHEMA,
-        options: { temperature: 0.4, num_ctx: 8192 },
-        keep_alive: 0, // unload right after use: the job must not hold RAM/VRAM between hours
-        messages: [
-          { role: 'user', content: PROMPT(facts) },
-          ...(lastProblem
-            ? [{ role: 'user', content: `Korrektur nötig: ${lastProblem}. Schreibe neu.` }]
-            : []),
-        ],
-      }),
-    })
-    if (!response.ok) throw new Error(`Ollama ${response.status}`)
-    const data = await response.json()
-    const report = JSON.parse(data.message.content) as {
+    telemetry.attempts = attempt
+    const callStarted = performance.now()
+    let report: {
       schlagzeile: string
       empfehlung: string
       analyse: string
       punkte: string[]
       zielgruppen: { name: string; urteil: string }[]
+    }
+    try {
+      const response = await fetch(`${OLLAMA}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: MODEL,
+          stream: false,
+          think: false,
+          format: SCHEMA,
+          options: { temperature: 0.4, num_ctx: 8192 },
+          keep_alive: 0, // unload right after use: the job must not hold RAM/VRAM between hours
+          messages: [
+            { role: 'user', content: PROMPT(facts) },
+            ...(lastProblem
+              ? [{ role: 'user', content: `Korrektur nötig: ${lastProblem}. Schreibe neu.` }]
+              : []),
+          ],
+        }),
+      })
+      if (!response.ok) throw new Error(`Ollama ${response.status}`)
+      const data = await response.json()
+      report = JSON.parse(data.message.content)
+      telemetry.modelCalls.push({
+        model: MODEL,
+        role: 'writer',
+        attempt,
+        durationMs: Math.round(performance.now() - callStarted),
+        ok: true,
+      })
+    } catch (error) {
+      telemetry.modelCalls.push({
+        model: MODEL,
+        role: 'writer',
+        attempt,
+        durationMs: Math.round(performance.now() - callStarted),
+        ok: false,
+      })
+      throw error
     }
     const text = [
       report.schlagzeile,
@@ -235,13 +292,16 @@ async function generate(facts: Facts) {
     ].join(' ')
     const bad = invalidNumbers(text, allowed)
     const shapeOk = report.schlagzeile.length <= 90 && report.punkte.length === 3
-    const claims = !bad.length && shapeOk ? await checkClaims(facts, report) : []
+    const claims =
+      !bad.length && shapeOk ? await checkClaims(facts, report, attempt, telemetry.modelCalls) : []
     if (!bad.length && shapeOk && !claims.length) return { ...report, attempts: attempt }
+    const category = bad.length ? 'zahlen' : !shapeOk ? 'form' : 'pruefer'
     lastProblem = bad.length
       ? `Diese Zahlen stehen nicht in den Daten: ${[...new Set(bad)].join(', ')}`
       : !shapeOk
         ? 'Schlagzeile zu lang oder nicht genau 3 Punkte'
         : `Ein Prüfer fand Aussagen, die den Daten widersprechen: ${claims.join('; ')}`
+    telemetry.rejections.push({ attempt, category, reason: short(lastProblem) })
     console.warn(`Versuch ${attempt} verworfen: ${lastProblem}`)
   }
   return null
@@ -251,7 +311,13 @@ async function generate(facts: Facts) {
  * Second opinion from a smaller local model: does any statement contradict the data (wrong place,
  * wrong phase, wrong direction of the trend, a market that does not carry the score...)?
  */
-async function checkClaims(facts: Facts, report: object): Promise<string[]> {
+async function checkClaims(
+  facts: Facts,
+  report: object,
+  attempt: number,
+  modelCalls: ModelCall[],
+): Promise<string[]> {
+  const callStarted = performance.now()
   try {
     const response = await fetch(`${OLLAMA}/api/chat`, {
       method: 'POST',
@@ -288,16 +354,30 @@ async function checkClaims(facts: Facts, report: object): Promise<string[]> {
         ],
       }),
     })
-    if (!response.ok) return []
+    if (!response.ok) throw new Error(`Ollama ${response.status}`)
     const data = await response.json()
     const result = JSON.parse(data.message.content) as {
       pruefungen: { aussage: string; widerspruch: boolean; grund: string }[]
     }
+    modelCalls.push({
+      model: CHECKER,
+      role: 'checker',
+      attempt,
+      durationMs: Math.round(performance.now() - callStarted),
+      ok: true,
+    })
     return result.pruefungen
       .filter((item) => item.widerspruch)
       .map((item) => `${item.aussage} (${item.grund})`)
       .slice(0, 4)
   } catch {
+    modelCalls.push({
+      model: CHECKER,
+      role: 'checker',
+      attempt,
+      durationMs: Math.round(performance.now() - callStarted),
+      ok: false,
+    })
     return [] // checker unavailable: the number guard still applies
   }
 }
@@ -324,6 +404,7 @@ function template(facts: Facts) {
 }
 
 async function main() {
+  const runStarted = new Date()
   const out = process.argv[2] ?? 'analysis.json'
   const historyPath = process.argv[3]
   if (gpuBusy() && !process.env.FORCE) {
@@ -331,17 +412,33 @@ async function main() {
     process.exit(3)
   }
   const now = new Date()
-  const snapshot = await loadSnapshot()
+  const dataFetchErrors: DataFetchError[] = []
+  const snapshot = await loadSnapshot(dataFetchErrors)
   const history = await readHistory(historyPath)
   const ids = REGIONS.map((r) => r.id)
   const scoreNow = round(globalActivity(REGIONS, ids, now, snapshot))
-  const facts = buildFacts(snapshot, now, await liveSignals(now), compare(history, now, scoreNow))
+  const live = await loadLiveSignals(now, dataFetchErrors)
+  const facts = buildFacts(snapshot, now, live, compare(history, now, scoreNow))
   const started = Date.now()
+  const telemetry: GenerationTelemetry = { attempts: 0, rejections: [], modelCalls: [] }
   let report = null
   try {
-    report = await generate(facts)
+    report = await generate(facts, telemetry)
   } catch (error) {
     console.warn(`LLM nicht erreichbar: ${(error as Error).message}`)
+  }
+  const runEnded = new Date()
+  const run: AnalysisRun = {
+    startedAt: runStarted.toISOString(),
+    endedAt: runEnded.toISOString(),
+    durationSeconds: Math.round((runEnded.getTime() - runStarted.getTime()) / 1000),
+    attempts: telemetry.attempts,
+    rejections: telemetry.rejections,
+    source: report ? 'llm' : 'template',
+    models: { writer: MODEL, checker: CHECKER },
+    modelCalls: telemetry.modelCalls,
+    liveSignals: live.length,
+    dataFetchErrors,
   }
   const result = {
     version: 2,
@@ -355,6 +452,7 @@ async function main() {
     source: report ? 'llm' : 'template',
     durationSeconds: Math.round((Date.now() - started) / 1000),
     snapshotGeneratedAt: snapshot.generatedAt,
+    run,
     facts,
     report: report ?? template(facts),
   }

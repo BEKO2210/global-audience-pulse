@@ -20,15 +20,30 @@ if [ ! -d node_modules ] || [ "$before" != "$after" ]; then
   npm ci --ignore-scripts --no-audit --no-fund --loglevel=error
 fi
 
-npx esbuild scripts/analysis/hourly.ts --bundle --platform=node --format=esm --target=node22 \
-  --outfile="$OUT/hourly.mjs" --log-level=warning
+run_started=$(date -u +%FT%TZ)
+npx esbuild scripts/analysis/health.ts --bundle --platform=node --format=esm --target=node22 \
+  --outfile="$OUT/health.mjs" --log-level=warning
 
 set +e
-node "$OUT/hourly.mjs" "$OUT/analysis.json" "$OUT/history.jsonl"
+npx esbuild scripts/analysis/hourly.ts --bundle --platform=node --format=esm --target=node22 \
+  --outfile="$OUT/hourly.mjs" --log-level=warning
 code=$?
+if [ "$code" -eq 0 ]; then
+  node "$OUT/hourly.mjs" "$OUT/analysis.json" "$OUT/history.jsonl"
+  code=$?
+fi
 set -e
-if [ "$code" -eq 3 ]; then exit 0; fi # GPU busy: skip this hour, keep the last report
-if [ "$code" -ne 0 ]; then exit "$code"; fi
+run_ended=$(date -u +%FT%TZ)
+if [ "$code" -eq 0 ]; then
+  outcome=published
+  analysis_arg="$OUT/analysis.json"
+elif [ "$code" -eq 3 ]; then
+  outcome=skipped-gpu
+  analysis_arg=-
+else
+  outcome=failed
+  analysis_arg=-
+fi
 
 if [ ! -d "$BRANCH_DIR/.git" ] && [ ! -f "$BRANCH_DIR/.git" ]; then
   git worktree prune
@@ -41,15 +56,24 @@ if [ ! -d "$BRANCH_DIR/.git" ] && [ ! -f "$BRANCH_DIR/.git" ]; then
   fi
 fi
 
+node "$OUT/health.mjs" "$BRANCH_DIR/health.json" "$OUT/health.json" "$outcome" \
+  "$analysis_arg" "$run_started" "$run_ended"
+
 cd "$BRANCH_DIR"
-cp "$OUT/analysis.json" analysis.json
-[ -f "$OUT/history.jsonl" ] && cp "$OUT/history.jsonl" history.jsonl
+if [ "$outcome" = published ]; then
+  cp "$OUT/analysis.json" analysis.json
+  [ -f "$OUT/history.jsonl" ] && cp "$OUT/history.jsonl" history.jsonl
+fi
+cp "$OUT/health.json" health.json
 cat > README.md <<'EOF'
 Automatisch erzeugter Lagebericht für Global Audience Pulse (stündlich von einem lokalen Modell
 auf dem Rechner des Betreibers, nur solange dieser läuft). Wird bei jedem Lauf überschrieben.
 EOF
-git add analysis.json README.md
-[ -f history.jsonl ] && git add history.jsonl
+git add health.json README.md
+if [ "$outcome" = published ]; then
+  git add analysis.json
+  [ -f history.jsonl ] && git add history.jsonl
+fi
 # One commit only: amend and force-push so the data branch never grows.
 if git rev-parse -q --verify HEAD >/dev/null; then
   git -c user.name="Global Audience Pulse Bot" -c user.email="nullmesh@protonmail.com" \
@@ -59,4 +83,6 @@ else
     commit -q -m "Lagebericht $(date -u +%FT%TZ)"
 fi
 git push -q -f origin live-analysis
-echo "veröffentlicht: $(date +%T)"
+echo "$outcome: $(date +%T)"
+if [ "$code" -eq 3 ]; then exit 0; fi
+if [ "$code" -ne 0 ]; then exit "$code"; fi
