@@ -18,7 +18,21 @@ Allen Agenten wird derselbe Zaun mitgegeben (steht oben in jeder Auftragsdatei):
 | Cursor (composer-2.5, im Pro-Plan)         | `P="$(cat docs/tasks/T-xxx.md)"; cursor-agent -p --trust -f --model composer-2.5 --output-format text "$P" > ../cursor-T-xxx.log 2>&1`                                                                  | nie `--model auto` oder fremde Modelle (Kosten)                          |
 | Codex (gpt-5.6-sol, medium)                | `codex exec -C . -s workspace-write -c sandbox_workspace_write.network_access=true -m gpt-5.6-sol -c model_reasoning_effort=medium -o CODEX-T-xxx.md - < docs/tasks/T-xxx.md > ../codex-T-xxx.log 2>&1` | kein localhost/Browser in der Sandbox; Kontingent-Resets nie verbrauchen |
 | Grok 4.7                                   | `grok --prompt-file docs/tasks/T-xxx.md -m grok-4.7 --permission-mode bypassPermissions --deny 'Bash(rm *)' --deny 'Bash(git commit*)' --max-turns 300 --output-format plain > ../grok-T-xxx.log 2>&1`  | Wochenkontingent beachten; „do not use spawn_subagent“                   |
+| OpenCode lokal (`ornith:9b-agent32k`, GPU) | `OPENCODE_CONFIG=docs/opencode-agent.json opencode run --auto -m ollama/ornith:9b-agent32k "$(cat docs/tasks/T-xxx.md)" > ../opencode-T-xxx.log 2>&1`                                                   | kostenlos, nur kleine mechanische Aufgaben; siehe „Lokaler Agent“ unten  |
 | Claude (Sonnet-Subagent oder Hauptsession) | Aufgabe direkt bearbeiten                                                                                                                                                                               | macht immer die Abnahme                                                  |
+
+## Lokaler Agent (T-050)
+
+OpenCode mit `ornith:9b-agent32k` auf der RTX 3070, ohne Kosten. `docs/opencode-agent.json` verbietet zusätzlich zu
+`~/.config/opencode/opencode.json` Git-Zustandsänderungen, `npm install` und `npx`; `--auto` genehmigt den Rest.
+
+- **Geeignet:** Code verschieben/umbenennen, Texte, CSS-Feinschliff, Muster nachbauen.
+- **Nicht geeignet:** Tests mit erwarteten Werten, Logik, alles ohne Vorbild im Repo.
+- **Vorlage:** Zaun mit exakten Dateinamen (inkl. Endung `.test.ts`), konkrete Eingaben → erwartete Ausgaben
+  vorgeben statt „aus dem Code ableiten“, Abschluss-Befehl nennen.
+- **Abnahme:** Erfolgsmeldungen des Modells nie übernehmen. Claude prüft `git status`, liest jede Datei und führt
+  die Checks selbst aus. Probeaufgabe T-050a: Verschiebung korrekt, aber Testdatei `ago_test.ts` (lief nie),
+  falsche Erwartung (`2880 Min` = „1 Tagen“) und „alle Tests grün“ erfunden.
 
 ## Ausfall-Regel
 

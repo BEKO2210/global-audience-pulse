@@ -75,12 +75,12 @@ vorher nichts laden).
 
 ### Phase F – Lokale LLMs im Entwickler-Team (kostenlos, unbegrenzt)
 
-| ID    | Aufgabe                                                                                                                                                                                                                           | Agenten        | Status |
-| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | ------ |
-| T-050 | **Lokaler Coding-Agent** ins Runbook: OpenCode mit `ornith:9b-agent32k` (Tool-Calling, 60 t/s) für kleine, klar umrissene Aufgaben (Texte, CSS-Feinschliff, Tests ergänzen); feste Prompt-Vorlage, Abnahme wie immer durch Claude | Claude         | offen  |
-| T-051 | **Lokaler Review-Bot**: Skript `scripts/dev/local-review.mjs` – `git diff main...` → `qwen3.5:9b` (zweite Meinung: Bugs, A11y, harte Zahlen) → `REVIEW-LOCAL.md`; läuft vor jedem Merge zusätzlich zu Copilot                     | Claude → Codex | offen  |
-| T-052 | **Lokaler Test-Schreiber**: für geänderte Module Vitest-Fälle vorschlagen (ornith), Claude übernimmt nur, was echte Fehler fangen würde                                                                                           | Claude         | offen  |
-| T-053 | **Übersetzungen & Texte** durch lokale Modelle (EN-Fassung der UI, Alt-Texte, Meta-Beschreibungen), Prüfung durch zweites Modell                                                                                                  | Codex → Claude | offen  |
+| ID    | Aufgabe                                                                                                                                                                                                                           | Agenten        | Status                       |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | ---------------------------- |
+| T-050 | **Lokaler Coding-Agent** ins Runbook: OpenCode mit `ornith:9b-agent32k` (Tool-Calling, 60 t/s) für kleine, klar umrissene Aufgaben (Texte, CSS-Feinschliff, Tests ergänzen); feste Prompt-Vorlage, Abnahme wie immer durch Claude | Claude         | erledigt (OpenCode + Claude) |
+| T-051 | **Lokaler Review-Bot**: Skript `scripts/dev/local-review.mjs` – `git diff main...` → `qwen3.5:9b` (zweite Meinung: Bugs, A11y, harte Zahlen) → `REVIEW-LOCAL.md`; läuft vor jedem Merge zusätzlich zu Copilot                     | Claude → Codex | offen                        |
+| T-052 | **Lokaler Test-Schreiber**: für geänderte Module Vitest-Fälle vorschlagen (ornith), Claude übernimmt nur, was echte Fehler fangen würde                                                                                           | Claude         | offen                        |
+| T-053 | **Übersetzungen & Texte** durch lokale Modelle (EN-Fassung der UI, Alt-Texte, Meta-Beschreibungen), Prüfung durch zweites Modell                                                                                                  | Codex → Claude | offen                        |
 
 ### Phase G – Noch mehr automatische Intelligenz auf der Seite
 
