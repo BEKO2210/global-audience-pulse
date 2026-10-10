@@ -16,16 +16,17 @@ kommt (RTX 3070, Ollama), ohne Cloud-Kosten, transparent gekennzeichnet (EU AI A
   E2E Chromium mobil+desktop (2×), Lighthouse-Budget, Screenshots 360/390/1440 px hell+dunkel.
 - Eine Aufgabe nach der anderen auf `main`; parallele Arbeit nur in getrennten `git worktree`s mit getrennten Dateien.
 
-Auftragsdateien: T-001, T-002, T-010, T-011, T-012 liegen bereit; für die übrigen legt der übernehmende Agent die Datei nach dem Muster von `docs/tasks/T-001.md` an, bevor er beginnt.
+Auftragsdateien: T-001, T-002, T-003, T-010, T-011, T-012 liegen bereit; für die übrigen legt der übernehmende Agent die Datei nach dem Muster von `docs/tasks/T-001.md` an, bevor er beginnt.
 
 ## Phasen
 
 ### Phase A – Lagebericht sichtbar machen (jetzt)
 
-| ID    | Aufgabe                                                                                                                    | Agenten                               | Status                                |
-| ----- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | ------------------------------------- |
-| T-001 | Lagebericht-Visualisierung v2: Farbe↔Land eindeutig, Ranking-Balken statt Liste, besserer Trend, lesbares Live-Signal      | Antigravity → Cursor → Codex → Claude | erledigt (Antigravity, Review Claude) |
-| T-002 | Bericht-Gesundheit: Job-Status (letzter Lauf, Dauer, Versuche, Prüfer-Ablehnungen) als `health.json` + Anzeige in Methodik | Codex → Cursor → Claude               | offen                                 |
+| ID    | Aufgabe                                                                                                                           | Agenten                               | Status                                |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | ------------------------------------- |
+| T-001 | Lagebericht-Visualisierung v2: Farbe↔Land eindeutig, Ranking-Balken statt Liste, besserer Trend, lesbares Live-Signal             | Antigravity → Cursor → Codex → Claude | erledigt (Antigravity, Review Claude) |
+| T-002 | Bericht-Gesundheit: Job-Status (letzter Lauf, Dauer, Versuche, Prüfer-Ablehnungen) als `health.json` + Anzeige in Methodik        | Codex → Cursor → Claude               | offen                                 |
+| T-003 | Zeit-Markierung in der Aktivitätsmatrix deutlich sichtbar (Cursor mit Etikett, „jetzt“ getrennt, Städtenamen nicht abgeschnitten) | Cursor → Antigravity → Claude         | offen                                 |
 
 ### Phase B – Lokale Intelligenz vertiefen (Job auf pop-os, `scripts/analysis/`)
 
