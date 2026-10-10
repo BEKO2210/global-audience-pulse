@@ -1,0 +1,95 @@
+/* Logo motion: one draw-on intro (≤ 1.4 s), then a slow cosine turn of the globe and a beat token on the pulse. */
+
+.logo-mark {
+  display: block;
+  flex: none;
+  --turn: 18s;
+}
+
+/* Static mark (also the reduced-motion and no-animation state): one lens meridian, like the favicon. */
+.logo-meridian {
+  /* scaleX must not thin the stroke, or the turning meridians flicker into hairlines */
+  vector-effect: non-scaling-stroke;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scaleX(0.35);
+}
+.logo-meridian:not(:first-child) {
+  opacity: 0;
+}
+.logo-beat {
+  opacity: 0;
+  /* one 7-unit dash, parked off the path before (offset 10) and after (offset −103) each run */
+  stroke-dasharray: 7 300;
+  stroke-dashoffset: 10;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* A meridian's apparent width on a turning sphere is cos(θ): 1 → −1 → 1, eased like a sine. Three meridians
+     60° apart (a sixth of a turn) read as six lines once front and back overlap. */
+  .logo-meridian,
+  .logo-meridian:not(:first-child) {
+    opacity: 1;
+    animation: logo-turn var(--turn) ease-in-out infinite;
+    animation-delay: calc(var(--i) * var(--turn) / -6);
+  }
+
+  .logo-beat {
+    opacity: 1;
+    animation: logo-beat var(--beat) cubic-bezier(0.4, 0, 0.2, 1) 1.6s infinite;
+  }
+
+  .has-intro .logo-draw {
+    stroke-dasharray: 1;
+    animation: logo-draw 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  .has-intro .logo-equator {
+    animation-delay: 0.25s;
+  }
+  .has-intro .logo-pulse {
+    animation-duration: 0.6s;
+    animation-delay: 0.7s;
+  }
+  .has-intro .logo-meridians {
+    animation: logo-fade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.35s both;
+  }
+}
+
+@keyframes logo-turn {
+  0%,
+  100% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(-1);
+  }
+}
+
+/* The token crosses the line in the first 45 % of the beat, then rests. */
+@keyframes logo-beat {
+  0% {
+    stroke-dashoffset: 10;
+  }
+  45%,
+  100% {
+    stroke-dashoffset: -103;
+  }
+}
+
+@keyframes logo-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes logo-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

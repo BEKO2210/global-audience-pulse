@@ -40,6 +40,7 @@ import { PhaseIcon } from './components/PhaseIcon'
 import { MobileTimeBar } from './components/MobileTimeBar'
 import { SiteFooter } from './components/SiteFooter'
 import { Playbooks } from './components/Playbooks'
+import { LogoMark } from './components/LogoMark'
 
 const WorldMap = lazy(() =>
   import('./components/WorldMap').then((module) => ({ default: module.WorldMap })),
@@ -132,11 +133,13 @@ function freshness(date: string) {
 
 function Header({
   snapshot,
+  liveScore,
   themePreference,
   onTheme,
   onRefresh,
 }: {
   snapshot: Snapshot
+  liveScore?: number
   themePreference: ThemePreference
   onTheme: (theme: ThemePreference) => void
   onRefresh: () => void
@@ -148,7 +151,7 @@ function Header({
       initial={false}
     >
       <a className="wordmark" href="#top" aria-label="Global Audience Pulse Start">
-        <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" width="32" height="32" />
+        <LogoMark score={liveScore} />
         <span>
           Global Audience
           <br />
@@ -429,6 +432,7 @@ export default function App() {
         <div id="top" className="app-shell" inert={detail ? true : undefined}>
           <Header
             snapshot={snapshot}
+            liveScore={scoreGridReady ? scoreGrid.globalAt(selected, minuteNow) : undefined}
             themePreference={themePreference}
             onTheme={(theme) => {
               track('Theme', { wert: theme })

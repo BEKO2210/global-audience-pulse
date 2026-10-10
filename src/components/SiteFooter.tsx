@@ -1,4 +1,5 @@
 import { LEGAL } from '../config/legal'
+import { LogoMark } from './LogoMark'
 import { DATA_SOURCES } from '../config/model'
 
 export function SiteFooter({
@@ -19,7 +20,7 @@ export function SiteFooter({
           href="#top"
           aria-label="Global Audience Pulse Start"
         >
-          <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" width="32" height="32" />
+          <LogoMark intro={false} />
           <span>
             Global Audience
             <br />
