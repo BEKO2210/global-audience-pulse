@@ -40,6 +40,7 @@ import { PhaseIcon } from './components/PhaseIcon'
 import { MobileTimeBar } from './components/MobileTimeBar'
 import { SiteFooter } from './components/SiteFooter'
 import { Playbooks } from './components/Playbooks'
+import { WeightingToggle } from './components/WeightingToggle'
 import { PostingPlan } from './components/PostingPlan'
 import { pickPostingTimes } from './lib/postingPlan'
 import { Wordmark } from './components/LogoMark'
@@ -785,31 +786,11 @@ export default function App() {
                   </h2>
                 </div>
                 <div className="method-copy">
-                  <div className="weighting">
-                    <span className="weighting-label" id="weighting-label">
-                      Gewichtung der Regionen
-                    </span>
-                    <div
-                      className="weighting-toggle"
-                      role="group"
-                      aria-labelledby="weighting-label"
-                    >
-                      <button
-                        aria-pressed={weightingMode === 'value'}
-                        onClick={() => changeWeighting('value')}
-                      >
-                        Werbewert
-                        <small>nach Kaufkraft</small>
-                      </button>
-                      <button
-                        aria-pressed={weightingMode === 'reach'}
-                        onClick={() => changeWeighting('reach')}
-                      >
-                        Reichweite
-                        <small>nach Nutzerzahl</small>
-                      </button>
-                    </div>
-                  </div>
+                  <WeightingToggle
+                    mode={weightingMode}
+                    weights={activeSnapshot.weights}
+                    onChange={changeWeighting}
+                  />
                   <p>
                     Der Score verbindet die geglättete menschliche Aufmerksamkeitskurve mit den
                     stündlichen Wikipedia-Abrufen der jeweiligen Sprachregion:{' '}

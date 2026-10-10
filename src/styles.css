@@ -1374,21 +1374,6 @@ button:active {
 .method-copy strong {
   color: var(--ink);
 }
-.weighting-toggle {
-  display: inline-flex;
-  border: 1px solid var(--rule-solid);
-}
-.weighting-toggle button {
-  min-height: 44px;
-  padding: 0 14px;
-  border: 0;
-  background: transparent;
-  color: var(--muted);
-}
-.weighting-toggle button[aria-pressed='true'] {
-  color: var(--paper);
-  background: var(--ink);
-}
 .share-table {
   border-top: 1px solid var(--rule);
   margin-top: 22px;
@@ -1908,28 +1893,6 @@ button:active {
   .mobile-bar-live.is-live i {
     animation: none;
   }
-}
-.weighting {
-  display: grid;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-.weighting-label {
-  font:
-    500 10px 'Geist Mono Variable',
-    monospace;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.weighting-toggle button {
-  display: grid;
-  gap: 2px;
-  padding: 8px 16px;
-  text-align: left;
-}
-.weighting-toggle button small {
-  font-size: 11px;
 }
 .legal-lead {
   color: var(--muted);
