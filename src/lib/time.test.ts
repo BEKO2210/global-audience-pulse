@@ -47,3 +47,16 @@ describe('formatOffset', () => {
     expect(formatOffset(-45 * 60_000)).toBe('vor 45 Min')
   })
 })
+
+describe('formatOffset / relativeTime in English', () => {
+  it('uses English words and order', async () => {
+    const { formatOffset, relativeTime } = await import('./time')
+    expect(formatOffset(135 * 60_000, 'en')).toBe('in 2 h 15 min')
+    expect(formatOffset(-45 * 60_000, 'en')).toBe('45 min ago')
+    expect(formatOffset(0, 'en')).toBe('now')
+    expect(formatOffset((3 * 24 + 4) * 3_600_000, 'en')).toBe('in 3 days 4 h')
+    const from = new Date('2026-10-10T10:00:00Z')
+    expect(relativeTime(new Date('2026-10-10T11:48:00Z'), from, 'en')).toBe('1 h 48 min')
+    expect(relativeTime(new Date('2026-10-10T11:48:00Z'), from)).toBe('1 Std 48 Min')
+  })
+})

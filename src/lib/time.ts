@@ -154,9 +154,10 @@ export function isWeekend(date: Date, timeZone: string) {
 export function timeZoneName(
   date: Date,
   timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone,
+  intl = 'de-DE',
 ) {
   return (
-    formatter('de-DE', { timeZone, timeZoneName: 'short' })
+    formatter(intl, { timeZone, timeZoneName: 'short' })
       .formatToParts(date)
       .find((p) => p.type === 'timeZoneName')?.value ?? timeZone
   )
@@ -204,11 +205,12 @@ export function circularMean(hours: readonly number[], weights?: readonly number
   return (((angle < 0 ? angle + Math.PI * 2 : angle) / (Math.PI * 2)) * 24) % 24
 }
 
-export function relativeTime(target: Date, from = new Date()) {
+export function relativeTime(target: Date, from = new Date(), locale: 'de' | 'en' = 'de') {
   const minutes = Math.max(0, Math.round((target.getTime() - from.getTime()) / 60_000))
   const h = Math.floor(minutes / 60)
   const m = minutes % 60
-  return h ? `${h} h ${m} min` : `${m} min`
+  const [hu, mu] = locale === 'de' ? ['Std', 'Min'] : ['h', 'min']
+  return h ? `${h} ${hu} ${m} ${mu}` : `${m} ${mu}`
 }
 
 export function findNextOffsetChange(timeZone: string, from: Date, days = 370) {
@@ -235,14 +237,21 @@ export function snapToMinutes(date: Date, minutes: number) {
 }
 
 /** Human offset from now for the time machine readout, e.g. "in 2 h 15 min", "in 3 T 4 h". */
-export function formatOffset(ms: number) {
+export function formatOffset(ms: number, locale: 'de' | 'en' = 'de') {
   const totalMinutes = Math.round(Math.abs(ms) / 60_000)
-  if (totalMinutes === 0) return 'jetzt'
+  if (totalMinutes === 0) return locale === 'de' ? 'jetzt' : 'now'
   const days = Math.floor(totalMinutes / 1440)
   const hours = Math.floor((totalMinutes % 1440) / 60)
   const minutes = totalMinutes % 60
+  const de = locale === 'de'
+  const dayWord = de ? (days === 1 ? 'Tag' : 'Tagen') : days === 1 ? 'day' : 'days'
   const parts = days
-    ? [`${days} ${days === 1 ? 'Tag' : 'Tagen'}`, hours ? `${hours} Std` : '']
-    : [hours ? `${hours} Std` : '', minutes ? `${minutes} Min` : '']
-  return `${ms < 0 ? 'vor' : 'in'} ${parts.filter(Boolean).join(' ')}`
+    ? [`${days} ${dayWord}`, hours ? `${hours} ${de ? 'Std' : 'h'}` : '']
+    : [hours ? `${hours} ${de ? 'Std' : 'h'}` : '', minutes ? `${minutes} min` : '']
+  const text = parts
+    .filter(Boolean)
+    .join(' ')
+    .replace(/(\d+) min/g, de ? '$1 Min' : '$1 min')
+  if (de) return `${ms < 0 ? 'vor' : 'in'} ${text}`
+  return ms < 0 ? `${text} ago` : `in ${text}`
 }

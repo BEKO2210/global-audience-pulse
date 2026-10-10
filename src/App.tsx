@@ -45,6 +45,155 @@ import { PostingPlan } from './components/PostingPlan'
 import { pickPostingTimes } from './lib/postingPlan'
 import { Wordmark } from './components/LogoMark'
 import { UpdateToast } from './components/UpdateToast'
+import { useLocale, useMessages } from './i18n/LocaleProvider'
+import type { Locale, Messages } from './i18n/locale'
+import { cityName, phaseName, presetName, regionName, statusText } from './i18n/labels'
+import { agoPhrase } from './lib/ago'
+
+const DE = {
+  and: 'und',
+  yearUnknown: 'Jahr unbekannt',
+  dataYear: 'Datenjahr',
+  loading: 'wird geladen',
+  refreshTitle: (min: number) => `Automatischer Abruf alle ${min} Min. · Klick lädt sofort neu`,
+  measured: (ago: string) => `Messdaten ${ago}`,
+  noData: 'Messdaten nicht verfügbar',
+  display: 'Darstellung',
+  themes: { system: 'System', light: 'Hell', dark: 'Dunkel' },
+  language: 'Sprache',
+  eyebrowLive: 'Aktuelles Publikumsradar',
+  eyebrowFallback: 'Beispieldaten · Offline-Modell',
+  eyebrowLoading: 'Daten werden geladen',
+  regionsActive: (n: number) => `${n} Regionen aktiv`,
+  headline: 'Jetzt posten oder warten?',
+  noneSelected: 'Keine Regionen ausgewählt',
+  noneSelectedHint: 'Wähle mindestens einen Markt aus, um weltweite Posting-Fenster zu berechnen.',
+  activateAll: 'Alle Regionen aktivieren',
+  leads: (city: string, score: number) => `${city} führt mit ${score}.`,
+  sleeps: (cities: string, n: number) => `${cities} ${n === 1 ? 'schläft' : 'schlafen'}.`,
+  allAwake: 'Alle Kernmärkte sind wach.',
+  bestWindow: 'Optimales Zeitfenster',
+  potential: (n: number) => `+${n} Pkt. Potenzial`,
+  bestRemaining: 'bestes verbleibendes Fenster',
+  bestRegion: 'Beste Region',
+  primeNow: 'Gerade Primetime',
+  ofRegions: (a: number, b: number) => `${a} von ${b} Regionen`,
+  mapLoading: 'Karte wird geladen',
+  nextChange: 'Nächster Wechsel',
+  primeStarts: (when: string, city: string) => `In ${when} beginnt Primetime in ${city}`,
+  secondWindow: 'Zweites Zeitfenster heute',
+  noSecondWindow: 'Kein weiteres Fenster heute',
+  dstChange: 'Zeitumstellung',
+  scenarios: 'Berechnete Szenarien',
+  corridors: 'Strategische Posting-Korridore',
+  nRegions: (n: number) => `${n} Regionen`,
+  activateAllN: (n: number) => `Alle ${n} Regionen aktivieren`,
+  method: 'Methodik & Quellen',
+  methodTitle: ['Messbar, modelliert,', 'transparent.'],
+  methodText: (measured: number, base: number) => (
+    <>
+      Der Score verbindet die geglättete menschliche Aufmerksamkeitskurve mit den stündlichen
+      Wikipedia-Abrufen der jeweiligen Sprachregion:{' '}
+      <strong>
+        {measured} % Messprofil + {base} % Baseline
+      </strong>
+      . <strong>Reichweite</strong> basiert auf Internetnutzern; <strong>Werbewert</strong>{' '}
+      multipliziert sie mit dem BIP pro Kopf. Beide Weltbank-Gewichte werden für deine Auswahl live
+      neu normiert. Der US-Ost/West-Split ist eine dokumentierte statische Census-Näherung; USA und
+      UK bleiben bewusst modellbasiert.
+    </>
+  ),
+  reach: 'Reichweite',
+  value: 'Werbewert',
+  weightsUnavailable: 'Gewichtungsdaten sind derzeit nicht verfügbar.',
+  wbPopulation: 'Weltbank · Bevölkerung',
+  wbInternet: 'Weltbank · Internetnutzung',
+  wbGdp: 'Weltbank · BIP pro Kopf',
+  wikiProfile: 'Datenprofil',
+  fetched: (wb: string, wiki: string) => `Abruf: Weltbank ${wb} · Wikimedia ${wiki}`,
+  holidaysSource: 'Nager.Date · Feiertage',
+  holidaysNote: 'bundesweit, beim Build',
+  tokens: 'Design-Tokens',
+  limitations:
+    'Wikipedia ist ein Aktivitäts-Proxy, keine Social-Plattform-Messung. Englischsprachige Wikipedia wird bewusst nicht für USA/UK verwendet, da sie Zeitzonen mischt. Ländergruppen und der dokumentierte US-Split approximieren globale Zielgruppen; sie ersetzen keine eigenen Analytics. Bundesweite Feiertage (USA, Brasilien, UK, Deutschland, Japan) werden wie ein Sonntag gerechnet; für Nahost und Indien liefert die Quelle keine Feiertage.',
+  close: 'Schließen',
+  regionFocus: 'Region im Fokus',
+  inAudience: 'Ist in deiner Zielgruppe',
+  addAudience: 'Zur Zielgruppe hinzufügen',
+}
+// English must provide exactly the German keys.
+const EN: typeof DE = {
+  and: 'and',
+  yearUnknown: 'year unknown',
+  dataYear: 'Data year',
+  loading: 'loading',
+  refreshTitle: (min: number) => `Refreshes every ${min} min · click to refresh now`,
+  measured: (ago: string) => `Data ${ago}`,
+  noData: 'Data unavailable',
+  display: 'Appearance',
+  themes: { system: 'System', light: 'Light', dark: 'Dark' },
+  language: 'Language',
+  eyebrowLive: 'Live audience radar',
+  eyebrowFallback: 'Sample data · offline model',
+  eyebrowLoading: 'Loading data',
+  regionsActive: (n: number) => `${n} regions active`,
+  headline: 'Post now or wait?',
+  noneSelected: 'No regions selected',
+  noneSelectedHint: 'Pick at least one market to calculate posting windows worldwide.',
+  activateAll: 'Select all regions',
+  leads: (city: string, score: number) => `${city} leads with ${score}.`,
+  sleeps: (cities: string, n: number) => `${cities} ${n === 1 ? 'is' : 'are'} asleep.`,
+  allAwake: 'All core markets are awake.',
+  bestWindow: 'Best posting window',
+  potential: (n: number) => `+${n} pts potential`,
+  bestRemaining: 'best window left today',
+  bestRegion: 'Top region',
+  primeNow: 'In prime time now',
+  ofRegions: (a: number, b: number) => `${a} of ${b} regions`,
+  mapLoading: 'Loading map',
+  nextChange: 'Next change',
+  primeStarts: (when: string, city: string) => `Prime time starts in ${city} in ${when}`,
+  secondWindow: 'Second window today',
+  noSecondWindow: 'No further window today',
+  dstChange: 'Clock change',
+  scenarios: 'Calculated scenarios',
+  corridors: 'Strategic posting corridors',
+  nRegions: (n: number) => `${n} regions`,
+  activateAllN: (n: number) => `Select all ${n} regions`,
+  method: 'Method & sources',
+  methodTitle: ['Measured, modelled,', 'transparent.'],
+  methodText: (measured: number, base: number) => (
+    <>
+      The score combines a smoothed human attention curve with hourly Wikipedia page views in each
+      language region:{' '}
+      <strong>
+        {measured} % measured profile + {base} % baseline
+      </strong>
+      . <strong>Reach</strong> is based on internet users; <strong>Ad value</strong> multiplies it
+      by GDP per capita. Both World Bank weightings are re-normalised live for your selection. The
+      US east/west split is a documented static census approximation; the US and UK stay
+      deliberately model-based.
+    </>
+  ),
+  reach: 'Reach',
+  value: 'Ad value',
+  weightsUnavailable: 'Weighting data is currently unavailable.',
+  wbPopulation: 'World Bank · Population',
+  wbInternet: 'World Bank · Internet use',
+  wbGdp: 'World Bank · GDP per capita',
+  wikiProfile: 'Data profile',
+  fetched: (wb: string, wiki: string) => `Fetched: World Bank ${wb} · Wikimedia ${wiki}`,
+  holidaysSource: 'Nager.Date · Public holidays',
+  holidaysNote: 'nationwide, at build time',
+  tokens: 'Design tokens',
+  limitations:
+    'Wikipedia is a proxy for activity, not a social-platform measurement. English Wikipedia is deliberately not used for the US/UK because it mixes time zones. Country groups and the documented US split approximate global audiences; they do not replace your own analytics. Nationwide public holidays (US, Brazil, UK, Germany, Japan) count like a Sunday; the source has no holidays for the Middle East and India.',
+  close: 'Close',
+  regionFocus: 'Region in focus',
+  inAudience: 'In your audience',
+  addAudience: 'Add to audience',
+}
+const M: Messages<typeof DE> = { de: DE, en: EN }
 
 const WorldMap = lazy(() =>
   import('./components/WorldMap').then((module) => ({ default: module.WorldMap })),
@@ -110,29 +259,32 @@ function nextPhaseStart(region: (typeof REGIONS)[number], from: Date, phaseId = 
   return new Date(result)
 }
 
-function joinGerman(items: readonly string[]) {
+function joinList(items: readonly string[], and: string) {
   if (items.length < 2) return items[0] ?? ''
-  return `${items.slice(0, -1).join(', ')} und ${items.at(-1)}`
+  return `${items.slice(0, -1).join(', ')} ${and} ${items.at(-1)}`
 }
 
-function yearRange(dataYears: Record<string, number>, indicator: string) {
+function yearRange(dataYears: Record<string, number>, indicator: string, t = DE) {
   const years = Object.entries(dataYears)
     .filter(([key]) => key.endsWith(`.${indicator}`))
     .map(([, year]) => year)
-  if (!years.length) return 'Jahr unbekannt'
+  if (!years.length) return t.yearUnknown
   const min = Math.min(...years)
   const max = Math.max(...years)
-  return `Datenjahr ${min}${min === max ? '' : `–${max}`}`
+  return `${t.dataYear} ${min}${min === max ? '' : `–${max}`}`
 }
 
-function freshness(date: string) {
-  if (!date) return 'wird geladen'
+/** "vor 25 Min" / "25 min ago"; hours and days round like before. */
+function freshness(date: string, locale: Locale = 'de') {
+  if (!date) return M[locale].loading
   const minutes = Math.max(0, Math.round((Date.now() - new Date(date).getTime()) / 60_000))
-  if (minutes < 60) return `vor ${minutes} Min`
-  const hours = Math.round(minutes / 60)
-  if (hours < 48) return `vor ${hours} Std`
-  const days = Math.round(hours / 24)
-  return `vor ${days} ${days === 1 ? 'Tag' : 'Tagen'}`
+  const rounded =
+    minutes < 60
+      ? minutes
+      : minutes < 48 * 60
+        ? Math.round(minutes / 60) * 60
+        : Math.round(minutes / 1440) * 1440
+  return agoPhrase(rounded, locale)
 }
 
 function Header({
@@ -148,6 +300,8 @@ function Header({
   onTheme: (theme: ThemePreference) => void
   onRefresh: () => void
 }) {
+  const { locale, setLocale } = useLocale()
+  const t = M[locale]
   return (
     <motion.header
       className="site-header"
@@ -159,20 +313,36 @@ function Header({
         <button
           className="freshness"
           onClick={onRefresh}
-          title={`Automatischer Abruf alle ${MODEL_CONFIG.liveRefreshMinutes} Min. · Klick lädt sofort neu`}
+          title={t.refreshTitle(MODEL_CONFIG.liveRefreshMinutes)}
         >
           <i className={snapshot.generatedAt ? '' : 'offline'} />
           {snapshot.generatedAt
-            ? `Messdaten ${freshness(snapshot.sources.wikimedia.fetchedAt)}`
-            : 'Messdaten nicht verfügbar'}
+            ? t.measured(freshness(snapshot.sources.wikimedia.fetchedAt, locale))
+            : t.noData}
         </button>
         <LiveClock />
-        <div className="theme-toggle" aria-label="Darstellung" role="group">
+        <div className="lang-toggle" aria-label={t.language} role="group">
+          {(['de', 'en'] as const).map((value) => (
+            <button
+              key={value}
+              lang={value}
+              onClick={() => {
+                track('Sprache', { wert: value })
+                setLocale(value)
+              }}
+              aria-pressed={locale === value}
+              aria-label={value === 'de' ? 'Deutsch' : 'English'}
+            >
+              {value.toUpperCase()}
+            </button>
+          ))}
+        </div>
+        <div className="theme-toggle" aria-label={t.display} role="group">
           {(
             [
-              ['system', Desktop, 'System'],
-              ['light', Sun, 'Hell'],
-              ['dark', Moon, 'Dunkel'],
+              ['system', Desktop, t.themes.system],
+              ['light', Sun, t.themes.light],
+              ['dark', Moon, t.themes.dark],
             ] as const
           ).map(([value, Icon, label]) => (
             <button
@@ -205,6 +375,8 @@ function initialThemePreference(): ThemePreference {
 export default function App() {
   // reducedMotion="user" alone still runs opacity/colour tweens; make them instant as well.
   const reduceMotion = useReducedMotion()
+  const { locale, intl } = useLocale()
+  const t = useMessages(M)
   const [snapshot, setSnapshot] = useState<Snapshot>(FALLBACK_SNAPSHOT)
   const [snapshotState, setSnapshotState] = useState<'loading' | 'live' | 'fallback'>('loading')
   const [minuteNow, setMinuteNow] = useState(() => new Date())
@@ -458,19 +630,17 @@ export default function App() {
               <div className="hero-copy">
                 <p className="eyebrow" data-testid="data-state">
                   {snapshotState === 'live'
-                    ? 'Aktuelles Publikumsradar'
+                    ? t.eyebrowLive
                     : snapshotState === 'fallback'
-                      ? 'Beispieldaten · Offline-Modell'
-                      : 'Daten werden geladen'}{' '}
-                  · {selected.length} Regionen aktiv
+                      ? t.eyebrowFallback
+                      : t.eyebrowLoading}{' '}
+                  · {t.regionsActive(selected.length)}
                 </p>
-                <h1>Jetzt posten oder warten?</h1>
+                <h1>{t.headline}</h1>
                 {selected.length === 0 ? (
                   <div className="empty-selection-banner">
-                    <strong>Keine Regionen ausgewählt</strong>
-                    <p>
-                      Wähle mindestens einen Markt aus, um weltweite Posting-Fenster zu berechnen.
-                    </p>
+                    <strong>{t.noneSelected}</strong>
+                    <p>{t.noneSelectedHint}</p>
                     <button
                       className="button primary"
                       onClick={() => {
@@ -482,7 +652,7 @@ export default function App() {
                         selectAll()
                       }}
                     >
-                      Alle Regionen aktivieren
+                      {t.activateAll}
                     </button>
                   </div>
                 ) : (
@@ -508,12 +678,12 @@ export default function App() {
                       {reduceMotion ? (
                         <span className={`status ${status.tone}`}>
                           <i />
-                          {status.label}
+                          {statusText(status.tone, locale).label}
                         </span>
                       ) : (
                         <AnimatePresence mode="wait" initial={false}>
                           <motion.span
-                            key={status.label}
+                            key={status.tone}
                             className={`status ${status.tone}`}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -521,17 +691,33 @@ export default function App() {
                             transition={{ duration: MOTION.change, ease: MOTION.ease }}
                           >
                             <i />
-                            {status.label}
+                            {statusText(status.tone, locale).label}
                           </motion.span>
                         </AnimatePresence>
                       )}
-                      <strong>{status.verdict}</strong>
+                      <strong>{statusText(status.tone, locale).verdict}</strong>
                       <p>
-                        {regionScores[0]?.region.city} führt mit{' '}
-                        {Math.round(regionScores[0]?.score ?? 0)}.{' '}
+                        {regionScores[0]
+                          ? t.leads(
+                              cityName(
+                                regionScores[0].region.id,
+                                regionScores[0].region.city,
+                                locale,
+                              ),
+                              Math.round(regionScores[0].score),
+                            )
+                          : ''}{' '}
                         {sleeping.length
-                          ? `${joinGerman(sleeping.map(({ region }) => region.city))} ${sleeping.length === 1 ? 'schläft' : 'schlafen'}.`
-                          : 'Alle Kernmärkte sind wach.'}
+                          ? t.sleeps(
+                              joinList(
+                                sleeping.map(({ region }) =>
+                                  cityName(region.id, region.city, locale),
+                                ),
+                                t.and,
+                              ),
+                              sleeping.length,
+                            )
+                          : t.allAwake}
                       </p>
                     </div>
                   </div>
@@ -540,7 +726,7 @@ export default function App() {
               <div className="hero-aside">
                 <ReportTeaser data={liveReport} now={minuteNow} />
                 <div className="hero-recommendation">
-                  <span className="eyebrow">Optimales Zeitfenster</span>
+                  <span className="eyebrow">{t.bestWindow}</span>
                   <div className="hero-window-time">
                     {windows24[0] ? (
                       <>
@@ -553,7 +739,7 @@ export default function App() {
                           windows24[0].end,
                           Intl.DateTimeFormat().resolvedOptions().timeZone,
                         )}{' '}
-                        <small>{timeZoneName(windows24[0].start)}</small>
+                        <small>{timeZoneName(windows24[0].start, undefined, intl)}</small>
                       </>
                     ) : (
                       '—'
@@ -563,30 +749,30 @@ export default function App() {
                     <p className="hero-window-benefit">
                       Score <AnimatedNumber value={windows24[0].score} /> ·{' '}
                       {windows24[0].score >= score
-                        ? `+${Math.round(windows24[0].score - score)} Pkt. Potenzial`
-                        : 'bestes verbleibendes Fenster'}
+                        ? t.potential(Math.round(windows24[0].score - score))
+                        : t.bestRemaining}
                     </p>
                   )}
                 </div>
                 <dl>
                   <div>
-                    <dt>Beste Region</dt>
+                    <dt>{t.bestRegion}</dt>
                     <dd className="best-region">
                       {regionScores[0] && (
                         <Flag
                           code={regionScores[0].region.flag}
-                          label={regionScores[0].region.name}
+                          label={regionName(regionScores[0].region.id, locale)}
                           size={20}
                         />
                       )}{' '}
-                      {regionScores[0]?.region.city ?? '—'}
+                      {regionScores[0]
+                        ? cityName(regionScores[0].region.id, regionScores[0].region.city, locale)
+                        : '—'}
                     </dd>
                   </div>
                   <div>
-                    <dt>Gerade Primetime</dt>
-                    <dd>
-                      {regionsInPrime} von {selected.length} Regionen
-                    </dd>
+                    <dt>{t.primeNow}</dt>
+                    <dd>{t.ofRegions(regionsInPrime, selected.length)}</dd>
                   </div>
                 </dl>
               </div>
@@ -594,7 +780,7 @@ export default function App() {
             <div className="desktop-grid">
               <Section className="map-slot" delay={MOTION.stagger * 3}>
                 <Suspense
-                  fallback={<div className="panel map-skeleton" aria-label="Karte wird geladen" />}
+                  fallback={<div className="panel map-skeleton" aria-label={t.mapLoading} />}
                 >
                   <WorldMap
                     date={date}
@@ -633,24 +819,27 @@ export default function App() {
             <Section>
               <div className="insight-strip">
                 <div>
-                  <span className="eyebrow">Nächster Wechsel</span>
+                  <span className="eyebrow">{t.nextChange}</span>
                   <strong>
                     {nextPrime
-                      ? `In ${relativeTime(nextPrime.date, date)} beginnt Primetime in ${nextPrime.region.city}`
+                      ? t.primeStarts(
+                          relativeTime(nextPrime.date, date, locale),
+                          cityName(nextPrime.region.id, nextPrime.region.city, locale),
+                        )
                       : '—'}
                   </strong>
                 </div>
                 <div>
-                  <span className="eyebrow">Zweites Zeitfenster heute</span>
+                  <span className="eyebrow">{t.secondWindow}</span>
                   <strong>
                     {windows24[1]
-                      ? `${formatTime(windows24[1].start, Intl.DateTimeFormat().resolvedOptions().timeZone)} ${timeZoneName(windows24[1].start)} · Score ${Math.round(windows24[1].score)}`
-                      : 'Kein weiteres Fenster heute'}
+                      ? `${formatTime(windows24[1].start, Intl.DateTimeFormat().resolvedOptions().timeZone)} ${timeZoneName(windows24[1].start, undefined, intl)} · Score ${Math.round(windows24[1].score)}`
+                      : t.noSecondWindow}
                   </strong>
                   {dst && (dst.date.getTime() - date.getTime()) / 3_600_000 <= 48 && (
                     <small>
-                      Zeitumstellung: {dst.region.city} ·{' '}
-                      {dst.date.toLocaleDateString('de-DE', { day: '2-digit', month: 'long' })}
+                      {t.dstChange}: {cityName(dst.region.id, dst.region.city, locale)} ·{' '}
+                      {dst.date.toLocaleDateString(intl, { day: '2-digit', month: 'long' })}
                     </small>
                   )}
                 </div>
@@ -660,8 +849,8 @@ export default function App() {
               <section className="presets" aria-labelledby="presets-title">
                 <div className="section-head">
                   <div>
-                    <p className="eyebrow">Berechnete Szenarien</p>
-                    <h2 id="presets-title">Strategische Posting-Korridore</h2>
+                    <p className="eyebrow">{t.scenarios}</p>
+                    <h2 id="presets-title">{t.corridors}</h2>
                   </div>
                 </div>
                 <div className="preset-grid">
@@ -679,8 +868,8 @@ export default function App() {
                           setSelected([...preset.ids])
                         }}
                       >
-                        <span className="eyebrow">{preset.ids.length} Regionen</span>
-                        <h3>{preset.name}</h3>
+                        <span className="eyebrow">{t.nRegions(preset.ids.length)}</span>
+                        <h3>{presetName(preset.name, locale)}</h3>
                         {window && (
                           <>
                             <div className="preset-time">
@@ -693,7 +882,7 @@ export default function App() {
                                 window.end,
                                 Intl.DateTimeFormat().resolvedOptions().timeZone,
                               )}{' '}
-                              <small>{timeZoneName(window.start)}</small>
+                              <small>{timeZoneName(window.start, undefined, intl)}</small>
                             </div>
                             <div className="preset-score">
                               Score <AnimatedNumber value={window.score} />
@@ -702,7 +891,10 @@ export default function App() {
                               {preset.ids
                                 .map((id) => {
                                   const r = REGION_BY_ID[id]
-                                  return `${r.city} ${formatTime(window.start, r.timeZone)} · ${phaseAt(localDecimalHourFast(window.start, r.timeZone)).name}`
+                                  const phase = phaseAt(
+                                    localDecimalHourFast(window.start, r.timeZone),
+                                  )
+                                  return `${cityName(r.id, r.city, locale)} ${formatTime(window.start, r.timeZone)} · ${phaseName(phase.id, phase.name, locale)}`
                                 })
                                 .join(' · ')}
                             </p>
@@ -753,7 +945,7 @@ export default function App() {
                     selectAll()
                   }}
                 >
-                  Alle {REGIONS.length} Regionen aktivieren
+                  {t.activateAllN(REGIONS.length)}
                 </button>
               )}
             </Section>
@@ -778,11 +970,11 @@ export default function App() {
             <Section defer placeholderHeight={900}>
               <section className="method" aria-labelledby="method-title">
                 <div>
-                  <p className="eyebrow">Methodik & Quellen</p>
+                  <p className="eyebrow">{t.method}</p>
                   <h2 id="method-title">
-                    Messbar, modelliert,
+                    {t.methodTitle[0]}
                     <br />
-                    transparent.
+                    {t.methodTitle[1]}
                   </h2>
                 </div>
                 <div className="method-copy">
@@ -792,83 +984,73 @@ export default function App() {
                     onChange={changeWeighting}
                   />
                   <p>
-                    Der Score verbindet die geglättete menschliche Aufmerksamkeitskurve mit den
-                    stündlichen Wikipedia-Abrufen der jeweiligen Sprachregion:{' '}
-                    <strong>
-                      {MODEL_CONFIG.measuredBlend * 100} % Messprofil +{' '}
-                      {MODEL_CONFIG.baselineBlend * 100} % Baseline
-                    </strong>
-                    . <strong>Reichweite</strong> basiert auf Internetnutzern;{' '}
-                    <strong>Werbewert</strong> multipliziert sie mit dem BIP pro Kopf. Beide
-                    Weltbank-Gewichte werden für deine Auswahl live neu normiert. Der
-                    US-Ost/West-Split ist eine dokumentierte statische Census-Näherung; USA und UK
-                    bleiben bewusst modellbasiert.
+                    {t.methodText(
+                      MODEL_CONFIG.measuredBlend * 100,
+                      MODEL_CONFIG.baselineBlend * 100,
+                    )}
                   </p>
                   {snapshotState === 'live' ? (
                     <div className="share-table">
                       {REGIONS.map((region) => (
                         <div key={region.id}>
                           <span>
-                            <Flag code={region.flag} label={region.name} size={16} /> {region.city}
+                            <Flag
+                              code={region.flag}
+                              label={regionName(region.id, locale)}
+                              size={16}
+                            />{' '}
+                            {cityName(region.id, region.city, locale)}
                           </span>
                           <span>
-                            Reichweite {Math.round(activeSnapshot.weights.reach[region.id] * 100)} %
+                            {t.reach} {Math.round(activeSnapshot.weights.reach[region.id] * 100)} %
                           </span>
                           <span>
-                            Werbewert {Math.round(activeSnapshot.weights.value[region.id] * 100)} %
+                            {t.value} {Math.round(activeSnapshot.weights.value[region.id] * 100)} %
                           </span>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <p className="data-unavailable">
-                      Gewichtungsdaten sind derzeit nicht verfügbar.
-                    </p>
+                    <p className="data-unavailable">{t.weightsUnavailable}</p>
                   )}
                   <div className="source-list">
                     <a href={DATA_SOURCES.worldBankPopulation}>
-                      Weltbank · Bevölkerung{' '}
-                      <span>{yearRange(snapshot.dataYears, 'population')}</span>
+                      {t.wbPopulation} <span>{yearRange(snapshot.dataYears, 'population', t)}</span>
                     </a>
                     <a href={DATA_SOURCES.worldBankInternet}>
-                      Weltbank · Internetnutzung{' '}
-                      <span>{yearRange(snapshot.dataYears, 'internet')}</span>
+                      {t.wbInternet} <span>{yearRange(snapshot.dataYears, 'internet', t)}</span>
                     </a>
                     <a href={DATA_SOURCES.worldBankGdpPerCapita}>
-                      Weltbank · BIP pro Kopf{' '}
-                      <span>{yearRange(snapshot.dataYears, 'gdpPerCapita')}</span>
+                      {t.wbGdp} <span>{yearRange(snapshot.dataYears, 'gdpPerCapita', t)}</span>
                     </a>
                     <a href={DATA_SOURCES.wikimedia}>
                       Wikimedia Pageviews{' '}
-                      <span>Datenprofil · {freshness(snapshot.sources.wikimedia.fetchedAt)}</span>
+                      <span>
+                        {t.wikiProfile} · {freshness(snapshot.sources.wikimedia.fetchedAt, locale)}
+                      </span>
                     </a>
                     <div className="source-fetched">
-                      Abruf: Weltbank {freshness(snapshot.sources.worldBank.fetchedAt)} · Wikimedia{' '}
-                      {freshness(snapshot.sources.wikimedia.fetchedAt)}
+                      {t.fetched(
+                        freshness(snapshot.sources.worldBank.fetchedAt, locale),
+                        freshness(snapshot.sources.wikimedia.fetchedAt, locale),
+                      )}
                     </div>
                     <a href={DATA_SOURCES.holidays}>
-                      Nager.Date · Feiertage <span>bundesweit, beim Build</span>
+                      {t.holidaysSource} <span>{t.holidaysNote}</span>
                     </a>
                     <a href={DATA_SOURCES.diagramDesign}>
-                      diagram-design, MIT <span>Design-Tokens</span>
+                      diagram-design, MIT <span>{t.tokens}</span>
                     </a>
                   </div>
-                  <p className="limitations">
-                    Wikipedia ist ein Aktivitäts-Proxy, keine Social-Plattform-Messung.
-                    Englischsprachige Wikipedia wird bewusst nicht für USA/UK verwendet, da sie
-                    Zeitzonen mischt. Ländergruppen und der dokumentierte US-Split approximieren
-                    globale Zielgruppen; sie ersetzen keine eigenen Analytics. Bundesweite Feiertage
-                    (USA, Brasilien, UK, Deutschland, Japan) werden wie ein Sonntag gerechnet; für
-                    Nahost und Indien liefert die Quelle keine Feiertage.
-                  </p>
+                  <p className="limitations">{t.limitations}</p>
                 </div>
               </section>
             </Section>
           </main>
           <SiteFooter
-            worldBankFreshness={freshness(snapshot.sources.worldBank.fetchedAt)}
-            worldBankYears={yearRange(snapshot.dataYears, 'internet')}
-            wikimediaFreshness={freshness(snapshot.sources.wikimedia.fetchedAt)}
+            worldBankFreshness={freshness(snapshot.sources.worldBank.fetchedAt, locale)}
+            worldBankYears={yearRange(snapshot.dataYears, 'internet', t)}
+            wikimediaFreshness={freshness(snapshot.sources.wikimedia.fetchedAt, locale)}
           />
           <UpdateToast />
           <MobileTimeBar
@@ -921,26 +1103,34 @@ export default function App() {
                   ref={closeRef}
                   className="sheet-close"
                   onClick={() => setDetail(null)}
-                  aria-label="Schließen"
+                  aria-label={t.close}
                 >
                   <X size={22} weight="regular" aria-hidden="true" />
                 </button>
-                <Flag code={detailRegion.flag} label={detailRegion.name} size={28} />
-                <p className="eyebrow">Region im Fokus</p>
-                <h2 id="detail-title">{detailRegion.name}</h2>
+                <Flag
+                  code={detailRegion.flag}
+                  label={regionName(detailRegion.id, locale)}
+                  size={28}
+                />
+                <p className="eyebrow">{t.regionFocus}</p>
+                <h2 id="detail-title">{regionName(detailRegion.id, locale)}</h2>
                 <div className="detail-score">
                   <AnimatedNumber value={scoreGrid.activityAt(detailRegion.id, date)} />
                   <small>/100</small>
                 </div>
                 <p>
-                  {detailRegion.city} · {formatTime(date, detailRegion.timeZone)} ·{' '}
-                  {timeZoneName(date, detailRegion.timeZone)}
+                  {cityName(detailRegion.id, detailRegion.city, locale)} ·{' '}
+                  {formatTime(date, detailRegion.timeZone)} ·{' '}
+                  {timeZoneName(date, detailRegion.timeZone, intl)}
                 </p>
                 <p>
                   <PhaseIcon
                     icon={phaseAt(localDecimalHourFast(date, detailRegion.timeZone)).icon}
                   />{' '}
-                  {phaseAt(localDecimalHourFast(date, detailRegion.timeZone)).name}
+                  {(() => {
+                    const phase = phaseAt(localDecimalHourFast(date, detailRegion.timeZone))
+                    return phaseName(phase.id, phase.name, locale)
+                  })()}
                 </p>
                 <button
                   className="button primary"
@@ -956,9 +1146,7 @@ export default function App() {
                     setDetail(null)
                   }}
                 >
-                  {selected.includes(detailRegion.id)
-                    ? 'Ist in deiner Zielgruppe'
-                    : 'Zur Zielgruppe hinzufügen'}
+                  {selected.includes(detailRegion.id) ? t.inAudience : t.addAudience}
                 </button>
               </motion.aside>
             </motion.div>

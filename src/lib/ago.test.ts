@@ -45,3 +45,14 @@ describe('formatDuration', () => {
     expect(formatDuration(125)).toBe('2 Min 5 s')
   })
 })
+
+describe('English', () => {
+  it('formats ages and durations in English', async () => {
+    const { humanAgo, formatDuration, agoPhrase } = await import('./ago')
+    expect(humanAgo(61, 'en')).toBe('1 h 1 min')
+    expect(humanAgo(4320, 'en')).toBe('3 days')
+    expect(formatDuration(125, 'en')).toBe('2 min 5 s')
+    expect(agoPhrase(12, 'en')).toBe('12 min ago')
+    expect(agoPhrase(12)).toBe('vor 12 Min')
+  })
+})
