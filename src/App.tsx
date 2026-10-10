@@ -39,6 +39,7 @@ import { Flag } from './components/Flag'
 import { PhaseIcon } from './components/PhaseIcon'
 import { MobileTimeBar } from './components/MobileTimeBar'
 import { SiteFooter } from './components/SiteFooter'
+import { Playbooks } from './components/Playbooks'
 
 const WorldMap = lazy(() =>
   import('./components/WorldMap').then((module) => ({ default: module.WorldMap })),
@@ -736,6 +737,9 @@ export default function App() {
             </Section>
             <Section defer placeholderHeight={640}>
               <Planner windowSets={plannerSets} selected={selected} dst={dst} />
+            </Section>
+            <Section defer placeholderHeight={1200}>
+              <Playbooks />
             </Section>
             <Section defer placeholderHeight={900}>
               <section className="method" aria-labelledby="method-title">

@@ -1,3 +1,5 @@
+import type { PlatformId } from '../data/playbooks'
+
 type Primitive = string | number | boolean
 
 type Region =
@@ -22,6 +24,7 @@ export interface AnalyticsEvents {
   Theme: { wert: 'system' | 'light' | 'dark' }
   'Region Details': { region: Exclude<Region, 'alle'> }
   Rechtsseite: { seite: 'impressum' | 'datenschutz' }
+  Playbook: { plattform: PlatformId }
   'Web Vitals': {
     metric: 'LCP' | 'CLS' | 'INP' | 'FCP' | 'TTFB'
     rating: 'good' | 'needs-improvement' | 'poor'
@@ -71,6 +74,9 @@ const allowedValues = {
     region: ['us_west', 'us_east', 'latam', 'eu_uk', 'eu_central', 'mena', 'india', 'east_asia'],
   },
   Rechtsseite: { seite: ['impressum', 'datenschutz'] },
+  Playbook: {
+    plattform: ['instagram', 'tiktok', 'youtube', 'linkedin', 'x', 'threads', 'hackernews'],
+  },
   'Web Vitals': {
     metric: ['LCP', 'CLS', 'INP', 'FCP', 'TTFB'],
     rating: ['good', 'needs-improvement', 'poor'],

@@ -1,0 +1,350 @@
+/* Plattform-Playbooks: one platform at a time, two equal columns on wide screens, 4-px grid. */
+
+.playbooks-lede {
+  max-width: 64ch;
+  margin: -8px 0 20px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+/* Platform picker: a horizontal strip on phones, seven equal columns from 720 px. */
+.playbook-tabs {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  gap: 8px;
+  margin: 0 -14px 24px;
+  padding: 0 14px 4px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: 14px;
+  scrollbar-width: none;
+}
+.playbook-tabs::-webkit-scrollbar {
+  display: none;
+}
+.playbook-tabs button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--rule-solid);
+  background: transparent;
+  color: var(--muted);
+  font:
+    500 13px/1 'Geist Variable',
+    system-ui,
+    sans-serif;
+  white-space: nowrap;
+  scroll-snap-align: start;
+  cursor: pointer;
+}
+.playbook-tabs button[aria-selected='true'] {
+  color: var(--paper);
+  background: var(--ink);
+  border-color: var(--ink);
+}
+.playbook-tabs button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+@media (min-width: 720px) {
+  .playbook-tabs {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    margin: 0 0 28px;
+    padding: 0;
+    overflow: visible;
+  }
+  .playbook-tabs button {
+    padding: 0 8px;
+  }
+}
+
+.playbook-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+}
+@media (min-width: 960px) {
+  .playbook-body {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 48px;
+  }
+}
+.playbook-col {
+  min-width: 0;
+}
+.playbook-col > h3 {
+  margin: 0 0 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--rule-solid);
+  font:
+    400 22px/1.15 'Instrument Serif',
+    serif;
+  letter-spacing: -0.01em;
+}
+
+.playbook-list + .playbook-list {
+  margin-top: 24px;
+}
+.playbook-list h4 {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font:
+    500 12px/1 'Geist Variable',
+    system-ui,
+    sans-serif;
+}
+.playbook-list ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.playbook-list li {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 8px;
+  padding: 12px 0;
+  border-top: 1px solid var(--rule);
+  font-size: 15px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.playbook-list li:first-child {
+  border-top: 0;
+  padding-top: 4px;
+}
+.playbook-marker {
+  font:
+    600 15px/1.5 'Geist Mono Variable',
+    monospace;
+  text-align: center;
+}
+.is-plus .playbook-marker {
+  color: var(--accent-ink);
+}
+.is-minus .playbook-marker {
+  color: var(--link);
+}
+.playbook-ref {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  margin-left: 6px;
+  padding: 0 4px;
+  border: 1px solid var(--rule-solid);
+  color: var(--muted);
+  font:
+    500 10px/1 'Geist Mono Variable',
+    monospace;
+  text-decoration: none;
+  vertical-align: 2px;
+}
+.playbook-ref:hover,
+.playbook-ref:focus-visible {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+.playbook-gap {
+  margin: 16px 0 0;
+  padding: 12px 16px;
+  border-left: 2px solid var(--rule-solid);
+  background: var(--paper);
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Week grid: 7 days × 24 hours, study A / study B / overlap, ranked peaks as numbered dots. */
+.week-grid {
+  margin: 0;
+}
+.week-grid-chart {
+  display: grid;
+  gap: 4px;
+}
+.week-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+}
+.week-day {
+  color: var(--muted);
+  font:
+    500 11px/1 'Geist Mono Variable',
+    monospace;
+}
+.week-track {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(24, minmax(0, 1fr));
+  gap: 1px;
+  height: 24px;
+  padding: 1px;
+  border: 1px solid var(--rule);
+  background:
+    linear-gradient(var(--rule), var(--rule)) calc(25% - 0.5px) 0 / 1px 100% no-repeat,
+    linear-gradient(var(--rule), var(--rule)) calc(50% - 0.5px) 0 / 1px 100% no-repeat,
+    linear-gradient(var(--rule), var(--rule)) calc(75% - 0.5px) 0 / 1px 100% no-repeat,
+    var(--paper);
+}
+.week-track > i {
+  display: block;
+  min-width: 0;
+}
+.week-track > i.is-a,
+.week-swatch.is-a {
+  background: var(--series-3);
+}
+.week-track > i.is-b,
+.week-swatch.is-b {
+  background: var(--series-4);
+}
+.week-track > i.is-both,
+.week-swatch.is-both {
+  background: var(--accent);
+}
+.week-peak {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--paper-2);
+  border-radius: 50%;
+  color: var(--paper);
+  font:
+    600 9px/1 'Geist Mono Variable',
+    monospace;
+  transform: translate(-50%, -50%);
+}
+.week-peak.is-a {
+  background: var(--series-3);
+}
+.week-peak.is-b {
+  background: var(--series-4);
+}
+.week-axis {
+  position: relative;
+  height: 16px;
+  margin-left: 36px;
+  color: var(--muted);
+  font:
+    11px/1 'Geist Mono Variable',
+    monospace;
+}
+.week-axis span {
+  position: absolute;
+  top: 4px;
+  transform: translateX(-50%);
+}
+.week-axis span:first-child {
+  transform: none;
+}
+.week-axis span:last-child {
+  transform: translateX(-100%);
+}
+
+.week-legend {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+}
+.week-legend-item {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+.week-legend-item > div {
+  display: grid;
+  gap: 4px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.week-legend-item strong {
+  font-weight: 600;
+}
+.week-legend-item span {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.week-part {
+  white-space: nowrap;
+}
+.week-legend-item .week-weak {
+  color: var(--muted);
+}
+.week-swatch {
+  width: 16px;
+  height: 10px;
+  margin-top: 5px;
+}
+.week-swatch.is-dot {
+  width: 12px;
+  height: 12px;
+  margin: 4px 2px 0;
+  border-radius: 50%;
+}
+.week-note {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font:
+    11px/1.4 'Geist Mono Variable',
+    monospace;
+}
+
+/* Sources: numbered, full width under both columns. */
+.playbook-sources {
+  display: grid;
+  gap: 12px;
+  margin: 32px 0 0;
+  padding: 20px 0 0;
+  border-top: 1px solid var(--rule-solid);
+  list-style: none;
+}
+@media (min-width: 960px) {
+  .playbook-sources {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 48px;
+  }
+}
+.playbook-sources li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 8px;
+  scroll-margin-top: 96px;
+}
+.playbook-sources li:target {
+  outline: 1px solid var(--accent);
+  outline-offset: 4px;
+}
+.playbook-source-num {
+  color: var(--muted);
+  font:
+    500 12px/1.5 'Geist Mono Variable',
+    monospace;
+}
+.playbook-sources li > div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.playbook-sources a {
+  color: var(--link);
+}
+.playbook-sources span {
+  color: var(--muted);
+  font-size: 12px;
+}
