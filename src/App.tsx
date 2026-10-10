@@ -41,6 +41,7 @@ import { MobileTimeBar } from './components/MobileTimeBar'
 import { SiteFooter } from './components/SiteFooter'
 import { Playbooks } from './components/Playbooks'
 import { Wordmark } from './components/LogoMark'
+import { UpdateToast } from './components/UpdateToast'
 
 const WorldMap = lazy(() =>
   import('./components/WorldMap').then((module) => ({ default: module.WorldMap })),
@@ -851,6 +852,7 @@ export default function App() {
             worldBankYears={yearRange(snapshot.dataYears, 'internet')}
             wikimediaFreshness={freshness(snapshot.sources.wikimedia.fetchedAt)}
           />
+          <UpdateToast />
           <MobileTimeBar
             now={minuteNow}
             selectedDate={date}

@@ -1,0 +1,46 @@
+/* Quiet update prompt: bottom centre, above the mobile time bar, one line. */
+.update-toast {
+  position: fixed;
+  /* centred without transform: motion animates transform (y) and would drop a translateX(-50%) */
+  left: 16px;
+  right: 16px;
+  width: fit-content;
+  margin-inline: auto;
+  bottom: calc(112px + env(safe-area-inset-bottom));
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 8px 16px;
+  border: 1px solid var(--ink);
+  background: var(--paper-2);
+  color: var(--ink);
+  font-size: 14px;
+  white-space: nowrap;
+}
+.update-toast button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--rule-solid);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+.update-toast .update-toast-reload {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+.update-toast button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+@media (min-width: 1024px) {
+  .update-toast {
+    bottom: 24px;
+  }
+}

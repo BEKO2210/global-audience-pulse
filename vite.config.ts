@@ -59,8 +59,10 @@ export default defineConfig({
     motionStudio(),
     sitemap(),
     VitePWA({
-      injectRegister: 'script-defer',
-      registerType: 'autoUpdate',
+      // Registered by UpdateToast after idle; a waiting deploy is announced instead of silently skipped,
+      // so open tabs and installed apps never keep running an old build.
+      injectRegister: false,
+      registerType: 'prompt',
       includeAssets: ['favicon.svg', 'favicon-32x32.png', 'apple-touch-icon.png', 'og-image.png'],
       manifest: {
         name: 'Global Audience Pulse',
