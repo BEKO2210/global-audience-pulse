@@ -53,6 +53,16 @@ Stunde (`skipped-gpu`), `npm run review:local` wartet bis zu 30 min. `gpu-status
 zeigt, wer die Karte hält, VRAM und geladene Ollama-Modelle. Eigene GPU-Läufe ebenso starten, z. B.
 `scripts/dev/gpu-lock.sh -- ollama run qwen3.5:9b`.
 
+## Prüfer-Golden-Set (T-020/T-022)
+
+`scripts/analysis/checker-eval.ts` prüft den Prüfer auf echten Fakten und einem echten Bericht
+(`~/.local/share/gap-live/branch/analysis.json`): 6 wahre Aussagen der Art, die früher fälschlich abgelehnt wurden,
+und 6 echte Widersprüche. Stand 2026-10-10: alter Prüfer 2/6 Fehlalarme, neuer (Begründung vor Urteil +
+deterministische Trend-Prüfung) 0/6 Fehlalarme, 0/6 übersehene Widersprüche. Ausführen:
+`npx esbuild scripts/analysis/checker-eval.ts --bundle --platform=node --format=esm --outfile=/tmp/eval.mjs &&
+scripts/dev/gpu-lock.sh -- node /tmp/eval.mjs` (≈ 12 min). Die Fälle sind auf die damaligen Fakten zugeschnitten;
+bei neuen Fakten die Zahlen in `CASES` anpassen.
+
 ## Ausfall-Regel
 
 1. Agent liefert nichts / Fehler / Kontingent leer → Eintrag unter „Verlauf“ in der Auftragsdatei

@@ -42,11 +42,11 @@ Auftragsdateien: T-001, T-002, T-003, T-010, T-011, T-012 liegen bereit; für di
 
 ### Phase C – Qualität der KI messbar machen
 
-| ID    | Aufgabe                                                                                                                                        | Agenten        | Status |
-| ----- | ---------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | ------ |
-| T-020 | **Golden-Set**: 30 eingefrorene Fakten-Snapshots + erwartete Kernaussagen; Skript bewertet Schreiber/Prüfer (Zahlentreue, Widersprüche, Länge) | Claude → Codex | offen  |
-| T-021 | **Modell-A/B**: gemma4:12b vs qwen3.5:9b vs Gemma-4-26B-A4B (`gemma26b`) auf dem Golden-Set; Gewinner wird Default                             | Claude         | offen  |
-| T-022 | Prüfer-Kalibrierung: falsch-positive Ablehnungen zählen, Prompt/Modell anpassen                                                                | Claude         | offen  |
+| ID    | Aufgabe                                                                                                                                        | Agenten        | Status            |
+| ----- | ---------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | ----------------- |
+| T-020 | **Golden-Set**: 30 eingefrorene Fakten-Snapshots + erwartete Kernaussagen; Skript bewertet Schreiber/Prüfer (Zahlentreue, Widersprüche, Länge) | Claude → Codex | offen             |
+| T-021 | **Modell-A/B**: gemma4:12b vs qwen3.5:9b vs Gemma-4-26B-A4B (`gemma26b`) auf dem Golden-Set; Gewinner wird Default                             | Claude         | offen             |
+| T-022 | Prüfer-Kalibrierung: falsch-positive Ablehnungen zählen, Prompt/Modell anpassen                                                                | Claude         | erledigt (Claude) |
 
 ### Phase D – Plattform & Betrieb
 

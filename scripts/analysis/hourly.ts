@@ -21,6 +21,13 @@ import { parseSnapshot, type Snapshot } from '../../src/lib/snapshot'
 import { formatTime, localDecimalHour, timeZoneName } from '../../src/lib/time'
 import { compare, liveSignals, readHistory, writeHistory, type LiveSignal } from './signals'
 import type { AnalysisRun, DataFetchError, ModelCall, RunRejection } from './health'
+import {
+  CHECKER_SCHEMA,
+  checkerPrompt,
+  contradictions,
+  trendContradictions,
+  type CheckItem,
+} from './checker'
 
 const OLLAMA = process.env.OLLAMA_URL ?? 'http://127.0.0.1:11434'
 const MODEL = process.env.ANALYSIS_MODEL ?? 'gemma4:12b-it-qat'
@@ -173,6 +180,24 @@ function buildFacts(
 }
 
 type Facts = ReturnType<typeof buildFacts>
+
+/** All text fields of a report, for the deterministic checks. */
+function reportTexts(report: object) {
+  const r = report as {
+    schlagzeile?: string
+    empfehlung?: string
+    analyse?: string
+    punkte?: string[]
+    zielgruppen?: { urteil: string }[]
+  }
+  return [
+    r.schlagzeile,
+    r.empfehlung,
+    r.analyse,
+    ...(r.punkte ?? []),
+    ...(r.zielgruppen ?? []).map((z) => z.urteil),
+  ].filter((t): t is string => typeof t === 'string')
+}
 
 const SCHEMA = {
   type: 'object',
@@ -328,37 +353,18 @@ async function checkClaims(
         think: false,
         keep_alive: 0, // unload right after use: the job must not hold RAM/VRAM between hours
         options: { temperature: 0, num_ctx: 8192 },
-        format: {
-          type: 'object',
-          properties: {
-            pruefungen: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  aussage: { type: 'string' },
-                  widerspruch: { type: 'boolean' },
-                  grund: { type: 'string' },
-                },
-                required: ['aussage', 'widerspruch', 'grund'],
-              },
-            },
-          },
-          required: ['pruefungen'],
-        },
+        format: CHECKER_SCHEMA,
         messages: [
           {
             role: 'user',
-            content: `Prüfe jede Aussage des Berichts gegen die Daten. Setze widerspruch nur dann auf true, wenn die Aussage den Daten eindeutig widerspricht (falscher Ort, falsche Phase, falsche Trendrichtung, Wert einer anderen Region zugeordnet). Vereinfachungen, Bewertungen und Formulierungen sind KEIN Widerspruch. "Berlin" steht für die Region Europa Zentral.\n\nDATEN:\n${JSON.stringify(facts)}\n\nBERICHT:\n${JSON.stringify(report)}`,
+            content: checkerPrompt(facts, report),
           },
         ],
       }),
     })
     if (!response.ok) throw new Error(`Ollama ${response.status}`)
     const data = await response.json()
-    const result = JSON.parse(data.message.content) as {
-      pruefungen: { aussage: string; widerspruch: boolean; grund: string }[]
-    }
+    const result = JSON.parse(data.message.content) as { pruefungen: CheckItem[] }
     modelCalls.push({
       model: CHECKER,
       role: 'checker',
@@ -366,10 +372,10 @@ async function checkClaims(
       durationMs: Math.round(performance.now() - callStarted),
       ok: true,
     })
-    return result.pruefungen
-      .filter((item) => item.widerspruch)
-      .map((item) => `${item.aussage} (${item.grund})`)
-      .slice(0, 4)
+    return [
+      ...contradictions(result.pruefungen),
+      ...trendContradictions(reportTexts(report), facts),
+    ].slice(0, 4)
   } catch {
     modelCalls.push({
       model: CHECKER,
@@ -378,7 +384,8 @@ async function checkClaims(
       durationMs: Math.round(performance.now() - callStarted),
       ok: false,
     })
-    return [] // checker unavailable: the number guard still applies
+    // checker unavailable: the number guard and the deterministic trend check still apply
+    return trendContradictions(reportTexts(report), facts)
   }
 }
 
