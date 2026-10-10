@@ -19,7 +19,8 @@
     "icons": "node scripts/generate-icons.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "review:local": "node scripts/dev/local-review.mjs"
+    "review:local": "scripts/dev/gpu-lock.sh -w 1800 -- node scripts/dev/local-review.mjs",
+    "gpu:status": "scripts/dev/gpu-status.sh"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",

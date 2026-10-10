@@ -29,8 +29,10 @@ npx esbuild scripts/analysis/hourly.ts --bundle --platform=node --format=esm --t
   --outfile="$OUT/hourly.mjs" --log-level=warning
 code=$?
 if [ "$code" -eq 0 ]; then
-  node "$OUT/hourly.mjs" "$OUT/analysis.json" "$OUT/history.jsonl"
+  # Shared GPU lock with the reel tools (T-034): wait up to 10 min, otherwise skip this hour like a busy GPU.
+  "$REPO/scripts/dev/gpu-lock.sh" -w 600 -- node "$OUT/hourly.mjs" "$OUT/analysis.json" "$OUT/history.jsonl"
   code=$?
+  [ "$code" -eq 75 ] && code=3
 fi
 set -e
 run_ended=$(date -u +%FT%TZ)

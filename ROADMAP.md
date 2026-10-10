@@ -50,13 +50,13 @@ Auftragsdateien: T-001, T-002, T-003, T-010, T-011, T-012 liegen bereit; für di
 
 ### Phase D – Plattform & Betrieb
 
-| ID    | Aufgabe                                                                                                                                                                                                                                      | Agenten         | Status |
-| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | ------ |
-| T-030 | Ollama-Upgrade 0.32.5 → 0.40.x (braucht `sudo`, Belkis) + Job-Smoke-Test danach                                                                                                                                                              | Belkis + Claude | offen  |
-| T-031 | Ollama nur auf localhost/Tailscale lauschen lassen (Sicherheit)                                                                                                                                                                              | Belkis + Claude | offen  |
-| T-032 | Projekte von alten Modellen migrieren (Statim, Prompt_Academy, HeimGeist, brain, Die_Firma, OpenShorts) – je Projekt eigene Aufgabe, Reproduzierbarkeit beachten                                                                             | Claude → Codex  | offen  |
-| T-033 | Benachrichtigung bei Job-Ausfall (> 3 h kein Bericht) per ntfy/Telegram an Belkis                                                                                                                                                            | Codex → Claude  | offen  |
-| T-034 | **GPU-Koordination**: alle GPU-Jobs (Lagebericht, `review:local`, Reel-Render) nutzen dieselbe Sperre (`flock`, wie der Reel-Render mit `~/reel/gpu.lock`) und warten statt sich zu verdrängen; Befehl `gpu-status` zeigt, wer die Karte hat | Claude          | offen  |
+| ID    | Aufgabe                                                                                                                                                                                                                                      | Agenten         | Status            |
+| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | ----------------- |
+| T-030 | Ollama-Upgrade 0.32.5 → 0.40.x (braucht `sudo`, Belkis) + Job-Smoke-Test danach                                                                                                                                                              | Belkis + Claude | offen             |
+| T-031 | Ollama nur auf localhost/Tailscale lauschen lassen (Sicherheit)                                                                                                                                                                              | Belkis + Claude | offen             |
+| T-032 | Projekte von alten Modellen migrieren (Statim, Prompt_Academy, HeimGeist, brain, Die_Firma, OpenShorts) – je Projekt eigene Aufgabe, Reproduzierbarkeit beachten                                                                             | Claude → Codex  | offen             |
+| T-033 | Benachrichtigung bei Job-Ausfall (> 3 h kein Bericht) per ntfy/Telegram an Belkis                                                                                                                                                            | Codex → Claude  | offen             |
+| T-034 | **GPU-Koordination**: alle GPU-Jobs (Lagebericht, `review:local`, Reel-Render) nutzen dieselbe Sperre (`flock`, wie der Reel-Render mit `~/reel/gpu.lock`) und warten statt sich zu verdrängen; Befehl `gpu-status` zeigt, wer die Karte hat | Claude          | erledigt (Claude) |
 
 ### Phase E – Messen, was Nutzer tun (Plausible, selbst gehostet, rechtssicher maximal)
 

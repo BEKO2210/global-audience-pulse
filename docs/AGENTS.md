@@ -45,6 +45,14 @@ Messung 2026-10-10: 4 absichtlich eingebaute Fehler (hart codierte Schwelle, har
 `<`, entferntes `role="img"`) → 3 bestätigt (das entfernte `role` meldet der Erstdurchgang, die Prüfstufe lehnt es
 ab); sauberer Diff (T-050 + Trend-Fix) → 6 Vermutungen, alle von der Prüfstufe abgelehnt, 0 Befunde. Dauer 3–6 min.
 
+## GPU-Sperre (T-034)
+
+Alle GPU-Jobs auf pop-os laufen über dieselbe Sperre wie die Reel-Tools (`flock ~/reel/gpu.lock`):
+`scripts/dev/gpu-lock.sh [-w Sekunden] -- befehl`. Der Stundenjob wartet bis zu 10 min und überspringt sonst die
+Stunde (`skipped-gpu`), `npm run review:local` wartet bis zu 30 min. `gpu-status` (bzw. `npm run gpu:status`)
+zeigt, wer die Karte hält, VRAM und geladene Ollama-Modelle. Eigene GPU-Läufe ebenso starten, z. B.
+`scripts/dev/gpu-lock.sh -- ollama run qwen3.5:9b`.
+
 ## Ausfall-Regel
 
 1. Agent liefert nichts / Fehler / Kontingent leer → Eintrag unter „Verlauf“ in der Auftragsdatei
