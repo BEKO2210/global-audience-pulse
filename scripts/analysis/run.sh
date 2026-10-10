@@ -37,7 +37,7 @@ if [ ! -d "$BRANCH_DIR/.git" ] && [ ! -f "$BRANCH_DIR/.git" ]; then
     git worktree add -f "$BRANCH_DIR" -B live-analysis origin/live-analysis
   else
     git worktree add -f --detach "$BRANCH_DIR"
-    (cd "$BRANCH_DIR" && git checkout -q --orphan live-analysis && git rm -rq . && git clean -fdq)
+    (cd "$BRANCH_DIR" && git checkout -q --orphan live-analysis && git rm -rqf --cached . && git clean -fdxq)
   fi
 fi
 
