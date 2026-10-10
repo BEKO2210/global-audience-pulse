@@ -45,14 +45,6 @@ Messung 2026-10-10: 4 absichtlich eingebaute Fehler (hart codierte Schwelle, har
 `<`, entferntes `role="img"`) → 3 bestätigt (das entfernte `role` meldet der Erstdurchgang, die Prüfstufe lehnt es
 ab); sauberer Diff (T-050 + Trend-Fix) → 6 Vermutungen, alle von der Prüfstufe abgelehnt, 0 Befunde. Dauer 3–6 min.
 
-## Creator-Recherche (T-070)
-
-`npm run research` fragt die Plattformen ab (oder `-- --platforms x,reddit|tech|social|longform|all --topic "…"`).
-Nur lokal: Live-Daten aus frei zugänglichen Quellen, Auswertung mit `qwen3.5:9b` (`--model` für andere Ollama-Tags).
-Daten holen alle Agenten parallel; die GPU rechnet einen nach dem anderen. Unter 5 Belegen meldet ein Agent einen
-Fehler statt zu raten. Ein Ausfall bricht die anderen nicht ab. Ergebnisse 6 h im Cache (`--fresh` erzwingt neu).
-Messung 2026-10-10: alle 10 Plattformen, 10/10 erfolgreich, 0 Schemafehler, ≈ 6–8 s je Agent auf der RTX 3070.
-
 ## Ausfall-Regel
 
 1. Agent liefert nichts / Fehler / Kontingent leer → Eintrag unter „Verlauf“ in der Auftragsdatei

@@ -59,18 +59,7 @@ fi
 node "$OUT/health.mjs" "$BRANCH_DIR/health.json" "$OUT/health.json" "$outcome" \
   "$analysis_arg" "$run_started" "$run_ended"
 
-# Creator research (T-071): every ~3 h, after the report freed the GPU; a failure never blocks the report.
-research=skip
-if [ "$outcome" != skipped-gpu ] && [ -z "$(find "$BRANCH_DIR/research.json" -mmin -170 2>/dev/null)" ]; then
-  set +e
-  timeout 12m node "$REPO/scripts/research/publish.mjs" "$OUT/research.json"
-  [ $? -eq 0 ] && research=published || research=failed
-  set -e
-fi
-echo "research: $research"
-
 cd "$BRANCH_DIR"
-[ "$research" = published ] && cp "$OUT/research.json" research.json
 if [ "$outcome" = published ]; then
   cp "$OUT/analysis.json" analysis.json
   [ -f "$OUT/history.jsonl" ] && cp "$OUT/history.jsonl" history.jsonl
@@ -81,7 +70,6 @@ Automatisch erzeugter Lagebericht für Global Audience Pulse (stündlich von ein
 auf dem Rechner des Betreibers, nur solange dieser läuft). Wird bei jedem Lauf überschrieben.
 EOF
 git add health.json README.md
-[ "$research" = published ] && git add research.json
 if [ "$outcome" = published ]; then
   git add analysis.json
   [ -f history.jsonl ] && git add history.jsonl
