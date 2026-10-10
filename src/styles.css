@@ -2329,3 +2329,7 @@ button:active {
   color: var(--ink);
   vertical-align: 1px;
 }
+/* Placeholder for deferred below-the-fold sections; also skip off-screen layout work. */
+.deferred-placeholder {
+  content-visibility: auto;
+}

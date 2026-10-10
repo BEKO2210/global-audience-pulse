@@ -9,6 +9,9 @@ export default defineConfig({
   base: '/global-audience-pulse/',
   define: { __APP_VERSION__: JSON.stringify(process.env.npm_package_version ?? 'dev') },
   build: {
+    // No eager modulepreload of the big chunks: on slow links they compete with the CSS that gates
+    // first paint of the static shell (index.html). They still load right after main.js starts.
+    modulePreload: false,
     chunkSizeWarningLimit: 500,
     rollupOptions: {
       input: {
@@ -32,6 +35,7 @@ export default defineConfig({
     tailwindcss(),
     motionStudio(),
     VitePWA({
+      injectRegister: 'script-defer',
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'favicon-32x32.png', 'apple-touch-icon.png', 'og-image.png'],
       manifest: {
