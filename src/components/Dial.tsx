@@ -58,7 +58,7 @@ export function Dial({
             )
           })}
           {selectedRegions.map((region, index) => {
-            const radius = 108 - index * 7
+            const radius = 110 - index * 9
             const localHour = localDecimalHourFast(date, region.timeZone)
             const utcHour = date.getUTCHours() + date.getUTCMinutes() / 60
             const offset = localHour - utcHour
@@ -82,14 +82,14 @@ export function Dial({
                         d={arc(cx, cy, radius, from, firstEnd)}
                         fill="none"
                         stroke={phase.color}
-                        strokeWidth="5"
+                        strokeWidth="6"
                       />
                       {from + duration > 24 && (
                         <path
                           d={arc(cx, cy, radius, 0, from + duration - 24)}
                           fill="none"
                           stroke={phase.color}
-                          strokeWidth="5"
+                          strokeWidth="6"
                         />
                       )}
                     </g>
@@ -99,12 +99,12 @@ export function Dial({
             )
           })}
           {selectedRegions.map((region, index) => {
-            const radius = 108 - index * 7
+            const radius = 110 - index * 9
             return (
               <text
                 key={`ring-number-${region.id}`}
                 x={cx}
-                y={cy - radius + 2}
+                y={cy - radius + 3}
                 textAnchor="middle"
                 className="dial-ring-number"
               >
@@ -126,8 +126,8 @@ export function Dial({
           <text x={cx} y={cy + 14} textAnchor="middle" className="dial-mean">
             {formatDecimalHour(worldMean)}
           </text>
-          <text x={cx} y={cy + 35} textAnchor="middle" className="dial-date">
-            {selected.length} Märkte aktiv
+          <text x={cx} y={cy + 30} textAnchor="middle" className="dial-date">
+            {selected.length} {selected.length === 1 ? 'Markt' : 'Märkte'}
           </text>
         </svg>
         <p className="dial-explainer">

@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { useSvgBox } from '../hooks/useSvgBox'
 import { scaleLinear, scaleTime } from 'd3-scale'
 import { area, curveMonotoneX, line } from 'd3-shape'
 import { motion, useReducedMotion } from 'motion/react'
@@ -33,9 +34,8 @@ export function Forecast({
   recommendationThreshold: number
 }) {
   const reduceMotion = useReducedMotion()
-  const ref = useRef<SVGSVGElement>(null)
-  const width = 720
-  const height = 270
+  // 1 SVG unit = 1 CSS px: the height is set in CSS, the width follows the panel.
+  const { ref, width, height } = useSvgBox<SVGSVGElement>({ width: 720, height: 240 })
   const pad = { l: 32, r: 12, t: 18, b: 34 }
   const domain: [Date, Date] = [points[0]?.date ?? new Date(), points.at(-1)?.date ?? new Date()]
   const x = scaleTime()

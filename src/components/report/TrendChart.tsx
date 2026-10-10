@@ -1,11 +1,12 @@
 import { STATUS_LEVELS } from '../../config/model'
+import { useSvgBox } from '../../hooks/useSvgBox'
 import type { AnalysisFacts } from './types'
 
-const W = 360
-const H = 140
 const PAD = { t: 26, r: 34, b: 24, l: 24 }
 
 export function TrendChart({ facts }: { facts: AnalysisFacts }) {
+  // 1 SVG unit = 1 CSS px (height from CSS), so labels keep their size on every screen.
+  const { ref, width: W, height: H } = useSvgBox<SVGSVGElement>({ width: 360, height: 180 })
   const now = facts.gesamt?.score
   const trend = facts.trendNaechsteStunden
   if (now == null || !trend?.length) return null
@@ -65,6 +66,7 @@ export function TrendChart({ facts }: { facts: AnalysisFacts }) {
       </div>
       <figure className="lr-trend-figure">
         <svg
+          ref={ref}
           viewBox={`0 0 ${W} ${H}`}
           className="lr-trend-svg"
           role="img"

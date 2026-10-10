@@ -8,6 +8,7 @@ import { phaseAt, type ScoreGrid } from '../lib/model'
 import { antipode, solarElevation, subsolarPoint } from '../lib/solar'
 import { localDecimalHourFast } from '../lib/time'
 import { MOTION } from '../config/motion'
+import { useSvgBox } from '../hooks/useSvgBox'
 
 const projection = geoEqualEarth().fitExtent(
   [
@@ -19,6 +20,16 @@ const projection = geoEqualEarth().fitExtent(
 const path = geoPath(projection)
 const land = feature(landData as any, (landData as any).objects.land)
 // Static geometry: project once at module load, not on every scrub step.
+const LABEL_SIDE: Record<RegionId, { x: number; y: number; anchor: 'start' | 'middle' | 'end' }> = {
+  us_west: { x: 0, y: 16, anchor: 'middle' },
+  us_east: { x: 9, y: 4, anchor: 'start' },
+  latam: { x: 9, y: 4, anchor: 'start' },
+  eu_uk: { x: -9, y: -4, anchor: 'end' },
+  eu_central: { x: 9, y: -4, anchor: 'start' },
+  mena: { x: -9, y: 4, anchor: 'end' },
+  india: { x: 9, y: 8, anchor: 'start' },
+  east_asia: { x: 9, y: 4, anchor: 'start' },
+}
 const SPHERE_PATH = path({ type: 'Sphere' }) ?? ''
 const LAND_PATH = path(land as any) ?? ''
 
@@ -34,6 +45,13 @@ export function WorldMap({
   onRegion: (id: RegionId) => void
 }) {
   const reduceMotion = useReducedMotion()
+  // The map scales with its panel; k converts CSS px to map units so labels stay 11 px and pin hit areas
+  // stay ≥ 44 px on every screen.
+  const { ref: svgRef, width: renderedWidth } = useSvgBox<SVGSVGElement>({
+    width: 800,
+    height: 400,
+  })
+  const k = 800 / renderedWidth
   const sun = subsolarPoint(date)
   const nightCenter = antipode(sun)
   const night = geoCircle().center([nightCenter.longitude, nightCenter.latitude]).radius(90)()
@@ -56,6 +74,7 @@ export function WorldMap({
         </span>
       </div>
       <svg
+        ref={svgRef}
         viewBox="0 0 800 400"
         className="world-map"
         role="group"
@@ -100,12 +119,9 @@ export function WorldMap({
           const hour = localDecimalHourFast(date, region.timeZone)
           const prime = primePhase ? phaseAt(hour).id === primePhase.id : false
           const elevation = solarElevation(region.coordinates[1], region.coordinates[0], date)
-          const labelOffset =
-            region.id === 'eu_uk'
-              ? { x: -12, y: -17, anchor: 'end' as const }
-              : region.id === 'eu_central'
-                ? { x: 12, y: -29, anchor: 'start' as const }
-                : { x: 0, y: -13, anchor: 'middle' as const }
+          // Side labels placed by geography so neighbours never collide at 11 px, even on a phone.
+          const baseOffset = LABEL_SIDE[region.id]
+          const labelOffset = { ...baseOffset, x: baseOffset.x * k, y: baseOffset.y * k }
           return (
             <motion.g
               key={region.id}
@@ -126,7 +142,7 @@ export function WorldMap({
               animate={{ opacity: selected.includes(region.id) ? 1 : 0.42 }}
               transition={{ duration: reduceMotion ? 0 : MOTION.change, ease: MOTION.ease }}
             >
-              <circle r="24" fill="transparent" className="map-hitbox" />
+              <circle r={Math.max(24, 22 * k)} fill="transparent" className="map-hitbox" />
               {prime && selected.includes(region.id) && (
                 <circle r="12" fill="none" stroke={SERIES[index]} opacity="0.35" />
               )}
@@ -138,20 +154,12 @@ export function WorldMap({
                 animate={{ r: 5 + score / 30 }}
                 transition={{ duration: reduceMotion ? 0 : MOTION.change, ease: MOTION.ease }}
               />
-              {labelOffset.x !== 0 && (
-                <line
-                  x1="0"
-                  y1="-8"
-                  x2={labelOffset.x * 0.75}
-                  y2={labelOffset.y + 4}
-                  className="map-label-leader"
-                />
-              )}
               <text
                 x={labelOffset.x}
                 y={labelOffset.y}
                 textAnchor={labelOffset.anchor}
                 className="map-pin-label"
+                style={{ fontSize: 11 * k, strokeWidth: 3 * k }}
               >
                 {region.city}
               </text>

@@ -545,12 +545,6 @@ button:active {
   stroke: var(--paper);
   stroke-width: 2px;
 }
-.map-label-leader {
-  stroke: var(--ink);
-  stroke-width: 0.75px;
-  opacity: 0.7;
-  pointer-events: none;
-}
 .world-map g:focus-visible {
   outline: none;
 }
@@ -560,6 +554,8 @@ button:active {
 }
 .forecast {
   width: 100%;
+  /* fixed height: the chart draws in CSS pixels (useSvgBox), so labels stay 11 px on every screen */
+  height: 200px;
   display: block;
   touch-action: pan-y;
   overflow: visible;
@@ -574,11 +570,11 @@ button:active {
 }
 .window-band-label {
   fill: var(--accent-ink) !important;
-  font-size: 8px !important;
+  font-size: 10px !important;
 }
 .forecast-y-label {
-  font-size: 8px !important;
-  fill: var(--soft) !important;
+  font-size: 11px !important;
+  fill: var(--muted) !important;
 }
 .forecast-legend {
   color: var(--muted);
@@ -621,7 +617,7 @@ button:active {
 .forecast text,
 .dial text {
   font:
-    9px 'Geist Mono Variable',
+    11px 'Geist Mono Variable',
     monospace;
   fill: var(--muted);
 }
@@ -897,6 +893,7 @@ button:active {
 .dial-center-label {
   text-transform: uppercase;
   letter-spacing: 0.08em;
+  font-size: 9px !important;
 }
 .dial-region {
   transition: opacity 0.15s;
@@ -910,7 +907,7 @@ button:active {
   stroke-width: 2.5px;
   paint-order: stroke;
   font:
-    700 6px 'Geist Mono Variable',
+    700 8px 'Geist Mono Variable',
     monospace !important;
 }
 .dial-explainer {
@@ -977,6 +974,7 @@ button:active {
 }
 .dial-date {
   fill: var(--muted) !important;
+  font-size: 10px !important;
 }
 .regions-section {
   border-top: 1px solid var(--rule);
@@ -2367,4 +2365,10 @@ button:active {
   padding: 0 16px 32px;
   color: var(--muted);
   line-height: 1.6;
+}
+
+@media (min-width: 720px) {
+  .forecast {
+    height: 240px;
+  }
 }

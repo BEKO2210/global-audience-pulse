@@ -245,7 +245,8 @@
 
 .lr-trend-svg {
   width: 100%;
-  height: auto;
+  /* drawn in CSS pixels (useSvgBox): fixed height, labels keep their size */
+  height: 180px;
   display: block;
 }
 
