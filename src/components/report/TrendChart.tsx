@@ -2,7 +2,7 @@ import type { AnalysisFacts } from './types'
 
 const W = 280
 const H = 72
-const PAD = { t: 8, r: 4, b: 22, l: 4 }
+const PAD = { t: 8, r: 26, b: 22, l: 26 }
 
 export function TrendChart({ facts }: { facts: AnalysisFacts }) {
   const now = facts.gesamt?.score

@@ -6,7 +6,11 @@ type LegalPageKind = 'impressum' | 'datenschutz'
 function LegalHeader() {
   return (
     <header className="legal-header">
-      <a className="wordmark" href={import.meta.env.BASE_URL} aria-label="Zur Startseite">
+      <a
+        className="wordmark"
+        href={import.meta.env.BASE_URL}
+        aria-label="Global Audience Pulse, Startseite"
+      >
         <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" width="32" height="32" />
         <span>
           Global Audience

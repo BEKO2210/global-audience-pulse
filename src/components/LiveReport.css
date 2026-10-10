@@ -200,7 +200,7 @@
 
 .lr-live-row {
   display: grid;
-  grid-template-columns: minmax(0, 5.5rem) 1fr auto;
+  grid-template-columns: 7.5rem minmax(0, 1fr) 3.6rem;
   gap: 8px;
   align-items: center;
   font-size: 13px;
@@ -422,4 +422,19 @@
 .lr-root.is-stale .lr-live-hint,
 .lr-root.is-stale .lr-audience-urteil {
   color: var(--muted);
+}
+
+/* Base .live-report li adds a bullet indent; these rows are a table, align them with the blocks above. */
+.live-report .lr-live-row {
+  padding-left: 0;
+}
+.live-report .lr-live-row::before {
+  display: none;
+}
+.lr-live-meta span,
+.lr-live-meta {
+  white-space: nowrap;
+}
+.lr-live-row > :last-child {
+  text-align: right;
 }
