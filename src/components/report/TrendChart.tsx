@@ -3,7 +3,7 @@ import type { AnalysisFacts } from './types'
 
 const W = 360
 const H = 140
-const PAD = { t: 26, r: 24, b: 24, l: 24 }
+const PAD = { t: 26, r: 34, b: 24, l: 24 }
 
 export function TrendChart({ facts }: { facts: AnalysisFacts }) {
   const now = facts.gesamt?.score
@@ -76,8 +76,8 @@ export function TrendChart({ facts }: { facts: AnalysisFacts }) {
             return (
               <g key={lvl.min} className="lr-trend-threshold">
                 <line x1={PAD.l} x2={W - PAD.r} y1={y} y2={y} className="lr-trend-threshold-line" />
-                <text x={PAD.l + 4} y={y - 4} className="lr-trend-threshold-label">
-                  {lvl.label} ab {lvl.min}
+                <text x={W - PAD.r + 6} y={y + 3.5} className="lr-trend-threshold-value">
+                  {lvl.min}
                 </text>
               </g>
             )
@@ -99,6 +99,19 @@ export function TrendChart({ facts }: { facts: AnalysisFacts }) {
             )
           })}
         </svg>
+        {visibleLevels.length > 0 && (
+          <figcaption className="lr-trend-legend">
+            {visibleLevels
+              .slice()
+              .reverse()
+              .map((lvl) => (
+                <span key={lvl.min} className="lr-trend-legend-item">
+                  <span className="lr-trend-legend-swatch" aria-hidden="true" />
+                  {lvl.label} ab {lvl.min}
+                </span>
+              ))}
+          </figcaption>
+        )}
       </figure>
       <table className="sr-only">
         <caption>Score-Trend nächste Stunden</caption>
