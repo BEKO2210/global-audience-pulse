@@ -1,4 +1,26 @@
 /* Visual Lagebericht — extends base .live-report rules in styles.css */
+:root {
+  --region-series-0: var(--series-1);
+  --region-series-1: var(--series-2);
+  --region-series-2: var(--series-3);
+  --region-series-3: var(--series-4);
+  --region-series-4: var(--series-5);
+  --region-series-5: #d4a373;
+  --region-series-6: #b58ecc;
+  --region-series-7: #5fb3a1;
+}
+
+[data-theme='light'] {
+  --region-series-0: var(--series-1);
+  --region-series-1: #9a7618;
+  --region-series-2: var(--series-3);
+  --region-series-3: var(--series-4);
+  --region-series-4: var(--series-5);
+  --region-series-5: #805826;
+  --region-series-6: #6e4a85;
+  --region-series-7: #236b5e;
+}
+
 .lr-root {
   max-width: none;
 }
@@ -58,38 +80,71 @@
 .lr-block-total {
   margin: 0 0 10px;
   font-size: 14px;
+  font-weight: 400;
 }
 
 .lr-contrib-bar {
   display: flex;
   width: 100%;
-  height: 10px;
+  height: 24px;
   border: 1px solid var(--rule-solid);
   overflow: hidden;
   background: var(--paper-2);
+  margin-bottom: 12px;
 }
 
-.lr-root:not(.is-entered) .lr-contrib-segment {
+.lr-root:not(.is-entered) .lr-contrib-segment,
+.lr-root:not(.is-entered) .lr-contrib-row-bar {
   transform: scaleX(0);
   transform-origin: left center;
 }
 
-.lr-root.is-entered .lr-contrib-segment {
+.lr-root.is-entered .lr-contrib-segment,
+.lr-root.is-entered .lr-contrib-row-bar {
   transform: scaleX(1);
   transition: transform 0.55s var(--motion-ease, ease);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .lr-root .lr-contrib-segment {
+  .lr-root .lr-contrib-segment,
+  .lr-root .lr-contrib-row-bar {
     transform: scaleX(1);
     transition: none;
   }
 }
 
 .lr-contrib-segment {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 100%;
-  min-width: 1px;
+  min-width: 2px;
+  padding: 0 2px;
+  cursor: pointer;
+  outline: none;
+  position: relative;
+  transition:
+    opacity 0.2s ease,
+    filter 0.2s ease;
+  overflow: hidden;
+}
+
+.lr-contrib-segment-flag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.lr-contrib-segment:focus-visible,
+.lr-contrib-segment.is-active {
+  box-shadow: inset 0 0 0 2px var(--ink);
+  filter: brightness(1.2);
+  z-index: 2;
+}
+
+.lr-contrib-segment.is-dimmed {
+  opacity: 0.35;
 }
 
 .lr-contrib-legend {
@@ -97,29 +152,71 @@
   margin: 12px 0 0;
   padding: 0;
   display: grid;
-  gap: 6px;
+  gap: 4px;
 }
 
 .lr-contrib-legend li {
-  display: flex;
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr) 2rem;
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  padding: 0;
+  padding: 4px 6px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    opacity 0.15s ease;
 }
 
 .lr-contrib-legend li::before {
   display: none;
 }
 
+.lr-contrib-legend li:focus-visible,
+.lr-contrib-legend li:hover,
+.lr-contrib-legend li.is-active {
+  background: var(--paper-2);
+  outline: 1px solid var(--rule-solid);
+}
+
+.lr-contrib-legend li.is-dimmed {
+  opacity: 0.4;
+}
+
+.lr-contrib-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
 .lr-contrib-city {
   flex: 1;
   min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lr-contrib-row-track {
+  height: 8px;
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  overflow: hidden;
+  position: relative;
+}
+
+.lr-contrib-row-bar {
+  display: block;
+  height: 100%;
+  min-width: 2px;
 }
 
 .lr-contrib-pts {
   color: var(--muted);
   font-size: 12px;
+  text-align: right;
 }
 
 .lr-delta {
@@ -143,11 +240,11 @@
 
 .lr-trend-figure {
   margin: 0;
+  width: 100%;
 }
 
 .lr-trend-svg {
   width: 100%;
-  max-width: 320px;
   height: auto;
   display: block;
 }
@@ -170,17 +267,36 @@
 
 .lr-trend-score {
   font:
-    10px 'Geist Mono Variable',
+    600 11px/1 'Geist Mono Variable',
     monospace;
+  font-variant-numeric: tabular-nums;
   fill: var(--ink);
 }
 
 .lr-trend-label {
   font:
-    9px 'Geist Mono Variable',
+    10px 'Geist Mono Variable',
     monospace;
   fill: var(--muted);
   text-transform: lowercase;
+}
+
+.lr-trend-threshold-line {
+  stroke: var(--rule-solid);
+  stroke-dasharray: 4 4;
+  stroke-width: 1;
+  opacity: 0.6;
+}
+
+.lr-trend-threshold-label {
+  font:
+    10px 'Geist Mono Variable',
+    monospace;
+  fill: var(--muted);
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: 3px;
+  stroke-linejoin: round;
 }
 
 .lr-live-hint {
@@ -188,6 +304,40 @@
   line-height: 1.45;
   color: var(--muted);
   margin: 0 0 12px;
+}
+
+.lr-live-header {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr) 3.6rem;
+  gap: 8px;
+  align-items: center;
+  font:
+    10px/1 'Geist Mono Variable',
+    monospace;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.lr-live-header-track {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lr-live-head-quiet {
+  text-align: left;
+}
+
+.lr-live-head-mid {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.lr-live-head-active {
+  text-align: right;
 }
 
 .lr-live-list {
@@ -200,7 +350,7 @@
 
 .lr-live-row {
   display: grid;
-  grid-template-columns: 7.5rem minmax(0, 1fr) 3.6rem;
+  grid-template-columns: 6.5rem minmax(0, 1fr) 3.6rem;
   gap: 8px;
   align-items: center;
   font-size: 13px;
@@ -222,7 +372,7 @@
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  height: 8px;
+  height: 12px;
   background: var(--paper-2);
   border: 1px solid var(--rule);
 }
@@ -258,18 +408,75 @@
   min-width: 1px;
 }
 
+.lr-root:not(.is-entered) .lr-live-bar {
+  transform: scaleX(0);
+}
+
+.lr-root:not(.is-entered) .lr-live-half-left .lr-live-bar {
+  transform-origin: right center;
+}
+
+.lr-root:not(.is-entered) .lr-live-half-right .lr-live-bar {
+  transform-origin: left center;
+}
+
+.lr-root.is-entered .lr-live-bar {
+  transform: scaleX(1);
+  transition: transform 0.55s var(--motion-ease, ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lr-root .lr-live-bar {
+    transform: scaleX(1);
+    transition: none;
+  }
+}
+
 .lr-live-bar-quiet {
-  background: var(--series-4);
+  background: var(--link);
 }
 
 .lr-live-bar-active {
   background: var(--accent);
 }
 
+.lr-live-val-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
 .lr-live-val {
   font-size: 11px;
   min-width: 3.2rem;
   text-align: right;
+}
+
+.lr-live-val-active {
+  color: var(--accent);
+}
+
+.lr-live-val-quiet {
+  color: var(--link);
+}
+
+.lr-live-val-flat {
+  color: var(--muted);
+}
+
+.lr-live-badge {
+  font:
+    600 8.5px/1 'Geist Mono Variable',
+    monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 4px;
+  border: 1px solid var(--accent);
+  color: var(--accent-ink, var(--accent));
+  background: var(--accent-tint);
+  border-radius: 2px;
+  white-space: nowrap;
 }
 
 .lr-audience-grid {
@@ -431,10 +638,12 @@
 }
 
 /* Base .live-report li adds a bullet indent; these rows are a table, align them with the blocks above. */
-.live-report .lr-live-row {
-  padding-left: 0;
+.live-report .lr-live-row,
+.live-report .lr-contrib-legend li {
+  padding-left: 6px;
 }
-.live-report .lr-live-row::before {
+.live-report .lr-live-row::before,
+.live-report .lr-contrib-legend li::before {
   display: none;
 }
 .lr-live-meta span,

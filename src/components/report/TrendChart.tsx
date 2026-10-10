@@ -1,8 +1,9 @@
+import { STATUS_LEVELS } from '../../config/model'
 import type { AnalysisFacts } from './types'
 
-const W = 280
-const H = 72
-const PAD = { t: 8, r: 26, b: 22, l: 26 }
+const W = 360
+const H = 140
+const PAD = { t: 26, r: 24, b: 24, l: 24 }
 
 export function TrendChart({ facts }: { facts: AnalysisFacts }) {
   const now = facts.gesamt?.score
@@ -12,20 +13,36 @@ export function TrendChart({ facts }: { facts: AnalysisFacts }) {
   const points = [
     { label: 'jetzt', h: 0, score: now },
     ...trend.map((t) => ({
-      label: `+${t.inStunden}`,
+      label: `+${t.inStunden} h`,
       h: t.inStunden,
       score: t.score,
     })),
   ]
 
   const scores = points.map((p) => p.score)
-  const min = Math.min(...scores) - 2
-  const max = Math.max(...scores) + 2
-  const span = max - min || 1
+  const minScore = Math.min(...scores)
+  const maxScore = Math.max(...scores)
+
+  const candidateThresholds = [...STATUS_LEVELS]
+    .filter((l) => l.min > 0)
+    .sort((a, b) => a.min - b.min)
+  const lowerThreshold = candidateThresholds.filter((l) => l.min <= minScore).at(-1)
+  const upperThreshold =
+    candidateThresholds.find((l) => l.min >= maxScore) ?? candidateThresholds.at(-1)!
+
+  const yMin = Math.max(
+    0,
+    Math.min(minScore - 5, lowerThreshold ? lowerThreshold.min - 4 : minScore - 6),
+  )
+  const yMax = Math.max(maxScore + 6, upperThreshold ? upperThreshold.min + 4 : maxScore + 6)
+  const span = yMax - yMin || 1
+
   const innerW = W - PAD.l - PAD.r
   const innerH = H - PAD.t - PAD.b
   const xAt = (i: number) => PAD.l + (i / (points.length - 1)) * innerW
-  const yAt = (score: number) => PAD.t + innerH - ((score - min) / span) * innerH
+  const yAt = (score: number) => PAD.t + innerH - ((score - yMin) / span) * innerH
+
+  const visibleLevels = candidateThresholds.filter((l) => l.min >= yMin + 2 && l.min <= yMax - 2)
 
   const line = points.map((p, i) => `${xAt(i)},${yAt(p.score)}`).join(' ')
   const area = `${PAD.l},${PAD.t + innerH} ${line} ${xAt(points.length - 1)},${PAD.t + innerH}`
@@ -54,18 +71,33 @@ export function TrendChart({ facts }: { facts: AnalysisFacts }) {
           aria-label={`Score von ${now} jetzt auf ${last.score} in ${last.inStunden} Stunden`}
         >
           <polygon className="lr-trend-area" points={area} />
+          {visibleLevels.map((lvl) => {
+            const y = yAt(lvl.min)
+            return (
+              <g key={lvl.min} className="lr-trend-threshold">
+                <line x1={PAD.l} x2={W - PAD.r} y1={y} y2={y} className="lr-trend-threshold-line" />
+                <text x={PAD.l + 4} y={y - 4} className="lr-trend-threshold-label">
+                  {lvl.label} ab {lvl.min}
+                </text>
+              </g>
+            )
+          })}
           <polyline className="lr-trend-line" points={line} fill="none" />
-          {points.map((p, i) => (
-            <g key={p.label}>
-              <circle className="lr-trend-dot" cx={xAt(i)} cy={yAt(p.score)} r={3} />
-              <text className="lr-trend-score" x={xAt(i)} y={H - 4} textAnchor="middle">
-                {p.score}
-              </text>
-              <text className="lr-trend-label" x={xAt(i)} y={H - 14} textAnchor="middle">
-                {p.label}
-              </text>
-            </g>
-          ))}
+          {points.map((p, i) => {
+            const cx = xAt(i)
+            const cy = yAt(p.score)
+            return (
+              <g key={p.label} className="lr-trend-point">
+                <circle className="lr-trend-dot" cx={cx} cy={cy} r={3.5} />
+                <text className="lr-trend-score" x={cx} y={cy - 8} textAnchor="middle">
+                  {p.score}
+                </text>
+                <text className="lr-trend-label" x={cx} y={H - 6} textAnchor="middle">
+                  {p.label}
+                </text>
+              </g>
+            )
+          })}
         </svg>
       </figure>
       <table className="sr-only">

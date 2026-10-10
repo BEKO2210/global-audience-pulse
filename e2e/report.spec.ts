@@ -51,16 +51,66 @@ test('renders visual blocks from the v2 fixture', async ({ page }) => {
 
   await expect(section.getByRole('heading', { name: 'Wer trägt den Wert' })).toBeVisible()
   await expect(section.locator('.lr-contrib-bar')).toBeVisible()
-  await expect(section.getByText('= 36 von 100')).toBeVisible()
+  await expect(section.getByText('Berlin trägt 14 von 36 Punkten')).toBeVisible()
   await expect(section.locator('.lr-contrib-legend')).toContainText('Berlin')
   await expect(section.locator('.lr-contrib-legend .lr-mono').first()).toHaveText('14')
+
+  const segments = section.locator('.lr-contrib-segment')
+  const rowBars = section.locator('.lr-contrib-row-bar')
+  const rows = section.locator('.lr-contrib-row')
+  await expect(segments).toHaveCount(8)
+  await expect(rowBars).toHaveCount(8)
+
+  // Segment-Farbe = Zeilen-Farbe
+  for (let i = 0; i < 8; i++) {
+    const segColor = await segments.nth(i).evaluate((el) => getComputedStyle(el).backgroundColor)
+    const rowColor = await rowBars.nth(i).evaluate((el) => getComputedStyle(el).backgroundColor)
+    expect(segColor).toBe(rowColor)
+  }
+
+  // Segmente >= 8 % zeigen die Flagge (5 von 8 Regionen im Fixture)
+  await expect(section.locator('.lr-contrib-segment img')).toHaveCount(5)
+
+  // Hover hebt das Paar (Segment + Zeile) gemeinsam hervor
+  await segments.first().hover()
+  await expect(segments.first()).toHaveClass(/is-active/)
+  await expect(rows.first()).toHaveClass(/is-active/)
 
   await expect(section.getByRole('heading', { name: 'Trend' })).toBeVisible()
   await expect(section.getByText('+9 in 3 h')).toBeVisible()
   await expect(section.locator('.lr-trend-svg')).toContainText('45')
 
+  // Schwellenlinien aus STATUS_LEVELS vorhanden
+  await expect(section.locator('.lr-trend-threshold')).toHaveCount(2)
+  await expect(section.getByText('Im Aufbau ab 42')).toBeVisible()
+  await expect(section.getByText('Gutes Momentum ab 62')).toBeVisible()
+
+  // Werte an den Punkten
+  const scores = await section.locator('.lr-trend-score').allTextContents()
+  expect(scores).toEqual(['36', '39', '42', '45'])
+
   await expect(section.getByRole('heading', { name: 'Live-Signal' })).toBeVisible()
-  await expect(section.getByText('-28 %')).toBeVisible()
+  await expect(section.locator('.lr-live-head-quiet')).toHaveText('ruhiger')
+  await expect(section.locator('.lr-live-head-mid')).toHaveText('üblich')
+  await expect(section.locator('.lr-live-head-active')).toHaveText('aktiver')
+
+  // Live-Signal nach |Abweichung| sortiert
+  const signalCities = await section.locator('.lr-live-row .lr-live-meta span').allTextContents()
+  expect(signalCities).toEqual(['Berlin', 'São Paulo', 'Dubai', 'Mumbai', 'Tokio'])
+
+  // Bei |Abweichung| > 15 % Hinweis „auffällig“ (Berlin: -28 %)
+  await expect(section.locator('.lr-live-badge')).toHaveText('auffällig')
+
+  // Farbcodierung nach Richtung
+  await expect(section.locator('.lr-live-val-quiet').first()).toContainText('-28 %')
+  await expect(section.locator('.lr-live-val-active').first()).toContainText('+8 %')
+
+  // Dickere Balken (>= 10 px)
+  const trackHeight = await section
+    .locator('.lr-live-track')
+    .first()
+    .evaluate((el) => parseFloat(getComputedStyle(el).height))
+  expect(trackHeight).toBeGreaterThanOrEqual(10)
 
   await expect(section.getByRole('heading', { name: 'Zielgruppen' })).toBeVisible()
   await expect(section.locator('.lr-audience-tile')).toHaveCount(5)
