@@ -43,7 +43,7 @@ export const PLATFORMS = [
     category: 'social',
     focus: 'B2B-Themen, Thought Leadership, Engagement-Formate',
     domains: ['linkedin.com', 'news.linkedin.com'],
-    live: news('LinkedIn', 'creator algorithm trend'),
+    live: news('LinkedIn', 'creators'),
   },
   {
     id: 'youtube',
@@ -67,7 +67,7 @@ export const PLATFORMS = [
     category: 'social',
     focus: 'Reels-Konzepte, Karussell-Logik, Bildsprache, Captions',
     domains: ['instagram.com', 'about.instagram.com', 'creators.instagram.com'],
-    live: news('Instagram', 'Reels creator trend'),
+    live: news('"Instagram Reels"', 'OR "Instagram creator"'),
   },
   {
     id: 'threads',

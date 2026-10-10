@@ -3,11 +3,17 @@
 
 const UA = 'Mozilla/5.0 (X11; Linux x86_64) global-audience-pulse-research/1.0'
 
-async function get(url, accept = 'application/json') {
+async function get(url, accept = 'application/json', retries = 1) {
   const res = await fetch(url, {
     headers: { 'User-Agent': UA, Accept: accept },
     signal: AbortSignal.timeout(15_000),
   })
+  if (res.status === 429 && retries > 0) {
+    // Rate limited (Reddit after bursts): one polite retry after the advertised or a default pause.
+    const wait = Math.min(Number(res.headers.get('retry-after')) || 8, 30) * 1000
+    await new Promise((r) => setTimeout(r, wait))
+    return get(url, accept, retries - 1)
+  }
   if (!res.ok) throw new Error(`${new URL(url).host} ${res.status}`)
   return accept.includes('json') ? res.json() : res.text()
 }
@@ -54,7 +60,8 @@ export async function gitHub(topic, now = Date.now()) {
 export async function reddit(topic) {
   const url = topic
     ? `https://www.reddit.com/search.rss?q=${encodeURIComponent(topic)}&sort=top&t=week&limit=25`
-    : 'https://www.reddit.com/r/popular/top/.rss?t=day&limit=25'
+    : // r/popular is mostly news; creator subreddits carry the pain points this agent is for
+      'https://www.reddit.com/r/NewTubers+ContentCreators+socialmedia+youtubers+Tiktokhelp+InstagramMarketing+creators/top/.rss?t=week&limit=25'
   return parseRedditAtom(await get(url, 'application/atom+xml'))
 }
 

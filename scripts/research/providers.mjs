@@ -11,7 +11,10 @@ ${topic ? `Thema/Nische des Creators: "${topic}".` : 'Keine Nische vorgegeben: a
 
 Arbeite NUR mit den mitgelieferten Live-Daten (gerade aus dem Netz geholt; Quellen u. a. ${platform.domains.join(', ')}
 und Nachrichten der letzten 7 Tage). Erfinde keine Trends, Zahlen, Zitate oder Accounts.
-Liefere auf Deutsch, konkret und knapp (je Eintrag ≤ 140 Zeichen):
+Schreibe AUSSCHLIESSLICH auf Deutsch (Eigennamen/Hashtags bleiben). Keine Vermutungen ("wahrscheinlich",
+"likely", "vermutlich") – nur, was die Daten zeigen. Wähle Trends, die für Creator nutzbar sind; lass Unglücke,
+Gewalt, Todesfälle sowie religiös oder politisch aufgeladene Einzelereignisse weg.
+Liefere konkret und knapp (je Eintrag ≤ 140 Zeichen):
 - topTrends: 3–5 aktuelle Trends/Themen auf ${platform.name}, belegt durch die Daten
 - provenHooks: 3–5 Hook-Formeln, die zu diesen Trends passen (als Vorlage formuliert)
 - corePainPoints: 3–5 Probleme/Fragen, die die Zielgruppe laut Daten äußert oder hat

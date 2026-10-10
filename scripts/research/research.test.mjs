@@ -207,3 +207,43 @@ describe('ollamaProvider', () => {
     )
   })
 })
+
+describe('publish payload', () => {
+  it('maps evidence lines to deduped source links and keeps the AI labels', async () => {
+    const { buildPayload, toSource } = await import('./publish.mjs')
+    expect(toSource('Titel – Blog (2026-10-09) https://a.example/x')).toEqual({
+      title: 'Titel – Blog',
+      url: 'https://a.example/x',
+    })
+    expect(toSource('ohne Link')).toBeNull()
+    const payload = buildPayload({
+      results: [
+        {
+          id: 'x',
+          result: good(),
+          evidence: 3,
+          evidenceSample: ['A https://t.example/', 'B https://t.example/', 'C https://u.example/'],
+        },
+      ],
+      durationMs: 1000,
+      model: 'qwen3.5:9b',
+      now: new Date('2026-10-10T12:00:00Z'),
+    })
+    expect(payload).toMatchObject({
+      version: 1,
+      aiGenerated: true,
+      generatedAt: '2026-10-10T12:00:00.000Z',
+    })
+    expect(payload.platforms[0]).toMatchObject({
+      id: 'x',
+      name: 'X (Twitter)',
+      category: 'social',
+      evidence: 3,
+    })
+    expect(payload.platforms[0]).not.toHaveProperty('platform')
+    expect(payload.platforms[0].sources.map((s) => s.url)).toEqual([
+      'https://t.example/',
+      'https://u.example/',
+    ])
+  })
+})

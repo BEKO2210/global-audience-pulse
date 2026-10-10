@@ -4,6 +4,17 @@ import { join } from 'node:path'
 import { MIN_EVIDENCE } from './platforms.mjs'
 import { errorResult } from './schema.mjs'
 
+/** First line per distinct URL, so a card links to different sources (trends24 repeats one URL). */
+export function uniqueByUrl(lines) {
+  const seen = new Set()
+  return lines.filter((line) => {
+    const url = line.match(/https?:\/\/\S+/)?.[0]
+    if (!url || seen.has(url)) return false
+    seen.add(url)
+    return true
+  })
+}
+
 export const STATES = { pending: 'Wartet', running: 'Läuft', done: 'Fertig', error: 'Fehler' }
 
 /** Minimal semaphore: the GPU runs one model call at a time, everything else stays parallel. */
@@ -76,6 +87,7 @@ export async function dispatch(
       id: platform.id,
       ...out,
       evidence: evidence.length,
+      evidenceSample: uniqueByUrl(evidence).slice(0, 12),
       durationMs: Date.now() - t0,
       cached: false,
     }
