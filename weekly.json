@@ -1,0 +1,117 @@
+{
+  "version": 1,
+  "woche": "2026-W43",
+  "generatedAt": "2026-10-25T17:04:41.460Z",
+  "aiGenerated": true,
+  "source": "llm",
+  "sourceEn": "llm",
+  "facts": {
+    "woche": "2026-W43",
+    "stunden": 157,
+    "tage": [
+      {
+        "datum": "2026-10-18",
+        "tag": "Sonntag",
+        "hoch": 72,
+        "hochUm": "21:00",
+        "mittel": 68
+      },
+      {
+        "datum": "2026-10-19",
+        "tag": "Montag",
+        "hoch": 75,
+        "hochUm": "20:01",
+        "mittel": 54
+      },
+      {
+        "datum": "2026-10-20",
+        "tag": "Dienstag",
+        "hoch": 75,
+        "hochUm": "20:01",
+        "mittel": 56
+      },
+      {
+        "datum": "2026-10-21",
+        "tag": "Mittwoch",
+        "hoch": 75,
+        "hochUm": "20:00",
+        "mittel": 55
+      },
+      {
+        "datum": "2026-10-22",
+        "tag": "Donnerstag",
+        "hoch": 75,
+        "hochUm": "20:00",
+        "mittel": 55
+      },
+      {
+        "datum": "2026-10-23",
+        "tag": "Freitag",
+        "hoch": 76,
+        "hochUm": "20:00",
+        "mittel": 55
+      },
+      {
+        "datum": "2026-10-24",
+        "tag": "Samstag",
+        "hoch": 73,
+        "hochUm": "21:00",
+        "mittel": 52
+      },
+      {
+        "datum": "2026-10-25",
+        "tag": "Sonntag",
+        "hoch": 64,
+        "hochUm": "18:00",
+        "mittel": 44
+      }
+    ],
+    "besteStunden": [
+      {
+        "stunde": "20:00",
+        "mittel": 74
+      },
+      {
+        "stunde": "21:00",
+        "mittel": 73
+      },
+      {
+        "stunde": "19:00",
+        "mittel": 71
+      }
+    ],
+    "wochenhoch": {
+      "score": 76,
+      "tag": "Freitag",
+      "um": "20:00"
+    },
+    "wochentief": {
+      "score": 30,
+      "tag": "Sonntag",
+      "um": "08:00"
+    },
+    "wochenmittel": 54
+  },
+  "report": {
+    "schlagzeile": "Die Woche 43 zeigte stabile Werte mit einem Hoch am Freitag",
+    "empfehlung": "Die Uhrzeit 20:00 war diese Woche am attraktivsten.",
+    "analyse": "Der stärkste Tag war Freitag mit einem Wert von 76 und der schwächste Tag war Sonntag mit einem Wert von 64. Das Wochenhoch wurde am Freitag um 20:00 erreicht, während das Wochentief am Sonntag um 08:00 lag.",
+    "punkte": [
+      "Gesamtanzahl der Stunden: 157",
+      "Wochenmittelwert: 54",
+      "Höchster Wert der Woche: 76"
+    ],
+    "zielgruppen": []
+  },
+  "reportEn": {
+    "schlagzeile": "Week 43 showed stable figures with a peak on Friday",
+    "empfehlung": "The time 20:00 was most attractive this week.",
+    "analyse": "The strongest day was Friday with a value of 76 and the weakest day was Sunday with a value of 64. The weekly peak was reached on Friday at 20:00, while the weekly low was on Sunday at 08:00.",
+    "punkte": [
+      "Total hours: 157",
+      "Weekly average: 54",
+      "Weekly high: 76"
+    ],
+    "zielgruppen": []
+  }
+}
