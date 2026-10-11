@@ -4,7 +4,7 @@
 set -u
 cd "$(dirname "$0")/.."
 MODELS=("$@")
-[ ${#MODELS[@]} -eq 0 ] && MODELS=(qwen3.5:9b-agent32k qwen3.5:4b gemma4:e4b-it-qat gemma4:12b-it-qat)
+[ ${#MODELS[@]} -eq 0 ] && MODELS=(qwen3.5:9b-agent32k gemma4:12b-it-qat ornith-1.5:9b qwen3.5:4b-mtp-q4_K_M gemma4:e4b-it-qat)
 for m in "${MODELS[@]}"; do
   echo "== $m"
   E2E_TELEMETRY_DISABLED=1 E2E_MODEL="$m" scripts/dev/gpu-lock.sh -w 1800 -- npx e2e run cage-ai/look.e2e.ts >"cage-ai/results/run-${m//[:\/]/_}.log" 2>&1
