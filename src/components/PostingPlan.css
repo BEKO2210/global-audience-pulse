@@ -140,7 +140,7 @@
 .pp-bar i {
   display: block;
   height: 100%;
-  background: var(--ink);
+  background: var(--ink-strong);
 }
 .pp-actions {
   grid-area: jump;

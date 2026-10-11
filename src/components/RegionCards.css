@@ -216,8 +216,8 @@
     background-color 0.2s var(--motion-ease);
 }
 .region-switch[aria-checked='true'] .region-switch-track {
-  border-color: var(--ink);
-  background: var(--ink);
+  border-color: var(--ink-strong);
+  background: var(--ink-strong);
 }
 .region-switch[aria-checked='true'] .region-switch-knob {
   background: var(--paper);

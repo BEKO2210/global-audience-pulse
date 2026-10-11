@@ -65,9 +65,14 @@
   --series-3: #5fb3a4;
   --series-4: #8fa4e0;
   --series-5: #c88aaa;
-  --map-day: #4a5057;
-  --map-twilight: rgba(35, 39, 47, 0.18);
-  --map-night: rgba(4, 7, 12, 0.58);
+  --ink-strong: color-mix(in srgb, var(--ink) 72%, var(--paper));
+  --phase-sleep: color-mix(in srgb, var(--ink) 16%, var(--paper));
+  --phase-morning: color-mix(in srgb, var(--ink) 62%, var(--paper));
+  --phase-day: color-mix(in srgb, var(--ink) 88%, var(--paper));
+  --phase-late: color-mix(in srgb, var(--ink) 38%, var(--paper));
+  --map-day: color-mix(in srgb, var(--ink) 38%, var(--paper));
+  --map-twilight: rgba(0, 0, 0, 0.3);
+  --map-night: rgba(0, 0, 0, 0.62);
 }
 @media (min-width: 600px) {
   :root {
@@ -105,6 +110,11 @@
   --series-3: #2f7d70;
   --series-4: #4f63a8;
   --series-5: #94577a;
+  --ink-strong: color-mix(in srgb, var(--ink) 88%, var(--paper));
+  --phase-sleep: color-mix(in srgb, var(--ink) 25%, var(--paper));
+  --phase-morning: color-mix(in srgb, var(--ink) 60%, var(--paper));
+  --phase-day: color-mix(in srgb, var(--ink) 85%, var(--paper));
+  --phase-late: color-mix(in srgb, var(--ink) 40%, var(--paper));
   --map-day: #8b9097;
   --map-twilight: rgba(150, 140, 120, 0.14);
   --map-night: rgba(30, 36, 50, 0.16);
@@ -136,7 +146,11 @@
   --series-3: #5fb8b2;
   --series-4: #8ea6dd;
   --series-5: #c391b4;
-  --map-day: #4b5f63;
+  --map-day: color-mix(in srgb, var(--ink) 38%, var(--paper));
+}
+[data-style='atlas'][data-theme='dark'] {
+  --map-twilight: rgba(0, 0, 0, 0.3);
+  --map-night: rgba(0, 0, 0, 0.62);
 }
 [data-style='atlas'][data-theme='light'] {
   --paper: #eef1ee;
@@ -185,7 +199,12 @@
   --series-3: #4fb8a8;
   --series-4: #b48cf0;
   --series-5: #e0829f;
-  --map-day: #474e5a;
+  --map-day: color-mix(in srgb, var(--ink) 38%, var(--paper));
+}
+[data-style='praezision'][data-theme='dark'] {
+  --link: #63c6c3;
+  --map-twilight: rgba(0, 0, 0, 0.3);
+  --map-night: rgba(0, 0, 0, 0.62);
 }
 [data-style='praezision'][data-theme='light'] {
   --paper: #fafaf8;
@@ -233,7 +252,12 @@
   --series-3: #6fae9f;
   --series-4: #9aa3d0;
   --series-5: #c98fae;
-  --map-day: #4a453d;
+  --map-day: color-mix(in srgb, var(--ink) 38%, var(--paper));
+}
+[data-style='archiv'][data-theme='dark'] {
+  --link: #68bdb7;
+  --map-twilight: rgba(0, 0, 0, 0.3);
+  --map-night: rgba(0, 0, 0, 0.62);
 }
 [data-style='archiv'][data-theme='light'] {
   --paper: #f8f6f0;
@@ -1269,6 +1293,7 @@ button:active {
   width: 14px;
   height: 10px;
   display: block;
+  border: 1px solid var(--rule-solid);
 }
 .heat-cell:hover {
   border-color: var(--ink);
@@ -1370,7 +1395,7 @@ button:active {
   width: 12px;
   height: 6px;
   flex: none;
-  border: 1px solid var(--rule);
+  border: 1px solid var(--rule-solid);
 }
 .ring-direction {
   margin: var(--space-1) 0 0;
