@@ -104,15 +104,6 @@ function anomalyText(anomaly: Anomaly, data: LiveAnalysisPayload, locale: Locale
 /** Pseudo-elements on the live flag need a little slack in off-DOM measurement. */
 const TEASER_MEASURE_SLACK = 12
 
-/** Ellipsis at a word boundary (never mid-word). */
-function truncateWords(text: string, maxChars: number): string {
-  if (text.length <= maxChars) return text
-  const slice = text.slice(0, maxChars)
-  const lastSpace = slice.lastIndexOf(' ')
-  if (lastSpace > 0) return `${slice.slice(0, lastSpace)}…`
-  return `${slice.slice(0, maxChars - 1)}…`
-}
-
 function measureTeaserWidth(flag: string | null, headline: string): number {
   const root = document.createElement('span')
   root.className = 'report-teaser-text'
@@ -141,19 +132,16 @@ function fitTeaserLine(
   headline: string,
 ): { mode: 'full' | 'flag-only' | 'truncated'; headline: string } {
   const budget = maxWidth - TEASER_MEASURE_SLACK
-  if (measureTeaserWidth(flag, headline) <= budget) {
-    return { mode: 'full', headline }
+  if (measureTeaserWidth(flag, headline) <= budget) return { mode: 'full', headline }
+  // shorten by whole words; at least one word must stay, otherwise show the flag alone (never a lone "…")
+  const words = headline.split(' ')
+  for (let n = words.length - 1; n >= 1; n -= 1) {
+    const clipped = `${words.slice(0, n).join(' ')}…`
+    if (measureTeaserWidth(flag, clipped) <= budget) return { mode: 'truncated', headline: clipped }
   }
-  for (let chars = headline.length; chars > 0; chars--) {
-    const clipped = truncateWords(headline, chars)
-    if (measureTeaserWidth(flag, clipped) <= budget) {
-      return { mode: 'truncated', headline: clipped }
-    }
-  }
-  if (flag && measureTeaserWidth(flag, '') <= budget) {
-    return { mode: 'flag-only', headline: '' }
-  }
-  return { mode: 'truncated', headline: truncateWords(headline, 1) }
+  return flag
+    ? { mode: 'flag-only', headline: '' }
+    : { mode: 'truncated', headline: `${words[0]}…` }
 }
 
 function ReportTeaserLine({

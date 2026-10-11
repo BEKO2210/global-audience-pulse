@@ -376,18 +376,21 @@
 }
 
 .lr-live-head-quiet {
+  grid-row: 1;
   grid-column: 1;
   justify-self: start;
   text-align: left;
 }
 
 .lr-live-head-mid {
+  grid-row: 1;
   grid-column: 1 / -1;
   justify-self: center;
   text-align: center;
 }
 
 .lr-live-head-active {
+  grid-row: 1;
   grid-column: 2;
   justify-self: end;
   text-align: right;

@@ -47,6 +47,8 @@ export async function openCaged(page: Page, style: Style, theme: Theme, lang: 'd
     },
     [style, theme, lang],
   )
+  // measure settled states, not frames mid-transition (axe once caught a fading list)
+  await page.emulateMedia({ reducedMotion: 'reduce' })
   await openReady(page)
   // deferred sections mount when they come near the viewport: walk the page once
   await page.evaluate(async () => {
@@ -208,6 +210,41 @@ export async function probe(page: Page): Promise<Probe> {
       for (const [prop, value] of paint)
         if (value && accents.has(value))
           findings.push({ rule: 'region-in-accent', where: path(el), value: `${prop} ${value}` })
+    }
+
+    // chart labels never sit on each other (map city names, trend values, axis ticks)
+    for (const svg of document.querySelectorAll('svg')) {
+      const labels = [...svg.querySelectorAll('text')]
+        .filter((t) => (t.textContent ?? '').trim() && visible(t))
+        .map((t) => {
+          // the glyph band (font size on screen), not the line box with its leading
+          const box = t.getBoundingClientRect()
+          const size = parseFloat(getComputedStyle(t).fontSize) * (t.getScreenCTM()?.a ?? 1)
+          const mid = box.top + box.height / 2
+          return {
+            t,
+            r: {
+              left: box.left,
+              right: box.right,
+              top: mid - size / 2,
+              bottom: mid + size / 2,
+              height: size,
+            },
+          }
+        })
+      for (let i = 0; i < labels.length; i += 1)
+        for (let j = i + 1; j < labels.length; j += 1) {
+          const a = labels[i]!.r
+          const b = labels[j]!.r
+          const w = Math.min(a.right, b.right) - Math.max(a.left, b.left)
+          const h = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)
+          if (w > 2 && h > 2)
+            findings.push({
+              rule: 'svg-text-overlap',
+              where: path(labels[i]!.t),
+              value: `"${labels[i]!.t.textContent}" × "${labels[j]!.t.textContent}"`,
+            })
+        }
     }
 
     // chart captions stay on one line (a wrapping caption shifts everything below on a phone)

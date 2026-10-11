@@ -50,10 +50,11 @@ const LABEL_SIDE: Record<
   us_west: { x: 0, y: 16, anchor: 'middle' },
   us_east: { x: 9, y: 4, anchor: 'start' },
   latam: { x: 9, y: 4, anchor: 'start' },
-  eu_uk: { x: -16, y: -12, anchor: 'end', leader: true },
-  eu_central: { x: 16, y: 14, anchor: 'start', leader: true },
-  mena: { x: -16, y: -10, anchor: 'end', leader: true },
-  india: { x: 16, y: 14, anchor: 'start', leader: true },
+  // London and Berlin sit a few px apart: labels point away from each other above them; Dubai left, Mumbai below right
+  eu_uk: { x: -12, y: -10, anchor: 'end', leader: true },
+  eu_central: { x: 12, y: -10, anchor: 'start', leader: true },
+  mena: { x: -10, y: 4, anchor: 'end' },
+  india: { x: 14, y: 14, anchor: 'start', leader: true },
   east_asia: { x: 9, y: 4, anchor: 'start' },
 }
 const SPHERE_PATH = path({ type: 'Sphere' }) ?? ''

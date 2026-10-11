@@ -2027,7 +2027,7 @@ button:active {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    transform: none !important;
+    /* no 'transform: none' here: it also wiped static SVG positions (map pins, chart ticks) and the switch knob */
   }
   .hero::after {
     animation: none;
@@ -2424,7 +2424,7 @@ button:active {
   background: var(--live);
   vertical-align: middle;
 }
-.report-teaser-flag::after {
+.report-teaser-flag:not(:last-child)::after {
   content: '·';
   margin-left: var(--space-2);
   color: var(--muted);

@@ -12,7 +12,7 @@ import { basename, dirname, join } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
 const OLLAMA = process.env.OLLAMA_URL ?? 'http://127.0.0.1:11434'
-const MODEL = process.env.TEST_MODEL ?? 'ornith:9b-agent32k'
+const MODEL = process.env.TEST_MODEL ?? 'ornith-1.5:9b-agent32k'
 const OUT_DIR = '.local-tests'
 
 /** Pure modules only: no components (need a DOM), no tests, no type-only files. */

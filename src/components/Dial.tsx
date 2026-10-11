@@ -139,7 +139,8 @@ export function Dial({
             return (
               <text
                 key={`ring-number-${region.id}`}
-                x={cx}
+                // rings are 9 units apart, less than the 12 px numbers on a phone: alternate sides of the 00 axis
+                x={cx + (index % 2 ? 7 : -7)}
                 y={cy - radius + 3}
                 textAnchor="middle"
                 className="dial-ring-number"
