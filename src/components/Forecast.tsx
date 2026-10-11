@@ -67,9 +67,23 @@ export function Forecast({
   const x = scaleTime()
     .domain(domain)
     .range([pad.l, width - pad.r])
+  // Window labels sit in rows above the plot, so the curve never crosses them. Rows are packed greedily: a label
+  // only moves down a row when it would touch one to its left – usually one row, so the plot keeps its height.
+  const labelRowHeight = 16
+  const LABEL_CHAR_PX = 7 // 12 px UI font, generous average glyph width
+  const rowEnds: number[] = []
+  const labelRows = windows.map((win, index) => {
+    const centre = x(win.start) + (x(win.end) - x(win.start)) / 2
+    const half = (t.windowNo(index + 1).length * LABEL_CHAR_PX) / 2 + 4
+    let row = rowEnds.findIndex((end) => end < centre - half)
+    if (row < 0) row = rowEnds.length
+    rowEnds[row] = centre + half
+    return row
+  })
+  const plotTop = pad.t + Math.max(1, rowEnds.length) * labelRowHeight + 4
   const y = scaleLinear()
     .domain([0, 100])
-    .range([height - pad.b, pad.t])
+    .range([height - pad.b, plotTop])
   const linePath =
     line<ForecastPoint>()
       .x((d) => x(d.date))
@@ -218,7 +232,7 @@ export function Forecast({
             />
             <text
               x={x(win.start) + (x(win.end) - x(win.start)) / 2}
-              y={pad.t + 12 + index * 16}
+              y={pad.t + 12 + (labelRows[index] ?? 0) * labelRowHeight}
               textAnchor="middle"
               className="window-band-label"
             >

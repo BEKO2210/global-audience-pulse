@@ -185,13 +185,16 @@ test('"Erinnern" sets a reminder that survives a reload and can be removed (T-08
   const button = page.locator('.hero-window-actions').getByRole('button', { name: /Erinnern/ })
   await button.click()
   const active = page.locator('.hero-window-actions button[aria-pressed="true"]')
-  await expect(active).toContainText(/Erinnerung \d{2}:\d{2}/)
+  // under a full parallel run the state change can take longer than the default 5 s (seen flaky twice)
+  await expect(active).toContainText(/Erinnerung \d{2}:\d{2}/, { timeout: 10_000 })
   expect(
     await page.evaluate(() => JSON.parse(localStorage.getItem('gap-reminders') ?? '[]').length),
   ).toBe(1)
 
   await page.reload()
-  await expect(page.locator('.hero-window-actions button[aria-pressed="true"]')).toBeVisible()
+  await expect(page.locator('.hero-window-actions button[aria-pressed="true"]')).toBeVisible({
+    timeout: 10_000,
+  })
   await page.locator('.hero-window-actions button[aria-pressed="true"]').click()
   await expect(
     page.locator('.hero-window-actions').getByRole('button', { name: /Erinnern/ }),

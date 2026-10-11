@@ -199,8 +199,8 @@
     background-color 0.2s var(--motion-ease);
 }
 .region-switch[aria-checked='true'] .region-switch-track {
-  border-color: var(--accent);
-  background: var(--accent);
+  border-color: var(--ink);
+  background: var(--ink);
 }
 .region-switch[aria-checked='true'] .region-switch-knob {
   background: var(--paper);
