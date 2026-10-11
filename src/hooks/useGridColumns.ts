@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react'
 
 // Must match the .region-grid breakpoints in RegionCards.css (1 → 2 → 4 columns).
 const QUERIES = [
-  ['(min-width: 960px)', 4],
+  ['(min-width: 1280px)', 4],
   ['(min-width: 600px)', 2],
 ] as const
 

@@ -1863,17 +1863,8 @@ button:active {
     padding-inline: var(--gutter);
   }
   .hero {
-    grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.7fr);
     align-items: start;
     padding-top: var(--space-16);
-  }
-  .hero-aside {
-    border-top: 0;
-    border-left: 1px solid var(--rule);
-    padding: var(--space-6);
-  }
-  .preset-grid {
-    grid-template-columns: repeat(3, 1fr);
   }
   .insight-strip {
     grid-template-columns: 1fr 1fr;
@@ -1888,15 +1879,6 @@ button:active {
   .panel {
     margin: var(--space-4);
   }
-  .method {
-    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-    gap: var(--space-12);
-  }
-  .method-head {
-    position: sticky;
-    top: var(--space-8);
-    align-self: start;
-  }
   .detail-sheet {
     max-width: 470px;
     margin-left: auto;
@@ -1904,6 +1886,19 @@ button:active {
     border-left: 1px solid var(--rule-solid);
     border-top: 0;
     padding-top: var(--space-16);
+  }
+}
+@media (min-width: 900px) {
+  .hero {
+    grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.7fr);
+  }
+  .hero-aside {
+    border-top: 0;
+    border-left: 1px solid var(--rule);
+    padding: var(--space-6);
+  }
+  .preset-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 /* Phones and small tablets: the header is logo + name + one menu button; the data age lives in the footer
@@ -2003,6 +1998,10 @@ button:active {
   }
 }
 @media (min-width: 1024px) {
+  .method {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: var(--space-12);
+  }
   .hero {
     grid-template-columns: minmax(0, 1.3fr) minmax(360px, 0.8fr);
     grid-template-rows: auto auto auto;

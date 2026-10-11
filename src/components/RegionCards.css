@@ -360,7 +360,9 @@
   .regions-section h2 {
     font-size: var(--text-3xl);
   }
+}
 
+@media (min-width: 1280px) {
   .region-grid {
     grid-template-columns: repeat(4, 1fr);
   }
