@@ -60,4 +60,7 @@ export interface LiveAnalysisPayload {
   source: 'llm' | 'template'
   facts?: AnalysisFacts
   report: AnalysisReportBody
+  /** English edition (T-015): checked translation or English template; absent in older payloads. */
+  reportEn?: AnalysisReportBody
+  sourceEn?: 'llm' | 'template'
 }

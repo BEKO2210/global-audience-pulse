@@ -3,7 +3,8 @@ import { DATA_SOURCES } from '../config/model'
 import { formatTime } from '../lib/time'
 import type { LiveAnalysisPayload } from './report/types'
 import { useLocale, useMessages } from '../i18n/LocaleProvider'
-import type { Messages } from '../i18n/locale'
+import type { Locale, Messages } from '../i18n/locale'
+import type { AnalysisReportBody } from './report/types'
 
 const DE = {
   aiAnalysis: 'Automatische AI-Analyse',
@@ -15,10 +16,24 @@ const EN: typeof DE = {
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
-/** The model writes the report in German only (until T-015); English readers get a short note. */
-export function GermanReportNote() {
+/**
+ * The report in the reader's language: the English edition when the payload has one (T-015), else the German
+ * original. `source` is the origin of the text shown (the English edition can be a template while the German one
+ * is AI-written).
+ */
+export function localizedReport(
+  data: LiveAnalysisPayload,
+  locale: Locale,
+): { report: AnalysisReportBody; lang: Locale; source: 'llm' | 'template' } {
+  if (locale === 'en' && data.reportEn)
+    return { report: data.reportEn, lang: 'en', source: data.sourceEn ?? data.source }
+  return { report: data.report, lang: 'de', source: data.source }
+}
+
+/** Shown to English readers only while a payload has no English edition yet (older reports). */
+export function GermanReportNote({ lang }: { lang: Locale }) {
   const { locale } = useLocale()
-  if (locale === 'de') return null
+  if (locale === 'de' || lang === 'en') return null
   return (
     <p className="live-report-note report-language-note" lang="en">
       The AI briefing is written in German for now.
@@ -81,19 +96,21 @@ export function ReportTeaser({
   now: Date
 }) {
   const t = useMessages(M)
+  const { locale } = useLocale()
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const generated = data ? new Date(data.generatedAt) : null
   const fresh = generated && (now.getTime() - generated.getTime()) / 3_600_000 <= HIDE_HOURS
   if (data === undefined) return <div className="report-teaser is-empty" aria-hidden="true" />
   if (!fresh || !data || !generated) return null
-  const ai = data.source === 'llm'
+  const { report, lang, source } = localizedReport(data, locale)
+  const ai = source === 'llm'
   return (
     <a className="report-teaser" href="#lagebericht" {...(ai ? AI_MARK : {})}>
       <span className="report-teaser-label">
         {ai ? t.aiAnalysis : t.report} · {formatTime(generated, zone)}
       </span>
-      <span className="report-teaser-text" lang="de">
-        {data.report.schlagzeile}
+      <span className="report-teaser-text" lang={lang}>
+        {report.schlagzeile}
       </span>
     </a>
   )

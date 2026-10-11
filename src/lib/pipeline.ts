@@ -10,7 +10,7 @@ export type Cell = 'ok' | 'retry' | 'warn' | 'skip' | 'fail' | 'template'
 
 export interface ModelCall {
   model: string
-  role: 'writer' | 'checker'
+  role: 'writer' | 'checker' | 'translator'
   attempt: number
   durationMs: number
   ok: boolean

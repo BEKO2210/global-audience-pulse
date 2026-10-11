@@ -29,6 +29,14 @@ import {
   trendContradictions,
   type CheckItem,
 } from './checker'
+import {
+  numbersMatch,
+  sameShape,
+  templateEn,
+  translatePrompt,
+  withOriginalNames,
+  type ReportBody,
+} from './english'
 
 const OLLAMA = process.env.OLLAMA_URL ?? 'http://127.0.0.1:11434'
 const MODEL = process.env.ANALYSIS_MODEL ?? 'gemma4:12b-it-qat'
@@ -407,6 +415,54 @@ async function checkClaims(
   }
 }
 
+/**
+ * English edition (T-015): the writer model translates the checked German report; the translation must keep
+ * every number (numbersMatch) and the shape, else the deterministic English template is used. Two tries.
+ */
+async function translate(report: ReportBody, modelCalls: ModelCall[]) {
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
+    const callStarted = performance.now()
+    try {
+      const response = await fetch(`${OLLAMA}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: MODEL,
+          stream: false,
+          think: false,
+          format: SCHEMA,
+          options: { temperature: 0.2, num_ctx: 8192 },
+          keep_alive: 0,
+          messages: [{ role: 'user', content: translatePrompt(report) }],
+        }),
+      })
+      if (!response.ok) throw new Error(`Ollama ${response.status}`)
+      const data = await response.json()
+      const en = JSON.parse(data.message.content) as ReportBody
+      const ok = sameShape(report, en) && numbersMatch(report, en)
+      modelCalls.push({
+        model: MODEL,
+        role: 'translator',
+        attempt,
+        durationMs: Math.round(performance.now() - callStarted),
+        ok,
+      })
+      if (ok) return withOriginalNames(report, en)
+      console.warn(`Übersetzung ${attempt} verworfen: Zahlen oder Form weichen ab`)
+    } catch (error) {
+      modelCalls.push({
+        model: MODEL,
+        role: 'translator',
+        attempt,
+        durationMs: Math.round(performance.now() - callStarted),
+        ok: false,
+      })
+      console.warn(`Übersetzung ${attempt} fehlgeschlagen: ${short(error)}`)
+    }
+  }
+  return null
+}
+
 /** Deterministic fallback so the page never shows an unchecked text. */
 function template(facts: Facts) {
   const [best] = facts.besteFenster24h
@@ -452,6 +508,15 @@ async function main() {
   } catch (error) {
     console.warn(`LLM nicht erreichbar: ${(error as Error).message}`)
   }
+  let reportEn: ReportBody | null = null
+  if (report) {
+    const { schlagzeile, empfehlung, analyse, punkte, zielgruppen } = report
+    reportEn = await translate(
+      { schlagzeile, empfehlung, analyse, punkte, zielgruppen },
+      telemetry.modelCalls,
+    )
+  }
+  const sourceEn = reportEn ? 'llm' : 'template'
   const runEnded = new Date()
   const run: AnalysisRun = {
     startedAt: runStarted.toISOString(),
@@ -480,6 +545,9 @@ async function main() {
     run,
     facts,
     report: report ?? template(facts),
+    // English edition (T-015): checked translation of the report above, or the English template.
+    reportEn: reportEn ?? templateEn(facts),
+    sourceEn,
   }
   await writeFile(out, `${JSON.stringify(result, null, 2)}\n`)
   if (historyPath)

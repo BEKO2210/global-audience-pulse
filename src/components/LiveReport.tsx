@@ -9,7 +9,7 @@ import { TrendChart } from './report/TrendChart'
 import type { LiveAnalysisPayload } from './report/types'
 import './LiveReport.css'
 
-import { AI_MARK, GermanReportNote, HIDE_HOURS, STALE_HOURS } from './reportShared'
+import { AI_MARK, GermanReportNote, HIDE_HOURS, STALE_HOURS, localizedReport } from './reportShared'
 import { track } from '../lib/analytics'
 import { useLocale, useMessages } from '../i18n/LocaleProvider'
 import type { Messages } from '../i18n/locale'
@@ -55,7 +55,8 @@ export default function LiveReport({ now, data }: { now: Date; data: LiveAnalysi
   if (ageHours > HIDE_HOURS) return null
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const stale = ageHours > STALE_HOURS
-  const { report, facts } = data
+  const { facts } = data
+  const { report, lang, source } = localizedReport(data, locale)
   const hasVisuals = Boolean(
     facts?.regionen?.length ||
     facts?.trendNaechsteStunden?.length ||
@@ -68,25 +69,25 @@ export default function LiveReport({ now, data }: { now: Date; data: LiveAnalysi
       id="lagebericht"
       className={`live-report lr-root${stale ? ' is-stale' : ''}${entered ? ' is-entered' : ''}`}
       aria-labelledby="live-report-title"
-      {...(data.source === 'llm' ? AI_MARK : {})}
+      {...(source === 'llm' ? AI_MARK : {})}
     >
       <div className="live-report-head">
         <p className="eyebrow">
           {t.report}
-          {data.source === 'llm' && <span className="ai-badge">{t.aiAnalysis}</span>}
+          {source === 'llm' && <span className="ai-badge">{t.aiAnalysis}</span>}
         </p>
         <span className="live-report-time">
           {stale ? t.pausedSince : t.asOf}
           {formatTime(generated, zone)} {timeZoneName(generated, zone, intl)}
         </span>
       </div>
-      <GermanReportNote />
+      <GermanReportNote lang={lang} />
 
       <div className="lr-intro">
-        <h2 id="live-report-title" lang="de">
+        <h2 id="live-report-title" lang={lang}>
           {report.schlagzeile}
         </h2>
-        <p className="live-report-verdict" lang="de">
+        <p className="live-report-verdict" lang={lang}>
           {report.empfehlung}
         </p>
         {facts ? <MemoryBadges facts={facts} /> : null}
@@ -103,10 +104,10 @@ export default function LiveReport({ now, data }: { now: Date; data: LiveAnalysi
               }}
             >
               <summary>{t.readAll}</summary>
-              <p className="live-report-body" lang="de">
+              <p className="live-report-body" lang={lang}>
                 {report.analyse}
               </p>
-              <ul lang="de">
+              <ul lang={lang}>
                 {report.punkte.map((point) => (
                   <li key={point}>{point}</li>
                 ))}
@@ -117,15 +118,15 @@ export default function LiveReport({ now, data }: { now: Date; data: LiveAnalysi
             <ContributionBar facts={facts} />
             <TrendChart facts={facts} />
             <LiveSignals facts={facts} />
-            <AudienceGrid facts={facts} report={report} />
+            <AudienceGrid facts={facts} report={report} lang={lang} />
           </div>
         </div>
       ) : (
         <>
-          <p className="live-report-body" lang="de">
+          <p className="live-report-body" lang={lang}>
             {report.analyse}
           </p>
-          <ul lang="de">
+          <ul lang={lang}>
             {report.punkte.map((point) => (
               <li key={point}>{point}</li>
             ))}
@@ -134,7 +135,7 @@ export default function LiveReport({ now, data }: { now: Date; data: LiveAnalysi
       )}
 
       <p className="live-report-note">
-        {data.source === 'llm' ? t.noteLlm(relativeTime(now, generated, locale)) : t.noteTemplate}
+        {source === 'llm' ? t.noteLlm(relativeTime(now, generated, locale)) : t.noteTemplate}
         {stale && t.noteStale}
       </p>
     </section>

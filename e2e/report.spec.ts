@@ -167,3 +167,39 @@ for (const theme of ['light', 'dark'] as const) {
     ).toEqual([])
   })
 }
+
+test.describe('English edition (T-015)', () => {
+  test.use({ locale: 'en-US' })
+  const reportEn = {
+    schlagzeile: 'Overall score of 36 points in a quiet phase',
+    empfehlung: 'Post later. The best window is between 20:00 and 21:30.',
+    analyse: 'Central Europe contributes the most with 14 points.',
+    punkte: ['Central Europe contributes 14 points', 'The score rises to 45', 'Berlin: -28%'],
+    zielgruppen: (analysisV2.report as { zielgruppen: { name: string }[] }).zielgruppen.map(
+      (z) => ({ name: z.name, urteil: 'Post later, between 20:00 and 21:30' }),
+    ),
+  }
+
+  test('shows the English report without the German note', async ({ page }) => {
+    await serve(page, withFreshTimestamp({ ...analysisV2, reportEn, sourceEn: 'llm' }))
+    await openReady(page)
+    const section = page.locator('#lagebericht')
+    await section.scrollIntoViewIfNeeded()
+    await expect(section.locator('#live-report-title')).toHaveText(reportEn.schlagzeile)
+    await expect(section.locator('#live-report-title')).toHaveAttribute('lang', 'en')
+    await expect(section.locator('.report-language-note')).toHaveCount(0)
+    await expect(section.locator('.lr-audience-urteil').first()).toHaveText(
+      'Post later, between 20:00 and 21:30',
+    )
+    await expect(page.locator('.report-teaser-text')).toHaveText(reportEn.schlagzeile)
+  })
+
+  test('falls back to the German original with a note for older payloads', async ({ page }) => {
+    await serve(page, withFreshTimestamp(analysisV2))
+    await openReady(page)
+    const section = page.locator('#lagebericht')
+    await section.scrollIntoViewIfNeeded()
+    await expect(section.locator('#live-report-title')).toHaveAttribute('lang', 'de')
+    await expect(section.locator('.report-language-note')).toBeVisible()
+  })
+})

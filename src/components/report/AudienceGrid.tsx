@@ -2,7 +2,7 @@ import { STATUS_LEVELS } from '../../config/model'
 import { statusFor } from '../../lib/model'
 import type { AnalysisFacts, AnalysisReportBody } from './types'
 import { useLocale, useMessages } from '../../i18n/LocaleProvider'
-import type { Messages } from '../../i18n/locale'
+import type { Locale, Messages } from '../../i18n/locale'
 import { presetName, statusText } from '../../i18n/labels'
 
 /** Audience names come from the facts in German (scripts/analysis/hourly.ts); presets via labels.ts. */
@@ -28,9 +28,11 @@ function toneForStatusLabel(label: string): string {
 export function AudienceGrid({
   facts,
   report,
+  lang = 'de',
 }: {
   facts: AnalysisFacts
   report: AnalysisReportBody
+  lang?: Locale
 }) {
   const t = useMessages(M)
   const { locale } = useLocale()
@@ -67,7 +69,7 @@ export function AudienceGrid({
                 </p>
               ) : null}
               {urteil ? (
-                <p className="lr-audience-urteil" lang="de">
+                <p className="lr-audience-urteil" lang={lang}>
                   {urteil}
                 </p>
               ) : null}
