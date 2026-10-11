@@ -869,9 +869,13 @@ button:active {
   line-height: var(--leading-meta);
 }
 .preset-score {
-  color: var(--accent-ink);
+  color: var(--muted);
   font: var(--text-meta)/var(--leading-meta) var(--font-ui);
   margin: var(--space-2) 0 var(--space-4);
+}
+.preset-score.is-best {
+  color: var(--accent-ink);
+  font-weight: var(--weight-semibold);
 }
 .preset-grid p {
   font-size: var(--text-meta);
@@ -1497,9 +1501,9 @@ button:active {
   gap: var(--space-1);
 }
 .button.primary.copied {
-  background: var(--series-3);
   border-color: var(--series-3);
-  transition: background-color 0.2s;
+  color: var(--ink);
+  transition: border-color 0.2s;
 }
 .dst-note {
   color: var(--muted);
@@ -1510,9 +1514,9 @@ button:active {
   padding-top: var(--space-3);
 }
 .button.primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #16110e;
+  /* outline like every other button (O-015: the only filled button on the page drew the eye to a side action) */
+  border-color: var(--ink);
+  color: var(--ink);
   font-weight: var(--weight-semibold);
 }
 .method {

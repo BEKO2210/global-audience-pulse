@@ -964,6 +964,10 @@ export default function App() {
                 </div>
                 <div className="preset-grid">
                   {presetWindows.map(({ preset, window }) => {
+                    // only the strongest corridor carries the accent (O-015: three orange scores read as noise)
+                    const best =
+                      window != null &&
+                      window.score === Math.max(...presetWindows.map((p) => p.window?.score ?? 0))
                     const active =
                       preset.ids.length === selected.length &&
                       preset.ids.every((id) => selected.includes(id))
@@ -993,7 +997,7 @@ export default function App() {
                               )}{' '}
                               <small>{timeZoneName(window.start, undefined, intl)}</small>
                             </div>
-                            <div className="preset-score">
+                            <div className={best ? 'preset-score is-best' : 'preset-score'}>
                               Score <AnimatedNumber value={window.score} />
                             </div>
                             <ul className="preset-cities">
