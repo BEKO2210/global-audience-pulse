@@ -2,17 +2,25 @@ import { curveMonotoneX, line } from 'd3-shape'
 import { motion, useReducedMotion } from 'motion/react'
 import { MOTION } from '../config/motion'
 
+const INK_STROKE = 'color-mix(in srgb, var(--ink) 55%, transparent)'
+
 export function Sparkline({
   values,
-  color = 'var(--accent)',
+  color = INK_STROKE,
   height = 42,
+  highlightLast = false,
 }: {
   values: readonly number[]
   color?: string
   height?: number
+  highlightLast?: boolean
 }) {
   const reduceMotion = useReducedMotion()
   const width = 180
+  const lastIndex = Math.max(0, values.length - 1)
+  const lastValue = values[lastIndex] ?? 0
+  const lastX = (lastIndex / Math.max(1, values.length - 1)) * width
+  const lastY = height - (lastValue / 100) * (height - 4) - 2
   const d =
     line<number>()
       .x((_, i) => (i / Math.max(1, values.length - 1)) * width)
@@ -29,14 +37,22 @@ export function Sparkline({
         d={d}
         fill="none"
         stroke={color}
-        strokeWidth="2"
+        strokeWidth="1.5"
         vectorEffect="non-scaling-stroke"
-        initial={reduceMotion ? false : { pathLength: 0 }}
-        whileInView={{ pathLength: 1 }}
+        // no draw-in: a half-drawn line left the end dot floating on its own (O-015)
+        initial={false}
         animate={{ d }}
-        viewport={{ once: true }}
         transition={{ duration: reduceMotion ? 0 : MOTION.change, ease: MOTION.ease }}
       />
+      {highlightLast && (
+        <circle
+          cx={lastX}
+          cy={lastY}
+          r="2.5"
+          fill="var(--accent)"
+          vectorEffect="non-scaling-stroke"
+        />
+      )}
     </svg>
   )
 }

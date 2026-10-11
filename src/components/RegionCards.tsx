@@ -1,16 +1,16 @@
-import { useState } from 'react'
-import { PHASES, SERIES } from '../config/model'
+import { useEffect, useState } from 'react'
+import './RegionCards.css'
+import { PHASES } from '../config/model'
 import { REGIONS, type RegionId } from '../config/regions'
 import type { LiveMeasure } from '../hooks/useLiveData'
 import { normalizedWeights, phaseAt, type ScoreGrid } from '../lib/model'
 import type { Snapshot } from '../lib/snapshot'
 import { holidayAt, holidayLabel } from '../lib/holidays'
-import { localDecimalHourFast } from '../lib/time'
+import { formatTime, localDecimalHourFast } from '../lib/time'
 import { Sparkline } from './Sparkline'
 import { Flag } from './Flag'
 import { PhaseIcon } from './PhaseIcon'
 import { AnimatedNumber } from './AnimatedNumber'
-import { RegionClock } from './Clock'
 import { track } from '../lib/analytics'
 import { useLocale, useMessages } from '../i18n/LocaleProvider'
 import type { Locale, Messages } from '../i18n/locale'
@@ -68,6 +68,27 @@ const EN: typeof DE = {
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
+function RegionTime({
+  timeZone,
+  live,
+  date,
+  withSeconds = false,
+}: {
+  timeZone: string
+  live: boolean
+  date: Date
+  withSeconds?: boolean
+}) {
+  const [now, setNow] = useState(() => new Date())
+  useEffect(() => {
+    if (!live) return
+    const interval = withSeconds ? 1_000 : 60_000
+    const id = window.setInterval(() => setNow(new Date()), interval)
+    return () => clearInterval(id)
+  }, [live, withSeconds])
+  return <>{formatTime(live ? now : date, timeZone, withSeconds)}</>
+}
+
 function measuredAge(iso: string, locale: Locale) {
   const minutes = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60_000))
   const [min, hours] = locale === 'de' ? ['Min', 'Std'] : ['min', 'h']
@@ -110,6 +131,12 @@ export function RegionCards({
         ? Boolean(snapshot.profiles[region.id])
         : !snapshot.profiles[region.id]),
   )
+  const strongestRegionId = visible.reduce<RegionId | null>((bestId, region) => {
+    const regionScore = grid.activityAt(region.id, date)
+    if (bestId === null) return region.id
+    const bestScore = grid.activityAt(bestId, date)
+    return regionScore > bestScore ? region.id : bestId
+  }, null)
   const toggleRegion = (region: RegionId) => {
     const aktiv = !selected.includes(region)
     track('Zielgruppe', {
@@ -163,7 +190,6 @@ export function RegionCards({
       </div>
       <div className="region-grid">
         {visible.map((region) => {
-          const index = REGIONS.findIndex((item) => item.id === region.id)
           const score = grid.activityAt(region.id, date)
           const phase = phaseAt(localDecimalHourFast(date, region.timeZone))
           const holiday = holidayAt(snapshot.holidays, region, date)
@@ -178,6 +204,8 @@ export function RegionCards({
           const city = cityName(region.id, region.city, locale)
           const phaseLabel = phaseName(phase.id, phase.name, locale)
           const isSelected = selected.includes(region.id)
+          const highlightSpark =
+            isSelected || (selected.length === 0 && region.id === strongestRegionId)
           return (
             <article
               key={region.id}
@@ -197,18 +225,18 @@ export function RegionCards({
                   </span>
                   <span className="compact-place">
                     <b>{city}</b>
-                    <small>
-                      <PhaseIcon icon={phase.icon} /> {phaseLabel}
-                      {holiday && <span className="holiday-mark"> · {t.holiday}</span>}
-                    </small>
                     {liveStatus === 'fallback' && region.project && (
                       <small className="compact-profile">{t.snapshotProfile}</small>
                     )}
                   </span>
-                  <span className="compact-time">
-                    <RegionClock date={date} timeZone={region.timeZone} live={isLive} />
+                  <span className="compact-phase">
+                    <PhaseIcon icon={phase.icon} /> {phaseLabel}
+                    {holiday && <span className="holiday-mark"> · {t.holiday}</span>}
                   </span>
-                  <Sparkline values={values} color={SERIES[index]} height={28} />
+                  <span className="compact-time">
+                    <RegionTime date={date} timeZone={region.timeZone} live={isLive} />
+                  </span>
+                  <Sparkline values={values} height={28} highlightLast={highlightSpark} />
                   <strong className="compact-score">
                     <AnimatedNumber value={score} />
                   </strong>
@@ -226,22 +254,22 @@ export function RegionCards({
                             : t.modelBadge}
                     </span>
                   </div>
-                  <div className="region-time">
-                    <RegionClock date={date} timeZone={region.timeZone} live={isLive} />
-                  </div>
-                  <p className="phase">
-                    <PhaseIcon icon={phase.icon} /> {phaseLabel}
-                  </p>
-                  {holiday && (
-                    <p className="holiday-note">{t.holidayNote(holidayLabel(holiday, locale))}</p>
-                  )}
                   <div className="card-score">
                     <strong>
                       <AnimatedNumber value={score} />
                     </strong>
                     <span>/100</span>
                   </div>
-                  <Sparkline values={values} color={SERIES[index]} height={36} />
+                  <p className="phase">
+                    <PhaseIcon icon={phase.icon} /> {phaseLabel}
+                  </p>
+                  <div className="region-time">
+                    <RegionTime date={date} timeZone={region.timeZone} live={isLive} />
+                  </div>
+                  {holiday && (
+                    <p className="holiday-note">{t.holidayNote(holidayLabel(holiday, locale))}</p>
+                  )}
+                  <Sparkline values={values} height={36} highlightLast={highlightSpark} />
                   <p className="deviation">
                     {measuredAt ? (
                       <>
@@ -260,7 +288,6 @@ export function RegionCards({
                     <span
                       style={{
                         width: `${(weights[region.id] ?? 0) * 100}%`,
-                        background: SERIES[index],
                       }}
                     />
                   </div>
