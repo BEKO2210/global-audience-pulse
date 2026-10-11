@@ -113,8 +113,6 @@ function rampOpacity(value: number, maxNonFocal: number) {
 }
 
 function Heatmap({ times, name }: { times: readonly StudyTimes[]; name: string }) {
-  // Own variants override MotionConfig, so reduced motion is honoured here explicitly.
-  const reduce = useReducedMotion()
   const t = useMessages(M)
   const { locale } = useLocale()
   const scores = blockScores(times)
@@ -140,9 +138,8 @@ function Heatmap({ times, name }: { times: readonly StudyTimes[]; name: string }
       <motion.div
         className="pb-heat-grid"
         variants={stagger}
-        initial={reduce ? false : 'hidden'}
-        whileInView="shown"
-        viewport={{ once: true, amount: 0.2 }}
+        initial={false}
+        animate="shown"
         role="img"
         aria-label={t.heatLabel(name, strongestText)}
       >

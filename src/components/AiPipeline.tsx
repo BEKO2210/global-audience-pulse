@@ -275,13 +275,7 @@ export default function AiPipeline() {
       <div className="aip-flow" role="list" aria-label={t.flowLabel}>
         {nodes.map((node, i) => (
           <div key={node.id} className="aip-flow-cell" role="listitem">
-            <motion.div
-              className={`aip-node is-${lastCells?.[node.id] ?? 'ok'}`}
-              initial={reduce ? false : { opacity: 0, y: 8 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.5 }}
-              transition={{ duration: 0.48, ease: [0.2, 0.8, 0.2, 1], delay: i * 0.06 }}
-            >
+            <motion.div className={`aip-node is-${lastCells?.[node.id] ?? 'ok'}`}>
               <span className="aip-node-name">
                 <span className="aip-step">{String(i + 1).padStart(2, '0')}</span>
                 <strong>{node.title}</strong>

@@ -1,4 +1,4 @@
-import { motion, useReducedMotion } from 'motion/react'
+import { motion } from 'motion/react'
 import { PLAYBOOKS, dayNames } from '../data/playbooks'
 import { REGIONS } from '../config/regions'
 import type { PostingPick } from '../lib/postingPlan'
@@ -89,7 +89,6 @@ export function PostingPlan({
   goodScore: number
   onJump: (at: Date) => void
 }) {
-  const reduce = useReducedMotion()
   const t = useMessages(M)
   const { locale } = useLocale()
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -148,20 +147,13 @@ export function PostingPlan({
             ))}
             <span />
           </li>
-          {sorted.map((pick, i) => {
+          {sorted.map((pick) => {
             const Icon = PLATFORM_ICONS[pick.platform]
             const name = names.get(pick.platform) ?? pick.platform
             const share = Math.round(pick.support * 100)
             const when = dayLabel(pick.at, now, zone, locale)
             return (
-              <motion.li
-                key={pick.platform}
-                className="pp-row"
-                initial={reduce ? false : { opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.4 }}
-                transition={{ duration: 0.48, ease: [0.2, 0.8, 0.2, 1], delay: i * 0.06 }}
-              >
+              <motion.li key={pick.platform} className="pp-row">
                 <span className="pp-platform">
                   <Icon size={18} aria-hidden="true" />
                   {name}

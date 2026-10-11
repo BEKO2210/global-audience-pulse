@@ -229,28 +229,16 @@ const WorldMap = lazy(() =>
 function Section({
   children,
   className = '',
-  delay = 0,
-  immediate = false,
   defer = false,
   placeholderHeight = 640,
 }: {
   children: React.ReactNode
   className?: string
-  delay?: number
-  /** Render without entrance fade (used for the hero, which holds the LCP element). */
-  immediate?: boolean
   /** Below-the-fold: mount after first paint (idle slot) or when scrolled near. */
   defer?: boolean
   placeholderHeight?: number
 }) {
   const { attach: attachPlaceholder, mounted } = useDeferredMount<HTMLDivElement>(defer)
-  const [visible, setVisible] = useState(false)
-  // MotionConfig "user" still runs opacity fades; skip the entrance entirely for reduced motion.
-  const reduceMotion = useReducedMotion()
-  useEffect(() => {
-    const fallback = window.setTimeout(() => setVisible(true), 1_200)
-    return () => clearTimeout(fallback)
-  }, [])
   if (!mounted)
     return (
       <div
@@ -260,19 +248,8 @@ function Section({
         aria-busy="true"
       />
     )
-  return (
-    <motion.div
-      className={className}
-      initial={reduceMotion || immediate ? false : { opacity: 0, y: 8 }}
-      animate={visible ? { opacity: 1, y: 0 } : undefined}
-      whileInView={{ opacity: 1, y: 0 }}
-      onViewportEnter={() => setVisible(true)}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: reduceMotion ? 0 : MOTION.entrance, delay, ease: MOTION.ease }}
-    >
-      {children}
-    </motion.div>
-  )
+  // O-008: no fade-in on scroll – sections are simply there; motion is kept for the hero intro and for changes
+  return <div className={className}>{children}</div>
 }
 
 function nextPhaseStart(region: (typeof REGIONS)[number], from: Date, phaseId = 'prime') {
@@ -713,7 +690,7 @@ export default function App() {
             onRefresh={refreshSnapshot}
           />
           <main>
-            <Section className="hero" immediate>
+            <Section className="hero">
               <div className="hero-copy">
                 <p className="hero-meta" data-testid="data-state">
                   {snapshotState === 'live' ? (
@@ -896,7 +873,7 @@ export default function App() {
               </div>
             </Section>
             <div className="desktop-grid">
-              <Section className="map-slot" delay={MOTION.stagger * 3}>
+              <Section className="map-slot">
                 <Suspense
                   fallback={<div className="panel map-skeleton" aria-label={t.mapLoading} />}
                 >
@@ -909,7 +886,7 @@ export default function App() {
                   />
                 </Suspense>
               </Section>
-              <Section className="forecast-slot" delay={MOTION.stagger * 4}>
+              <Section className="forecast-slot">
                 <Forecast
                   points={forecast}
                   selectedDate={date}

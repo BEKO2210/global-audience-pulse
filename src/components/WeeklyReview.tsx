@@ -1,5 +1,5 @@
 import { useEffect, useState, type CSSProperties } from 'react'
-import { motion, useReducedMotion } from 'motion/react'
+import { motion } from 'motion/react'
 import { DATA_SOURCES } from '../config/model'
 import { useLocale, useMessages } from '../i18n/LocaleProvider'
 import type { Messages } from '../i18n/locale'
@@ -54,7 +54,6 @@ export default function WeeklyReview() {
   const [now] = useState(() => Date.now())
   const t = useMessages(M)
   const { locale, intl } = useLocale()
-  const reduce = useReducedMotion()
 
   useEffect(() => {
     const controller = new AbortController()
@@ -110,16 +109,12 @@ export default function WeeklyReview() {
             role="img"
             aria-label={t.chartLabel(days.map((d) => `${dayName(d.datum)} ${d.hoch}`).join(', '))}
           >
-            {days.map((d, i) => (
+            {days.map((d) => (
               <div key={d.datum} className="wr-bar-col">
                 <span className="wr-bar-value">{d.hoch}</span>
                 <motion.span
                   className={`wr-bar${d.hoch === top ? ' is-top' : ''}`}
                   style={{ '--h': `${(d.hoch / max) * 100}%` } as CSSProperties}
-                  initial={reduce ? false : { scaleY: 0 }}
-                  whileInView={{ scaleY: 1 }}
-                  viewport={{ once: true, amount: 0.6 }}
-                  transition={{ duration: 0.48, ease: [0.2, 0.8, 0.2, 1], delay: i * 0.04 }}
                 />
                 <span className="wr-bar-day">{dayName(d.datum)}</span>
               </div>

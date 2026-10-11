@@ -109,14 +109,7 @@ export function WorldMap({
         </defs>
         <path d={SPHERE_PATH} className="ocean" />
         <g clipPath="url(#sphere)">
-          <motion.path
-            d={LAND_PATH}
-            className="land"
-            initial={reduceMotion ? false : { opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: reduceMotion ? 0 : MOTION.entrance, ease: MOTION.ease }}
-          />
+          <motion.path d={LAND_PATH} className="land" />
           <motion.path
             d={path(twilight) ?? ''}
             className="twilight"
@@ -126,10 +119,8 @@ export function WorldMap({
           <motion.path
             d={path(night) ?? ''}
             className="night"
-            initial={reduceMotion ? false : { opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            initial={false}
             animate={{ d: path(night) ?? '' }}
-            viewport={{ once: true }}
             transition={{ duration: reduceMotion ? 0 : MOTION.change, ease: MOTION.ease }}
           />
         </g>

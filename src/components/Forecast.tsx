@@ -224,21 +224,12 @@ export function Forecast({
             </text>
           </g>
         ))}
-        <motion.path
-          d={areaPath}
-          className="forecast-area"
-          initial={reduceMotion ? false : { opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: reduceMotion ? 0 : MOTION.entrance, ease: MOTION.ease }}
-        />
+        <motion.path d={areaPath} className="forecast-area" />
         <motion.path
           d={linePath}
           className="forecast-line"
-          initial={reduceMotion ? false : { pathLength: 0 }}
-          whileInView={{ pathLength: 1 }}
+          initial={false}
           animate={{ d: linePath }}
-          viewport={{ once: true }}
           transition={{ duration: reduceMotion ? 0 : MOTION.change, ease: MOTION.ease }}
         />
         {ticks.map((tick) => (
