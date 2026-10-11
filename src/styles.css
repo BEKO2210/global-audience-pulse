@@ -2310,10 +2310,10 @@ button:active {
   font:
     500 14px/1.3 'Geist Variable',
     sans-serif;
+  /* One line by nowrap, not line-clamp: a clamped block still lays out (and is measured as) every line. */
   overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .report-teaser:hover .report-teaser-text,
 .report-teaser:focus-visible .report-teaser-text {
