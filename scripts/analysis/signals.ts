@@ -11,7 +11,9 @@ import { zonedParts } from '../../src/lib/time'
 const WIKI = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate'
 const USER_AGENT =
   'GlobalAudiencePulse/1.0 (https://github.com/BEKO2210/global-audience-pulse; nullmesh@protonmail.com)'
-const HISTORY_HOURS = 24 * 7
+/** Kept for 28 days: the weekly comparisons use the last 7, the learning forecast (T-012) needs more. */
+const HISTORY_HOURS = 24 * 28
+const WEEK_HOURS = 24 * 7
 
 const stamp = (d: Date) =>
   `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(d.getUTCDate()).padStart(2, '0')}${String(d.getUTCHours()).padStart(2, '0')}`
@@ -74,6 +76,8 @@ export interface HistoryEntry {
   t: string
   score: number
   regions: Partial<Record<RegionId, number>>
+  /** T-012: measured live deviation in % (Wikipedia views vs. usual) per region, collected for the correction */
+  live?: Partial<Record<RegionId, number>>
 }
 
 export async function readHistory(path: string | undefined): Promise<HistoryEntry[]> {
@@ -102,9 +106,7 @@ export function compare(history: HistoryEntry[], now: Date, score: number) {
   }
   const yesterday = near(24)
   const sameHourWeek = [1, 2, 3, 4, 5, 6, 7].map((d) => near(d * 24)).filter(Boolean)
-  const week = history.filter(
-    (item) => Date.parse(item.t) > now.getTime() - HISTORY_HOURS * 3_600_000,
-  )
+  const week = history.filter((item) => Date.parse(item.t) > now.getTime() - WEEK_HOURS * 3_600_000)
   return {
     stundenImGedaechtnis: history.length,
     gesternGleicheZeit: yesterday ? yesterday.score : null,

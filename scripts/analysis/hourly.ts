@@ -541,6 +541,13 @@ async function main() {
     t: now.toISOString(),
     score: facts.gesamt.score,
     regions: Object.fromEntries(facts.regionen.map((r) => [r.id, r.score])),
+    // T-012: what the live measurement said this hour, next to what the model said
+    live: Object.fromEntries(
+      live.flatMap((s) => {
+        const id = REGIONS.find((r) => r.city === s.ort)?.id
+        return id ? [[id, s.abweichungProzent]] : []
+      }),
+    ),
   }
   if (historyPath) await writeHistory(historyPath, history, entry)
   console.log(`${result.source} · ${result.report.schlagzeile}`)
