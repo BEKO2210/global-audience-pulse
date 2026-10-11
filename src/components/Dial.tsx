@@ -65,6 +65,8 @@ export function Dial({
   const [highlighted, setHighlighted] = useState<RegionId | null>(null)
   // the dial keeps its 300-unit geometry; its text divides by the rendered scale so it lands on the type scale
   const { ref, width } = useSvgBox<SVGSVGElement>({ width: 300, height: 300 })
+  // the centre lines keep their CSS size, so their spacing must scale the same way or they collide on a small dial
+  const unit = 300 / Math.max(width, 1)
   const outer = selectedRegions[0]
   const inner = selectedRegions.at(-1)
   return (
@@ -157,13 +159,13 @@ export function Dial({
               </text>
             )
           })}
-          <text x={cx} y={cy - 10} textAnchor="middle" className="dial-center-label">
+          <text x={cx} y={cy - 10 * unit} textAnchor="middle" className="dial-center-label">
             {t.centre}
           </text>
-          <text x={cx} y={cy + 14} textAnchor="middle" className="dial-mean">
+          <text x={cx} y={cy + 14 * unit} textAnchor="middle" className="dial-mean">
             {formatDecimalHour(worldMean)}
           </text>
-          <text x={cx} y={cy + 30} textAnchor="middle" className="dial-date">
+          <text x={cx} y={cy + 30 * unit} textAnchor="middle" className="dial-date">
             {t.markets(selected.length)}
           </text>
         </svg>

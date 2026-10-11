@@ -320,11 +320,13 @@ export function RegionCards({
                       )}
                     </span>
                     <span className="compact-phase">
-                      <PhaseIcon icon={phase.icon} /> {phaseLabel} ·{' '}
-                      <span className="compact-time">
-                        <RegionTime date={date} timeZone={region.timeZone} live={isLive} />
+                      <span className="compact-phase-line">
+                        <PhaseIcon icon={phase.icon} /> {phaseLabel} ·{' '}
+                        <span className="compact-time">
+                          <RegionTime date={date} timeZone={region.timeZone} live={isLive} />
+                        </span>
                       </span>
-                      {holiday && <span className="holiday-mark"> · {t.holiday}</span>}
+                      {holiday && <span className="holiday-mark">{t.holiday}</span>}
                     </span>
                     <Sparkline values={values} height={28} highlightLast={highlightSpark} />
                     <strong className="compact-score">

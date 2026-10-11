@@ -247,6 +247,19 @@ export async function probe(page: Page): Promise<Probe> {
         }
     }
 
+    // no hard-clipped text: a box that cuts its own text must show an ellipsis ("Feie", "Los Angel" slipped through)
+    for (const el of all) {
+      if (!(el instanceof HTMLElement) || !ownText(el) || !visible(el)) continue
+      const st = getComputedStyle(el)
+      const clips = st.overflowX === 'hidden' || st.overflowX === 'clip'
+      if (clips && st.textOverflow !== 'ellipsis' && el.scrollWidth > el.clientWidth + 1)
+        findings.push({
+          rule: 'text-clipped',
+          where: path(el),
+          value: `"${ownText(el).slice(0, 30)}" ${el.scrollWidth}>${el.clientWidth}`,
+        })
+    }
+
     // chart captions stay on one line (a wrapping caption shifts everything below on a phone)
     for (const el of document.querySelectorAll('.chart-caption')) {
       if (!visible(el)) continue
