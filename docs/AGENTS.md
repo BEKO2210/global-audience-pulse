@@ -86,3 +86,18 @@ npx playwright test --project=chromium-desktop --project=chromium-mobile   # 2×
 
 Danach Screenshots 360/390/1440 px hell+dunkel ansehen, Merge auf `main`, Push, CI + Deploy + Live-Smoke prüfen,
 Status in ROADMAP.md auf `erledigt (Commit)`.
+
+## Golden set and model choice (T-020/T-021)
+
+- `scripts/analysis/golden/facts.json` holds 30 frozen fact snapshots (rebuild only on purpose with
+  `golden-build.ts`). `golden-run.sh <out.jsonl> [models…]` runs writers case by case through the GPU lock;
+  `golden-rescore.ts` re-applies changed rules to a finished run; `golden-summary.mjs` prints the table.
+- 2026-10-11: gemma4:12b-it-qat 29/30 (median 32 s), gemma26b 29/30 (15 s, needs its own llama-server that
+  pushes Ollama models out), qwen3.5:9b 18/30 (wrong strongest market, invented numbers). Writer stays gemma4.
+
+## Weekly usage review (T-043)
+
+`gap-stats.timer` (Mondays 08:00) runs `scripts/analysis/stats-review.ts`: Plausible Stats API v2 with the local
+key, rates and funnel computed in code, the local model writes what visitors do / what gets stuck / 3–5
+proposals (number guard). Output stays on the PC: `~/.local/share/gap-live/stats/YYYY-Www.md`. Proposals go into
+the roadmap only after review.

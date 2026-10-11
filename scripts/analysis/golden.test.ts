@@ -32,6 +32,14 @@ describe('golden set (T-020)', () => {
     ).toBe(false)
     expect(scoreReport(first, { ...report, empfehlung: 'Später posten.' }).fenster).toBe(false)
     expect(scoreReport(first, { ...report, analyse: 'Niemand trägt etwas.' }).markt).toBe(false)
+    const top = first.regionen[0]!
+    const second = first.regionen[1]!
+    expect(
+      scoreReport(first, { ...report, analyse: `${top.region} trägt am meisten.` }).markt,
+    ).toBe(true)
+    expect(scoreReport(first, { ...report, analyse: `${second.ort} vor ${top.ort}.` }).markt).toBe(
+      false,
+    )
     expect(scoreReport(first, { ...report, punkte: ['a'] }).form).toBe(false)
   })
 })

@@ -106,8 +106,16 @@ export function scoreReport(facts: Facts, report: WrittenReport): GoldenScore {
   const best = [...facts.besteFenster24h].sort((a, b) => b.score - a.score)[0]
   // Key statement 1: the recommendation names the best window's start time.
   const fenster = best ? `${report.empfehlung} ${report.schlagzeile}`.includes(best.von) : true
-  // Key statement 2: the analysis names the market that carries the most points.
-  const markt = report.analyse.includes(facts.regionen[0]!.ort)
+  // Key statement 2: the analysis names the market that carries the most points – by city or region name
+  // ("Berlin" and "Europa Zentral" are both right) – and it is named before any other market.
+  const top = facts.regionen[0]!
+  const firstMention = (r: { ort: string; region: string }) =>
+    Math.min(
+      ...[r.ort, r.region].map((name) => report.analyse.indexOf(name)).filter((i) => i >= 0),
+      Infinity,
+    )
+  const topAt = firstMention(top)
+  const markt = topAt < Infinity && facts.regionen.slice(1).every((r) => firstMention(r) >= topAt)
   const zahlen = falscheZahlen.length === 0
   return {
     zahlen,
