@@ -59,12 +59,14 @@ export const Heatmap = memo(function Heatmap({
   selected,
   grid,
   onScrub,
+  caption,
 }: {
   start: Date
   selectedDate: Date
   selected: readonly RegionId[]
   grid: ScoreGrid
   onScrub: (date: Date) => void
+  caption?: string
 }) {
   const t = useMessages(M)
   const { locale, intl } = useLocale()
@@ -236,6 +238,7 @@ export const Heatmap = memo(function Heatmap({
           </span>
         ))}
       </div>
+      {caption && <p className="chart-caption">{caption}</p>}
     </section>
   )
 })

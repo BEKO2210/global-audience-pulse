@@ -50,10 +50,12 @@ export function Dial({
   date,
   selected,
   worldMean,
+  caption,
 }: {
   date: Date
   selected: readonly RegionId[]
   worldMean: number
+  caption?: string
 }) {
   const t = useMessages(M)
   const { locale } = useLocale()
@@ -189,6 +191,7 @@ export function Dial({
           ))}
         </div>
       </div>
+      {caption && <p className="chart-caption">{caption}</p>}
     </section>
   )
 }

@@ -2412,3 +2412,14 @@ button:active {
   font-size: 12px;
   line-height: 1.4;
 }
+
+/* T-017: one sentence under each chart, from the numbers it draws. */
+.chart-caption {
+  margin: 16px 0 0;
+  padding-left: 12px;
+  border-left: 2px solid var(--accent);
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.5;
+  max-width: 72ch;
+}

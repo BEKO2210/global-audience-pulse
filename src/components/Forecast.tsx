@@ -45,6 +45,7 @@ export function Forecast({
   onLive,
   isLive,
   recommendationThreshold,
+  caption,
 }: {
   points: readonly ForecastPoint[]
   selectedDate: Date
@@ -54,6 +55,7 @@ export function Forecast({
   onLive: () => void
   isLive: boolean
   recommendationThreshold: number
+  caption?: string
 }) {
   const t = useMessages(M)
   const { intl } = useLocale()
@@ -287,6 +289,7 @@ export function Forecast({
           Live
         </button>
       </div>
+      {caption && <p className="chart-caption">{caption}</p>}
     </section>
   )
 }

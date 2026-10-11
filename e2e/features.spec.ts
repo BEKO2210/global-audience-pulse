@@ -78,3 +78,20 @@ test('supports System, Hell, and Dunkel including OS color changes', async ({ pa
   await page.getByRole('button', { name: 'Dunkel' }).click()
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
 })
+
+test('every chart carries a one-sentence caption that follows the time machine (T-017)', async ({
+  page,
+}) => {
+  await openReady(page)
+  for (let y = 0; y < 12_000; y += 600) {
+    await page.evaluate((top) => window.scrollTo(0, top), y)
+    await page.waitForTimeout(40)
+  }
+  const captions = page.locator('.chart-caption')
+  await expect(captions).toHaveCount(4)
+  await expect(captions.first()).toContainText(/^Gerade wach: \d von 8 Märkten/)
+  const slider = page.getByRole('slider', { name: 'Zeitmaschine', exact: true })
+  await slider.focus()
+  await page.keyboard.press('ArrowRight')
+  await expect(captions.first()).toContainText(/^Um \d{2}:\d{2} wach/)
+})

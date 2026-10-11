@@ -14,6 +14,7 @@ const AiPipeline = lazy(() => import('./components/AiPipeline'))
 import {
   circularMean,
   fastZonedParts,
+  formatDecimalHour,
   findNextOffsetChange,
   formatTime,
   localDecimalHourFast,
@@ -43,6 +44,7 @@ import { Playbooks } from './components/Playbooks'
 import { WeightingToggle } from './components/WeightingToggle'
 import { PostingPlan } from './components/PostingPlan'
 import { pickPostingTimes } from './lib/postingPlan'
+import { awakeSummary, forecastPeak, overlapHour } from './lib/captions'
 import { Wordmark } from './components/LogoMark'
 import { UpdateToast } from './components/UpdateToast'
 import { useLocale, useMessages } from './i18n/LocaleProvider'
@@ -120,6 +122,16 @@ const DE = {
   regionFocus: 'Region im Fokus',
   inAudience: 'Ist in deiner Zielgruppe',
   addAudience: 'Zur Zielgruppe hinzufügen',
+  capMap: (when: string | null, awake: number, total: number, prime: string) =>
+    `${when ? `Um ${when}` : 'Gerade'} wach: ${awake} von ${total} Märkten · ${prime ? `Primetime in ${prime}` : 'kein Markt in der Primetime'}.`,
+  capForecast: (score: number, at: string, now: number) =>
+    `Höhepunkt der nächsten 24 Stunden: Score ${score} um ${at} (jetzt ${now}).`,
+  capHeatmap: (count: number, total: number, at: string, threshold: number) =>
+    `Die meisten Märkte gleichzeitig aktiv: ${count} von ${total} um ${at} (Score ab ${threshold}).`,
+  capHeatmapNone: (threshold: number) =>
+    `In den nächsten 24 Stunden erreicht kein Markt Score ${threshold}.`,
+  capDial: (time: string, phase: string) =>
+    `Gewichtete Ortszeit deines Publikums: ${time} – ${phase}.`,
 }
 // English must provide exactly the German keys.
 const EN: typeof DE = {
@@ -192,6 +204,15 @@ const EN: typeof DE = {
   regionFocus: 'Region in focus',
   inAudience: 'In your audience',
   addAudience: 'Add to audience',
+  capMap: (when, awake, total, prime) =>
+    `${when ? `At ${when}` : 'Right now'}, ${awake} of ${total} markets are awake · ${prime ? `prime time in ${prime}` : 'no market in prime time'}.`,
+  capForecast: (score, at, now) =>
+    `Peak of the next 24 hours: score ${score} at ${at} (now ${now}).`,
+  capHeatmap: (count, total, at, threshold) =>
+    `Most markets active at once: ${count} of ${total} at ${at} (score ${threshold}+).`,
+  capHeatmapNone: (threshold) => `No market reaches score ${threshold} in the next 24 hours.`,
+  capDial: (time, phase) =>
+    `Your audience’s weighted local time: ${time} – ${phase.toLowerCase()}.`,
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
@@ -577,6 +598,56 @@ export default function App() {
     selected.map((id) => localDecimalHourFast(date, REGION_BY_ID[id].timeZone)),
     selected.map((id) => weights[id] ?? 0),
   )
+  // T-017: one sentence per chart from the same numbers the chart draws.
+  const viewerZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  const captions = useMemo(() => {
+    if (!selected.length) return null
+    const phases = REGIONS.filter((r) => selected.includes(r.id)).map((r) => {
+      const phase = phaseAt(localDecimalHourFast(date, r.timeZone))
+      return { city: cityName(r.id, r.city, locale), phase: phase.id }
+    })
+    const awake = awakeSummary(phases)
+    const peak = forecastPeak(forecast)
+    const threshold = STATUS_LEVELS[1].min
+    const hours = Array.from(
+      { length: 24 },
+      (_, i) => new Date(minuteNow.getTime() + i * 3_600_000),
+    )
+    const overlap = overlapHour(
+      hours,
+      selected,
+      (id, d) => scoreGrid.activityAt(id as RegionId, d),
+      threshold,
+    )
+    const meanPhase = phaseAt(worldMean)
+    return {
+      map: t.capMap(
+        scrubbed ? formatTime(date, viewerZone) : null,
+        awake.awake,
+        awake.total,
+        joinList(awake.prime, t.and),
+      ),
+      forecast: peak
+        ? t.capForecast(
+            peak.score,
+            formatTime(snapToMinutes(peak.date, 15), viewerZone),
+            Math.round(forecast[0]?.score ?? 0),
+          )
+        : undefined,
+      heatmap: overlap
+        ? t.capHeatmap(
+            overlap.count,
+            selected.length,
+            formatTime(snapToMinutes(overlap.date, 15), viewerZone),
+            threshold,
+          )
+        : t.capHeatmapNone(threshold),
+      dial: t.capDial(
+        formatDecimalHour(worldMean),
+        phaseName(meanPhase.id, meanPhase.name, locale),
+      ),
+    }
+  }, [selected, date, locale, forecast, minuteNow, scoreGrid, worldMean, scrubbed, t, viewerZone])
   const sleeping = regionScores
     .filter((x) => phaseAt(localDecimalHourFast(date, x.region.timeZone)).id === 'sleep')
     .sort((a, b) => (weights[b.region.id] ?? 0) - (weights[a.region.id] ?? 0))
@@ -789,6 +860,7 @@ export default function App() {
                     grid={scoreGrid}
                     selected={selected}
                     onRegion={showRegionDetails}
+                    caption={captions?.map}
                   />
                 </Suspense>
               </Section>
@@ -805,6 +877,7 @@ export default function App() {
                   }}
                   isLive={!scrubbed}
                   recommendationThreshold={STATUS_LEVELS[1].min}
+                  caption={captions?.forecast}
                 />
               </Section>
             </div>
@@ -916,10 +989,16 @@ export default function App() {
                   selected={selected}
                   grid={scoreGrid}
                   onScrub={scrubTo}
+                  caption={captions?.heatmap}
                 />
               </Section>
               <Section defer placeholderHeight={620}>
-                <Dial date={date} selected={selected} worldMean={worldMean} />
+                <Dial
+                  date={date}
+                  selected={selected}
+                  worldMean={worldMean}
+                  caption={captions?.dial}
+                />
               </Section>
             </div>
             <Section defer placeholderHeight={1100}>

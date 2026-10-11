@@ -61,11 +61,13 @@ export function WorldMap({
   grid,
   selected,
   onRegion,
+  caption,
 }: {
   date: Date
   grid: ScoreGrid
   selected: readonly RegionId[]
   onRegion: (id: RegionId) => void
+  caption?: string
 }) {
   const t = useMessages(M)
   const { locale, intl } = useLocale()
@@ -206,6 +208,7 @@ export function WorldMap({
           {t.night}
         </span>
       </div>
+      {caption && <p className="chart-caption">{caption}</p>}
     </section>
   )
 }
