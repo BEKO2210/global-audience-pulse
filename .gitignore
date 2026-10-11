@@ -11,3 +11,7 @@ REVIEW-LOCAL.md
 .local-tests
 LOCAL-TESTS.md
 *.local.test.ts
+
+# AI eyes (tester-army/e2e) run output
+.e2e
+cage-ai/results

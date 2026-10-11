@@ -46,7 +46,9 @@
     "world-atlas": "^2.0.2"
   },
   "devDependencies": {
+    "@ai-sdk/openai-compatible": "^3.0.67",
     "@axe-core/playwright": "^4.13.0",
+    "@e2e-dev/web": "^0.14.0",
     "@eslint/js": "^10.0.1",
     "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.64.0",
@@ -59,6 +61,8 @@
     "@types/react-dom": "^19.3.0",
     "@types/topojson-client": "^3.1.5",
     "@vitejs/plugin-react": "^6.1.2",
+    "ai": "^7.0.137",
+    "e2e": "^0.19.0",
     "eslint": "^10.12.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.7",
