@@ -44,6 +44,7 @@ import { SiteFooter } from './components/SiteFooter'
 import { Playbooks } from './components/Playbooks'
 import { WeightingToggle } from './components/WeightingToggle'
 import { PostingPlan } from './components/PostingPlan'
+import { AskPulse } from './components/AskPulse'
 import { pickPostingTimes } from './lib/postingPlan'
 import { awakeSummary, forecastPeak, overlapHour } from './lib/captions'
 import { Wordmark } from './components/LogoMark'
@@ -1038,6 +1039,18 @@ export default function App() {
             </Section>
             <Section defer placeholderHeight={640}>
               <Planner windowSets={plannerSets} selected={selected} dst={dst} />
+            </Section>
+            <Section defer placeholderHeight={560}>
+              <AskPulse
+                grid={scoreGrid}
+                now={minuteNow}
+                report={liveReport}
+                goodScore={STATUS_LEVELS[1].min}
+                onJump={(at) => {
+                  scrubTo(at)
+                  window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' })
+                }}
+              />
             </Section>
             <Section defer placeholderHeight={640}>
               <PostingPlan

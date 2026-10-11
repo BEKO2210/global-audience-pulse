@@ -27,6 +27,7 @@ export interface AnalyticsEvents {
   Playbook: { plattform: PlatformId }
   'Termin angesehen': { plattform: PlatformId }
   'Plattform gewählt': { plattform: PlatformId; an: 'ja' | 'nein' }
+  Frage: { zielgruppe: 'global' | 'dach' | 'usa' | 'transatlantik' | 'ost-welle' }
   Sprache: { wert: 'de' | 'en' }
   'Web Vitals': {
     metric: 'LCP' | 'CLS' | 'INP' | 'FCP' | 'TTFB'
@@ -83,6 +84,7 @@ const allowedValues = {
   'Termin angesehen': {
     plattform: ['instagram', 'tiktok', 'youtube', 'linkedin', 'x', 'threads', 'hackernews'],
   },
+  Frage: { zielgruppe: ['global', 'dach', 'usa', 'transatlantik', 'ost-welle'] },
   'Plattform gewählt': {
     plattform: ['instagram', 'tiktok', 'youtube', 'linkedin', 'x', 'threads', 'hackernews'],
     an: ['ja', 'nein'],

@@ -1,0 +1,115 @@
+/* T-016 Frag den Pulse – questions as a radio row, one answer card: the time is the hero. */
+.ap-questions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.ap-question {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--rule-solid);
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  transition:
+    color 0.2s var(--motion-ease),
+    background-color 0.2s var(--motion-ease),
+    border-color 0.2s var(--motion-ease);
+}
+.ap-question:hover {
+  color: var(--ink);
+}
+.ap-question[aria-checked='true'] {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--rule-solid));
+  background: var(--accent-tint);
+  color: var(--ink);
+  font-weight: 600;
+}
+.ap-question:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.ap-answer {
+  display: grid;
+  gap: 24px;
+  padding: 24px;
+  border: 1px solid var(--rule-solid);
+  background: var(--paper);
+}
+@media (min-width: 900px) {
+  .ap-answer {
+    grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.2fr);
+    gap: 40px;
+    align-items: center;
+  }
+}
+.ap-window {
+  display: grid;
+  gap: 8px;
+}
+.ap-label {
+  color: var(--muted);
+  font:
+    500 11px/1.3 'Geist Mono Variable',
+    monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.ap-window strong {
+  color: var(--accent-ink);
+  font:
+    600 clamp(32px, 5vw, 44px) / 1 'Geist Mono Variable',
+    monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.ap-window small {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.ap-scores {
+  color: var(--muted);
+  font-size: 13px;
+}
+.ap-verdict {
+  margin: 0 0 12px;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.ap-regions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.ap-regions span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.ap-ai {
+  margin: 0 0 16px;
+  padding-left: 12px;
+  border-left: 2px solid var(--rule-solid);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.ap-ai span {
+  color: var(--muted);
+}
+.ap-jump {
+  justify-self: start;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ap-question {
+    transition: none;
+  }
+}
