@@ -138,6 +138,8 @@ test('hides reports older than a day and still renders v1 text-only payloads', a
   await serve(page, reportV1(30))
   await openReady(page)
   await expect(page.locator('.live-report')).toHaveCount(0)
+  // no empty band in the hero once it is clear there is no fresh report
+  await expect(page.locator('.report-teaser')).toHaveCount(0)
 
   await serve(page, reportV1(0.2))
   await page.reload()

@@ -40,18 +40,25 @@ export const AI_MARK = {
 export const STALE_HOURS = 3
 export const HIDE_HOURS = 24
 
-/** Fetches the hourly report once and every 10 minutes; shared by the hero teaser and the full report. */
+/**
+ * Fetches the hourly report once and every 10 minutes; shared by the hero teaser and the full report.
+ * undefined while the first request is open, null when there is no report.
+ */
 export function useLiveReport() {
-  const [data, setData] = useState<LiveAnalysisPayload | null>(null)
+  const [data, setData] = useState<LiveAnalysisPayload | null | undefined>(undefined)
   useEffect(() => {
     let cancelled = false
     const load = () =>
       fetch(`${DATA_SOURCES.liveAnalysis}?t=${Math.floor(Date.now() / 600_000)}`)
         .then((response) => (response.ok ? response.json() : null))
         .then((json: LiveAnalysisPayload | null) => {
-          if (!cancelled && json?.report?.schlagzeile) setData(json)
+          if (cancelled) return
+          if (json?.report?.schlagzeile) setData(json)
+          else setData((current) => current ?? null)
         })
-        .catch(() => undefined)
+        .catch(() => {
+          if (!cancelled) setData((current) => current ?? null)
+        })
     load()
     const id = window.setInterval(load, 10 * 60_000)
     return () => {
@@ -62,14 +69,23 @@ export function useLiveReport() {
   return data
 }
 
-/** One reserved line in the hero: never shifts the layout while the report loads. */
-export function ReportTeaser({ data, now }: { data: LiveAnalysisPayload | null; now: Date }) {
+/**
+ * One line in the hero, reserved while the report loads so it never shifts the layout; without a fresh
+ * report (job paused for over a day) the line goes away instead of leaving an empty band.
+ */
+export function ReportTeaser({
+  data,
+  now,
+}: {
+  data: LiveAnalysisPayload | null | undefined
+  now: Date
+}) {
   const t = useMessages(M)
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const generated = data ? new Date(data.generatedAt) : null
   const fresh = generated && (now.getTime() - generated.getTime()) / 3_600_000 <= HIDE_HOURS
-  if (!fresh || !data || !generated)
-    return <div className="report-teaser is-empty" aria-hidden="true" />
+  if (data === undefined) return <div className="report-teaser is-empty" aria-hidden="true" />
+  if (!fresh || !data || !generated) return null
   const ai = data.source === 'llm'
   return (
     <a className="report-teaser" href="#lagebericht" {...(ai ? AI_MARK : {})}>
