@@ -1,26 +1,34 @@
 import { useEffect, useId, useRef, useState, type ComponentType } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { Desktop, Moon, Sun, SlidersHorizontal, type IconProps } from '@phosphor-icons/react'
+import { Check, Desktop, Moon, Sun, SlidersHorizontal, type IconProps } from '@phosphor-icons/react'
 import { STYLES, STYLE_IDS, type StyleId } from '../config/styles'
+import { track } from '../lib/analytics'
 import { useLocale, useMessages } from '../i18n/LocaleProvider'
-import type { Messages } from '../i18n/locale'
+import type { Locale, Messages } from '../i18n/locale'
 import './DisplayMenu.css'
 
 export type ThemePreference = 'system' | 'light' | 'dark'
 
 const DE = {
   open: 'Darstellung',
+  language: 'Sprache',
   style: 'Stil',
   mode: 'Modus',
   modes: { system: 'System', light: 'Hell', dark: 'Dunkel' },
 }
 const EN: typeof DE = {
   open: 'Appearance',
+  language: 'Language',
   style: 'Style',
   mode: 'Mode',
   modes: { system: 'System', light: 'Light', dark: 'Dark' },
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
+
+const LANGUAGES: { id: Locale; name: string }[] = [
+  { id: 'de', name: 'Deutsch' },
+  { id: 'en', name: 'English' },
+]
 
 const MODE_ICONS: Record<ThemePreference, ComponentType<IconProps>> = {
   system: Desktop,
@@ -28,7 +36,10 @@ const MODE_ICONS: Record<ThemePreference, ComponentType<IconProps>> = {
   dark: Moon,
 }
 
-/** O-014: one header control for style (three brands) and light/dark – replaces the three theme buttons. */
+/**
+ * One header control for language, style (three brands) and light/dark. A quiet sheet: three labelled groups,
+ * style rows with a swatch and a check mark instead of tinted boxes.
+ */
 export function DisplayMenu({
   style,
   onStyle,
@@ -43,7 +54,7 @@ export function DisplayMenu({
   onTheme: (theme: ThemePreference) => void
 }) {
   const t = useMessages(M)
-  const { locale } = useLocale()
+  const { locale, setLocale } = useLocale()
   const reduce = useReducedMotion()
   const [open, setOpen] = useState(false)
   const panelId = useId()
@@ -78,10 +89,10 @@ export function DisplayMenu({
         aria-expanded={open}
         aria-controls={panelId}
         aria-label={t.open}
-        title={t.open}
         onClick={() => setOpen((value) => !value)}
       >
         <SlidersHorizontal size={18} aria-hidden="true" />
+        <span className="dm-trigger-label">{t.open}</span>
       </button>
       <AnimatePresence>
         {open && (
@@ -93,54 +104,91 @@ export function DisplayMenu({
             initial={reduce ? false : { opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={reduce ? undefined : { opacity: 0, y: -4 }}
-            transition={{ duration: 0.2, ease: [0.2, 0.8, 0.2, 1] }}
+            transition={{ duration: 0.18, ease: [0.2, 0.8, 0.2, 1] }}
           >
-            <p className="dm-label" id={`${panelId}-style`}>
-              {t.style}
-            </p>
-            <div className="dm-styles" role="radiogroup" aria-labelledby={`${panelId}-style`}>
-              {STYLE_IDS.map((id) => (
-                <button
-                  key={id}
-                  type="button"
-                  role="radio"
-                  aria-checked={style === id}
-                  className="dm-style"
-                  onClick={() => onStyle(id)}
-                >
-                  <span className="dm-swatch" aria-hidden="true">
-                    {STYLES[id].swatch[activeTheme].map((color, i) => (
-                      <i key={i} style={{ background: color }} />
-                    ))}
-                  </span>
-                  <span className="dm-style-text">
-                    <strong>{STYLES[id].name[locale]}</strong>
-                    <small>{STYLES[id].note[locale]}</small>
-                  </span>
-                </button>
-              ))}
-            </div>
-            <p className="dm-label" id={`${panelId}-mode`}>
-              {t.mode}
-            </p>
-            <div className="dm-modes" role="radiogroup" aria-labelledby={`${panelId}-mode`}>
-              {(['system', 'light', 'dark'] as const).map((value) => {
-                const Icon = MODE_ICONS[value]
-                return (
+            <section className="dm-group" aria-labelledby={`${panelId}-lang`}>
+              <h2 className="dm-label" id={`${panelId}-lang`}>
+                {t.language}
+              </h2>
+              <div className="dm-segments" role="radiogroup" aria-labelledby={`${panelId}-lang`}>
+                {LANGUAGES.map(({ id, name }) => (
                   <button
-                    key={value}
+                    key={id}
                     type="button"
                     role="radio"
-                    aria-checked={theme === value}
-                    className="dm-mode"
-                    onClick={() => onTheme(value)}
+                    lang={id}
+                    aria-checked={locale === id}
+                    className="dm-segment"
+                    onClick={() => {
+                      track('Sprache', { wert: id })
+                      setLocale(id)
+                    }}
                   >
-                    <Icon size={16} aria-hidden="true" />
-                    {t.modes[value]}
+                    {name}
                   </button>
-                )
-              })}
-            </div>
+                ))}
+              </div>
+            </section>
+
+            <section className="dm-group" aria-labelledby={`${panelId}-style`}>
+              <h2 className="dm-label" id={`${panelId}-style`}>
+                {t.style}
+              </h2>
+              <div className="dm-rows" role="radiogroup" aria-labelledby={`${panelId}-style`}>
+                {STYLE_IDS.map((id) => {
+                  const checked = style === id
+                  return (
+                    <button
+                      key={id}
+                      type="button"
+                      role="radio"
+                      aria-checked={checked}
+                      className="dm-row"
+                      onClick={() => onStyle(id)}
+                    >
+                      <span className="dm-dots" aria-hidden="true">
+                        {STYLES[id].swatch[activeTheme].map((color, i) => (
+                          <i key={i} style={{ background: color }} />
+                        ))}
+                      </span>
+                      <span className="dm-row-text">
+                        <strong>{STYLES[id].name[locale]}</strong>
+                        <small>{STYLES[id].note[locale]}</small>
+                      </span>
+                      <Check className="dm-check" size={16} weight="bold" aria-hidden="true" />
+                    </button>
+                  )
+                })}
+              </div>
+            </section>
+
+            <section className="dm-group" aria-labelledby={`${panelId}-mode`}>
+              <h2 className="dm-label" id={`${panelId}-mode`}>
+                {t.mode}
+              </h2>
+              <div
+                className="dm-segments is-three"
+                role="radiogroup"
+                aria-labelledby={`${panelId}-mode`}
+              >
+                {(['system', 'light', 'dark'] as const).map((value) => {
+                  const Icon = MODE_ICONS[value]
+                  return (
+                    <button
+                      key={value}
+                      type="button"
+                      role="radio"
+                      aria-checked={theme === value}
+                      className="dm-segment"
+                      onClick={() => onTheme(value)}
+                    >
+                      <Icon size={16} aria-hidden="true" />
+                      {t.modes[value]}
+                    </button>
+                  )
+                })}
+              </div>
+            </section>
           </motion.div>
         )}
       </AnimatePresence>

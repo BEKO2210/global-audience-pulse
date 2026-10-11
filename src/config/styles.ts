@@ -18,22 +18,19 @@ export const STYLES: Record<
 > = {
   tafel: {
     name: { de: 'Abflugtafel', en: 'Departure board' },
-    note: { de: 'Tafel-Schwarz, Bernstein, IBM Plex', en: 'Board black, amber, IBM Plex' },
+    note: { de: 'Dunkle Tafel, Bernstein', en: 'Board black, amber' },
     themeColor: { light: '#f4f4f1', dark: '#0f1113' },
     swatch: { light: ['#f4f4f1', '#15171a', '#d98a0b'], dark: ['#0f1113', '#eceae4', '#f5a524'] },
   },
   atlas: {
     name: { de: 'Atlas', en: 'Atlas' },
-    note: { de: 'Kartenpapier, Petrol, Signalrot', en: 'Map paper, petrol, signal red' },
+    note: { de: 'Kartenpapier, Signalrot', en: 'Map paper, signal red' },
     themeColor: { light: '#eef1ee', dark: '#0f1a1d' },
     swatch: { light: ['#eef1ee', '#16292e', '#d7263d'], dark: ['#0f1a1d', '#e6eeec', '#ff5a6e'] },
   },
   praezision: {
     name: { de: 'Präzision', en: 'Precision' },
-    note: {
-      de: 'Fast Weiß, Kobalt, Schibsted Grotesk',
-      en: 'Near white, cobalt, Schibsted Grotesk',
-    },
+    note: { de: 'Klares Weiß, Kobalt', en: 'Clean white, cobalt' },
     themeColor: { light: '#fafaf8', dark: '#0b0d12' },
     swatch: { light: ['#fafaf8', '#0d1117', '#2546f0'], dark: ['#0b0d12', '#eef0f4', '#6d84ff'] },
   },

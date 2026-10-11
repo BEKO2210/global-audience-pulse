@@ -40,7 +40,9 @@ test.describe('English system language', () => {
 
   test('the toggle switches to German and remembers it', async ({ page }) => {
     await openReady(page)
-    await page.getByRole('button', { name: 'Deutsch' }).click()
+    // the language sits in the appearance menu (English UI: "Appearance")
+    await page.getByRole('button', { name: 'Appearance' }).click()
+    await page.getByRole('radio', { name: 'Deutsch' }).click()
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Jetzt posten oder warten?')
     await expect(page.locator('html')).toHaveAttribute('lang', 'de')
     await page.reload()
@@ -58,8 +60,6 @@ test('German system language stays German; ?lang=en switches', async ({ page }) 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Jetzt posten oder warten?')
   await openReady(page, true, '?lang=en')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Post now or wait?')
-  await expect(page.getByRole('button', { name: 'English' })).toHaveAttribute(
-    'aria-pressed',
-    'true',
-  )
+  await page.getByRole('button', { name: 'Appearance' }).click()
+  await expect(page.getByRole('radio', { name: 'English' })).toHaveAttribute('aria-checked', 'true')
 })

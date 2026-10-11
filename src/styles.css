@@ -24,6 +24,7 @@
   --space-12: 48px;
   --space-16: 64px;
   --prose: 68ch;
+  --header-h: 64px;
   --motion-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --mobile-bar-height: 72px;
   --content-width: 1440px;
@@ -310,7 +311,6 @@ button {
 .pb-chip,
 .filter-row button,
 .planner-tabs button,
-.lang-toggle button,
 .dm-mode,
 .dm-style,
 .compact-toggle,
@@ -334,7 +334,6 @@ button {
 .filter-row button[aria-pressed='true'],
 .filter-row button[aria-selected='true'],
 .planner-tabs button[aria-selected='true'],
-.lang-toggle button[aria-pressed='true'],
 .dm-mode[aria-checked='true'],
 .dm-style[aria-checked='true'],
 .compact-toggle[aria-pressed='true'],
@@ -353,7 +352,6 @@ button {
 .pb-tabs button:focus-visible,
 .filter-row button:focus-visible,
 .planner-tabs button:focus-visible,
-.lang-toggle button:focus-visible,
 .dm-mode:focus-visible,
 .dm-style:focus-visible,
 .compact-toggle:focus-visible,
@@ -367,7 +365,7 @@ button {
   padding-bottom: calc(var(--mobile-bar-height) + env(safe-area-inset-bottom));
 }
 .site-header {
-  height: 78px;
+  height: var(--header-h);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -474,15 +472,6 @@ button {
   50% {
     opacity: 0.4;
   }
-}
-.lang-toggle {
-  display: flex;
-}
-.lang-toggle button {
-  /* DE/EN are language codes, not an all-caps label: the source text stays as written */
-  width: var(--control-h);
-  display: grid;
-  place-items: center;
 }
 .eyebrow,
 .micro,
@@ -1781,19 +1770,16 @@ button:active {
     padding-top: var(--space-16);
   }
 }
+/* Phones and small tablets: the header is logo + name + one menu button; the data age lives in the footer
+   and the methodology, an unlabelled dot here read as a rendering glitch. */
 @media (max-width: 767px) {
-  .freshness {
-    width: 16px;
-    overflow: hidden;
-    padding-inline: var(--space-1);
-  }
-  .freshness i {
-    margin-right: var(--space-3);
+  .header-actions .freshness {
+    display: none;
   }
 }
 @media (min-width: 960px) {
   .site-header {
-    height: 92px;
+    --header-h: 80px;
     padding-inline: var(--gutter);
   }
   .wordmark {

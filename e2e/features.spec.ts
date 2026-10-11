@@ -1,3 +1,4 @@
+import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 import { readFile } from 'node:fs/promises'
 import { allowClipboard, openReady } from './helpers'
@@ -201,3 +202,22 @@ test('"Ganze Woche planen" opens the planner on the 7-day view (O-011)', async (
   await expect(tab).toBeVisible()
   await expect(tab).toHaveAttribute('aria-selected', 'true')
 })
+
+for (const theme of ['light', 'dark'] as const)
+  test(`appearance menu passes axe (${theme})`, async ({ page }) => {
+    await page.addInitScript((t) => localStorage.setItem('gap-theme', t), theme)
+    await openReady(page)
+    await page.getByRole('button', { name: 'Darstellung' }).click()
+    await expect(page.getByRole('radio', { name: 'Deutsch' })).toHaveAttribute(
+      'aria-checked',
+      'true',
+    )
+    await page.waitForTimeout(300)
+    const results = await new AxeBuilder({ page })
+      .include('.dm-panel')
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+      .analyze()
+    expect(
+      results.violations.filter((v) => ['serious', 'critical'].includes(v.impact ?? '')),
+    ).toEqual([])
+  })

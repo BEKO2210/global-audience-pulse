@@ -68,7 +68,6 @@ const DE = {
   refreshTitle: (min: number) => `Automatischer Abruf alle ${min} Min. · Klick lädt sofort neu`,
   measured: (ago: string) => `Messdaten ${ago}`,
   noData: 'Messdaten nicht verfügbar',
-  language: 'Sprache',
   eyebrowFallback: 'Beispieldaten, Offline-Modell',
   eyebrowLoading: 'Daten werden geladen',
   regionsActive: (n: number) => `${n} Regionen aktiv`,
@@ -148,7 +147,6 @@ const EN: typeof DE = {
   refreshTitle: (min: number) => `Refreshes every ${min} min · click to refresh now`,
   measured: (ago: string) => `Data ${ago}`,
   noData: 'Data unavailable',
-  language: 'Language',
   eyebrowFallback: 'Sample data, offline model',
   eyebrowLoading: 'Loading data',
   regionsActive: (n: number) => `${n} regions active`,
@@ -306,7 +304,7 @@ function Header({
   onStyle: (style: StyleId) => void
   onRefresh: () => void
 }) {
-  const { locale, setLocale } = useLocale()
+  const { locale } = useLocale()
   const t = M[locale]
   return (
     <motion.header
@@ -329,22 +327,6 @@ function Header({
           </span>
         </button>
         <LiveClock />
-        <div className="lang-toggle" aria-label={t.language} role="group">
-          {(['de', 'en'] as const).map((value) => (
-            <button
-              key={value}
-              lang={value}
-              onClick={() => {
-                track('Sprache', { wert: value })
-                setLocale(value)
-              }}
-              aria-pressed={locale === value}
-              aria-label={value === 'de' ? 'Deutsch' : 'English'}
-            >
-              {value.toUpperCase()}
-            </button>
-          ))}
-        </div>
         <DisplayMenu
           style={style}
           onStyle={onStyle}

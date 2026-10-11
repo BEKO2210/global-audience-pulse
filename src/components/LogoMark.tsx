@@ -95,8 +95,7 @@ export function Wordmark({
         </span>{' '}
         <span className="wm-word" style={{ '--w': 1 } as CSSProperties}>
           Audience
-        </span>
-        <br />
+        </span>{' '}
         <span className="wm-word" style={{ '--w': 2 } as CSSProperties}>
           Pulse
         </span>
