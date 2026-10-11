@@ -75,6 +75,11 @@ if [ "$outcome" = published ]; then
     cp "$OUT/weekly.json" "weekly/$week.json"
   fi
 fi
+# Until the first review exists the page would request a missing file (404 in the console, Lighthouse
+# best-practices); an empty stub is ignored by the page.
+if [ ! -f weekly.json ]; then
+  echo '{"version":1,"woche":null}' > weekly.json
+fi
 cp "$OUT/health.json" health.json
 cat > README.md <<'EOF'
 Automatisch erzeugter Lagebericht für Global Audience Pulse (stündlich von einem lokalen Modell
@@ -84,8 +89,9 @@ git add health.json README.md
 if [ "$outcome" = published ]; then
   git add analysis.json
   [ -f history.jsonl ] && git add history.jsonl
-  [ -f weekly.json ] && git add weekly.json weekly
+  [ -d weekly ] && git add weekly
 fi
+git add weekly.json
 # One commit only: amend and force-push so the data branch never grows.
 if git rev-parse -q --verify HEAD >/dev/null; then
   git -c user.name="Global Audience Pulse Bot" -c user.email="nullmesh@protonmail.com" \
