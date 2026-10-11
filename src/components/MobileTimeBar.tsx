@@ -23,6 +23,7 @@ const DE = {
     return `+${days} ${days === 1 ? 'Tag' : 'Tage'}`
   },
   region: 'Zeit vorspulen',
+  expand: 'Zeitleiste ausklappen',
   backToNow: (offset: string) => `Zurück zu jetzt (gewählt: ${offset})`,
   now: 'Jetzt',
   slider: 'Mobile Zeitmaschine',
@@ -41,6 +42,7 @@ const EN: typeof DE = {
     return `+${days} ${days === 1 ? 'day' : 'days'}`
   },
   region: 'Scrub through time',
+  expand: 'Expand time bar',
   backToNow: (offset) => `Back to now (selected: ${offset})`,
   now: 'Now',
   slider: 'Mobile time machine',
@@ -92,10 +94,52 @@ export function MobileTimeBar({
   )
   const [localMinutes, setLocalMinutes] = useState(externalMinutes)
   const [dragging, setDragging] = useState(false)
+  const [compact, setCompact] = useState(false)
   const frame = useRef(0)
   const pending = useRef(localMinutes)
   const bestState = useRef(false)
   useEffect(() => () => cancelAnimationFrame(frame.current), [])
+  useEffect(() => {
+    let scrollFrame = 0
+    let lastScrollPosition = window.scrollY
+    let direction = 0
+    let distance = 0
+
+    const updateBar = () => {
+      scrollFrame = 0
+      const scrollPosition = window.scrollY
+      if (scrollPosition <= 0) {
+        setCompact(false)
+        lastScrollPosition = 0
+        distance = 0
+        return
+      }
+
+      const delta = scrollPosition - lastScrollPosition
+      lastScrollPosition = scrollPosition
+      if (delta === 0) return
+
+      const nextDirection = Math.sign(delta)
+      if (nextDirection !== direction) {
+        direction = nextDirection
+        distance = 0
+      }
+      distance += Math.abs(delta)
+      if (distance <= 24) return
+
+      setCompact(direction > 0)
+      distance = 0
+    }
+    const onScroll = () => {
+      if (!scrollFrame) scrollFrame = requestAnimationFrame(updateBar)
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      cancelAnimationFrame(scrollFrame)
+    }
+  }, [])
 
   const displayedMinutes = dragging ? localMinutes : externalMinutes
   const date = new Date(now.getTime() + displayedMinutes * 60_000)
@@ -174,7 +218,24 @@ export function MobileTimeBar({
     })
 
   return (
-    <div className="mobile-bar" role="region" aria-label={t.region}>
+    <div
+      className={`mobile-bar${compact ? ' is-compact' : ''}`}
+      role="region"
+      aria-label={t.region}
+      // any touch on the compact bar expands it; the scrubber stays enabled, so a drag keeps working
+      onPointerDownCapture={() => {
+        if (compact) setCompact(false)
+      }}
+    >
+      {compact && (
+        <button
+          className="mobile-bar-expand"
+          type="button"
+          aria-expanded="false"
+          aria-label={t.expand}
+          onClick={() => setCompact(false)}
+        />
+      )}
       <div className="mobile-bar-when">
         <span className="mobile-bar-readout">{formatTime(live ? now : date, userZone)}</span>
         {live ? (

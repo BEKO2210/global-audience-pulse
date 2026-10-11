@@ -18,6 +18,7 @@ const DE = {
   cell: (city: string, time: string, score: number) => `${city}, ${time}: ${score} Prozent`,
   legendLabel: 'Aktivität 0 bis 100',
   legend: 'Aktivität 0–100',
+  swipeHint: 'Wischen →',
 }
 const EN: typeof DE = {
   now: 'now',
@@ -27,6 +28,7 @@ const EN: typeof DE = {
   cell: (city, time, score) => `${city}, ${time}: ${score}%`,
   legendLabel: 'Activity 0 to 100',
   legend: 'Activity 0–100',
+  swipeHint: 'Swipe →',
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
@@ -72,6 +74,15 @@ export const Heatmap = memo(function Heatmap({
   const hours = Array.from({ length: 24 }, (_, i) => new Date(start.getTime() + i * HOUR_MS))
   const regions = REGIONS.filter((region) => selected.includes(region.id))
   const [activeCell, setActiveCell] = useState({ row: 0, column: 0 })
+  const [showSwipeHint, setShowSwipeHint] = useState(() => {
+    if (typeof window === 'undefined' || !window.matchMedia('(max-width: 599px)').matches)
+      return false
+    try {
+      return window.localStorage.getItem('gap-heatmap-hint') !== 'seen'
+    } catch {
+      return false
+    }
+  })
   const cellRefs = useRef(new Map<string, HTMLButtonElement>())
   const heatLevel = (score: number) => {
     const index = ACTIVITY_LEVELS.findIndex((level) => score >= level.min && score <= level.max)
@@ -115,121 +126,139 @@ export const Heatmap = memo(function Heatmap({
         <h2 id="heatmap-title">{t.title}</h2>
         <span className="micro">{t.yourZone}</span>
       </div>
-      <div className="heatmap-scroll">
+      <div className="heatmap-scroll-shell">
         <div
-          className="heatmap"
-          role="grid"
-          aria-label={t.gridLabel}
-          style={
-            {
-              gridTemplateColumns: `${HEATMAP_LABEL_WIDTH} repeat(${hours.length}, minmax(28px, 1fr))`,
-              '--selected-ratio': selectedRatio,
-            } as CSSProperties
-          }
+          className="heatmap-scroll"
+          onScroll={(event) => {
+            if (!showSwipeHint || event.currentTarget.scrollLeft === 0) return
+            setShowSwipeHint(false)
+            try {
+              window.localStorage.setItem('gap-heatmap-hint', 'seen')
+            } catch {
+              // Storage can be unavailable in hardened browser modes; hiding still works for this view.
+            }
+          }}
         >
-          <div className="heatmap-row" role="row">
-            <span role="columnheader" />
-            {hours.map((date, i) => (
-              <span
-                key={date.getTime()}
-                role="columnheader"
-                className={i === selectedColumn ? 'axis-label selected-col-header' : 'axis-label'}
-              >
-                {i === 0 ? (
-                  // the floating "now" badge marks this column visually; keep the word for screen readers
-                  <span className="sr-only">{t.now}</span>
-                ) : i % 3 === 0 ? (
-                  formatTime(date, userZone).slice(0, 2)
-                ) : (
-                  ''
-                )}
-              </span>
-            ))}
-          </div>
-          {regions.map((region, row) => (
-            <div key={region.id} className="heatmap-row" role="row">
-              <span className="heatmap-label" role="rowheader">
-                <Flag code={region.flag} label={regionName(region.id, locale)} size={16} />{' '}
-                {cityName(region.id, region.city, locale)}
-              </span>
-              {hours.map((date, column) => {
-                const score = grid.activityAt(region.id, date)
-                const key = `${row}:${column}`
-                const columnClass =
-                  column === selectedColumn
-                    ? 'selected-col'
-                    : column === nowColumn && !sameInstant
-                      ? 'now-col'
-                      : ''
-                return (
-                  <button
-                    key={date.getTime()}
-                    ref={(element) => {
-                      if (element) cellRefs.current.set(key, element)
-                      else cellRefs.current.delete(key)
-                    }}
-                    role="gridcell"
-                    tabIndex={activeCell.row === row && activeCell.column === column ? 0 : -1}
-                    className={`heat-cell ${columnClass} heat-${heatLevel(score)}`}
-                    style={{ animationDelay: `${column * 18}ms` }}
-                    aria-label={t.cell(
-                      cityName(region.id, region.city, locale),
-                      formatTime(date, userZone),
-                      Math.round(score),
-                    )}
-                    onFocus={() => setActiveCell({ row, column })}
-                    onKeyDown={(event) => onCellKeyDown(event, row, column)}
-                    onClick={() => {
-                      onScrub(date)
-                      track('Scrub', {
-                        quelle: 'heatmap',
-                        horizont: '24h',
-                        offsetStunden: Math.round((date.getTime() - start.getTime()) / HOUR_MS),
-                      })
-                    }}
-                  />
-                )
-              })}
-            </div>
-          ))}
-          {/* Separate overlay grid with identical columns: cursors must not take part in the
-              auto-placement of the cells (they would shift every cell by a column). */}
           <div
-            className="heatmap-cursor-grid"
-            aria-hidden="true"
-            style={{
-              gridTemplateColumns: `${HEATMAP_LABEL_WIDTH} repeat(${hours.length}, minmax(28px, 1fr))`,
-            }}
+            className="heatmap"
+            role="grid"
+            aria-label={t.gridLabel}
+            style={
+              {
+                gridTemplateColumns: `${HEATMAP_LABEL_WIDTH} repeat(${hours.length}, minmax(28px, 1fr))`,
+                '--selected-ratio': selectedRatio,
+              } as CSSProperties
+            }
           >
-            {!sameInstant && (
+            <div className="heatmap-row" role="row">
+              <span role="columnheader" />
+              {hours.map((date, i) => (
+                <span
+                  key={date.getTime()}
+                  role="columnheader"
+                  className={i === selectedColumn ? 'axis-label selected-col-header' : 'axis-label'}
+                >
+                  {i === 0 ? (
+                    // the floating "now" badge marks this column visually; keep the word for screen readers
+                    <span className="sr-only">{t.now}</span>
+                  ) : i % 3 === 0 ? (
+                    formatTime(date, userZone).slice(0, 2)
+                  ) : (
+                    ''
+                  )}
+                </span>
+              ))}
+            </div>
+            {regions.map((region, row) => (
+              <div key={region.id} className="heatmap-row" role="row">
+                <span className="heatmap-label" role="rowheader">
+                  <Flag code={region.flag} label={regionName(region.id, locale)} size={16} />{' '}
+                  {cityName(region.id, region.city, locale)}
+                </span>
+                {hours.map((date, column) => {
+                  const score = grid.activityAt(region.id, date)
+                  const key = `${row}:${column}`
+                  const columnClass =
+                    column === selectedColumn
+                      ? 'selected-col'
+                      : column === nowColumn && !sameInstant
+                        ? 'now-col'
+                        : ''
+                  return (
+                    <button
+                      key={date.getTime()}
+                      ref={(element) => {
+                        if (element) cellRefs.current.set(key, element)
+                        else cellRefs.current.delete(key)
+                      }}
+                      role="gridcell"
+                      tabIndex={activeCell.row === row && activeCell.column === column ? 0 : -1}
+                      className={`heat-cell ${columnClass} heat-${heatLevel(score)}`}
+                      style={{ animationDelay: `${column * 18}ms` }}
+                      aria-label={t.cell(
+                        cityName(region.id, region.city, locale),
+                        formatTime(date, userZone),
+                        Math.round(score),
+                      )}
+                      onFocus={() => setActiveCell({ row, column })}
+                      onKeyDown={(event) => onCellKeyDown(event, row, column)}
+                      onClick={() => {
+                        onScrub(date)
+                        track('Scrub', {
+                          quelle: 'heatmap',
+                          horizont: '24h',
+                          offsetStunden: Math.round((date.getTime() - start.getTime()) / HOUR_MS),
+                        })
+                      }}
+                    />
+                  )
+                })}
+              </div>
+            ))}
+            {/* Separate overlay grid with identical columns: cursors must not take part in the
+              auto-placement of the cells (they would shift every cell by a column). */}
+            <div
+              className="heatmap-cursor-grid"
+              aria-hidden="true"
+              style={{
+                gridTemplateColumns: `${HEATMAP_LABEL_WIDTH} repeat(${hours.length}, minmax(28px, 1fr))`,
+              }}
+            >
+              {!sameInstant && (
+                <div
+                  aria-hidden="true"
+                  className="heatmap-cursor heatmap-cursor--now"
+                  style={
+                    {
+                      gridColumn: nowColumn + 2,
+                      '--cursor-fraction': columnFraction(start),
+                    } as CSSProperties
+                  }
+                >
+                  <span className="heatmap-cursor-label">{t.now}</span>
+                </div>
+              )}
               <div
                 aria-hidden="true"
-                className="heatmap-cursor heatmap-cursor--now"
+                className="heatmap-cursor heatmap-cursor--selected"
+                data-testid="heatmap-selected-cursor"
                 style={
                   {
-                    gridColumn: nowColumn + 2,
-                    '--cursor-fraction': columnFraction(start),
+                    gridColumn: selectedColumn + 2,
+                    '--cursor-fraction': columnFraction(selectedDate),
                   } as CSSProperties
                 }
               >
-                <span className="heatmap-cursor-label">{t.now}</span>
+                <span className="heatmap-cursor-label">{selectedCursorLabel}</span>
               </div>
-            )}
-            <div
-              aria-hidden="true"
-              className="heatmap-cursor heatmap-cursor--selected"
-              data-testid="heatmap-selected-cursor"
-              style={
-                {
-                  gridColumn: selectedColumn + 2,
-                  '--cursor-fraction': columnFraction(selectedDate),
-                } as CSSProperties
-              }
-            >
-              <span className="heatmap-cursor-label">{selectedCursorLabel}</span>
             </div>
           </div>
         </div>
+        {showSwipeHint && (
+          <span className="heatmap-swipe-hint" aria-hidden="true">
+            {t.swipeHint}
+          </span>
+        )}
       </div>
       <div className="heat-legend" aria-label={t.legendLabel}>
         <strong>{t.legend}</strong>

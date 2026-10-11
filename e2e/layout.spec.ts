@@ -83,3 +83,35 @@ test('mobile time bar: the score sits right next to the 24 h switch, no gap', as
   // grid gap (8 px) + at most a thin margin; the old right-aligned 64 px column left ~30 px empty
   expect(score!.x - (toggle!.x + toggle!.width)).toBeLessThanOrEqual(12)
 })
+
+test('mobile time bar compacts on scroll and expands at the top or on tap', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await openReady(page)
+  const bar = page.locator('.mobile-bar')
+  const main = page.locator('main')
+  const expandedHeight = await bar.evaluate((element) => element.getBoundingClientRect().height)
+  const paddingBefore = await main.evaluate((element) => getComputedStyle(element).paddingBottom)
+
+  await page.evaluate(() => window.scrollTo(0, 600))
+  await expect(bar).toHaveClass(/is-compact/)
+  await expect
+    .poll(() => bar.evaluate((element) => element.getBoundingClientRect().height))
+    .toBeLessThanOrEqual(48)
+  expect(await main.evaluate((element) => getComputedStyle(element).paddingBottom)).toBe(
+    paddingBefore,
+  )
+
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await expect(bar).not.toHaveClass(/is-compact/)
+  await expect
+    .poll(() => bar.evaluate((element) => element.getBoundingClientRect().height))
+    .toBe(expandedHeight)
+
+  await page.evaluate(() => window.scrollTo(0, 600))
+  await expect(bar).toHaveClass(/is-compact/)
+  await bar.click({ position: { x: 8, y: 8 } })
+  await expect(bar).not.toHaveClass(/is-compact/)
+  await expect
+    .poll(() => bar.evaluate((element) => element.getBoundingClientRect().height))
+    .toBe(expandedHeight)
+})

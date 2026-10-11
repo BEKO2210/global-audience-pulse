@@ -2,6 +2,35 @@
   --heatmap-label-width: 118px;
 }
 
+.heatmap-scroll-shell {
+  position: relative;
+  min-width: 0;
+}
+
+.heatmap-swipe-hint {
+  display: none;
+}
+
+@media (max-width: 599px) {
+  .heatmap-swipe-hint {
+    position: absolute;
+    z-index: 4;
+    top: 50%;
+    right: var(--space-1);
+    display: block;
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--rule-solid);
+    border-radius: 999px;
+    color: var(--ink);
+    background: var(--paper);
+    font: var(--text-meta)/var(--leading-meta) var(--font-ui);
+    font-weight: var(--weight-medium);
+    white-space: nowrap;
+    pointer-events: none;
+    transform: translateY(-50%);
+  }
+}
+
 .heatmap-panel .heatmap::after {
   display: none;
 }
