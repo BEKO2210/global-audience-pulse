@@ -2,45 +2,46 @@
 
 .pp-lede {
   max-width: 64ch;
-  margin: -8px 0 20px;
+  margin: calc(-1 * var(--space-2)) 0 var(--space-4);
   color: var(--muted);
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: var(--text-sm);
+  line-height: var(--leading-body);
 }
 /* T-073: platform choice – hairline chips, the active ones in the accent tint; wraps on phones. */
 .pp-mine {
-  margin: 0 0 20px;
+  margin: 0 0 var(--space-4);
 }
 .pp-mine-head {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 4px 12px;
-  margin-bottom: 10px;
-  font-size: 13px;
-  font-weight: 600;
+  gap: var(--space-1) var(--space-3);
+  margin-bottom: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
 }
 .pp-mine-head small {
   color: var(--muted);
-  font-size: 12px;
-  font-weight: 400;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
+  font-weight: var(--weight-regular);
 }
 .pp-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-2);
 }
 .pp-chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-2);
   min-height: 36px;
-  padding: 0 12px;
+  padding: 0 var(--space-3);
   border: 1px solid var(--rule-solid);
   background: transparent;
   color: var(--muted);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--text-sm);
   cursor: pointer;
   transition:
     background-color 0.2s var(--motion-ease),
@@ -55,7 +56,7 @@
   border-color: color-mix(in srgb, var(--accent) 55%, var(--rule-solid));
   background: var(--accent-tint);
   color: var(--ink);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
 }
 .pp-chip[aria-pressed='true'] svg {
   color: var(--accent-ink);
@@ -71,7 +72,7 @@
 }
 .pp-empty {
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--text-sm);
 }
 .pp-list {
   margin: 0;
@@ -88,27 +89,27 @@
     'platform jump'
     'when score'
     'support support';
-  gap: 8px 16px;
+  gap: var(--space-2) var(--space-4);
   align-items: center;
-  padding: 16px 0;
+  padding: var(--space-4) 0;
   border-top: 1px solid var(--rule);
 }
 .pp-platform {
   grid-area: platform;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-weight: 600;
-  font-size: 15px;
+  gap: var(--space-2);
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-base);
 }
 .pp-when {
   grid-area: when;
   display: grid;
-  gap: 2px;
+  gap: var(--space-1);
 }
 .pp-when strong {
   font:
-    500 20px/1.15 'Geist Mono Variable',
+    var(--weight-medium) var(--text-lg)/var(--leading-body) 'Geist Mono Variable',
     monospace;
   font-variant-numeric: tabular-nums;
 }
@@ -116,17 +117,18 @@
 .pp-score small,
 .pp-support small {
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
 }
 .pp-score {
   grid-area: score;
   display: grid;
   justify-items: end;
-  gap: 2px;
+  gap: var(--space-1);
 }
 .pp-score b {
   font:
-    400 32px/1 'Instrument Serif',
+    var(--weight-regular) var(--text-2xl)/var(--leading-title) 'Instrument Serif',
     serif;
   font-variant-numeric: tabular-nums;
   color: var(--muted);
@@ -138,13 +140,13 @@
   grid-area: support;
   display: grid;
   grid-template-columns: 96px minmax(0, 1fr);
-  gap: 12px;
+  gap: var(--space-3);
   align-items: center;
-  font-size: 13px;
+  font-size: var(--text-sm);
 }
 .pp-support > span:last-child {
   display: grid;
-  gap: 2px;
+  gap: var(--space-1);
 }
 .pp-bar {
   height: 6px;
@@ -158,20 +160,20 @@
 .pp-actions {
   grid-area: jump;
   display: inline-flex;
-  gap: 8px;
+  gap: var(--space-2);
   justify-self: end;
 }
 .pp-jump {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-2);
   min-height: 36px;
-  padding: 0 12px;
+  padding: 0 var(--space-3);
   border: 1px solid var(--rule-solid);
   background: transparent;
   color: var(--ink);
   font: inherit;
-  font-size: 13px;
+  font-size: var(--text-sm);
   cursor: pointer;
 }
 .pp-jump:hover,
@@ -190,14 +192,14 @@
     display: grid;
     grid-template-columns: minmax(120px, 1fr) minmax(170px, 1.2fr) 96px minmax(200px, 1.6fr) auto;
     grid-template-areas: none;
-    gap: 16px;
+    gap: var(--space-4);
     align-items: center;
   }
   .pp-head {
-    padding: 0 0 8px;
+    padding: 0 0 var(--space-2);
     color: var(--muted);
     font:
-      500 11px/1 'Geist Mono Variable',
+      var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
       monospace;
   }
   .pp-row > * {
@@ -209,9 +211,9 @@
 }
 
 .pp-note {
-  margin: 16px 0 0;
-  padding-top: 12px;
+  margin: var(--space-4) 0 0;
+  padding-top: var(--space-3);
   border-top: 1px solid var(--rule);
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-sm);
 }

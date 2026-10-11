@@ -1,6 +1,29 @@
 @import 'tailwindcss';
 
 :root {
+  --text-meta: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-lg: 20px;
+  --text-xl: 24px;
+  --text-2xl: 32px;
+  --text-3xl: 40px;
+  --text-4xl: 56px;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --leading-title: 1.15;
+  --leading-body: 1.55;
+  --leading-meta: 1.4;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --prose: 68ch;
   color-scheme: dark;
   --paper: #11110f;
   --paper-2: #181815;
@@ -21,8 +44,8 @@
   --motion-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --mobile-bar-height: 72px;
   --content-width: 1440px;
-  --gutter: clamp(18px, 3.35vw, 48px);
-  --section-space: clamp(40px, 5vw, 72px);
+  --gutter: clamp(var(--space-4), 3.35vw, var(--space-12));
+  --section-space: clamp(var(--space-12), 5vw, var(--space-16));
   --map-day: #656159;
   --map-twilight: rgba(35, 39, 47, 0.18);
   --map-night: rgba(4, 7, 12, 0.58);
@@ -61,9 +84,17 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: 'Geist Variable', sans-serif;
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
   overflow-x: hidden;
+}
+/* One weight for emphasis (≤ 600) and no text below the 12px meta size, whatever the browser defaults are. */
+b,
+strong {
+  font-weight: var(--weight-semibold);
+}
+small {
+  font-size: max(var(--text-meta), 0.8em);
 }
 button,
 a,
@@ -103,13 +134,13 @@ button {
 }
 .wordmark {
   display: flex;
-  gap: 9px;
+  gap: var(--space-2);
   align-items: center;
   color: var(--ink);
   text-decoration: none;
-  font-size: 12px;
-  line-height: 1.05;
-  font-weight: 650;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
+  font-weight: var(--weight-semibold);
   letter-spacing: -0.02em;
 }
 .wordmark img {
@@ -119,22 +150,23 @@ button {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
 }
 .live-clock {
   display: none;
   font-family: 'Geist Mono Variable', monospace;
   text-align: right;
-  line-height: 1.15;
+  line-height: var(--leading-meta);
   font-variant-numeric: tabular-nums;
 }
 .live-clock span {
   display: block;
-  font-size: 13px;
+  font-size: var(--text-sm);
 }
 .live-clock small {
   color: var(--muted);
-  font-size: 9px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
 }
 .icon-button {
   width: 44px;
@@ -147,10 +179,11 @@ button {
 .freshness {
   border: 0;
   background: transparent;
-  padding: 10px 0;
+  padding: var(--space-2) 0;
   font-family: 'Geist Mono Variable', monospace;
   text-transform: uppercase;
-  font-size: 10px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
   letter-spacing: 0.08em;
   color: var(--muted);
   white-space: nowrap;
@@ -165,7 +198,7 @@ button {
     margin-right: 0;
   }
   .header-actions {
-    gap: 6px;
+    gap: var(--space-2);
   }
   .header-actions .theme-toggle button,
   .header-actions .lang-toggle button {
@@ -186,7 +219,7 @@ button {
   height: 6px;
   background: var(--series-3);
   border-radius: 50%;
-  margin-right: 5px;
+  margin-right: var(--space-1);
   animation: pulse-live 2.8s var(--motion-ease) infinite;
 }
 .freshness i.offline {
@@ -226,7 +259,7 @@ button {
 .lang-toggle button {
   width: 34px;
   font:
-    600 11px/1 'Geist Mono Variable',
+    var(--weight-semibold) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
   letter-spacing: 0.04em;
 }
@@ -238,21 +271,21 @@ button {
 .eyebrow,
 .micro {
   font-family: 'Geist Mono Variable', monospace;
-  font-size: 10px;
-  line-height: 1.2;
-  letter-spacing: 0.13em;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
 }
 .micro {
   letter-spacing: 0.06em;
 }
 .hero {
-  padding: 24px 16px 20px;
+  padding: var(--space-6) var(--space-4) var(--space-4);
   border-bottom: 1px solid var(--rule);
   display: grid;
-  gap: 36px;
+  gap: var(--space-8);
   position: relative;
 }
 .hero::after {
@@ -276,23 +309,24 @@ button {
 }
 .hero h1 {
   font:
-    400 clamp(34px, 10vw, 44px)/0.95 'Instrument Serif',
+    var(--weight-regular) clamp(var(--text-3xl), 10vw, var(--text-3xl))/var(--leading-title)
+      'Instrument Serif',
     serif;
   letter-spacing: -0.055em;
-  margin: 12px 0 18px;
+  margin: var(--space-3) 0 var(--space-4);
 }
 .hero h1 em {
-  font-weight: 400;
+  font-weight: var(--weight-regular);
   color: var(--accent-ink);
 }
 .score-row {
   display: flex;
   align-items: flex-end;
-  gap: 20px;
+  gap: var(--space-4);
 }
 .hero-score {
   font:
-    400 88px/0.75 'Instrument Serif',
+    var(--weight-regular) 88px/0.75 'Instrument Serif',
     serif;
   color: var(--accent-ink);
   letter-spacing: -0.055em;
@@ -311,27 +345,27 @@ button {
 }
 .hero-score small {
   font:
-    400 18px/1 'Geist Mono Variable',
+    var(--weight-regular) var(--text-base)/1.2 'Geist Mono Variable',
     monospace;
   color: var(--muted);
   letter-spacing: 0;
 }
 .score-meta {
-  padding-bottom: 2px;
+  padding-bottom: var(--space-1);
   max-width: 240px;
   min-height: 112px;
 }
 .score-meta .status {
   display: inline-flex;
-  gap: 6px;
+  gap: var(--space-2);
   align-items: center;
   font:
-    600 9px/1 'Geist Mono Variable',
+    var(--weight-semibold) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   border: 1px solid var(--rule-solid);
-  padding: 7px 9px;
+  padding: var(--space-2) var(--space-2);
 }
 .status i {
   width: 6px;
@@ -344,15 +378,16 @@ button {
   background: var(--accent);
 }
 .score-meta strong {
-  font-size: 17px;
+  font-size: var(--text-lg);
   display: block;
-  margin-top: 10px;
+  margin-top: var(--space-2);
   min-height: 26px;
 }
 .score-meta p {
-  font-size: 12px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
   color: var(--muted);
-  margin: 5px 0 0;
+  margin: var(--space-1) 0 0;
   min-height: 36px;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -361,72 +396,75 @@ button {
 }
 .hero-aside {
   border-top: 1px solid var(--rule);
-  padding-top: 20px;
+  padding-top: var(--space-4);
 }
 .hero-recommendation {
   border: 1px solid var(--rule-solid);
-  padding: 16px;
+  padding: var(--space-4);
 }
 .hero-window-time {
   font:
-    500 24px/1.2 'Geist Mono Variable',
+    var(--weight-medium) var(--text-xl)/var(--leading-body) 'Geist Mono Variable',
     monospace;
   color: var(--accent-ink);
-  margin: 6px 0 4px;
+  margin: var(--space-2) 0 var(--space-1);
   min-height: 30px;
   font-variant-numeric: tabular-nums;
 }
 .hero-window-time small {
-  font-size: 10px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
   color: var(--muted);
 }
 .hero-window-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   min-height: 36px;
-  margin-top: 12px;
+  margin-top: var(--space-3);
 }
 .hero-window-benefit {
   margin: 0;
   min-height: 1.4em;
-  font-size: 11px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
   color: var(--muted);
 }
 .empty-selection-banner {
   border: 1px solid var(--rule-solid);
-  padding: 18px;
+  padding: var(--space-4);
   max-width: 520px;
 }
 .empty-selection-banner p {
   color: var(--muted);
 }
 .hero-aside dl {
-  margin: 25px 0 0;
+  margin: var(--space-6) 0 0;
   border-top: 1px solid var(--rule);
 }
 .hero-aside dl div {
   display: flex;
   justify-content: space-between;
-  padding: 12px 0;
+  padding: var(--space-3) 0;
   border-bottom: 1px solid var(--rule);
 }
 .hero-aside dt {
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
 }
 .hero-aside dd {
   margin: 0;
   font:
-    12px 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
 }
 .hero-aside .best-region {
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 6px;
+  gap: var(--space-2);
   white-space: nowrap;
   text-align: right;
 }
@@ -442,8 +480,8 @@ button {
   min-width: 0;
 }
 .panel {
-  margin: 14px 10px;
-  padding: 20px 14px;
+  margin: var(--space-3) var(--space-2);
+  padding: var(--space-4) var(--space-3);
   background: var(--paper-2);
   border: 1px solid var(--rule-solid);
   transition:
@@ -489,19 +527,19 @@ button:active {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 14px;
-  margin-bottom: 20px;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
   min-width: 0;
   flex-wrap: wrap;
 }
 .section-head p {
-  margin: 0 0 6px;
+  margin: 0 0 var(--space-2);
 }
 .section-head h2,
 .regions-section h2,
 .presets h2 {
   font:
-    400 29px/1 'Instrument Serif',
+    var(--weight-regular) var(--text-2xl)/var(--leading-title) 'Instrument Serif',
     serif;
   margin: 0;
   letter-spacing: -0.02em;
@@ -549,9 +587,9 @@ button:active {
 }
 .map-key {
   display: flex;
-  gap: 16px;
+  gap: var(--space-4);
   font:
-    9px 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
   color: var(--muted);
   justify-content: flex-end;
@@ -560,7 +598,7 @@ button:active {
 .map-key span {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: var(--space-1);
 }
 .map-key i {
   display: inline-block;
@@ -582,7 +620,7 @@ button:active {
 }
 .map-pin-label {
   font:
-    9px 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
   fill: var(--ink);
   pointer-events: none;
@@ -604,7 +642,7 @@ button:active {
   display: block;
   touch-action: pan-y;
   overflow: visible;
-  scroll-margin-bottom: calc(150px + env(safe-area-inset-bottom));
+  scroll-margin-bottom: calc(var(--space-16) + env(safe-area-inset-bottom));
 }
 .grid-line {
   stroke: var(--rule);
@@ -615,21 +653,23 @@ button:active {
 }
 .window-band-label {
   fill: var(--accent-ink) !important;
-  font-size: 10px !important;
+  font-size: var(--text-meta) !important;
+  line-height: var(--leading-meta);
 }
 .forecast-y-label {
-  font-size: 11px !important;
+  font-size: var(--text-meta) !important;
+  line-height: var(--leading-meta);
   fill: var(--muted) !important;
 }
 .forecast-legend {
   color: var(--muted);
   font:
-    10px 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin: 2px 0 8px;
+  gap: var(--space-2);
+  margin: var(--space-1) 0 var(--space-2);
 }
 .forecast-legend i {
   width: 10px;
@@ -662,18 +702,18 @@ button:active {
 .forecast text,
 .dial text {
   font:
-    11px 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
   fill: var(--muted);
 }
 .scrub-readout {
   border-top: 1px solid var(--rule);
-  padding-top: 10px;
+  padding-top: var(--space-2);
   display: flex;
   justify-content: space-between;
-  gap: 8px;
+  gap: var(--space-2);
   font:
-    9px 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
   color: var(--muted);
 }
@@ -681,8 +721,8 @@ button:active {
   color: var(--ink);
 }
 .scrub-readout button {
-  min-height: 32px;
-  padding: 0 12px;
+  min-height: 36px;
+  padding: 0 var(--space-3);
   border: 1px solid var(--accent);
   background: transparent;
   color: var(--accent-ink);
@@ -693,27 +733,27 @@ button:active {
 .insight-strip {
   border-block: 1px solid var(--rule);
   display: grid;
-  margin: 34px var(--gutter);
+  margin: var(--space-8) var(--gutter);
 }
 .insight-strip > div {
-  padding: 20px 0;
+  padding: var(--space-4) 0;
 }
 .insight-strip > div + div {
   border-top: 1px solid var(--rule);
 }
 .insight-strip span {
   display: block;
-  margin-bottom: 7px;
+  margin-bottom: var(--space-2);
 }
 .insight-strip strong {
   font:
-    400 20px/1.25 'Instrument Serif',
+    var(--weight-regular) var(--text-lg)/var(--leading-title) 'Instrument Serif',
     serif;
 }
 .insight-strip small {
   display: block;
   color: var(--muted);
-  margin-top: 5px;
+  margin-top: var(--space-1);
 }
 .presets,
 .regions-section,
@@ -722,13 +762,13 @@ button:active {
 }
 .preset-grid {
   display: grid;
-  gap: 10px;
+  gap: var(--space-2);
 }
 .preset-grid button {
   text-align: left;
   background: transparent;
   border: 1px solid var(--rule-solid);
-  padding: 20px;
+  padding: var(--space-4);
   min-height: 190px;
   transition: 0.2s;
 }
@@ -745,28 +785,30 @@ button:active {
 }
 .preset-grid h3 {
   font:
-    400 26px 'Instrument Serif',
+    var(--weight-regular) var(--text-xl)/var(--leading-title) 'Instrument Serif',
     serif;
-  margin: 8px 0 20px;
+  margin: var(--space-2) 0 var(--space-4);
 }
 .preset-time {
   font:
-    500 19px 'Geist Mono Variable',
+    var(--weight-medium) var(--text-base)/1.2 'Geist Mono Variable',
     monospace;
 }
 .preset-time small {
   color: var(--muted);
-  font-size: 9px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
 }
 .preset-score {
   color: var(--accent-ink);
   font:
-    11px 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
-  margin: 6px 0 16px;
+  margin: var(--space-2) 0 var(--space-4);
 }
 .preset-grid p {
-  font-size: 11px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
   color: var(--muted);
   margin: 0;
   min-height: 48px;
@@ -779,7 +821,7 @@ button:active {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x proximity;
-  padding-bottom: 6px;
+  padding-bottom: var(--space-2);
   min-width: 0;
 }
 .heatmap {
@@ -805,16 +847,17 @@ button:active {
 }
 .axis-label {
   font:
-    10px 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
   color: var(--muted);
   text-align: center;
   height: 20px;
 }
 .heatmap-label {
-  font-size: 9px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
   white-space: nowrap;
-  padding-right: 8px;
+  padding-right: var(--space-2);
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -822,7 +865,7 @@ button:active {
 .share-table span:first-child {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: var(--space-1);
 }
 .flag-image {
   width: 20px;
@@ -882,17 +925,17 @@ button:active {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 4px;
-  margin-top: 10px;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
   color: var(--muted);
   font:
-    9px 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
 }
 .heat-legend strong {
-  margin-right: 5px;
+  margin-right: var(--space-1);
   color: var(--muted);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
 }
 .heat-legend > span {
   display: flex;
@@ -919,7 +962,7 @@ button:active {
   display: grid;
   grid-template-columns: 1fr;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-2);
 }
 .dial {
   width: 100%;
@@ -938,7 +981,8 @@ button:active {
 .dial-center-label {
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 9px !important;
+  font-size: var(--text-meta) !important;
+  line-height: var(--leading-meta);
 }
 .dial-region {
   transition: opacity 0.15s;
@@ -952,33 +996,34 @@ button:active {
   stroke-width: 2.5px;
   paint-order: stroke;
   font:
-    700 8px 'Geist Mono Variable',
+    var(--weight-semibold) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace !important;
 }
 .dial-explainer {
   color: var(--muted);
-  font-size: 10px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
   margin: 0;
 }
 .dial-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: var(--space-1);
 }
 .phase-colour-legend {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px 10px;
-  margin-top: 4px;
+  gap: var(--space-2) var(--space-2);
+  margin-top: var(--space-1);
 }
 .phase-colour-legend span {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-2);
   min-width: 0;
   color: var(--muted);
   font:
-    9px/1.35 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
 }
 .phase-colour-legend span:last-child:nth-child(odd) {
@@ -990,23 +1035,23 @@ button:active {
   flex: none;
 }
 .ring-direction {
-  margin: 2px 0 0;
+  margin: var(--space-1) 0 0;
   color: var(--ink);
   font:
-    10px 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
 }
 .dial-legend button {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  min-height: 32px;
-  padding: 3px 7px;
+  gap: var(--space-1);
+  min-height: 36px;
+  padding: var(--space-1) var(--space-2);
   border: 1px solid var(--rule);
   background: transparent;
   color: var(--muted);
   font:
-    9px 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
 }
 .dial-legend button[aria-pressed='true'] {
@@ -1015,29 +1060,31 @@ button:active {
 }
 .dial-mean {
   fill: var(--ink) !important;
-  font-size: 18px !important;
+  font-size: var(--text-base) !important;
 }
 .dial-date {
   fill: var(--muted) !important;
-  font-size: 10px !important;
+  font-size: var(--text-meta) !important;
+  line-height: var(--leading-meta);
 }
 .regions-section {
   border-top: 1px solid var(--rule);
 }
 .audience-selector {
   display: flex;
-  gap: 7px;
+  gap: var(--space-2);
   overflow: auto;
-  margin: 22px -18px;
-  padding: 0 18px 8px;
+  margin: var(--space-6) calc(-1 * var(--space-4));
+  padding: 0 var(--space-4) var(--space-2);
 }
 .chip {
   min-height: 44px;
-  padding: 0 14px;
+  padding: 0 var(--space-3);
   border: 1px solid var(--rule-solid);
   background: transparent;
   white-space: nowrap;
-  font-size: 11px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
 }
 .chip.active {
   border-color: var(--ink);
@@ -1046,7 +1093,7 @@ button:active {
 }
 .region-grid {
   display: grid;
-  gap: 10px;
+  gap: var(--space-2);
 }
 .selection-actions {
   display: flex;
@@ -1055,14 +1102,14 @@ button:active {
   justify-content: flex-end;
 }
 .selection-actions .text-button {
-  padding: 8px;
+  padding: var(--space-2);
   min-height: 44px;
 }
 .compact-card {
   display: grid;
   grid-template-columns: 20px minmax(70px, 1fr) auto 46px 32px;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   min-width: 0;
 }
 .compact-place {
@@ -1079,22 +1126,25 @@ button:active {
   color: var(--accent-ink);
 }
 .compact-place b {
-  font-size: 12px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
 }
 .compact-place small {
   color: var(--muted);
-  font-size: 9px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
 }
 .compact-place small,
 .phase {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-1);
 }
 .compact-time,
 .compact-score {
   font-family: 'Geist Mono Variable', monospace;
-  font-size: 11px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
@@ -1107,7 +1157,7 @@ button:active {
 }
 .region-card.expanded .card-detail {
   display: block;
-  padding-top: 18px;
+  padding-top: var(--space-4);
 }
 .region-card {
   border: 1px solid var(--rule-solid);
@@ -1132,13 +1182,13 @@ button:active {
   background: transparent;
   text-align: left;
   width: 100%;
-  padding: 14px;
+  padding: var(--space-3);
 }
 .card-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 22px;
+  margin-bottom: var(--space-6);
 }
 .flag {
   display: flex;
@@ -1146,11 +1196,11 @@ button:active {
 }
 .badge {
   font:
-    8px 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  padding: 5px 7px;
+  padding: var(--space-1) var(--space-2);
   border: 1px solid var(--rule-solid);
   color: var(--muted);
 }
@@ -1159,40 +1209,41 @@ button:active {
 }
 .region-time {
   font:
-    400 37px/1 'Instrument Serif',
+    var(--weight-regular) var(--text-3xl)/var(--leading-title) 'Instrument Serif',
     serif;
-  margin: 7px 0;
+  margin: var(--space-2) 0;
 }
 .phase {
-  font-size: 11px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
   margin: 0;
   min-height: 17px;
 }
 .card-score {
-  margin-top: 16px;
+  margin-top: var(--space-4);
   display: flex;
   align-items: baseline;
 }
 .card-score strong {
   font:
-    400 36px/1 'Instrument Serif',
+    var(--weight-regular) var(--text-3xl)/var(--leading-title) 'Instrument Serif',
     serif;
   min-width: 2ch;
   font-variant-numeric: tabular-nums;
 }
 .card-score span {
   font:
-    9px 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
   color: var(--muted);
 }
 .region-card .sparkline {
   width: 100%;
-  margin: 8px 0;
+  margin: var(--space-2) 0;
 }
 .deviation {
   font:
-    9px 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
   color: var(--muted);
   height: 14px;
@@ -1200,7 +1251,7 @@ button:active {
 .weight {
   height: 2px;
   background: var(--rule);
-  margin-top: 13px;
+  margin-top: var(--space-3);
 }
 .weight span {
   display: block;
@@ -1209,7 +1260,8 @@ button:active {
 .weight-label {
   display: flex;
   justify-content: space-between;
-  font-size: 9px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
   color: var(--muted);
 }
 .weight-label b {
@@ -1222,9 +1274,10 @@ button:active {
   background: transparent;
   border: 0;
   border-top: 1px solid var(--rule);
-  font-size: 10px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
   text-align: left;
-  padding: 0 18px;
+  padding: 0 var(--space-4);
   color: var(--muted);
   display: flex;
   justify-content: space-between;
@@ -1294,27 +1347,28 @@ button:active {
 .phase-legend {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px 18px;
-  margin-top: 20px;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-4);
 }
 .phase-legend span:last-child:nth-child(odd) {
   grid-column: 1 / -1;
 }
 .phase-legend span {
   font:
-    11px/1.4 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
   color: var(--muted);
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: var(--space-1);
 }
 .text-button {
   background: transparent;
   border: 0;
   color: var(--link);
-  padding: 18px;
-  font-size: 11px;
+  padding: var(--space-4);
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
 }
 .planner {
   margin-top: 40px;
@@ -1322,9 +1376,9 @@ button:active {
 .planner-list article {
   display: grid;
   grid-template-columns: 32px 1fr 44px;
-  gap: 10px;
+  gap: var(--space-2);
   align-items: center;
-  padding: 16px 0;
+  padding: var(--space-4) 0;
   border-top: 1px solid var(--rule);
 }
 .planner-list article > div {
@@ -1332,21 +1386,22 @@ button:active {
 }
 .window-index {
   font:
-    10px 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
   color: var(--accent-ink);
 }
 .planner-list strong {
-  font-size: 13px;
+  font-size: var(--text-sm);
   display: block;
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 .planner-list p,
 .planner-list small {
-  margin: 3px 0;
+  margin: var(--space-1) 0;
   color: var(--muted);
-  font-size: 10px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
 }
 .planner-list p {
   text-align: right;
@@ -1358,28 +1413,29 @@ button:active {
 }
 .planner-list small {
   display: block;
-  line-height: 1.4;
+  line-height: var(--leading-body);
 }
 .window-markets {
   display: flex !important;
-  gap: 4px;
+  gap: var(--space-1);
   align-items: flex-start;
 }
 .planner-actions {
   display: flex;
-  gap: 8px;
-  margin-top: 18px;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
 }
 .button {
   min-height: 44px;
   border: 1px solid var(--rule-solid);
   background: transparent;
-  padding: 0 16px;
-  font-size: 11px;
+  padding: 0 var(--space-4);
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: var(--space-1);
 }
 .button.primary.copied {
   background: var(--series-3);
@@ -1388,48 +1444,50 @@ button:active {
 }
 .dst-note {
   color: var(--muted);
-  font-size: 11px;
-  margin-top: 18px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
+  margin-top: var(--space-4);
   border-top: 1px solid var(--rule);
-  padding-top: 12px;
+  padding-top: var(--space-3);
 }
 .button.primary {
   background: var(--accent);
   border-color: var(--accent);
   color: #16110e;
-  font-weight: 650;
+  font-weight: var(--weight-semibold);
 }
 .method {
   display: grid;
-  gap: 32px;
+  gap: var(--space-8);
   border-top: 1px solid var(--rule);
-  margin-top: 56px;
+  margin-top: var(--space-12);
 }
 .method h2 {
   font:
-    400 43px/0.95 'Instrument Serif',
+    var(--weight-regular) var(--text-3xl)/var(--leading-title) 'Instrument Serif',
     serif;
-  margin: 16px 0;
+  margin: var(--space-4) 0;
 }
 .method-copy > p {
+  max-width: var(--prose);
   color: var(--muted);
-  font-size: 13px;
-  max-width: 700px;
+  font-size: var(--text-sm);
 }
 .method-copy strong {
   color: var(--ink);
 }
 .share-table {
   border-top: 1px solid var(--rule);
-  margin-top: 22px;
+  margin-top: var(--space-6);
 }
 .share-table div {
   display: grid;
   grid-template-columns: 1fr auto auto;
-  gap: 12px;
-  padding: 8px 0;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
   border-bottom: 1px solid var(--rule);
-  font-size: 10px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
 }
 .share-table span:nth-child(n + 2) {
   color: var(--muted);
@@ -1439,49 +1497,55 @@ button:active {
 }
 .source-fetched {
   color: var(--muted);
-  padding: 12px 0;
+  padding: var(--space-3) 0;
   font:
-    9px 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
 }
 .source-list {
   border-top: 1px solid var(--rule);
-  margin: 28px 0;
+  margin: var(--space-6) 0;
 }
 .source-list a {
   display: flex;
   justify-content: space-between;
   color: var(--ink);
   text-decoration: none;
-  padding: 14px 0;
+  padding: var(--space-3) 0;
   border-bottom: 1px solid var(--rule);
-  font-size: 11px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
 }
 .source-list span {
   font-family: 'Geist Mono Variable', monospace;
   color: var(--link);
-  font-size: 9px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
 }
 .limitations {
-  font-size: 10px !important;
+  max-width: var(--prose);
+  font-size: var(--text-meta) !important;
+  line-height: var(--leading-meta);
 }
 .site-footer {
-  padding: clamp(38px, 5vw, 68px) var(--gutter);
+  padding: clamp(40px, 5vw, var(--space-16)) var(--gutter);
   border-top: 1px solid var(--rule);
   display: grid;
-  gap: 34px;
+  gap: var(--space-8);
   color: var(--muted);
-  font-size: 11px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
 }
 .site-footer p {
-  margin: 12px 0 0;
+  margin: var(--space-3) 0 0;
   max-width: 44ch;
 }
 .footer-wordmark {
   width: fit-content;
 }
 .footer-pricing {
-  font-size: 10px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
 }
 .footer-columns {
   display: grid;
@@ -1490,15 +1554,15 @@ button:active {
 .footer-group {
   display: grid;
   align-content: start;
-  gap: 9px;
-  padding: 18px 0;
+  gap: var(--space-2);
+  padding: var(--space-4) 0;
   border-top: 1px solid var(--rule);
 }
 .footer-group h2 {
-  margin: 0 0 4px;
+  margin: 0 0 var(--space-1);
   color: var(--ink);
   font:
-    600 10px 'Geist Mono Variable',
+    var(--weight-semibold) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -1514,10 +1578,10 @@ button:active {
   text-underline-offset: 3px;
 }
 .footer-freshness {
-  margin-top: -7px;
+  margin-top: calc(-1 * var(--space-2));
   color: var(--soft);
   font:
-    9px 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
 }
 .legal-page-shell {
@@ -1539,7 +1603,8 @@ button:active {
 .legal-home-link {
   color: var(--link);
   text-decoration: none;
-  font-size: 11px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
 }
 .legal-home-link:hover,
 .legal-home-link:focus-visible {
@@ -1552,28 +1617,29 @@ button:active {
   padding: var(--section-space) var(--gutter);
 }
 .legal-en-note {
-  margin: 0 0 24px;
-  padding: 12px 16px;
+  margin: 0 0 var(--space-6);
+  padding: var(--space-3) var(--space-4);
   border-left: 3px solid var(--accent);
   background: var(--accent-tint);
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: var(--text-sm);
+  line-height: var(--leading-body);
 }
 .legal-page h1 {
-  margin: 10px 0 clamp(34px, 5vw, 58px);
+  margin: var(--space-2) 0 clamp(var(--space-8), 5vw, var(--space-16));
   font:
-    400 clamp(48px, 10vw, 76px) / 0.95 'Instrument Serif',
+    var(--weight-regular) clamp(var(--text-3xl), 10vw, var(--text-4xl)) / var(--leading-title)
+      'Instrument Serif',
     serif;
   letter-spacing: -0.025em;
 }
 .legal-page section {
-  padding: 26px 0;
+  padding: var(--space-6) 0;
   border-top: 1px solid var(--rule);
 }
 .legal-page h2 {
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-3);
   font:
-    400 26px/1.08 'Instrument Serif',
+    var(--weight-regular) var(--text-xl)/var(--leading-title) 'Instrument Serif',
     serif;
 }
 .legal-page p {
@@ -1581,14 +1647,14 @@ button:active {
   color: var(--muted);
 }
 .legal-page .legal-intro {
-  margin: -26px 0 42px;
+  margin: calc(-1 * var(--space-6)) 0 40px;
   color: var(--ink);
-  font-size: 17px;
-  line-height: 1.65;
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
 }
 .legal-page address {
   display: grid;
-  gap: 2px;
+  gap: var(--space-1);
   color: var(--muted);
   font-style: normal;
 }
@@ -1601,21 +1667,22 @@ button:active {
 }
 .legal-page code {
   color: var(--ink);
-  font-size: 0.9em;
+  font-size: var(--text-sm);
 }
 .legal-page-footer {
-  padding-block: 26px calc(26px + env(safe-area-inset-bottom));
+  padding-block: var(--space-6) calc(var(--space-6) + env(safe-area-inset-bottom));
   border-top: 1px solid var(--rule);
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  gap: 12px 24px;
+  gap: var(--space-3) var(--space-6);
   color: var(--muted);
-  font-size: 10px;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
 }
 .legal-page-footer nav {
   display: flex;
-  gap: 18px;
+  gap: var(--space-4);
 }
 .map-skeleton {
   min-height: 300px;
@@ -1633,7 +1700,7 @@ button:active {
   background: var(--paper-2);
   border-top: 1px solid var(--rule-solid);
   width: 100%;
-  padding: 28px 22px max(30px, env(safe-area-inset-bottom));
+  padding: var(--space-6) var(--space-6) max(var(--space-8), env(safe-area-inset-bottom));
   position: relative;
 }
 .sheet-close {
@@ -1644,26 +1711,26 @@ button:active {
   height: 44px;
   border: 1px solid var(--rule-solid);
   background: transparent;
-  font-size: 24px;
+  font-size: var(--text-xl);
 }
 .detail-flag {
-  font-size: 30px;
+  font-size: var(--text-2xl);
 }
 .detail-sheet h2 {
   font:
-    400 42px 'Instrument Serif',
+    var(--weight-regular) var(--text-3xl)/var(--leading-title) 'Instrument Serif',
     serif;
-  margin: 4px 0;
+  margin: var(--space-1) 0;
 }
 .detail-score {
   font:
-    400 80px/0.9 'Instrument Serif',
+    var(--weight-regular) 80px/0.9 'Instrument Serif',
     serif;
   color: var(--accent-ink);
 }
 .detail-score small {
   font:
-    12px 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
   color: var(--muted);
 }
@@ -1671,6 +1738,7 @@ button:active {
   color: var(--muted);
 }
 .sr-only {
+  /* Accessibility clipping requires the conventional one-pixel offset. */
   position: absolute;
   width: 1px;
   height: 1px;
@@ -1698,15 +1766,15 @@ button:active {
   .hero {
     grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.7fr);
     align-items: end;
-    padding-top: 72px;
+    padding-top: var(--space-16);
   }
   .hero h1 {
-    font-size: 68px;
+    font-size: var(--text-4xl);
   }
   .hero-aside {
     border-top: 0;
     border-left: 1px solid var(--rule);
-    padding: 0 0 0 28px;
+    padding: 0 0 0 var(--space-6);
   }
   .region-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1718,14 +1786,14 @@ button:active {
     grid-template-columns: 1fr 1fr;
   }
   .insight-strip > div {
-    padding: 24px;
+    padding: var(--space-6);
   }
   .insight-strip > div + div {
     border-top: 0;
     border-left: 1px solid var(--rule);
   }
   .panel {
-    margin: 18px;
+    margin: var(--space-4);
   }
   .method {
     grid-template-columns: 0.7fr 1.3fr;
@@ -1736,23 +1804,23 @@ button:active {
     height: 100%;
     border-left: 1px solid var(--rule-solid);
     border-top: 0;
-    padding-top: 80px;
+    padding-top: var(--space-16);
   }
 }
 @media (max-width: 767px) {
   .freshness {
     width: 16px;
     overflow: hidden;
-    padding-inline: 5px;
+    padding-inline: var(--space-1);
   }
   .freshness i {
-    margin-right: 12px;
+    margin-right: var(--space-3);
   }
   .include-button {
     display: none;
   }
   .card-main {
-    padding: 7px 44px 7px 8px;
+    padding: var(--space-2) 40px var(--space-2) var(--space-2);
     min-height: 52px;
   }
   .region-grid {
@@ -1767,7 +1835,7 @@ button:active {
     display: block;
   }
   .card-main {
-    padding: 18px 18px 12px;
+    padding: var(--space-4) var(--space-4) var(--space-3);
   }
   .compact-toggle {
     display: none;
@@ -1779,31 +1847,31 @@ button:active {
     padding-inline: var(--gutter);
   }
   .wordmark {
-    font-size: 13px;
+    font-size: var(--text-sm);
   }
   .header-actions {
-    gap: 18px;
+    gap: var(--space-4);
   }
   .hero {
-    padding: 32px var(--gutter) 24px;
+    padding: var(--space-8) var(--gutter) var(--space-6);
     grid-template-columns: minmax(0, 1.3fr) minmax(360px, 0.8fr);
   }
   .hero h1 {
-    font-size: clamp(48px, 5vw, 68px);
-    margin: 8px 0 20px;
+    font-size: clamp(var(--text-3xl), 5vw, var(--text-4xl));
+    margin: var(--space-2) 0 var(--space-4);
   }
   .hero-score {
     font-size: 120px;
   }
   .desktop-grid {
     grid-template-columns: 1fr 1fr;
-    gap: 24px;
+    gap: var(--space-6);
     align-items: stretch;
-    padding: 24px var(--gutter);
+    padding: var(--space-6) var(--gutter);
   }
   .panel {
-    margin: 24px;
-    padding: 28px;
+    margin: var(--space-6);
+    padding: var(--space-6);
   }
   .desktop-grid > div,
   .desktop-grid .panel {
@@ -1817,9 +1885,9 @@ button:active {
   }
   .analysis-grid {
     grid-template-columns: 1.15fr 0.85fr;
-    gap: 24px;
+    gap: var(--space-6);
     align-items: stretch;
-    padding: 24px var(--gutter);
+    padding: var(--space-6) var(--gutter);
   }
   .analysis-grid > div,
   .analysis-grid .panel {
@@ -1829,7 +1897,7 @@ button:active {
     margin: 0;
   }
   .insight-strip {
-    margin: 28px var(--gutter) 0;
+    margin: var(--space-6) var(--gutter) 0;
   }
   .presets,
   .regions-section,
@@ -1840,32 +1908,32 @@ button:active {
     grid-template-columns: repeat(4, 1fr);
   }
   .planner {
-    margin: 24px var(--gutter) 44px;
+    margin: var(--space-6) var(--gutter) 40px;
   }
   .site-footer,
   .legal-header,
   .legal-page-footer {
-    padding: 32px var(--gutter);
+    padding: var(--space-8) var(--gutter);
   }
   .site-footer {
     grid-template-columns: minmax(240px, 0.8fr) minmax(0, 2.2fr);
-    gap: 64px;
+    gap: var(--space-16);
   }
   .footer-columns {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 34px;
+    gap: var(--space-8);
   }
   .footer-group {
     padding: 0;
     border-top: 0;
   }
   .method h2 {
-    font-size: 58px;
+    font-size: var(--text-4xl);
   }
   .section-head h2,
   .regions-section h2,
   .presets h2 {
-    font-size: 35px;
+    font-size: var(--text-3xl);
   }
 }
 @media (min-width: 1024px) {
@@ -1889,10 +1957,10 @@ button:active {
     margin-inline: auto;
   }
   .panel {
-    padding: 32px;
+    padding: var(--space-8);
   }
   .region-time {
-    font-size: 41px;
+    font-size: var(--text-3xl);
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1915,17 +1983,17 @@ button:active {
 /* Interactive state controls. */
 .filter-row {
   display: flex;
-  gap: 6px;
-  margin: 0 0 14px;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-3);
 }
 .filter-row button {
   min-height: 38px;
-  padding: 0 12px;
+  padding: 0 var(--space-3);
   border: 1px solid var(--rule-solid);
   background: transparent;
   color: var(--muted);
   font:
-    9px 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
 }
 .filter-row button[aria-pressed='true'],
@@ -1935,7 +2003,7 @@ button:active {
   background: var(--paper-2);
 }
 .planner-tabs {
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 @keyframes live-pulse {
   50% {
@@ -1949,7 +2017,7 @@ button:active {
 }
 .legal-lead {
   color: var(--muted);
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-3);
 }
 
 /* Links inside running text must be distinguishable without colour alone (WCAG 1.4.1). */
@@ -1965,7 +2033,7 @@ button:active {
   }
   .filter-row button {
     min-width: 0;
-    padding-inline: 6px;
+    padding-inline: var(--space-2);
   }
 }
 /* The hero number must never change its box while scrubbing ("1" … "100"), or the page jumps. */
@@ -1996,7 +2064,7 @@ button:active {
   text-align: left;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-2);
 }
 .score-meta p {
   height: 36px;
@@ -2029,21 +2097,21 @@ button:active {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto auto;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-2);
   height: calc(var(--mobile-bar-height) + env(safe-area-inset-bottom));
-  padding: 0 14px env(safe-area-inset-bottom);
+  padding: 0 var(--space-3) env(safe-area-inset-bottom);
   background: var(--paper);
   border-top: 1px solid var(--rule-solid);
   overscroll-behavior: contain;
 }
 .mobile-bar-when {
   display: grid;
-  gap: 3px;
+  gap: var(--space-1);
   min-width: 0;
 }
 .mobile-bar-readout {
   font:
-    500 17px/1 'Geist Mono Variable',
+    var(--weight-medium) var(--text-base)/1.2 'Geist Mono Variable',
     monospace;
   font-variant-numeric: tabular-nums;
   color: var(--ink);
@@ -2052,13 +2120,13 @@ button:active {
 .mobile-bar-live {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  min-height: 24px;
+  gap: var(--space-1);
+  min-height: 36px;
   padding: 0;
   border: 0;
   background: none;
   font:
-    500 11px/1.2 'Geist Variable',
+    var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Variable',
     sans-serif;
   color: var(--muted);
   white-space: nowrap;
@@ -2073,8 +2141,8 @@ button:active {
 }
 .mobile-bar-back {
   color: var(--accent-ink);
-  font-weight: 600;
-  margin-left: 2px;
+  font-weight: var(--weight-semibold);
+  margin-left: var(--space-1);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -2117,7 +2185,7 @@ button:active {
   bottom: 0;
   transform: translateX(-50%);
   font:
-    10px/1 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
   color: var(--muted);
   white-space: nowrap;
@@ -2168,30 +2236,30 @@ button:active {
 }
 .mobile-horizon-toggle {
   min-width: 36px;
-  min-height: 32px;
-  padding: 0 6px;
+  min-height: 36px;
+  padding: 0 var(--space-2);
   border: 1px solid var(--rule-solid);
   background: var(--paper);
   font:
-    500 10px/1 'Geist Mono Variable',
+    var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
   color: var(--ink);
 }
 .mobile-bar-score {
   display: grid;
   justify-items: end;
-  gap: 3px;
-  line-height: 1;
+  gap: var(--space-1);
+  line-height: var(--leading-title);
 }
 .mobile-bar-score b {
   font:
-    400 34px/0.8 'Instrument Serif',
+    var(--weight-regular) var(--text-3xl)/var(--leading-title) 'Instrument Serif',
     serif;
   transition: color 0.22s var(--motion-ease);
 }
 .mobile-bar-score > span {
   font:
-    500 9px/1.15 'Geist Variable',
+    var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Variable',
     sans-serif;
   color: var(--ink);
   text-align: right;
@@ -2219,8 +2287,8 @@ button:active {
 
 /* Hourly Lagebericht written by the operator's local model (reads like an editorial note). */
 .live-report {
-  margin: 8px var(--gutter) 24px;
-  padding: 20px 0 18px;
+  margin: var(--space-2) var(--gutter) var(--space-6);
+  padding: var(--space-4) 0 var(--space-4);
   border-top: 1px solid var(--rule-solid);
   border-bottom: 1px solid var(--rule);
   max-width: 72ch;
@@ -2229,43 +2297,45 @@ button:active {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 12px;
+  gap: var(--space-3);
 }
 .live-report-time {
   font:
-    11px 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
   color: var(--muted);
 }
 .live-report h2 {
   font:
-    400 clamp(26px, 6.4vw, 38px) / 1.05 'Instrument Serif',
+    var(--weight-regular) clamp(var(--text-xl), 6.4vw, var(--text-3xl)) / var(--leading-title)
+      'Instrument Serif',
     serif;
-  margin: 10px 0 12px;
+  margin: var(--space-2) 0 var(--space-3);
   letter-spacing: -0.01em;
 }
 .live-report-verdict {
-  font-size: 16px;
-  font-weight: 600;
-  margin: 0 0 10px;
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  margin: 0 0 var(--space-2);
 }
 .live-report-body {
-  font-size: 15px;
-  line-height: 1.6;
+  max-width: var(--prose);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
   color: var(--ink);
-  margin: 0 0 12px;
+  margin: 0 0 var(--space-3);
 }
 .live-report ul {
-  margin: 0 0 14px;
+  margin: 0 0 var(--space-3);
   padding: 0;
   list-style: none;
   display: grid;
-  gap: 6px;
+  gap: var(--space-2);
 }
 .live-report li {
-  font-size: 14px;
-  line-height: 1.45;
-  padding-left: 16px;
+  font-size: var(--text-sm);
+  line-height: var(--leading-body);
+  padding-left: var(--space-4);
   position: relative;
 }
 .live-report li::before {
@@ -2278,8 +2348,9 @@ button:active {
   background: var(--accent);
 }
 .live-report-note {
-  font-size: 12px;
-  line-height: 1.5;
+  max-width: var(--prose);
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
   color: var(--muted);
   margin: 0;
 }
@@ -2291,16 +2362,16 @@ button:active {
 }
 @media (min-width: 1024px) {
   .live-report {
-    margin: 8px var(--gutter) 32px;
+    margin: var(--space-2) var(--gutter) var(--space-8);
   }
 }
 
 /* Hero teaser for the Lagebericht: fixed height reserved before the report arrives (no CLS). */
 .report-teaser {
   display: grid;
-  gap: 3px;
+  gap: var(--space-1);
   min-height: 46px;
-  padding: 8px 0;
+  padding: var(--space-2) 0;
   border-bottom: 1px solid var(--rule);
   color: inherit;
   text-decoration: none;
@@ -2310,14 +2381,14 @@ button:active {
 }
 .report-teaser-label {
   font:
-    11px 'Geist Mono Variable',
+    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
     monospace;
   color: var(--muted);
 }
 .report-teaser-text {
   /* Kept small on purpose: it arrives after a network fetch and must not become the LCP element. */
   font:
-    500 14px/1.3 'Geist Variable',
+    var(--weight-medium) var(--text-sm)/var(--leading-body) 'Geist Variable',
     sans-serif;
   /* One line by nowrap, not line-clamp: a clamped block still lays out (and is measured as) every line. */
   overflow: hidden;
@@ -2326,24 +2397,24 @@ button:active {
 }
 /* T-019: a real anomaly leads the teaser line (accent mark, no extra row, so no layout shift). */
 .report-teaser-flag {
-  margin-right: 8px;
+  margin-right: var(--space-2);
   color: var(--accent-ink);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
 }
 .report-teaser-flag::before {
   content: '';
   display: inline-block;
   width: 6px;
   height: 6px;
-  margin: 0 6px 2px 0;
+  margin: 0 var(--space-2) var(--space-1) 0;
   background: var(--accent);
   vertical-align: middle;
 }
 .report-teaser-flag::after {
   content: '·';
-  margin-left: 8px;
+  margin-left: var(--space-2);
   color: var(--muted);
-  font-weight: 400;
+  font-weight: var(--weight-regular);
 }
 .report-teaser:hover .report-teaser-text,
 .report-teaser:focus-visible .report-teaser-text {
@@ -2353,11 +2424,11 @@ button:active {
 /* Visible AI disclosure (EU AI Act Art. 50(4)/(5)): plain text, readable, next to the headline. */
 .ai-badge {
   display: inline-block;
-  margin-left: 10px;
-  padding: 2px 7px;
+  margin-left: var(--space-2);
+  padding: var(--space-1) var(--space-2);
   border: 1px solid var(--rule-solid);
   font:
-    500 10px/1.4 'Geist Variable',
+    var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Variable',
     sans-serif;
   letter-spacing: 0;
   text-transform: none;
@@ -2383,7 +2454,7 @@ button:active {
   justify-content: center;
   align-self: center;
   min-width: 0;
-  padding: 0 8px;
+  padding: 0 var(--space-2);
 }
 .score-row .score-meta {
   display: flex;
@@ -2392,16 +2463,16 @@ button:active {
   align-items: flex-start;
   max-width: none;
   min-width: 0;
-  padding: 4px 0 4px 20px;
+  padding: var(--space-1) 0 var(--space-1) var(--space-4);
   border-left: 1px solid var(--rule);
 }
 
 /* Content for crawlers and readers without JavaScript (index.html <noscript>). */
 .noscript {
   max-width: 62ch;
-  padding: 0 16px 32px;
+  padding: 0 var(--space-4) var(--space-8);
   color: var(--muted);
-  line-height: 1.6;
+  line-height: var(--leading-body);
 }
 
 @media (min-width: 720px) {
@@ -2413,22 +2484,22 @@ button:active {
 /* T-011: nationwide public holiday on the region's local date */
 .holiday-mark {
   color: var(--accent-ink);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
 }
 .holiday-note {
-  margin: 4px 0 0;
+  margin: var(--space-1) 0 0;
   color: var(--accent-ink);
-  font-size: 12px;
-  line-height: 1.4;
+  font-size: var(--text-meta);
+  line-height: var(--leading-meta);
 }
 
 /* T-017: one sentence under each chart, from the numbers it draws. */
 .chart-caption {
-  margin: 16px 0 0;
-  padding-left: 12px;
+  margin: var(--space-4) 0 0;
+  padding-left: var(--space-3);
   border-left: 2px solid var(--accent);
   color: var(--ink);
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: var(--text-sm);
+  line-height: var(--leading-body);
   max-width: 72ch;
 }

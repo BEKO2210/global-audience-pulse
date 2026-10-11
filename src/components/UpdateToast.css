@@ -10,20 +10,20 @@
   z-index: 60;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 8px 8px 16px;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
   border: 1px solid var(--ink);
   background: var(--paper-2);
   color: var(--ink);
-  font-size: 14px;
+  font-size: var(--text-sm);
   white-space: nowrap;
 }
 .update-toast button {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-2);
   min-height: 36px;
-  padding: 0 12px;
+  padding: 0 var(--space-3);
   border: 1px solid var(--rule-solid);
   background: transparent;
   color: var(--ink);

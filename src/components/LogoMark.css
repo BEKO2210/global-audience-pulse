@@ -104,11 +104,11 @@
 /* Name beside the mark: larger, and each word rises in once while the pulse draws (80 ms apart). */
 a.wordmark {
   --logo-size: 40px;
-  gap: 12px;
+  gap: var(--space-3);
 }
 a.wordmark .wordmark-text {
   font:
-    650 15px/1.08 'Geist Variable',
+    var(--weight-semibold) var(--text-base)/var(--leading-body) 'Geist Variable',
     system-ui,
     sans-serif;
   letter-spacing: -0.02em;
@@ -119,10 +119,10 @@ a.wordmark .wordmark-text {
 @media (min-width: 720px) {
   a.wordmark {
     --logo-size: 44px;
-    gap: 14px;
+    gap: var(--space-3);
   }
   a.wordmark .wordmark-text {
-    font-size: 17px;
+    font-size: var(--text-base);
   }
 }
 @media (prefers-reduced-motion: no-preference) {

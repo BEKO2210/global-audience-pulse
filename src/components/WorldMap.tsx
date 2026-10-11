@@ -186,7 +186,7 @@ export function WorldMap({
                 y={labelOffset.y}
                 textAnchor={labelOffset.anchor}
                 className="map-pin-label"
-                style={{ fontSize: 11 * k, strokeWidth: 3 * k }}
+                style={{ fontSize: `calc(var(--text-meta) * ${k})`, strokeWidth: 3 * k }}
               >
                 {cityName(region.id, region.city, locale)}
               </text>
