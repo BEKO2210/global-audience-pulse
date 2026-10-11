@@ -25,6 +25,24 @@ anderen fertig, höchstens zwei Helfer parallel mit getrennten Dateien.
 - Kein Layout-Sprung (CLS), Lighthouse mobil ≥ 0,85 (CI) – lokal Ziel ≥ 0,95.
 - Beide Sprachen prüfen: Englisch ist oft länger.
 
+## Messung 2026-10-11 (O-001, berechnete Styles aller sichtbaren Elemente)
+
+Geprüft gegen die installierten Skills `vectorlab-ux-skills` (typography, spacing, colour-palette, anti-slop),
+`consistent-ui`, `frontend-design`, `ui-ux-pro-max`.
+
+| Regel                 | Ziel                         | Seite (mobil / Desktop)                                                  |
+| --------------------- | ---------------------------- | ------------------------------------------------------------------------ |
+| Schriftgrößen         | ~8 Stufen einer Skala        | 24 / 26 verschiedene                                                     |
+| Text unter 12 px      | 0                            | 294 / 340 Elemente (8–11 px: Eyebrows, Status, Achsen, Badges, Legenden) |
+| Schriftstärken        | 3 (400/500/600)              | 5 (400, 500, 600, 650, 700)                                              |
+| Abstände              | 4/8-px-Raster                | 6 px ×300, 14, 10, 5, 3, 7, 18, 22 px                                    |
+| Zeilenlänge Fließtext | ≤ 70ch                       | Methodik 108ch, Grenzen 140ch, Bericht-Hinweis 224ch                     |
+| Zeilenhöhe            | Text 1,5–1,6, Titel 1,1–1,25 | 25 Abweichungen (Kleintext mit 1,0–1,2)                                  |
+
+**Vorgabe (Claude) für O-002:** Größen 12 · 14 · 16 · 20 · 24 · 32 · 40 · 56 px (+ Anzeige-Zahlen); 12 px nur für
+Meta (Eyebrow, Achsen, Legenden, Zeitstempel); Stärken 400 · 500 · 600; Zeilenhöhe Titel 1,15, Text 1,55, Meta 1,4;
+Abstände 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64; Fließtext `max-width: 68ch`.
+
 ## Aufgaben
 
 | ID    | Aufgabe                                                                                                                                                           | Wer                  | Status    |
