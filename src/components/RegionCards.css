@@ -230,6 +230,16 @@
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
+@media (hover: hover) {
+  .region-switch-track {
+    transition:
+      background-color 0.15s var(--motion-ease),
+      border-color 0.15s var(--motion-ease);
+  }
+  .region-switch:hover .region-switch-track {
+    border-color: var(--ink);
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .region-switch-track,
   .region-switch-knob {

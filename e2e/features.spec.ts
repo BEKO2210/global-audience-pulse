@@ -203,6 +203,9 @@ test('"Erinnern" sets a reminder that survives a reload and can be removed (T-08
     }
     Object.defineProperty(window, 'Notification', { value: FakeNotification })
   })
+  // a fixed clock well before the next window: the button only exists while the window lies ahead, and a
+  // reminder whose time has passed is filtered out on read – near a window start the test flaked under load
+  await page.clock.install({ time: new Date('2026-10-09T10:00:00Z') })
   await openReady(page)
   const button = page.locator('.hero-window-actions').getByRole('button', { name: /Erinnern/ })
   await button.click()
