@@ -15,6 +15,7 @@
     "fetch-data": "node scripts/fetch-data.mjs",
     "validate:snapshot": "node scripts/validate-snapshot.mjs",
     "e2e": "playwright test",
+    "og": "node scripts/generate-og.mjs",
     "lighthouse": "node scripts/prepare-lhci.mjs && lhci autorun",
     "icons": "node scripts/generate-icons.mjs",
     "format": "prettier --write .",

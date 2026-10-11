@@ -6,7 +6,6 @@ const outputs = [
   ['public/icon.svg', 'public/icon-192.png', 192, 192],
   ['public/icon.svg', 'public/icon-512.png', 512, 512],
   ['public/icon-maskable.svg', 'public/icon-maskable-512.png', 512, 512],
-  ['public/og-image.svg', 'public/og-image.png', 1200, 630],
 ]
 
 await Promise.all(

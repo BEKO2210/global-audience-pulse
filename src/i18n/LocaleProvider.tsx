@@ -10,6 +10,7 @@ import {
 import {
   INTL_LOCALE,
   SEO,
+  SITE_URL,
   STORAGE_KEY,
   detectLocale,
   localeUrl,
@@ -70,6 +71,10 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     set('meta[name="twitter:title"]', 'content', seo.title)
     set('meta[name="twitter:description"]', 'content', seo.description)
     set('link[rel="canonical"]', 'href', localeUrl(locale))
+    // O-010: preview image per language (crawlers that run JS; the static HTML keeps the German one)
+    const image = `${SITE_URL}${locale === 'en' ? 'og-image-en.png' : 'og-image.png'}`
+    set('meta[property="og:image"]', 'content', image)
+    set('meta[name="twitter:image"]', 'content', image)
   }, [locale])
   const value = useMemo(
     () => ({ locale, intl: INTL_LOCALE[locale], setLocale }),
