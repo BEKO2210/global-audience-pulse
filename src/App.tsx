@@ -773,7 +773,7 @@ export default function App() {
               </div>
               <div className="hero-aside">
                 <ReportTeaser data={liveReport} now={minuteNow} />
-                <div className="hero-recommendation">
+                <div id="optimal" className="hero-recommendation">
                   <span className="eyebrow">{t.bestWindow}</span>
                   <div className="hero-window-time">
                     {windows24[0] ? (
@@ -887,7 +887,12 @@ export default function App() {
             </div>
             {liveReport && (
               <Suspense fallback={null}>
-                <LiveReport now={minuteNow} data={liveReport} />
+                <LiveReport
+                  now={minuteNow}
+                  data={liveReport}
+                  liveWindow={windows24[0]}
+                  selection={{ count: selected.length, total: REGIONS.length }}
+                />
               </Suspense>
             )}
             <Section defer placeholderHeight={1100}>
