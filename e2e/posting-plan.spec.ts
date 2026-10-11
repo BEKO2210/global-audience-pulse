@@ -52,3 +52,25 @@ test('posting plan passes axe and fits 360 px', async ({ page }) => {
   )
   expect(serious, JSON.stringify(serious, null, 2)).toEqual([])
 })
+
+test('"My platforms" filters the plan, is remembered and opens the playbooks on one of them', async ({
+  page,
+}) => {
+  const section = await openPlan(page)
+  const chip = (name: string) => section.getByRole('button', { name, exact: true })
+  for (const name of ['Instagram', 'TikTok', 'LinkedIn', 'X', 'Threads']) await chip(name).click()
+  await expect(chip('YouTube')).toHaveAttribute('aria-pressed', 'true')
+  await expect(section.locator('.pp-row')).toHaveCount(1)
+  await expect(section.locator('.pp-row .pp-platform')).toHaveText('YouTube')
+  await expect(section.locator('.pp-note')).toContainText('Hacker News')
+
+  await page.reload()
+  const again = await openPlan(page)
+  await expect(again.locator('.pp-row')).toHaveCount(1)
+  await expect(page.getByRole('tab', { name: /YouTube/ })).toHaveAttribute('aria-selected', 'true')
+
+  await again.getByRole('button', { name: 'YouTube', exact: true }).click()
+  await again.getByRole('button', { name: 'Hacker News', exact: true }).click()
+  await expect(again.locator('.pp-row')).toHaveCount(0)
+  await expect(again.locator('.pp-empty')).toHaveText('Wähle oben mindestens eine Plattform.')
+})

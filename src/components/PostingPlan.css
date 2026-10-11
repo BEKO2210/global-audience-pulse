@@ -7,6 +7,68 @@
   font-size: 14px;
   line-height: 1.55;
 }
+/* T-073: platform choice – hairline chips, the active ones in the accent tint; wraps on phones. */
+.pp-mine {
+  margin: 0 0 20px;
+}
+.pp-mine-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.pp-mine-head small {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+.pp-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--rule-solid);
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s var(--motion-ease),
+    color 0.2s var(--motion-ease),
+    border-color 0.2s var(--motion-ease);
+}
+.pp-chip:hover {
+  color: var(--ink);
+}
+/* Active: ink text on the accent tint, only the icon carries the accent – calm when all are on. */
+.pp-chip[aria-pressed='true'] {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--rule-solid));
+  background: var(--accent-tint);
+  color: var(--ink);
+  font-weight: 600;
+}
+.pp-chip[aria-pressed='true'] svg {
+  color: var(--accent-ink);
+}
+.pp-chip:focus-visible {
+  outline: 2px solid var(--focus, var(--accent));
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pp-chip {
+    transition: none;
+  }
+}
 .pp-empty {
   color: var(--muted);
   font-size: 14px;

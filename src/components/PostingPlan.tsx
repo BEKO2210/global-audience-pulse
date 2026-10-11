@@ -9,6 +9,7 @@ import { useLocale, useMessages } from '../i18n/LocaleProvider'
 import type { Locale, Messages } from '../i18n/locale'
 import { cityName } from '../i18n/labels'
 import { PLATFORM_ICONS } from './platformIcons'
+import { toggleMyPlatform, useMyPlatforms } from '../hooks/useMyPlatforms'
 import './PostingPlan.css'
 
 const DE = {
@@ -27,6 +28,9 @@ const DE = {
   view: 'Ansehen',
   missing: (names: string) =>
     `Ohne Termin: ${names} – dafür gibt es keine Studie zu Posting-Zeiten.`,
+  mine: 'Meine Plattformen',
+  mineHint: 'Nur in diesem Browser gespeichert',
+  noneChosen: 'Wähle oben mindestens eine Plattform.',
 }
 const EN: typeof DE = {
   today: 'Today',
@@ -43,6 +47,9 @@ const EN: typeof DE = {
   jump: (name, when) => `${name}: set the time machine to ${when}`,
   view: 'View',
   missing: (names) => `No time slot: ${names} – no study on posting times is available.`,
+  mine: 'My platforms',
+  mineHint: 'Saved in this browser only',
+  noneChosen: 'Pick at least one platform above.',
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
@@ -86,9 +93,12 @@ export function PostingPlan({
   const t = useMessages(M)
   const { locale } = useLocale()
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  const mine = useMyPlatforms()
   const names = new Map(PLAYBOOKS.map((p) => [p.id, p.name]))
-  const sorted = [...picks].sort((a, b) => a.at.getTime() - b.at.getTime())
-  const missing = PLAYBOOKS.filter((p) => !p.times.length).map((p) => p.name)
+  const sorted = picks
+    .filter((pick) => mine.includes(pick.platform))
+    .sort((a, b) => a.at.getTime() - b.at.getTime())
+  const missing = PLAYBOOKS.filter((p) => !p.times.length && mine.includes(p.id)).map((p) => p.name)
 
   return (
     <section className="panel posting-plan" aria-labelledby="posting-plan-title">
@@ -101,9 +111,39 @@ export function PostingPlan({
       </div>
       <p className="pp-lede">{t.lede(goodScore)}</p>
 
-      {sorted.length === 0 ? (
+      <div className="pp-mine">
+        <div className="pp-mine-head">
+          <span id="pp-mine-label">{t.mine}</span>
+          <small>{t.mineHint}</small>
+        </div>
+        <div className="pp-chips" role="group" aria-labelledby="pp-mine-label">
+          {PLAYBOOKS.map((p) => {
+            const Icon = PLATFORM_ICONS[p.id]
+            const on = mine.includes(p.id)
+            return (
+              <button
+                key={p.id}
+                type="button"
+                className="pp-chip"
+                aria-pressed={on}
+                onClick={() => {
+                  track('Plattform gewählt', { plattform: p.id, an: on ? 'nein' : 'ja' })
+                  toggleMyPlatform(p.id)
+                }}
+              >
+                <Icon size={16} aria-hidden="true" />
+                {p.name}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {mine.length === 0 ? (
+        <p className="pp-empty">{t.noneChosen}</p>
+      ) : sorted.length === 0 && regionCount === 0 ? (
         <p className="pp-empty">{t.empty}</p>
-      ) : (
+      ) : sorted.length === 0 ? null : (
         <ol className="pp-list">
           <li className="pp-head" aria-hidden="true">
             {t.head.map((label) => (

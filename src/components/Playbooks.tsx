@@ -1,4 +1,5 @@
 import { useId, useRef, useState, type KeyboardEvent } from 'react'
+import { useMyPlatforms } from '../hooks/useMyPlatforms'
 import { motion, useReducedMotion, type Variants } from 'motion/react'
 import { PLATFORM_ICONS as ICONS } from './platformIcons'
 import {
@@ -396,7 +397,11 @@ function Panel({
 export function Playbooks() {
   const t = useMessages(M)
   const { locale } = useLocale()
-  const [active, setActive] = useState<PlatformId>(DEFAULT_PLAYBOOK.id)
+  const mine = useMyPlatforms()
+  // Opens on one of "my platforms" (T-073) when the default is not among them.
+  const [active, setActive] = useState<PlatformId>(() =>
+    mine.length && !mine.includes(DEFAULT_PLAYBOOK.id) ? mine[0]! : DEFAULT_PLAYBOOK.id,
+  )
   const tabs = useRef<Partial<Record<PlatformId, HTMLButtonElement | null>>>({})
   const base = useId()
   const playbook = PLAYBOOKS.find((p) => p.id === active) ?? DEFAULT_PLAYBOOK
