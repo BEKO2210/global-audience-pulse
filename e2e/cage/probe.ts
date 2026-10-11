@@ -132,7 +132,8 @@ export async function probe(page: Page): Promise<Probe> {
       // SVG text is set in viewBox units: measure what reaches the screen
       const scale = el instanceof SVGGraphicsElement ? (el.getScreenCTM()?.a ?? 1) : 1
       const size = Math.round(parseFloat(style.fontSize) * scale * 10) / 10
-      const display = Boolean(el.closest(DISPLAY_NUMBERS))
+      // inside the hero/detail score only the big digits (above the 56 px top step) are display numbers
+      const display = Boolean(el.closest(DISPLAY_NUMBERS)) && size > 56
       if (!display) sizes.add(size)
       else displaySizes.add(size)
       weights.add(Number(style.fontWeight))

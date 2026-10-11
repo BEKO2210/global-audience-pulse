@@ -14,6 +14,10 @@ async function expectCaged(page: Page) {
     p.weights.filter((weight) => !WEIGHTS.includes(weight)),
     'off the weight set',
   ).toEqual([])
+  expect(
+    p.displaySizes.filter((size) => !DISPLAY_SCALE.includes(size)),
+    'off the display sizes',
+  ).toEqual([])
 }
 
 for (const style of STYLES)
