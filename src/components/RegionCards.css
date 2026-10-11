@@ -23,31 +23,10 @@
   gap: var(--space-1);
 }
 
-.selection-actions .text-button {
-  padding: var(--space-2);
-  min-height: 44px;
-}
-
 .filter-row {
   display: flex;
   gap: var(--space-2);
   margin: 0 0 var(--space-3);
-}
-
-.filter-row button {
-  min-height: 38px;
-  padding: 0 var(--space-3);
-  border: 1px solid var(--rule-solid);
-  background: transparent;
-  color: var(--muted);
-  font: var(--text-meta) / var(--leading-meta) var(--font-ui);
-}
-
-.filter-row button[aria-pressed='true'],
-.filter-row button[aria-selected='true'] {
-  color: var(--ink);
-  border-color: var(--ink);
-  background: var(--paper-2);
 }
 
 .region-card {
@@ -310,15 +289,7 @@
 
 .include-button {
   width: 100%;
-  min-height: 44px;
-  background: transparent;
-  border: 0;
-  border-top: 1px solid var(--rule);
-  font-size: var(--text-meta);
-  line-height: var(--leading-meta);
   text-align: left;
-  padding: var(--space-3) var(--space-4);
-  color: var(--muted);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -358,10 +329,8 @@
   position: absolute;
   right: var(--space-1);
   top: var(--space-1);
-  width: 44px;
-  height: 44px;
-  border: 0;
-  background: transparent;
+  width: var(--control-h);
+  padding: 0;
   display: grid;
   place-items: center;
 }
@@ -459,13 +428,13 @@
 }
 
 @media (max-width: 599px) {
+  /* chips wrap as whole words; a fixed 3-column grid broke "Gemessen (5)" onto two lines at 360px */
   .filter-row {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    display: flex;
+    flex-wrap: wrap;
   }
 
   .filter-row button {
-    min-width: 0;
-    padding-inline: var(--space-2);
+    white-space: nowrap;
   }
 }

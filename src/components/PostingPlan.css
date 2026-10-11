@@ -35,40 +35,9 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  min-height: 36px;
-  padding: 0 var(--space-3);
-  border: 1px solid var(--rule-solid);
-  background: transparent;
-  color: var(--muted);
-  font: inherit;
-  font-size: var(--text-sm);
-  cursor: pointer;
-  transition:
-    background-color 0.2s var(--motion-ease),
-    color 0.2s var(--motion-ease),
-    border-color 0.2s var(--motion-ease);
-}
-.pp-chip:hover {
-  color: var(--ink);
-}
-/* Active: ink border and text on the accent tint; inactive chips stay muted. */
-.pp-chip[aria-pressed='true'] {
-  border-color: var(--ink);
-  background: var(--accent-tint);
-  color: var(--ink);
-  font-weight: var(--weight-semibold);
 }
 .pp-chip[aria-pressed='true'] svg {
   color: var(--ink);
-}
-.pp-chip:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-@media (prefers-reduced-motion: reduce) {
-  .pp-chip {
-    transition: none;
-  }
 }
 .pp-empty {
   color: var(--muted);
@@ -168,47 +137,17 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 36px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--muted);
-  font: inherit;
-  font-size: var(--text-sm);
-  font-weight: var(--weight-medium);
-  cursor: pointer;
-  transition:
-    background-color 0.2s var(--motion-ease),
-    border-color 0.2s var(--motion-ease),
-    color 0.2s var(--motion-ease);
 }
 .posting-plan .pp-actions .calendar-button {
-  width: 36px;
+  width: var(--control-h);
   padding: 0;
 }
 .posting-plan .pp-actions .calendar-button svg {
   color: currentColor;
 }
-.posting-plan .pp-jump {
-  padding: 0 var(--space-2);
-}
-.posting-plan .pp-actions .calendar-button:hover,
-.posting-plan .pp-actions .calendar-button:focus-visible,
-.posting-plan .pp-jump:hover,
-.posting-plan .pp-jump:focus-visible {
-  border-color: var(--rule-solid);
-  background: var(--paper-2);
-  color: var(--ink);
-}
-.posting-plan .pp-actions .calendar-button:focus-visible,
-.posting-plan .pp-jump:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
 
 @media (prefers-reduced-motion: reduce) {
-  .pp-row,
-  .posting-plan .pp-actions .calendar-button,
-  .posting-plan .pp-jump {
+  .pp-row {
     transition: none;
   }
 }
