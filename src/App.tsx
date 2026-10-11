@@ -126,6 +126,7 @@ const DE = {
   inAudience: 'Ist in deiner Zielgruppe',
   addAudience: 'Zur Zielgruppe hinzufügen',
   calSummary: 'Posting-Fenster (Global Audience Pulse)',
+  planWeek: 'Ganze Woche planen',
   remindTitle: 'Jetzt posten',
   remindBody: (score: number) => `Dein Posting-Fenster beginnt – Score ${score}.`,
   capMap: (when: string | null, awake: number, total: number, prime: string) =>
@@ -206,6 +207,7 @@ const EN: typeof DE = {
   inAudience: 'In your audience',
   addAudience: 'Add to audience',
   calSummary: 'Posting window (Global Audience Pulse)',
+  planWeek: 'Plan the whole week',
   remindTitle: 'Post now',
   remindBody: (score) => `Your posting window starts – score ${score}.`,
   capMap: (when, awake, total, prime) =>
@@ -884,6 +886,13 @@ export default function App() {
                     <dd>{t.ofRegions(regionsInPrime, selected.length)}</dd>
                   </div>
                 </dl>
+                <a
+                  className="week-link"
+                  href="#planer"
+                  onClick={() => track('Woche planen', { ort: 'hero' })}
+                >
+                  {t.planWeek}
+                </a>
               </div>
             </Section>
             <div className="desktop-grid">
@@ -1072,6 +1081,8 @@ export default function App() {
                 </button>
               )}
             </Section>
+            {/* always-present anchor: the planner itself mounts only near the viewport */}
+            <div id="planer" className="anchor" aria-hidden="true" />
             <Section defer placeholderHeight={640}>
               <Planner windowSets={plannerSets} selected={selected} dst={dst} />
             </Section>

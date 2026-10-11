@@ -2239,3 +2239,19 @@ button:active {
   line-height: var(--leading-body);
   max-width: 72ch;
 }
+
+/* O-011: quiet text link into the 7-day planner; the anchor clears the sticky header */
+.week-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  margin-top: var(--space-2);
+  color: var(--ink);
+  font: var(--weight-medium) var(--text-sm) / var(--leading-body) var(--font-ui);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 3px;
+}
+.anchor {
+  scroll-margin-top: var(--space-16);
+}

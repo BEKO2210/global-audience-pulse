@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Check, DownloadSimple, Fire, ShareNetwork } from '@phosphor-icons/react'
 import { REGIONS, type RegionConfig, type RegionId } from '../config/regions'
 import { phaseAt, type PostingWindow } from '../lib/model'
@@ -94,7 +94,17 @@ export function Planner({
   const { locale, intl } = useLocale()
   const [message, setMessage] = useState('')
   const [copied, setCopied] = useState(false)
-  const [scope, setScope] = useState<keyof typeof windowSets>('today')
+  // O-011: "Ganze Woche planen" links to #planer and opens the 7-day view
+  const [scope, setScope] = useState<keyof typeof windowSets>(() =>
+    typeof window !== 'undefined' && window.location.hash === '#planer' ? 'week' : 'today',
+  )
+  useEffect(() => {
+    const onHash = () => {
+      if (window.location.hash === '#planer') setScope('week')
+    }
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const windows = windowSets[scope]
   const zielgruppe =

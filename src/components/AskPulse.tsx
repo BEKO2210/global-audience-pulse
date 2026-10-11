@@ -33,6 +33,7 @@ const DE = {
   calSummary: (name: string) => `Posten für ${name} (Global Audience Pulse)`,
   remindTitle: 'Jetzt posten',
   remindBody: (name: string) => `Das beste Fenster für ${name} beginnt.`,
+  planWeek: 'Ganze Woche planen',
 }
 const EN: typeof DE = {
   title: 'When do I post for …?',
@@ -51,6 +52,7 @@ const EN: typeof DE = {
   calSummary: (name) => `Post for ${name} (Global Audience Pulse)`,
   remindTitle: 'Post now',
   remindBody: (name) => `The best window for ${name} starts now.`,
+  planWeek: 'Plan the whole week',
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
@@ -178,6 +180,13 @@ export function AskPulse({
                     ort="frage"
                   />
                 )}
+                <a
+                  className="week-link"
+                  href="#planer"
+                  onClick={() => track('Woche planen', { ort: 'frage' })}
+                >
+                  {t.planWeek}
+                </a>
                 {!answer.postNow && (
                   <button
                     type="button"

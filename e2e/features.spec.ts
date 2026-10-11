@@ -184,3 +184,12 @@ test('"Erinnern" sets a reminder that survives a reload and can be removed (T-08
     await page.evaluate(() => JSON.parse(localStorage.getItem('gap-reminders') ?? '[]').length),
   ).toBe(0)
 })
+
+test('"Ganze Woche planen" opens the planner on the 7-day view (O-011)', async ({ page }) => {
+  await openReady(page)
+  await page.locator('.hero-aside').getByRole('link', { name: 'Ganze Woche planen' }).click()
+  await expect(page).toHaveURL(/#planer$/)
+  const tab = page.getByRole('tab', { name: /7 Tage/ })
+  await expect(tab).toBeVisible()
+  await expect(tab).toHaveAttribute('aria-selected', 'true')
+})

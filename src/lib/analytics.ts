@@ -31,6 +31,7 @@ export interface AnalyticsEvents {
   Kalender: { ort: 'hero' | 'frage' | 'plan' }
   Erinnerung: { ort: 'hero' | 'frage' }
   Stil: { wert: 'tafel' | 'atlas' | 'praezision' }
+  'Woche planen': { ort: 'hero' | 'frage' }
   Sprache: { wert: 'de' | 'en' }
   'Web Vitals': {
     metric: 'LCP' | 'CLS' | 'INP' | 'FCP' | 'TTFB'
@@ -91,6 +92,7 @@ const allowedValues = {
   Kalender: { ort: ['hero', 'frage', 'plan'] },
   Erinnerung: { ort: ['hero', 'frage'] },
   Stil: { wert: ['tafel', 'atlas', 'praezision'] },
+  'Woche planen': { ort: ['hero', 'frage'] },
   'Plattform gewählt': {
     plattform: ['instagram', 'tiktok', 'youtube', 'linkedin', 'x', 'threads', 'hackernews'],
     an: ['ja', 'nein'],
