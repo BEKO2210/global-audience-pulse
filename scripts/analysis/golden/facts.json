@@ -1,0 +1,7475 @@
+[
+  {
+    "id": "g01",
+    "at": "2026-10-12T00:00:00.000Z",
+    "facts": {
+      "zeitpunkt": "02:00 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 56,
+        "status": "Im Aufbau",
+        "empfehlung": "Noch etwas warten"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 55
+        },
+        {
+          "inStunden": 2,
+          "score": 49
+        },
+        {
+          "inStunden": 3,
+          "score": 45
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 74,
+          "primetimeIn": ["London", "Berlin", "Dubai"]
+        },
+        {
+          "von": "00:30",
+          "bis": "02:00",
+          "score": 56,
+          "primetimeIn": ["New York", "São Paulo"]
+        },
+        {
+          "von": "02:00",
+          "bis": "03:30",
+          "score": 55,
+          "primetimeIn": ["New York", "São Paulo"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "19:45",
+          "bis": "21:15",
+          "score": 86
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "02:00",
+          "bis": "03:30",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "13:00",
+          "bis": "14:30",
+          "score": 76
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 56,
+          "status": "Im Aufbau",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 74
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 14,
+          "status": "Ruhephase",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 94
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 88,
+          "status": "Hochphase",
+          "besteZeit": "02:00–03:30",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 50,
+          "status": "Im Aufbau",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 86
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 25,
+          "status": "Ruhephase",
+          "besteZeit": "13:00–14:30",
+          "besteZeitScore": 76
+        }
+      ],
+      "regionen": [
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "20:00",
+          "phase": "Primetime",
+          "score": 95,
+          "gewichtProzent": 26,
+          "beitragPunkte": 24
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "17:00",
+          "phase": "Aktiver Tag",
+          "score": 76,
+          "gewichtProzent": 16,
+          "beitragPunkte": 12
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "21:00",
+          "phase": "Primetime",
+          "score": 97,
+          "gewichtProzent": 8,
+          "beitragPunkte": 8
+        },
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "02:00",
+          "phase": "Nachtruhe",
+          "score": 14,
+          "gewichtProzent": 27,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "09:00",
+          "phase": "Aktiver Tag",
+          "score": 49,
+          "gewichtProzent": 8,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "04:00",
+          "phase": "Nachtruhe",
+          "score": 39,
+          "gewichtProzent": 5,
+          "beitragPunkte": 2
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "01:00",
+          "phase": "Nachtruhe",
+          "score": 17,
+          "gewichtProzent": 6,
+          "beitragPunkte": 1
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "05:30",
+          "phase": "Nachtruhe",
+          "score": 28,
+          "gewichtProzent": 5,
+          "beitragPunkte": 1
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 2720,
+          "typisch": 4000,
+          "abweichungProzent": -32
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5335,
+          "typisch": 5500,
+          "abweichungProzent": -3
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8960,
+          "typisch": 7000,
+          "abweichungProzent": 28
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8755,
+          "typisch": 8500,
+          "abweichungProzent": 3
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 10600,
+          "typisch": 10000,
+          "abweichungProzent": 6
+        }
+      ],
+      "feiertage": [
+        {
+          "ort": "São Paulo",
+          "flagge": "br",
+          "wann": "morgen",
+          "datum": "2026-10-12",
+          "name": "Nossa Senhora Aparecida",
+          "nameEn": "Our Lady of Aparecida"
+        },
+        {
+          "ort": "Tokio",
+          "flagge": "jp",
+          "wann": "heute",
+          "datum": "2026-10-12",
+          "name": "スポーツの日 (Sports Day)",
+          "nameEn": "Sports Day"
+        }
+      ],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 168,
+        "gesternGleicheZeit": 50,
+        "differenzZuGestern": 6,
+        "wochenmittelGleicheStunde": 53,
+        "wochenhoch": 74,
+        "wochentief": 18
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g02",
+    "at": "2026-10-12T05:37:00.000Z",
+    "facts": {
+      "zeitpunkt": "07:37 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 38,
+        "status": "Ruhephase",
+        "empfehlung": "Später posten"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 38
+        },
+        {
+          "inStunden": 2,
+          "score": 39
+        },
+        {
+          "inStunden": 3,
+          "score": 40
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 74,
+          "primetimeIn": ["London", "Berlin", "Dubai"]
+        },
+        {
+          "von": "01:00",
+          "bis": "02:30",
+          "score": 57,
+          "primetimeIn": ["New York", "São Paulo"]
+        },
+        {
+          "von": "06:00",
+          "bis": "07:30",
+          "score": 39,
+          "primetimeIn": ["Los Angeles"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "19:45",
+          "bis": "21:15",
+          "score": 86
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "13:00",
+          "bis": "14:30",
+          "score": 76
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 38,
+          "status": "Ruhephase",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 74
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 40,
+          "status": "Ruhephase",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 94
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 29,
+          "status": "Ruhephase",
+          "besteZeit": "01:15–02:45",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 28,
+          "status": "Ruhephase",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 86
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 52,
+          "status": "Im Aufbau",
+          "besteZeit": "13:00–14:30",
+          "besteZeitScore": 76
+        }
+      ],
+      "regionen": [
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "07:37",
+          "phase": "Morgen",
+          "score": 40,
+          "gewichtProzent": 27,
+          "beitragPunkte": 11
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "22:37",
+          "phase": "Spätabend",
+          "score": 53,
+          "gewichtProzent": 16,
+          "beitragPunkte": 8
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "14:37",
+          "phase": "Aktiver Tag",
+          "score": 71,
+          "gewichtProzent": 8,
+          "beitragPunkte": 6
+        },
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "01:37",
+          "phase": "Nachtruhe",
+          "score": 15,
+          "gewichtProzent": 26,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "11:07",
+          "phase": "Aktiver Tag",
+          "score": 79,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "09:37",
+          "phase": "Aktiver Tag",
+          "score": 55,
+          "gewichtProzent": 5,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "02:37",
+          "phase": "Nachtruhe",
+          "score": 19,
+          "gewichtProzent": 8,
+          "beitragPunkte": 2
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "06:37",
+          "phase": "Morgen",
+          "score": 26,
+          "gewichtProzent": 6,
+          "beitragPunkte": 2
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 4040,
+          "typisch": 4000,
+          "abweichungProzent": 1
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5720,
+          "typisch": 5500,
+          "abweichungProzent": 4
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 6580,
+          "typisch": 7000,
+          "abweichungProzent": -6
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8245,
+          "typisch": 8500,
+          "abweichungProzent": -3
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 10000,
+          "typisch": 10000,
+          "abweichungProzent": 0
+        }
+      ],
+      "feiertage": [
+        {
+          "ort": "São Paulo",
+          "flagge": "br",
+          "wann": "heute",
+          "datum": "2026-10-12",
+          "name": "Nossa Senhora Aparecida",
+          "nameEn": "Our Lady of Aparecida"
+        },
+        {
+          "ort": "Tokio",
+          "flagge": "jp",
+          "wann": "heute",
+          "datum": "2026-10-12",
+          "name": "スポーツの日 (Sports Day)",
+          "nameEn": "Sports Day"
+        }
+      ],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 0,
+        "gesternGleicheZeit": null,
+        "differenzZuGestern": null,
+        "wochenmittelGleicheStunde": null,
+        "wochenhoch": null,
+        "wochentief": null
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g03",
+    "at": "2026-10-12T11:14:00.000Z",
+    "facts": {
+      "zeitpunkt": "13:14 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 49,
+        "status": "Im Aufbau",
+        "empfehlung": "Noch etwas warten"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 56
+        },
+        {
+          "inStunden": 2,
+          "score": 62
+        },
+        {
+          "inStunden": 3,
+          "score": 62
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 74,
+          "primetimeIn": ["London", "Berlin", "Dubai"]
+        },
+        {
+          "von": "01:00",
+          "bis": "02:30",
+          "score": 57,
+          "primetimeIn": ["New York", "São Paulo"]
+        },
+        {
+          "von": "11:30",
+          "bis": "13:00",
+          "score": 47,
+          "primetimeIn": ["Tokio"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "19:45",
+          "bis": "21:15",
+          "score": 86
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "13:15",
+          "bis": "14:45",
+          "score": 75
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 49,
+          "status": "Im Aufbau",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 74
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 69,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 94
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 20,
+          "status": "Ruhephase",
+          "besteZeit": "01:15–02:45",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 51,
+          "status": "Im Aufbau",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 86
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 76,
+          "status": "Gutes Momentum",
+          "besteZeit": "13:15–14:45",
+          "besteZeitScore": 75
+        }
+      ],
+      "regionen": [
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "13:14",
+          "phase": "Aktiver Tag",
+          "score": 69,
+          "gewichtProzent": 27,
+          "beitragPunkte": 18
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "20:14",
+          "phase": "Primetime",
+          "score": 98,
+          "gewichtProzent": 8,
+          "beitragPunkte": 8
+        },
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "07:14",
+          "phase": "Morgen",
+          "score": 28,
+          "gewichtProzent": 26,
+          "beitragPunkte": 7
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "12:14",
+          "phase": "Aktiver Tag",
+          "score": 69,
+          "gewichtProzent": 6,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "15:14",
+          "phase": "Aktiver Tag",
+          "score": 77,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "08:14",
+          "phase": "Morgen",
+          "score": 40,
+          "gewichtProzent": 8,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "16:44",
+          "phase": "Aktiver Tag",
+          "score": 72,
+          "gewichtProzent": 5,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "04:14",
+          "phase": "Nachtruhe",
+          "score": 8,
+          "gewichtProzent": 16,
+          "beitragPunkte": 1
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 3800,
+          "typisch": 4000,
+          "abweichungProzent": -5
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5390,
+          "typisch": 5500,
+          "abweichungProzent": -2
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 7070,
+          "typisch": 7000,
+          "abweichungProzent": 1
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8840,
+          "typisch": 8500,
+          "abweichungProzent": 4
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 9400,
+          "typisch": 10000,
+          "abweichungProzent": -6
+        }
+      ],
+      "feiertage": [
+        {
+          "ort": "São Paulo",
+          "flagge": "br",
+          "wann": "heute",
+          "datum": "2026-10-12",
+          "name": "Nossa Senhora Aparecida",
+          "nameEn": "Our Lady of Aparecida"
+        },
+        {
+          "ort": "Tokio",
+          "flagge": "jp",
+          "wann": "heute",
+          "datum": "2026-10-12",
+          "name": "スポーツの日 (Sports Day)",
+          "nameEn": "Sports Day"
+        }
+      ],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 0,
+        "gesternGleicheZeit": null,
+        "differenzZuGestern": null,
+        "wochenmittelGleicheStunde": null,
+        "wochenhoch": null,
+        "wochentief": null
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g04",
+    "at": "2026-10-12T16:51:00.000Z",
+    "facts": {
+      "zeitpunkt": "18:51 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 70,
+        "status": "Gutes Momentum",
+        "empfehlung": "Guter Moment"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 74
+        },
+        {
+          "inStunden": 2,
+          "score": 74
+        },
+        {
+          "inStunden": 3,
+          "score": 69
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 74,
+          "primetimeIn": ["London", "Berlin", "Dubai"]
+        },
+        {
+          "von": "17:15",
+          "bis": "18:45",
+          "score": 68,
+          "primetimeIn": ["Dubai", "Mumbai"]
+        },
+        {
+          "von": "01:00",
+          "bis": "02:30",
+          "score": 57,
+          "primetimeIn": ["New York", "São Paulo"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "19:45",
+          "bis": "21:15",
+          "score": 86
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "13:00",
+          "bis": "14:30",
+          "score": 75
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 70,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 74
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 79,
+          "status": "Hochphase",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 94
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 70,
+          "status": "Gutes Momentum",
+          "besteZeit": "01:15–02:45",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 76,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 86
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 68,
+          "status": "Gutes Momentum",
+          "besteZeit": "13:00–14:30",
+          "besteZeitScore": 75
+        }
+      ],
+      "regionen": [
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "18:51",
+          "phase": "Primetime",
+          "score": 79,
+          "gewichtProzent": 27,
+          "beitragPunkte": 21
+        },
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "12:51",
+          "phase": "Aktiver Tag",
+          "score": 73,
+          "gewichtProzent": 26,
+          "beitragPunkte": 19
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "09:51",
+          "phase": "Aktiver Tag",
+          "score": 64,
+          "gewichtProzent": 16,
+          "beitragPunkte": 10
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "13:51",
+          "phase": "Aktiver Tag",
+          "score": 76,
+          "gewichtProzent": 8,
+          "beitragPunkte": 6
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "17:51",
+          "phase": "Aktiver Tag",
+          "score": 78,
+          "gewichtProzent": 6,
+          "beitragPunkte": 5
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "20:51",
+          "phase": "Primetime",
+          "score": 86,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "22:21",
+          "phase": "Spätabend",
+          "score": 69,
+          "gewichtProzent": 5,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "01:51",
+          "phase": "Nachtruhe",
+          "score": 23,
+          "gewichtProzent": 8,
+          "beitragPunkte": 2
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 4080,
+          "typisch": 4000,
+          "abweichungProzent": 2
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5775,
+          "typisch": 5500,
+          "abweichungProzent": 5
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 6650,
+          "typisch": 7000,
+          "abweichungProzent": -5
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8330,
+          "typisch": 8500,
+          "abweichungProzent": -2
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 10100,
+          "typisch": 10000,
+          "abweichungProzent": 1
+        }
+      ],
+      "feiertage": [
+        {
+          "ort": "São Paulo",
+          "flagge": "br",
+          "wann": "heute",
+          "datum": "2026-10-12",
+          "name": "Nossa Senhora Aparecida",
+          "nameEn": "Our Lady of Aparecida"
+        }
+      ],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 168,
+        "gesternGleicheZeit": 67,
+        "differenzZuGestern": 3,
+        "wochenmittelGleicheStunde": 67,
+        "wochenhoch": 74,
+        "wochentief": 18
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g05",
+    "at": "2026-10-12T22:28:00.000Z",
+    "facts": {
+      "zeitpunkt": "00:28 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 55,
+        "status": "Im Aufbau",
+        "empfehlung": "Noch etwas warten"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 57
+        },
+        {
+          "inStunden": 2,
+          "score": 56
+        },
+        {
+          "inStunden": 3,
+          "score": 51
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 75,
+          "primetimeIn": ["London", "Berlin", "Dubai"]
+        },
+        {
+          "von": "15:00",
+          "bis": "16:30",
+          "score": 63,
+          "primetimeIn": ["Mumbai"]
+        },
+        {
+          "von": "01:00",
+          "bis": "02:30",
+          "score": 57,
+          "primetimeIn": ["New York", "São Paulo"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "19:45",
+          "bis": "21:15",
+          "score": 86
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "13:00",
+          "bis": "14:30",
+          "score": 75
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 55,
+          "status": "Im Aufbau",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 75
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 23,
+          "status": "Ruhephase",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 94
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 81,
+          "status": "Hochphase",
+          "besteZeit": "01:15–02:45",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 51,
+          "status": "Im Aufbau",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 86
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 29,
+          "status": "Ruhephase",
+          "besteZeit": "13:00–14:30",
+          "besteZeitScore": 75
+        }
+      ],
+      "regionen": [
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "18:28",
+          "phase": "Primetime",
+          "score": 87,
+          "gewichtProzent": 26,
+          "beitragPunkte": 22
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "15:28",
+          "phase": "Aktiver Tag",
+          "score": 70,
+          "gewichtProzent": 16,
+          "beitragPunkte": 11
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "19:28",
+          "phase": "Primetime",
+          "score": 95,
+          "gewichtProzent": 8,
+          "beitragPunkte": 8
+        },
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "00:28",
+          "phase": "Nachtruhe",
+          "score": 23,
+          "gewichtProzent": 27,
+          "beitragPunkte": 6
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "07:28",
+          "phase": "Morgen",
+          "score": 42,
+          "gewichtProzent": 8,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "23:28",
+          "phase": "Spätabend",
+          "score": 27,
+          "gewichtProzent": 6,
+          "beitragPunkte": 2
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "02:28",
+          "phase": "Nachtruhe",
+          "score": 51,
+          "gewichtProzent": 5,
+          "beitragPunkte": 2
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "03:58",
+          "phase": "Nachtruhe",
+          "score": 14,
+          "gewichtProzent": 5,
+          "beitragPunkte": 1
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 3840,
+          "typisch": 4000,
+          "abweichungProzent": -4
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5445,
+          "typisch": 5500,
+          "abweichungProzent": -1
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 7140,
+          "typisch": 7000,
+          "abweichungProzent": 2
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8925,
+          "typisch": 8500,
+          "abweichungProzent": 5
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 9500,
+          "typisch": 10000,
+          "abweichungProzent": -5
+        }
+      ],
+      "feiertage": [
+        {
+          "ort": "São Paulo",
+          "flagge": "br",
+          "wann": "heute",
+          "datum": "2026-10-12",
+          "name": "Nossa Senhora Aparecida",
+          "nameEn": "Our Lady of Aparecida"
+        }
+      ],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 0,
+        "gesternGleicheZeit": null,
+        "differenzZuGestern": null,
+        "wochenmittelGleicheStunde": null,
+        "wochenhoch": null,
+        "wochentief": null
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g06",
+    "at": "2026-10-13T04:05:00.000Z",
+    "facts": {
+      "zeitpunkt": "06:05 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 38,
+        "status": "Ruhephase",
+        "empfehlung": "Später posten"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 39
+        },
+        {
+          "inStunden": 2,
+          "score": 38
+        },
+        {
+          "inStunden": 3,
+          "score": 37
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 75,
+          "primetimeIn": ["London", "Berlin", "Dubai"]
+        },
+        {
+          "von": "15:00",
+          "bis": "16:30",
+          "score": 63,
+          "primetimeIn": ["Mumbai"]
+        },
+        {
+          "von": "01:00",
+          "bis": "02:30",
+          "score": 57,
+          "primetimeIn": ["New York", "São Paulo"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "19:45",
+          "bis": "21:15",
+          "score": 86
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "13:00",
+          "bis": "14:30",
+          "score": 75
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 38,
+          "status": "Ruhephase",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 75
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 23,
+          "status": "Ruhephase",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 94
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 43,
+          "status": "Im Aufbau",
+          "besteZeit": "01:15–02:45",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 20,
+          "status": "Ruhephase",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 86
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 40,
+          "status": "Ruhephase",
+          "besteZeit": "13:00–14:30",
+          "besteZeitScore": 75
+        }
+      ],
+      "regionen": [
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "21:05",
+          "phase": "Primetime",
+          "score": 83,
+          "gewichtProzent": 16,
+          "beitragPunkte": 13
+        },
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "06:05",
+          "phase": "Morgen",
+          "score": 23,
+          "gewichtProzent": 27,
+          "beitragPunkte": 6
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "13:05",
+          "phase": "Aktiver Tag",
+          "score": 72,
+          "gewichtProzent": 8,
+          "beitragPunkte": 6
+        },
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "00:05",
+          "phase": "Nachtruhe",
+          "score": 18,
+          "gewichtProzent": 26,
+          "beitragPunkte": 5
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "09:35",
+          "phase": "Aktiver Tag",
+          "score": 74,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "01:05",
+          "phase": "Nachtruhe",
+          "score": 30,
+          "gewichtProzent": 8,
+          "beitragPunkte": 2
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "08:05",
+          "phase": "Morgen",
+          "score": 43,
+          "gewichtProzent": 5,
+          "beitragPunkte": 2
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "05:05",
+          "phase": "Nachtruhe",
+          "score": 10,
+          "gewichtProzent": 6,
+          "beitragPunkte": 1
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 2720,
+          "typisch": 4000,
+          "abweichungProzent": -32
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5830,
+          "typisch": 5500,
+          "abweichungProzent": 6
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 6720,
+          "typisch": 7000,
+          "abweichungProzent": -4
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8415,
+          "typisch": 8500,
+          "abweichungProzent": -1
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 10200,
+          "typisch": 10000,
+          "abweichungProzent": 2
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 0,
+        "gesternGleicheZeit": null,
+        "differenzZuGestern": null,
+        "wochenmittelGleicheStunde": null,
+        "wochenhoch": null,
+        "wochentief": null
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g07",
+    "at": "2026-10-13T09:42:00.000Z",
+    "facts": {
+      "zeitpunkt": "11:42 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 45,
+        "status": "Im Aufbau",
+        "empfehlung": "Noch etwas warten"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 49
+        },
+        {
+          "inStunden": 2,
+          "score": 53
+        },
+        {
+          "inStunden": 3,
+          "score": 60
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 75,
+          "primetimeIn": ["London", "Berlin", "Dubai"]
+        },
+        {
+          "von": "15:00",
+          "bis": "16:30",
+          "score": 63,
+          "primetimeIn": ["Mumbai"]
+        },
+        {
+          "von": "01:00",
+          "bis": "02:30",
+          "score": 57,
+          "primetimeIn": ["New York", "São Paulo"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "19:45",
+          "bis": "21:15",
+          "score": 86
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "13:00",
+          "bis": "14:30",
+          "score": 75
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 45,
+          "status": "Im Aufbau",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 75
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 65,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 94
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 15,
+          "status": "Ruhephase",
+          "besteZeit": "01:15–02:45",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 44,
+          "status": "Im Aufbau",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 86
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 70,
+          "status": "Gutes Momentum",
+          "besteZeit": "13:00–14:30",
+          "besteZeitScore": 75
+        }
+      ],
+      "regionen": [
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "11:42",
+          "phase": "Aktiver Tag",
+          "score": 65,
+          "gewichtProzent": 27,
+          "beitragPunkte": 17
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "18:42",
+          "phase": "Primetime",
+          "score": 81,
+          "gewichtProzent": 8,
+          "beitragPunkte": 6
+        },
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "05:42",
+          "phase": "Nachtruhe",
+          "score": 17,
+          "gewichtProzent": 26,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "10:42",
+          "phase": "Aktiver Tag",
+          "score": 66,
+          "gewichtProzent": 6,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "15:12",
+          "phase": "Aktiver Tag",
+          "score": 77,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "06:42",
+          "phase": "Morgen",
+          "score": 39,
+          "gewichtProzent": 8,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "13:42",
+          "phase": "Aktiver Tag",
+          "score": 73,
+          "gewichtProzent": 5,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "02:42",
+          "phase": "Nachtruhe",
+          "score": 11,
+          "gewichtProzent": 16,
+          "beitragPunkte": 2
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 3880,
+          "typisch": 4000,
+          "abweichungProzent": -3
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5500,
+          "typisch": 5500,
+          "abweichungProzent": 0
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 7210,
+          "typisch": 7000,
+          "abweichungProzent": 3
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 9010,
+          "typisch": 8500,
+          "abweichungProzent": 6
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 9600,
+          "typisch": 10000,
+          "abweichungProzent": -4
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 168,
+        "gesternGleicheZeit": 45,
+        "differenzZuGestern": 0,
+        "wochenmittelGleicheStunde": 42,
+        "wochenhoch": 74,
+        "wochentief": 18
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g08",
+    "at": "2026-10-13T15:19:00.000Z",
+    "facts": {
+      "zeitpunkt": "17:19 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 65,
+        "status": "Gutes Momentum",
+        "empfehlung": "Guter Moment"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 69
+        },
+        {
+          "inStunden": 2,
+          "score": 73
+        },
+        {
+          "inStunden": 3,
+          "score": 75
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 75,
+          "primetimeIn": ["London", "Berlin", "Dubai"]
+        },
+        {
+          "von": "15:45",
+          "bis": "17:15",
+          "score": 63,
+          "primetimeIn": ["Mumbai"]
+        },
+        {
+          "von": "01:00",
+          "bis": "02:30",
+          "score": 57,
+          "primetimeIn": ["New York", "São Paulo"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "19:45",
+          "bis": "21:15",
+          "score": 86
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "13:00",
+          "bis": "14:30",
+          "score": 75
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 65,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 75
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 66,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 94
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 60,
+          "status": "Im Aufbau",
+          "besteZeit": "01:15–02:45",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 67,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 86
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 66,
+          "status": "Gutes Momentum",
+          "besteZeit": "13:00–14:30",
+          "besteZeitScore": 75
+        }
+      ],
+      "regionen": [
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "17:19",
+          "phase": "Aktiver Tag",
+          "score": 66,
+          "gewichtProzent": 27,
+          "beitragPunkte": 18
+        },
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "11:19",
+          "phase": "Aktiver Tag",
+          "score": 68,
+          "gewichtProzent": 26,
+          "beitragPunkte": 17
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "08:19",
+          "phase": "Morgen",
+          "score": 47,
+          "gewichtProzent": 16,
+          "beitragPunkte": 7
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "12:19",
+          "phase": "Aktiver Tag",
+          "score": 80,
+          "gewichtProzent": 8,
+          "beitragPunkte": 7
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "16:19",
+          "phase": "Aktiver Tag",
+          "score": 68,
+          "gewichtProzent": 6,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "19:19",
+          "phase": "Primetime",
+          "score": 86,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "20:49",
+          "phase": "Primetime",
+          "score": 95,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "00:19",
+          "phase": "Nachtruhe",
+          "score": 37,
+          "gewichtProzent": 8,
+          "beitragPunkte": 3
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 4160,
+          "typisch": 4000,
+          "abweichungProzent": 4
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5170,
+          "typisch": 5500,
+          "abweichungProzent": -6
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 6790,
+          "typisch": 7000,
+          "abweichungProzent": -3
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8500,
+          "typisch": 8500,
+          "abweichungProzent": 0
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 12800,
+          "typisch": 10000,
+          "abweichungProzent": 28
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 0,
+        "gesternGleicheZeit": null,
+        "differenzZuGestern": null,
+        "wochenmittelGleicheStunde": null,
+        "wochenhoch": null,
+        "wochentief": null
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g09",
+    "at": "2026-10-13T20:56:00.000Z",
+    "facts": {
+      "zeitpunkt": "22:56 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 62,
+        "status": "Gutes Momentum",
+        "empfehlung": "Guter Moment"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 56
+        },
+        {
+          "inStunden": 2,
+          "score": 56
+        },
+        {
+          "inStunden": 3,
+          "score": 57
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 75,
+          "primetimeIn": ["London", "Berlin", "Dubai"]
+        },
+        {
+          "von": "15:00",
+          "bis": "16:30",
+          "score": 63,
+          "primetimeIn": ["Mumbai"]
+        },
+        {
+          "von": "23:00",
+          "bis": "00:30",
+          "score": 58,
+          "primetimeIn": ["São Paulo"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "19:45",
+          "bis": "21:15",
+          "score": 86
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "13:00",
+          "bis": "14:30",
+          "score": 75
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 62,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 75
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 55,
+          "status": "Im Aufbau",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 94
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 72,
+          "status": "Gutes Momentum",
+          "besteZeit": "01:15–02:45",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 63,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 86
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 47,
+          "status": "Im Aufbau",
+          "besteZeit": "13:00–14:30",
+          "besteZeitScore": 75
+        }
+      ],
+      "regionen": [
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "16:56",
+          "phase": "Aktiver Tag",
+          "score": 69,
+          "gewichtProzent": 26,
+          "beitragPunkte": 18
+        },
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "22:56",
+          "phase": "Spätabend",
+          "score": 55,
+          "gewichtProzent": 27,
+          "beitragPunkte": 15
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "13:56",
+          "phase": "Aktiver Tag",
+          "score": 76,
+          "gewichtProzent": 16,
+          "beitragPunkte": 12
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "17:56",
+          "phase": "Aktiver Tag",
+          "score": 87,
+          "gewichtProzent": 8,
+          "beitragPunkte": 7
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "21:56",
+          "phase": "Primetime",
+          "score": 70,
+          "gewichtProzent": 6,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "00:56",
+          "phase": "Nachtruhe",
+          "score": 63,
+          "gewichtProzent": 5,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "05:56",
+          "phase": "Nachtruhe",
+          "score": 27,
+          "gewichtProzent": 8,
+          "beitragPunkte": 2
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "02:26",
+          "phase": "Nachtruhe",
+          "score": 15,
+          "gewichtProzent": 5,
+          "beitragPunkte": 1
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 3920,
+          "typisch": 4000,
+          "abweichungProzent": -2
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5555,
+          "typisch": 5500,
+          "abweichungProzent": 1
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 7280,
+          "typisch": 7000,
+          "abweichungProzent": 4
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 7990,
+          "typisch": 8500,
+          "abweichungProzent": -6
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 9700,
+          "typisch": 10000,
+          "abweichungProzent": -3
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 0,
+        "gesternGleicheZeit": null,
+        "differenzZuGestern": null,
+        "wochenmittelGleicheStunde": null,
+        "wochenhoch": null,
+        "wochentief": null
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g10",
+    "at": "2026-10-14T02:33:00.000Z",
+    "facts": {
+      "zeitpunkt": "04:33 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 49,
+        "status": "Im Aufbau",
+        "empfehlung": "Noch etwas warten"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 40
+        },
+        {
+          "inStunden": 2,
+          "score": 38
+        },
+        {
+          "inStunden": 3,
+          "score": 39
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 75,
+          "primetimeIn": ["London", "Berlin", "Dubai"]
+        },
+        {
+          "von": "15:00",
+          "bis": "16:30",
+          "score": 63,
+          "primetimeIn": ["Mumbai"]
+        },
+        {
+          "von": "01:00",
+          "bis": "02:30",
+          "score": 57,
+          "primetimeIn": ["New York", "São Paulo"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "19:45",
+          "bis": "21:15",
+          "score": 86
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "13:00",
+          "bis": "14:30",
+          "score": 75
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 49,
+          "status": "Im Aufbau",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 75
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 11,
+          "status": "Ruhephase",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 94
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 75,
+          "status": "Gutes Momentum",
+          "besteZeit": "01:15–02:45",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 33,
+          "status": "Ruhephase",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 86
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 29,
+          "status": "Ruhephase",
+          "besteZeit": "13:00–14:30",
+          "besteZeitScore": 75
+        }
+      ],
+      "regionen": [
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "22:33",
+          "phase": "Spätabend",
+          "score": 61,
+          "gewichtProzent": 26,
+          "beitragPunkte": 16
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "19:33",
+          "phase": "Primetime",
+          "score": 99,
+          "gewichtProzent": 16,
+          "beitragPunkte": 15
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "11:33",
+          "phase": "Aktiver Tag",
+          "score": 70,
+          "gewichtProzent": 8,
+          "beitragPunkte": 6
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "23:33",
+          "phase": "Spätabend",
+          "score": 49,
+          "gewichtProzent": 8,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "04:33",
+          "phase": "Nachtruhe",
+          "score": 11,
+          "gewichtProzent": 27,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "08:03",
+          "phase": "Morgen",
+          "score": 57,
+          "gewichtProzent": 5,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "06:33",
+          "phase": "Morgen",
+          "score": 37,
+          "gewichtProzent": 5,
+          "beitragPunkte": 2
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "03:33",
+          "phase": "Nachtruhe",
+          "score": 9,
+          "gewichtProzent": 6,
+          "beitragPunkte": 1
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 4200,
+          "typisch": 4000,
+          "abweichungProzent": 5
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5225,
+          "typisch": 5500,
+          "abweichungProzent": -5
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 6860,
+          "typisch": 7000,
+          "abweichungProzent": -2
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8585,
+          "typisch": 8500,
+          "abweichungProzent": 1
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 10400,
+          "typisch": 10000,
+          "abweichungProzent": 4
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 168,
+        "gesternGleicheZeit": 52,
+        "differenzZuGestern": -3,
+        "wochenmittelGleicheStunde": 46,
+        "wochenhoch": 74,
+        "wochentief": 18
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g11",
+    "at": "2026-10-14T08:10:00.000Z",
+    "facts": {
+      "zeitpunkt": "10:10 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 39,
+        "status": "Ruhephase",
+        "empfehlung": "Später posten"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 42
+        },
+        {
+          "inStunden": 2,
+          "score": 47
+        },
+        {
+          "inStunden": 3,
+          "score": 51
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 75,
+          "primetimeIn": ["London", "Berlin", "Dubai"]
+        },
+        {
+          "von": "15:00",
+          "bis": "16:30",
+          "score": 63,
+          "primetimeIn": ["Mumbai"]
+        },
+        {
+          "von": "01:00",
+          "bis": "02:30",
+          "score": 57,
+          "primetimeIn": ["New York", "São Paulo"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "19:45",
+          "bis": "21:15",
+          "score": 86
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "13:00",
+          "bis": "14:30",
+          "score": 75
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 39,
+          "status": "Ruhephase",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 75
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 62,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 94
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 11,
+          "status": "Ruhephase",
+          "besteZeit": "01:15–02:45",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 39,
+          "status": "Ruhephase",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 86
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 66,
+          "status": "Gutes Momentum",
+          "besteZeit": "13:00–14:30",
+          "besteZeitScore": 75
+        }
+      ],
+      "regionen": [
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "10:10",
+          "phase": "Aktiver Tag",
+          "score": 62,
+          "gewichtProzent": 27,
+          "beitragPunkte": 17
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "17:10",
+          "phase": "Aktiver Tag",
+          "score": 68,
+          "gewichtProzent": 8,
+          "beitragPunkte": 5
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "09:10",
+          "phase": "Aktiver Tag",
+          "score": 62,
+          "gewichtProzent": 6,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "13:40",
+          "phase": "Aktiver Tag",
+          "score": 81,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "01:10",
+          "phase": "Nachtruhe",
+          "score": 16,
+          "gewichtProzent": 16,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "12:10",
+          "phase": "Aktiver Tag",
+          "score": 65,
+          "gewichtProzent": 5,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "04:10",
+          "phase": "Nachtruhe",
+          "score": 8,
+          "gewichtProzent": 26,
+          "beitragPunkte": 2
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "05:10",
+          "phase": "Nachtruhe",
+          "score": 21,
+          "gewichtProzent": 8,
+          "beitragPunkte": 2
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 2720,
+          "typisch": 4000,
+          "abweichungProzent": -32
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5610,
+          "typisch": 5500,
+          "abweichungProzent": 2
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 7350,
+          "typisch": 7000,
+          "abweichungProzent": 5
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8075,
+          "typisch": 8500,
+          "abweichungProzent": -5
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 9800,
+          "typisch": 10000,
+          "abweichungProzent": -2
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 0,
+        "gesternGleicheZeit": null,
+        "differenzZuGestern": null,
+        "wochenmittelGleicheStunde": null,
+        "wochenhoch": null,
+        "wochentief": null
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g12",
+    "at": "2026-10-14T13:47:00.000Z",
+    "facts": {
+      "zeitpunkt": "15:47 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 63,
+        "status": "Gutes Momentum",
+        "empfehlung": "Guter Moment"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 63
+        },
+        {
+          "inStunden": 2,
+          "score": 67
+        },
+        {
+          "inStunden": 3,
+          "score": 71
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 75,
+          "primetimeIn": ["London", "Berlin", "Dubai"]
+        },
+        {
+          "von": "14:15",
+          "bis": "15:45",
+          "score": 61,
+          "primetimeIn": ["Tokio"]
+        },
+        {
+          "von": "01:00",
+          "bis": "02:30",
+          "score": 57,
+          "primetimeIn": ["New York", "São Paulo"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "19:45",
+          "bis": "21:15",
+          "score": 86
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "13:00",
+          "bis": "14:30",
+          "score": 75
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 63,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 75
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 65,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 94
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 50,
+          "status": "Im Aufbau",
+          "besteZeit": "01:15–02:45",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 66,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 86
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 71,
+          "status": "Gutes Momentum",
+          "besteZeit": "13:00–14:30",
+          "besteZeitScore": 75
+        }
+      ],
+      "regionen": [
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "15:47",
+          "phase": "Aktiver Tag",
+          "score": 65,
+          "gewichtProzent": 27,
+          "beitragPunkte": 17
+        },
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "09:47",
+          "phase": "Aktiver Tag",
+          "score": 64,
+          "gewichtProzent": 26,
+          "beitragPunkte": 16
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "10:47",
+          "phase": "Aktiver Tag",
+          "score": 77,
+          "gewichtProzent": 8,
+          "beitragPunkte": 6
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "14:47",
+          "phase": "Aktiver Tag",
+          "score": 73,
+          "gewichtProzent": 6,
+          "beitragPunkte": 5
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "19:17",
+          "phase": "Primetime",
+          "score": 97,
+          "gewichtProzent": 5,
+          "beitragPunkte": 5
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "22:47",
+          "phase": "Spätabend",
+          "score": 69,
+          "gewichtProzent": 8,
+          "beitragPunkte": 5
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "06:47",
+          "phase": "Morgen",
+          "score": 27,
+          "gewichtProzent": 16,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "17:47",
+          "phase": "Aktiver Tag",
+          "score": 78,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 4240,
+          "typisch": 4000,
+          "abweichungProzent": 6
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5280,
+          "typisch": 5500,
+          "abweichungProzent": -4
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 6930,
+          "typisch": 7000,
+          "abweichungProzent": -1
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8670,
+          "typisch": 8500,
+          "abweichungProzent": 2
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 10500,
+          "typisch": 10000,
+          "abweichungProzent": 5
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 0,
+        "gesternGleicheZeit": null,
+        "differenzZuGestern": null,
+        "wochenmittelGleicheStunde": null,
+        "wochenhoch": null,
+        "wochentief": null
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g13",
+    "at": "2026-10-14T19:24:00.000Z",
+    "facts": {
+      "zeitpunkt": "21:24 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 71,
+        "status": "Gutes Momentum",
+        "empfehlung": "Guter Moment"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 66
+        },
+        {
+          "inStunden": 2,
+          "score": 59
+        },
+        {
+          "inStunden": 3,
+          "score": 56
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 75,
+          "primetimeIn": ["London", "Berlin", "Dubai"]
+        },
+        {
+          "von": "21:30",
+          "bis": "23:00",
+          "score": 66,
+          "primetimeIn": ["London", "Berlin"]
+        },
+        {
+          "von": "15:00",
+          "bis": "16:30",
+          "score": 63,
+          "primetimeIn": ["Mumbai"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "19:45",
+          "bis": "21:15",
+          "score": 86
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "13:00",
+          "bis": "14:30",
+          "score": 75
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 71,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 75
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 88,
+          "status": "Hochphase",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 94
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 70,
+          "status": "Gutes Momentum",
+          "besteZeit": "01:15–02:45",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 81,
+          "status": "Hochphase",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 86
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 66,
+          "status": "Gutes Momentum",
+          "besteZeit": "13:00–14:30",
+          "besteZeitScore": 75
+        }
+      ],
+      "regionen": [
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "21:24",
+          "phase": "Primetime",
+          "score": 88,
+          "gewichtProzent": 27,
+          "beitragPunkte": 23
+        },
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "15:24",
+          "phase": "Aktiver Tag",
+          "score": 70,
+          "gewichtProzent": 26,
+          "beitragPunkte": 18
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "12:24",
+          "phase": "Aktiver Tag",
+          "score": 70,
+          "gewichtProzent": 16,
+          "beitragPunkte": 11
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "16:24",
+          "phase": "Aktiver Tag",
+          "score": 83,
+          "gewichtProzent": 8,
+          "beitragPunkte": 7
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "20:24",
+          "phase": "Primetime",
+          "score": 97,
+          "gewichtProzent": 6,
+          "beitragPunkte": 6
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "23:24",
+          "phase": "Spätabend",
+          "score": 71,
+          "gewichtProzent": 5,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "00:54",
+          "phase": "Nachtruhe",
+          "score": 22,
+          "gewichtProzent": 5,
+          "beitragPunkte": 1
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "04:24",
+          "phase": "Nachtruhe",
+          "score": 15,
+          "gewichtProzent": 8,
+          "beitragPunkte": 1
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 4000,
+          "typisch": 4000,
+          "abweichungProzent": 0
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5665,
+          "typisch": 5500,
+          "abweichungProzent": 3
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 7420,
+          "typisch": 7000,
+          "abweichungProzent": 6
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8160,
+          "typisch": 8500,
+          "abweichungProzent": -4
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 9900,
+          "typisch": 10000,
+          "abweichungProzent": -1
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 168,
+        "gesternGleicheZeit": 66,
+        "differenzZuGestern": 5,
+        "wochenmittelGleicheStunde": 68,
+        "wochenhoch": 74,
+        "wochentief": 18
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g14",
+    "at": "2026-10-15T01:01:00.000Z",
+    "facts": {
+      "zeitpunkt": "03:01 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 53,
+        "status": "Im Aufbau",
+        "empfehlung": "Noch etwas warten"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 50
+        },
+        {
+          "inStunden": 2,
+          "score": 45
+        },
+        {
+          "inStunden": 3,
+          "score": 38
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 75,
+          "primetimeIn": ["London", "Berlin", "Dubai"]
+        },
+        {
+          "von": "15:00",
+          "bis": "16:30",
+          "score": 63,
+          "primetimeIn": ["Mumbai"]
+        },
+        {
+          "von": "01:00",
+          "bis": "02:30",
+          "score": 57,
+          "primetimeIn": ["New York", "São Paulo"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "19:45",
+          "bis": "21:15",
+          "score": 86
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "13:00",
+          "bis": "14:30",
+          "score": 75
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 53,
+          "status": "Im Aufbau",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 75
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 11,
+          "status": "Ruhephase",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 94
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 83,
+          "status": "Hochphase",
+          "besteZeit": "01:15–02:45",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 44,
+          "status": "Im Aufbau",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 86
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 26,
+          "status": "Ruhephase",
+          "besteZeit": "13:00–14:30",
+          "besteZeitScore": 75
+        }
+      ],
+      "regionen": [
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "21:01",
+          "phase": "Primetime",
+          "score": 85,
+          "gewichtProzent": 26,
+          "beitragPunkte": 22
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "18:01",
+          "phase": "Primetime",
+          "score": 81,
+          "gewichtProzent": 16,
+          "beitragPunkte": 13
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "22:01",
+          "phase": "Spätabend",
+          "score": 84,
+          "gewichtProzent": 8,
+          "beitragPunkte": 7
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "10:01",
+          "phase": "Aktiver Tag",
+          "score": 61,
+          "gewichtProzent": 8,
+          "beitragPunkte": 5
+        },
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "03:01",
+          "phase": "Nachtruhe",
+          "score": 11,
+          "gewichtProzent": 27,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "05:01",
+          "phase": "Nachtruhe",
+          "score": 33,
+          "gewichtProzent": 5,
+          "beitragPunkte": 2
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "06:31",
+          "phase": "Morgen",
+          "score": 41,
+          "gewichtProzent": 5,
+          "beitragPunkte": 2
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "02:01",
+          "phase": "Nachtruhe",
+          "score": 14,
+          "gewichtProzent": 6,
+          "beitragPunkte": 1
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 3760,
+          "typisch": 4000,
+          "abweichungProzent": -6
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5335,
+          "typisch": 5500,
+          "abweichungProzent": -3
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 7000,
+          "typisch": 7000,
+          "abweichungProzent": 0
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8755,
+          "typisch": 8500,
+          "abweichungProzent": 3
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 10600,
+          "typisch": 10000,
+          "abweichungProzent": 6
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 0,
+        "gesternGleicheZeit": null,
+        "differenzZuGestern": null,
+        "wochenmittelGleicheStunde": null,
+        "wochenhoch": null,
+        "wochentief": null
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g15",
+    "at": "2026-10-15T06:38:00.000Z",
+    "facts": {
+      "zeitpunkt": "08:38 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 36,
+        "status": "Ruhephase",
+        "empfehlung": "Später posten"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 38
+        },
+        {
+          "inStunden": 2,
+          "score": 40
+        },
+        {
+          "inStunden": 3,
+          "score": 44
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 75,
+          "primetimeIn": ["London", "Berlin", "Dubai"]
+        },
+        {
+          "von": "15:00",
+          "bis": "16:30",
+          "score": 63,
+          "primetimeIn": ["Mumbai"]
+        },
+        {
+          "von": "01:00",
+          "bis": "02:30",
+          "score": 57,
+          "primetimeIn": ["New York", "São Paulo"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "19:45",
+          "bis": "21:15",
+          "score": 86
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "13:00",
+          "bis": "14:30",
+          "score": 75
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 36,
+          "status": "Ruhephase",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 75
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 54,
+          "status": "Im Aufbau",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 94
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 16,
+          "status": "Ruhephase",
+          "besteZeit": "01:15–02:45",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 33,
+          "status": "Ruhephase",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 86
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 60,
+          "status": "Im Aufbau",
+          "besteZeit": "13:00–14:30",
+          "besteZeitScore": 75
+        }
+      ],
+      "regionen": [
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "08:38",
+          "phase": "Morgen",
+          "score": 54,
+          "gewichtProzent": 27,
+          "beitragPunkte": 15
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "15:38",
+          "phase": "Aktiver Tag",
+          "score": 69,
+          "gewichtProzent": 8,
+          "beitragPunkte": 5
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "12:08",
+          "phase": "Aktiver Tag",
+          "score": 79,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "23:38",
+          "phase": "Spätabend",
+          "score": 22,
+          "gewichtProzent": 16,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "02:38",
+          "phase": "Nachtruhe",
+          "score": 12,
+          "gewichtProzent": 26,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "10:38",
+          "phase": "Aktiver Tag",
+          "score": 59,
+          "gewichtProzent": 5,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "07:38",
+          "phase": "Morgen",
+          "score": 33,
+          "gewichtProzent": 6,
+          "beitragPunkte": 2
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "03:38",
+          "phase": "Nachtruhe",
+          "score": 17,
+          "gewichtProzent": 8,
+          "beitragPunkte": 1
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 4040,
+          "typisch": 4000,
+          "abweichungProzent": 1
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 7040,
+          "typisch": 5500,
+          "abweichungProzent": 28
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 6580,
+          "typisch": 7000,
+          "abweichungProzent": -6
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8245,
+          "typisch": 8500,
+          "abweichungProzent": -3
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 10000,
+          "typisch": 10000,
+          "abweichungProzent": 0
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 0,
+        "gesternGleicheZeit": null,
+        "differenzZuGestern": null,
+        "wochenmittelGleicheStunde": null,
+        "wochenhoch": null,
+        "wochentief": null
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g16",
+    "at": "2026-10-15T12:15:00.000Z",
+    "facts": {
+      "zeitpunkt": "14:15 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 57,
+        "status": "Im Aufbau",
+        "empfehlung": "Noch etwas warten"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 63
+        },
+        {
+          "inStunden": 2,
+          "score": 62
+        },
+        {
+          "inStunden": 3,
+          "score": 65
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 75,
+          "primetimeIn": ["London", "Berlin", "Dubai"]
+        },
+        {
+          "von": "15:00",
+          "bis": "16:30",
+          "score": 63,
+          "primetimeIn": ["Mumbai"]
+        },
+        {
+          "von": "01:00",
+          "bis": "02:30",
+          "score": 57,
+          "primetimeIn": ["New York", "São Paulo"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "19:45",
+          "bis": "21:15",
+          "score": 86
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "12:45",
+          "bis": "14:15",
+          "score": 75
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 57,
+          "status": "Im Aufbau",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 75
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 69,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 94
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 33,
+          "status": "Ruhephase",
+          "besteZeit": "01:15–02:45",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 59,
+          "status": "Im Aufbau",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 86
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 75,
+          "status": "Gutes Momentum",
+          "besteZeit": "12:45–14:15",
+          "besteZeitScore": 75
+        }
+      ],
+      "regionen": [
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "14:15",
+          "phase": "Aktiver Tag",
+          "score": 69,
+          "gewichtProzent": 27,
+          "beitragPunkte": 18
+        },
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "08:15",
+          "phase": "Morgen",
+          "score": 46,
+          "gewichtProzent": 26,
+          "beitragPunkte": 12
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "21:15",
+          "phase": "Primetime",
+          "score": 91,
+          "gewichtProzent": 8,
+          "beitragPunkte": 7
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "09:15",
+          "phase": "Aktiver Tag",
+          "score": 71,
+          "gewichtProzent": 8,
+          "beitragPunkte": 6
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "13:15",
+          "phase": "Aktiver Tag",
+          "score": 76,
+          "gewichtProzent": 6,
+          "beitragPunkte": 5
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "16:15",
+          "phase": "Aktiver Tag",
+          "score": 76,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "17:45",
+          "phase": "Aktiver Tag",
+          "score": 81,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "05:15",
+          "phase": "Nachtruhe",
+          "score": 12,
+          "gewichtProzent": 16,
+          "beitragPunkte": 2
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 2720,
+          "typisch": 4000,
+          "abweichungProzent": -32
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5390,
+          "typisch": 5500,
+          "abweichungProzent": -2
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 7070,
+          "typisch": 7000,
+          "abweichungProzent": 1
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8840,
+          "typisch": 8500,
+          "abweichungProzent": 4
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 9400,
+          "typisch": 10000,
+          "abweichungProzent": -6
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 168,
+        "gesternGleicheZeit": 55,
+        "differenzZuGestern": 2,
+        "wochenmittelGleicheStunde": 54,
+        "wochenhoch": 74,
+        "wochentief": 18
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g17",
+    "at": "2026-10-15T17:52:00.000Z",
+    "facts": {
+      "zeitpunkt": "19:52 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 75,
+        "status": "Gutes Momentum",
+        "empfehlung": "Guter Moment"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 74
+        },
+        {
+          "inStunden": 2,
+          "score": 69
+        },
+        {
+          "inStunden": 3,
+          "score": 62
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "20:00",
+          "bis": "21:30",
+          "score": 74,
+          "primetimeIn": ["London", "Berlin"]
+        },
+        {
+          "von": "18:15",
+          "bis": "19:45",
+          "score": 72,
+          "primetimeIn": ["Berlin", "Dubai", "Mumbai"]
+        },
+        {
+          "von": "15:00",
+          "bis": "16:30",
+          "score": 63,
+          "primetimeIn": ["Mumbai"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "20:00",
+          "bis": "21:30",
+          "score": 85
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "13:00",
+          "bis": "14:30",
+          "score": 75
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 75,
+          "status": "Gutes Momentum",
+          "besteZeit": "20:00–21:30",
+          "besteZeitScore": 74
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 92,
+          "status": "Hochphase",
+          "besteZeit": "20:00–21:30",
+          "besteZeitScore": 93
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 72,
+          "status": "Gutes Momentum",
+          "besteZeit": "01:15–02:45",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 85,
+          "status": "Hochphase",
+          "besteZeit": "20:00–21:30",
+          "besteZeitScore": 85
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 72,
+          "status": "Gutes Momentum",
+          "besteZeit": "13:00–14:30",
+          "besteZeitScore": 75
+        }
+      ],
+      "regionen": [
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "19:52",
+          "phase": "Primetime",
+          "score": 92,
+          "gewichtProzent": 27,
+          "beitragPunkte": 25
+        },
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "13:52",
+          "phase": "Aktiver Tag",
+          "score": 76,
+          "gewichtProzent": 26,
+          "beitragPunkte": 19
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "10:52",
+          "phase": "Aktiver Tag",
+          "score": 67,
+          "gewichtProzent": 16,
+          "beitragPunkte": 10
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "14:52",
+          "phase": "Aktiver Tag",
+          "score": 85,
+          "gewichtProzent": 8,
+          "beitragPunkte": 7
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "18:52",
+          "phase": "Primetime",
+          "score": 92,
+          "gewichtProzent": 6,
+          "beitragPunkte": 6
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "21:52",
+          "phase": "Primetime",
+          "score": 83,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "23:22",
+          "phase": "Spätabend",
+          "score": 40,
+          "gewichtProzent": 5,
+          "beitragPunkte": 2
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "02:52",
+          "phase": "Nachtruhe",
+          "score": 17,
+          "gewichtProzent": 8,
+          "beitragPunkte": 1
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 4080,
+          "typisch": 4000,
+          "abweichungProzent": 2
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5775,
+          "typisch": 5500,
+          "abweichungProzent": 5
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 6650,
+          "typisch": 7000,
+          "abweichungProzent": -5
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8330,
+          "typisch": 8500,
+          "abweichungProzent": -2
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 10100,
+          "typisch": 10000,
+          "abweichungProzent": 1
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 0,
+        "gesternGleicheZeit": null,
+        "differenzZuGestern": null,
+        "wochenmittelGleicheStunde": null,
+        "wochenhoch": null,
+        "wochentief": null
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g18",
+    "at": "2026-10-15T23:29:00.000Z",
+    "facts": {
+      "zeitpunkt": "01:29 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 57,
+        "status": "Im Aufbau",
+        "empfehlung": "Noch etwas warten"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 56
+        },
+        {
+          "inStunden": 2,
+          "score": 51
+        },
+        {
+          "inStunden": 3,
+          "score": 49
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 75,
+          "primetimeIn": ["London", "Berlin", "Dubai"]
+        },
+        {
+          "von": "15:00",
+          "bis": "16:30",
+          "score": 63,
+          "primetimeIn": ["Mumbai"]
+        },
+        {
+          "von": "01:30",
+          "bis": "03:00",
+          "score": 56,
+          "primetimeIn": ["New York", "São Paulo"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "19:45",
+          "bis": "21:15",
+          "score": 86
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:30",
+          "bis": "03:00",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "13:00",
+          "bis": "14:30",
+          "score": 75
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 57,
+          "status": "Im Aufbau",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 75
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 17,
+          "status": "Ruhephase",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 94
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 87,
+          "status": "Hochphase",
+          "besteZeit": "01:30–03:00",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 52,
+          "status": "Im Aufbau",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 86
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 27,
+          "status": "Ruhephase",
+          "besteZeit": "13:00–14:30",
+          "besteZeitScore": 75
+        }
+      ],
+      "regionen": [
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "19:29",
+          "phase": "Primetime",
+          "score": 98,
+          "gewichtProzent": 26,
+          "beitragPunkte": 25
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "16:29",
+          "phase": "Aktiver Tag",
+          "score": 68,
+          "gewichtProzent": 16,
+          "beitragPunkte": 11
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "20:29",
+          "phase": "Primetime",
+          "score": 98,
+          "gewichtProzent": 8,
+          "beitragPunkte": 8
+        },
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "01:29",
+          "phase": "Nachtruhe",
+          "score": 17,
+          "gewichtProzent": 27,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "08:29",
+          "phase": "Morgen",
+          "score": 54,
+          "gewichtProzent": 8,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "03:29",
+          "phase": "Nachtruhe",
+          "score": 43,
+          "gewichtProzent": 5,
+          "beitragPunkte": 2
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "00:29",
+          "phase": "Nachtruhe",
+          "score": 18,
+          "gewichtProzent": 6,
+          "beitragPunkte": 1
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "04:59",
+          "phase": "Nachtruhe",
+          "score": 21,
+          "gewichtProzent": 5,
+          "beitragPunkte": 1
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 3840,
+          "typisch": 4000,
+          "abweichungProzent": -4
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5445,
+          "typisch": 5500,
+          "abweichungProzent": -1
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 7140,
+          "typisch": 7000,
+          "abweichungProzent": 2
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8925,
+          "typisch": 8500,
+          "abweichungProzent": 5
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 9500,
+          "typisch": 10000,
+          "abweichungProzent": -5
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 0,
+        "gesternGleicheZeit": null,
+        "differenzZuGestern": null,
+        "wochenmittelGleicheStunde": null,
+        "wochenhoch": null,
+        "wochentief": null
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g19",
+    "at": "2026-10-16T05:06:00.000Z",
+    "facts": {
+      "zeitpunkt": "07:06 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 39,
+        "status": "Ruhephase",
+        "empfehlung": "Später posten"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 38
+        },
+        {
+          "inStunden": 2,
+          "score": 37
+        },
+        {
+          "inStunden": 3,
+          "score": 39
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 75,
+          "primetimeIn": ["London", "Berlin", "Dubai"]
+        },
+        {
+          "von": "15:00",
+          "bis": "16:30",
+          "score": 63,
+          "primetimeIn": ["Mumbai"]
+        },
+        {
+          "von": "00:00",
+          "bis": "01:30",
+          "score": 57,
+          "primetimeIn": ["New York", "São Paulo"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "19:45",
+          "bis": "21:15",
+          "score": 86
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "13:00",
+          "bis": "14:30",
+          "score": 75
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 39,
+          "status": "Ruhephase",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 75
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 34,
+          "status": "Ruhephase",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 94
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 37,
+          "status": "Ruhephase",
+          "besteZeit": "01:15–02:45",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 25,
+          "status": "Ruhephase",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 86
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 47,
+          "status": "Im Aufbau",
+          "besteZeit": "13:00–14:30",
+          "besteZeitScore": 75
+        }
+      ],
+      "regionen": [
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "22:06",
+          "phase": "Spätabend",
+          "score": 70,
+          "gewichtProzent": 16,
+          "beitragPunkte": 11
+        },
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "07:06",
+          "phase": "Morgen",
+          "score": 34,
+          "gewichtProzent": 27,
+          "beitragPunkte": 9
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "14:06",
+          "phase": "Aktiver Tag",
+          "score": 71,
+          "gewichtProzent": 8,
+          "beitragPunkte": 6
+        },
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "01:06",
+          "phase": "Nachtruhe",
+          "score": 17,
+          "gewichtProzent": 26,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "10:36",
+          "phase": "Aktiver Tag",
+          "score": 78,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "09:06",
+          "phase": "Aktiver Tag",
+          "score": 53,
+          "gewichtProzent": 5,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "02:06",
+          "phase": "Nachtruhe",
+          "score": 22,
+          "gewichtProzent": 8,
+          "beitragPunkte": 2
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "06:06",
+          "phase": "Morgen",
+          "score": 22,
+          "gewichtProzent": 6,
+          "beitragPunkte": 1
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 4120,
+          "typisch": 4000,
+          "abweichungProzent": 3
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5830,
+          "typisch": 5500,
+          "abweichungProzent": 6
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 6720,
+          "typisch": 7000,
+          "abweichungProzent": -4
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8415,
+          "typisch": 8500,
+          "abweichungProzent": -1
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 10200,
+          "typisch": 10000,
+          "abweichungProzent": 2
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 168,
+        "gesternGleicheZeit": 40,
+        "differenzZuGestern": -1,
+        "wochenmittelGleicheStunde": 36,
+        "wochenhoch": 74,
+        "wochentief": 18
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g20",
+    "at": "2026-10-16T10:43:00.000Z",
+    "facts": {
+      "zeitpunkt": "12:43 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 49,
+        "status": "Im Aufbau",
+        "empfehlung": "Noch etwas warten"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 53
+        },
+        {
+          "inStunden": 2,
+          "score": 60
+        },
+        {
+          "inStunden": 3,
+          "score": 63
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 75,
+          "primetimeIn": ["London", "Berlin", "Dubai"]
+        },
+        {
+          "von": "15:00",
+          "bis": "16:30",
+          "score": 63,
+          "primetimeIn": ["Mumbai"]
+        },
+        {
+          "von": "00:00",
+          "bis": "01:30",
+          "score": 57,
+          "primetimeIn": ["New York", "São Paulo"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "19:45",
+          "bis": "21:15",
+          "score": 86
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "13:00",
+          "bis": "14:30",
+          "score": 75
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 49,
+          "status": "Im Aufbau",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 75
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 67,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 94
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 20,
+          "status": "Ruhephase",
+          "besteZeit": "01:15–02:45",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 50,
+          "status": "Im Aufbau",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 86
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 74,
+          "status": "Gutes Momentum",
+          "besteZeit": "13:00–14:30",
+          "besteZeitScore": 75
+        }
+      ],
+      "regionen": [
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "12:43",
+          "phase": "Aktiver Tag",
+          "score": 67,
+          "gewichtProzent": 27,
+          "beitragPunkte": 18
+        },
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "06:43",
+          "phase": "Morgen",
+          "score": 26,
+          "gewichtProzent": 26,
+          "beitragPunkte": 7
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "19:43",
+          "phase": "Primetime",
+          "score": 92,
+          "gewichtProzent": 8,
+          "beitragPunkte": 7
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "07:43",
+          "phase": "Morgen",
+          "score": 51,
+          "gewichtProzent": 8,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "11:43",
+          "phase": "Aktiver Tag",
+          "score": 69,
+          "gewichtProzent": 6,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "14:43",
+          "phase": "Aktiver Tag",
+          "score": 77,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "16:13",
+          "phase": "Aktiver Tag",
+          "score": 74,
+          "gewichtProzent": 5,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "03:43",
+          "phase": "Nachtruhe",
+          "score": 9,
+          "gewichtProzent": 16,
+          "beitragPunkte": 1
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 3880,
+          "typisch": 4000,
+          "abweichungProzent": -3
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5500,
+          "typisch": 5500,
+          "abweichungProzent": 0
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 7210,
+          "typisch": 7000,
+          "abweichungProzent": 3
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 9010,
+          "typisch": 8500,
+          "abweichungProzent": 6
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 9600,
+          "typisch": 10000,
+          "abweichungProzent": -4
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 0,
+        "gesternGleicheZeit": null,
+        "differenzZuGestern": null,
+        "wochenmittelGleicheStunde": null,
+        "wochenhoch": null,
+        "wochentief": null
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g21",
+    "at": "2026-10-16T16:20:00.000Z",
+    "facts": {
+      "zeitpunkt": "18:20 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 69,
+        "status": "Gutes Momentum",
+        "empfehlung": "Guter Moment"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 73
+        },
+        {
+          "inStunden": 2,
+          "score": 75
+        },
+        {
+          "inStunden": 3,
+          "score": 72
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 75,
+          "primetimeIn": ["London", "Berlin", "Dubai"]
+        },
+        {
+          "von": "16:45",
+          "bis": "18:15",
+          "score": 61,
+          "primetimeIn": ["Dubai", "Mumbai"]
+        },
+        {
+          "von": "00:00",
+          "bis": "01:30",
+          "score": 57,
+          "primetimeIn": ["New York", "São Paulo"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "19:45",
+          "bis": "21:15",
+          "score": 86
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 72
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 69,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 75
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 73,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 94
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 67,
+          "status": "Gutes Momentum",
+          "besteZeit": "01:15–02:45",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 72,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 86
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 68,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 72
+        }
+      ],
+      "regionen": [
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "18:20",
+          "phase": "Primetime",
+          "score": 73,
+          "gewichtProzent": 27,
+          "beitragPunkte": 20
+        },
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "12:20",
+          "phase": "Aktiver Tag",
+          "score": 70,
+          "gewichtProzent": 26,
+          "beitragPunkte": 18
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "09:20",
+          "phase": "Aktiver Tag",
+          "score": 64,
+          "gewichtProzent": 16,
+          "beitragPunkte": 10
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "13:20",
+          "phase": "Aktiver Tag",
+          "score": 85,
+          "gewichtProzent": 8,
+          "beitragPunkte": 7
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "17:20",
+          "phase": "Aktiver Tag",
+          "score": 72,
+          "gewichtProzent": 6,
+          "beitragPunkte": 5
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "20:20",
+          "phase": "Primetime",
+          "score": 89,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "21:50",
+          "phase": "Primetime",
+          "score": 78,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "01:20",
+          "phase": "Nachtruhe",
+          "score": 31,
+          "gewichtProzent": 8,
+          "beitragPunkte": 2
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 2720,
+          "typisch": 4000,
+          "abweichungProzent": -32
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5170,
+          "typisch": 5500,
+          "abweichungProzent": -6
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 6790,
+          "typisch": 7000,
+          "abweichungProzent": -3
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8500,
+          "typisch": 8500,
+          "abweichungProzent": 0
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 10300,
+          "typisch": 10000,
+          "abweichungProzent": 3
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 0,
+        "gesternGleicheZeit": null,
+        "differenzZuGestern": null,
+        "wochenmittelGleicheStunde": null,
+        "wochenhoch": null,
+        "wochentief": null
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g22",
+    "at": "2026-10-16T21:57:00.000Z",
+    "facts": {
+      "zeitpunkt": "23:57 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 56,
+        "status": "Im Aufbau",
+        "empfehlung": "Noch etwas warten"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 57
+        },
+        {
+          "inStunden": 2,
+          "score": 57
+        },
+        {
+          "inStunden": 3,
+          "score": 54
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "20:00",
+          "bis": "21:30",
+          "score": 72,
+          "primetimeIn": ["London", "Berlin"]
+        },
+        {
+          "von": "00:00",
+          "bis": "01:30",
+          "score": 57,
+          "primetimeIn": ["New York", "São Paulo"]
+        },
+        {
+          "von": "06:00",
+          "bis": "07:30",
+          "score": 36,
+          "primetimeIn": ["Los Angeles"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "20:00",
+          "bis": "21:30",
+          "score": 84
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 87
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 73
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 56,
+          "status": "Im Aufbau",
+          "besteZeit": "20:00–21:30",
+          "besteZeitScore": 72
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 28,
+          "status": "Ruhephase",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 95
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 77,
+          "status": "Gutes Momentum",
+          "besteZeit": "01:15–02:45",
+          "besteZeitScore": 87
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 53,
+          "status": "Im Aufbau",
+          "besteZeit": "20:00–21:30",
+          "besteZeitScore": 84
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 31,
+          "status": "Ruhephase",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 73
+        }
+      ],
+      "regionen": [
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "17:57",
+          "phase": "Aktiver Tag",
+          "score": 80,
+          "gewichtProzent": 26,
+          "beitragPunkte": 20
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "14:57",
+          "phase": "Aktiver Tag",
+          "score": 72,
+          "gewichtProzent": 16,
+          "beitragPunkte": 11
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "18:57",
+          "phase": "Primetime",
+          "score": 94,
+          "gewichtProzent": 8,
+          "beitragPunkte": 8
+        },
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "23:57",
+          "phase": "Spätabend",
+          "score": 28,
+          "gewichtProzent": 27,
+          "beitragPunkte": 7
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "22:57",
+          "phase": "Spätabend",
+          "score": 46,
+          "gewichtProzent": 6,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "01:57",
+          "phase": "Nachtruhe",
+          "score": 58,
+          "gewichtProzent": 5,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "06:57",
+          "phase": "Morgen",
+          "score": 33,
+          "gewichtProzent": 8,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "03:27",
+          "phase": "Nachtruhe",
+          "score": 15,
+          "gewichtProzent": 5,
+          "beitragPunkte": 1
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 3920,
+          "typisch": 4000,
+          "abweichungProzent": -2
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5555,
+          "typisch": 5500,
+          "abweichungProzent": 1
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 7280,
+          "typisch": 7000,
+          "abweichungProzent": 4
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 10880,
+          "typisch": 8500,
+          "abweichungProzent": 28
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 9700,
+          "typisch": 10000,
+          "abweichungProzent": -3
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 168,
+        "gesternGleicheZeit": 60,
+        "differenzZuGestern": -4,
+        "wochenmittelGleicheStunde": 53,
+        "wochenhoch": 74,
+        "wochentief": 18
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g23",
+    "at": "2026-10-17T03:34:00.000Z",
+    "facts": {
+      "zeitpunkt": "05:34 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 38,
+        "status": "Ruhephase",
+        "empfehlung": "Später posten"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 36
+        },
+        {
+          "inStunden": 2,
+          "score": 36
+        },
+        {
+          "inStunden": 3,
+          "score": 32
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "20:00",
+          "bis": "21:30",
+          "score": 72,
+          "primetimeIn": ["London", "Berlin"]
+        },
+        {
+          "von": "01:00",
+          "bis": "02:30",
+          "score": 57,
+          "primetimeIn": ["New York", "São Paulo"]
+        },
+        {
+          "von": "06:00",
+          "bis": "07:30",
+          "score": 36,
+          "primetimeIn": ["Los Angeles"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "20:00",
+          "bis": "21:30",
+          "score": 84
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:30",
+          "bis": "03:00",
+          "score": 88
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 73
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 38,
+          "status": "Ruhephase",
+          "besteZeit": "20:00–21:30",
+          "besteZeitScore": 72
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 13,
+          "status": "Ruhephase",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 95
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 51,
+          "status": "Im Aufbau",
+          "besteZeit": "01:30–03:00",
+          "besteZeitScore": 88
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 17,
+          "status": "Ruhephase",
+          "besteZeit": "20:00–21:30",
+          "besteZeitScore": 84
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 30,
+          "status": "Ruhephase",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 73
+        }
+      ],
+      "regionen": [
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "20:34",
+          "phase": "Primetime",
+          "score": 94,
+          "gewichtProzent": 16,
+          "beitragPunkte": 15
+        },
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "23:34",
+          "phase": "Spätabend",
+          "score": 24,
+          "gewichtProzent": 26,
+          "beitragPunkte": 6
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "12:34",
+          "phase": "Aktiver Tag",
+          "score": 69,
+          "gewichtProzent": 8,
+          "beitragPunkte": 6
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "00:34",
+          "phase": "Nachtruhe",
+          "score": 35,
+          "gewichtProzent": 8,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "05:34",
+          "phase": "Nachtruhe",
+          "score": 13,
+          "gewichtProzent": 27,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "09:04",
+          "phase": "Aktiver Tag",
+          "score": 57,
+          "gewichtProzent": 5,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "07:34",
+          "phase": "Morgen",
+          "score": 33,
+          "gewichtProzent": 5,
+          "beitragPunkte": 2
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "04:34",
+          "phase": "Nachtruhe",
+          "score": 9,
+          "gewichtProzent": 6,
+          "beitragPunkte": 1
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 4200,
+          "typisch": 4000,
+          "abweichungProzent": 5
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5225,
+          "typisch": 5500,
+          "abweichungProzent": -5
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 6860,
+          "typisch": 7000,
+          "abweichungProzent": -2
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8585,
+          "typisch": 8500,
+          "abweichungProzent": 1
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 10400,
+          "typisch": 10000,
+          "abweichungProzent": 4
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 0,
+        "gesternGleicheZeit": null,
+        "differenzZuGestern": null,
+        "wochenmittelGleicheStunde": null,
+        "wochenhoch": null,
+        "wochentief": null
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g24",
+    "at": "2026-10-17T09:11:00.000Z",
+    "facts": {
+      "zeitpunkt": "11:11 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 39,
+        "status": "Ruhephase",
+        "empfehlung": "Später posten"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 43
+        },
+        {
+          "inStunden": 2,
+          "score": 46
+        },
+        {
+          "inStunden": 3,
+          "score": 48
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "20:00",
+          "bis": "21:30",
+          "score": 72,
+          "primetimeIn": ["London", "Berlin"]
+        },
+        {
+          "von": "01:00",
+          "bis": "02:30",
+          "score": 57,
+          "primetimeIn": ["New York", "São Paulo"]
+        },
+        {
+          "von": "09:30",
+          "bis": "11:00",
+          "score": 37,
+          "primetimeIn": []
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "20:00",
+          "bis": "21:30",
+          "score": 84
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:30",
+          "bis": "03:00",
+          "score": 88
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 73
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 39,
+          "status": "Ruhephase",
+          "besteZeit": "20:00–21:30",
+          "besteZeitScore": 72
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 59,
+          "status": "Im Aufbau",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 95
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 13,
+          "status": "Ruhephase",
+          "besteZeit": "01:30–03:00",
+          "besteZeitScore": 88
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 37,
+          "status": "Ruhephase",
+          "besteZeit": "20:00–21:30",
+          "besteZeitScore": 84
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 65,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 73
+        }
+      ],
+      "regionen": [
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "11:11",
+          "phase": "Aktiver Tag",
+          "score": 59,
+          "gewichtProzent": 27,
+          "beitragPunkte": 16
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "18:11",
+          "phase": "Primetime",
+          "score": 80,
+          "gewichtProzent": 8,
+          "beitragPunkte": 6
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "10:11",
+          "phase": "Aktiver Tag",
+          "score": 55,
+          "gewichtProzent": 6,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "14:41",
+          "phase": "Aktiver Tag",
+          "score": 76,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "02:11",
+          "phase": "Nachtruhe",
+          "score": 16,
+          "gewichtProzent": 16,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "05:11",
+          "phase": "Nachtruhe",
+          "score": 10,
+          "gewichtProzent": 26,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "13:11",
+          "phase": "Aktiver Tag",
+          "score": 68,
+          "gewichtProzent": 5,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "06:11",
+          "phase": "Morgen",
+          "score": 24,
+          "gewichtProzent": 8,
+          "beitragPunkte": 2
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 3960,
+          "typisch": 4000,
+          "abweichungProzent": -1
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5610,
+          "typisch": 5500,
+          "abweichungProzent": 2
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 7350,
+          "typisch": 7000,
+          "abweichungProzent": 5
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8075,
+          "typisch": 8500,
+          "abweichungProzent": -5
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 9800,
+          "typisch": 10000,
+          "abweichungProzent": -2
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 0,
+        "gesternGleicheZeit": null,
+        "differenzZuGestern": null,
+        "wochenmittelGleicheStunde": null,
+        "wochenhoch": null,
+        "wochentief": null
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g25",
+    "at": "2026-10-17T14:48:00.000Z",
+    "facts": {
+      "zeitpunkt": "16:48 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 60,
+        "status": "Im Aufbau",
+        "empfehlung": "Noch etwas warten"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 62
+        },
+        {
+          "inStunden": 2,
+          "score": 66
+        },
+        {
+          "inStunden": 3,
+          "score": 71
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "20:00",
+          "bis": "21:30",
+          "score": 72,
+          "primetimeIn": ["London", "Berlin"]
+        },
+        {
+          "von": "15:15",
+          "bis": "16:45",
+          "score": 58,
+          "primetimeIn": ["Mumbai"]
+        },
+        {
+          "von": "01:00",
+          "bis": "02:30",
+          "score": 57,
+          "primetimeIn": ["New York", "São Paulo"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "20:00",
+          "bis": "21:30",
+          "score": 84
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:30",
+          "bis": "03:00",
+          "score": 88
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 73
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 60,
+          "status": "Im Aufbau",
+          "besteZeit": "20:00–21:30",
+          "besteZeitScore": 72
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 69,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 95
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 47,
+          "status": "Im Aufbau",
+          "besteZeit": "01:30–03:00",
+          "besteZeitScore": 88
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 66,
+          "status": "Gutes Momentum",
+          "besteZeit": "20:00–21:30",
+          "besteZeitScore": 84
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 69,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 73
+        }
+      ],
+      "regionen": [
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "16:48",
+          "phase": "Aktiver Tag",
+          "score": 69,
+          "gewichtProzent": 27,
+          "beitragPunkte": 18
+        },
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "10:48",
+          "phase": "Aktiver Tag",
+          "score": 62,
+          "gewichtProzent": 26,
+          "beitragPunkte": 16
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "11:48",
+          "phase": "Aktiver Tag",
+          "score": 70,
+          "gewichtProzent": 8,
+          "beitragPunkte": 6
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "15:48",
+          "phase": "Aktiver Tag",
+          "score": 73,
+          "gewichtProzent": 6,
+          "beitragPunkte": 5
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "20:18",
+          "phase": "Primetime",
+          "score": 98,
+          "gewichtProzent": 5,
+          "beitragPunkte": 5
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "07:48",
+          "phase": "Morgen",
+          "score": 23,
+          "gewichtProzent": 16,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "18:48",
+          "phase": "Primetime",
+          "score": 82,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "23:48",
+          "phase": "Spätabend",
+          "score": 48,
+          "gewichtProzent": 8,
+          "beitragPunkte": 4
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 4240,
+          "typisch": 4000,
+          "abweichungProzent": 6
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5280,
+          "typisch": 5500,
+          "abweichungProzent": -4
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 6930,
+          "typisch": 7000,
+          "abweichungProzent": -1
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8670,
+          "typisch": 8500,
+          "abweichungProzent": 2
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 10500,
+          "typisch": 10000,
+          "abweichungProzent": 5
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 168,
+        "gesternGleicheZeit": 56,
+        "differenzZuGestern": 4,
+        "wochenmittelGleicheStunde": 57,
+        "wochenhoch": 74,
+        "wochentief": 18
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g26",
+    "at": "2026-10-17T20:25:00.000Z",
+    "facts": {
+      "zeitpunkt": "22:25 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 66,
+        "status": "Gutes Momentum",
+        "empfehlung": "Guter Moment"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 60
+        },
+        {
+          "inStunden": 2,
+          "score": 57
+        },
+        {
+          "inStunden": 3,
+          "score": 57
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "20:00",
+          "bis": "21:30",
+          "score": 72,
+          "primetimeIn": ["London", "Berlin"]
+        },
+        {
+          "von": "22:30",
+          "bis": "00:00",
+          "score": 61,
+          "primetimeIn": ["London"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "20:00",
+          "bis": "21:30",
+          "score": 84
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:30",
+          "bis": "03:00",
+          "score": 88
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 72
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 66,
+          "status": "Gutes Momentum",
+          "besteZeit": "20:00–21:30",
+          "besteZeitScore": 72
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 70,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 95
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 72,
+          "status": "Gutes Momentum",
+          "besteZeit": "01:30–03:00",
+          "besteZeitScore": 88
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 74,
+          "status": "Gutes Momentum",
+          "besteZeit": "20:00–21:30",
+          "besteZeitScore": 84
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 55,
+          "status": "Im Aufbau",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 72
+        }
+      ],
+      "regionen": [
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "16:25",
+          "phase": "Aktiver Tag",
+          "score": 75,
+          "gewichtProzent": 26,
+          "beitragPunkte": 19
+        },
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "22:25",
+          "phase": "Spätabend",
+          "score": 70,
+          "gewichtProzent": 27,
+          "beitragPunkte": 19
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "13:25",
+          "phase": "Aktiver Tag",
+          "score": 67,
+          "gewichtProzent": 16,
+          "beitragPunkte": 11
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "17:25",
+          "phase": "Aktiver Tag",
+          "score": 83,
+          "gewichtProzent": 8,
+          "beitragPunkte": 7
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "21:25",
+          "phase": "Primetime",
+          "score": 82,
+          "gewichtProzent": 6,
+          "beitragPunkte": 5
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "00:25",
+          "phase": "Nachtruhe",
+          "score": 68,
+          "gewichtProzent": 5,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "05:25",
+          "phase": "Nachtruhe",
+          "score": 20,
+          "gewichtProzent": 8,
+          "beitragPunkte": 2
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "01:55",
+          "phase": "Nachtruhe",
+          "score": 19,
+          "gewichtProzent": 5,
+          "beitragPunkte": 1
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 2720,
+          "typisch": 4000,
+          "abweichungProzent": -32
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5665,
+          "typisch": 5500,
+          "abweichungProzent": 3
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 7420,
+          "typisch": 7000,
+          "abweichungProzent": 6
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8160,
+          "typisch": 8500,
+          "abweichungProzent": -4
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 9900,
+          "typisch": 10000,
+          "abweichungProzent": -1
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 0,
+        "gesternGleicheZeit": null,
+        "differenzZuGestern": null,
+        "wochenmittelGleicheStunde": null,
+        "wochenhoch": null,
+        "wochentief": null
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g27",
+    "at": "2026-10-18T02:02:00.000Z",
+    "facts": {
+      "zeitpunkt": "04:02 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 48,
+        "status": "Im Aufbau",
+        "empfehlung": "Noch etwas warten"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 44
+        },
+        {
+          "inStunden": 2,
+          "score": 37
+        },
+        {
+          "inStunden": 3,
+          "score": 36
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "20:00",
+          "bis": "21:30",
+          "score": 72,
+          "primetimeIn": ["London", "Berlin"]
+        },
+        {
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 56,
+          "primetimeIn": ["New York", "São Paulo"]
+        },
+        {
+          "von": "04:15",
+          "bis": "05:45",
+          "score": 43,
+          "primetimeIn": ["Los Angeles"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "20:00",
+          "bis": "21:30",
+          "score": 84
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:30",
+          "bis": "03:00",
+          "score": 88
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 72
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 48,
+          "status": "Im Aufbau",
+          "besteZeit": "20:00–21:30",
+          "besteZeitScore": 72
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 10,
+          "status": "Ruhephase",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 95
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 74,
+          "status": "Gutes Momentum",
+          "besteZeit": "01:30–03:00",
+          "besteZeitScore": 88
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 34,
+          "status": "Ruhephase",
+          "besteZeit": "20:00–21:30",
+          "besteZeitScore": 84
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 25,
+          "status": "Ruhephase",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 72
+        }
+      ],
+      "regionen": [
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "22:02",
+          "phase": "Spätabend",
+          "score": 65,
+          "gewichtProzent": 26,
+          "beitragPunkte": 17
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "19:02",
+          "phase": "Primetime",
+          "score": 89,
+          "gewichtProzent": 16,
+          "beitragPunkte": 14
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "23:02",
+          "phase": "Spätabend",
+          "score": 65,
+          "gewichtProzent": 8,
+          "beitragPunkte": 5
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "11:02",
+          "phase": "Aktiver Tag",
+          "score": 64,
+          "gewichtProzent": 8,
+          "beitragPunkte": 5
+        },
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "04:02",
+          "phase": "Nachtruhe",
+          "score": 10,
+          "gewichtProzent": 27,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "06:02",
+          "phase": "Morgen",
+          "score": 32,
+          "gewichtProzent": 5,
+          "beitragPunkte": 2
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "07:32",
+          "phase": "Morgen",
+          "score": 43,
+          "gewichtProzent": 5,
+          "beitragPunkte": 2
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "03:02",
+          "phase": "Nachtruhe",
+          "score": 12,
+          "gewichtProzent": 6,
+          "beitragPunkte": 1
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 3760,
+          "typisch": 4000,
+          "abweichungProzent": -6
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5335,
+          "typisch": 5500,
+          "abweichungProzent": -3
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 7000,
+          "typisch": 7000,
+          "abweichungProzent": 0
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8755,
+          "typisch": 8500,
+          "abweichungProzent": 3
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 10600,
+          "typisch": 10000,
+          "abweichungProzent": 6
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 0,
+        "gesternGleicheZeit": null,
+        "differenzZuGestern": null,
+        "wochenmittelGleicheStunde": null,
+        "wochenhoch": null,
+        "wochentief": null
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g28",
+    "at": "2026-10-18T07:39:00.000Z",
+    "facts": {
+      "zeitpunkt": "09:39 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 35,
+        "status": "Ruhephase",
+        "empfehlung": "Später posten"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 38
+        },
+        {
+          "inStunden": 2,
+          "score": 41
+        },
+        {
+          "inStunden": 3,
+          "score": 44
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "20:00",
+          "bis": "21:30",
+          "score": 72,
+          "primetimeIn": ["London", "Berlin"]
+        },
+        {
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 56,
+          "primetimeIn": ["New York", "São Paulo"]
+        },
+        {
+          "von": "07:00",
+          "bis": "08:30",
+          "score": 38,
+          "primetimeIn": []
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "20:00",
+          "bis": "21:30",
+          "score": 84
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:30",
+          "bis": "03:00",
+          "score": 88
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "19:30",
+          "bis": "21:00",
+          "score": 72
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 35,
+          "status": "Ruhephase",
+          "besteZeit": "20:00–21:30",
+          "besteZeitScore": 72
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 50,
+          "status": "Im Aufbau",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 95
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 15,
+          "status": "Ruhephase",
+          "besteZeit": "01:30–03:00",
+          "besteZeitScore": 88
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 30,
+          "status": "Ruhephase",
+          "besteZeit": "20:00–21:30",
+          "besteZeitScore": 84
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 59,
+          "status": "Im Aufbau",
+          "besteZeit": "19:30–21:00",
+          "besteZeitScore": 72
+        }
+      ],
+      "regionen": [
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "09:39",
+          "phase": "Aktiver Tag",
+          "score": 50,
+          "gewichtProzent": 27,
+          "beitragPunkte": 13
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "16:39",
+          "phase": "Aktiver Tag",
+          "score": 75,
+          "gewichtProzent": 8,
+          "beitragPunkte": 6
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "13:09",
+          "phase": "Aktiver Tag",
+          "score": 77,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "00:39",
+          "phase": "Nachtruhe",
+          "score": 22,
+          "gewichtProzent": 16,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "03:39",
+          "phase": "Nachtruhe",
+          "score": 10,
+          "gewichtProzent": 26,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "11:39",
+          "phase": "Aktiver Tag",
+          "score": 61,
+          "gewichtProzent": 5,
+          "beitragPunkte": 3
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "08:39",
+          "phase": "Morgen",
+          "score": 27,
+          "gewichtProzent": 6,
+          "beitragPunkte": 2
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "04:39",
+          "phase": "Nachtruhe",
+          "score": 16,
+          "gewichtProzent": 8,
+          "beitragPunkte": 1
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 4040,
+          "typisch": 4000,
+          "abweichungProzent": 1
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5720,
+          "typisch": 5500,
+          "abweichungProzent": 4
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 6580,
+          "typisch": 7000,
+          "abweichungProzent": -6
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8245,
+          "typisch": 8500,
+          "abweichungProzent": -3
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 10000,
+          "typisch": 10000,
+          "abweichungProzent": 0
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 168,
+        "gesternGleicheZeit": 34,
+        "differenzZuGestern": 1,
+        "wochenmittelGleicheStunde": 32,
+        "wochenhoch": 74,
+        "wochentief": 18
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g29",
+    "at": "2026-10-18T13:16:00.000Z",
+    "facts": {
+      "zeitpunkt": "15:16 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 53,
+        "status": "Im Aufbau",
+        "empfehlung": "Noch etwas warten"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 60
+        },
+        {
+          "inStunden": 2,
+          "score": 60
+        },
+        {
+          "inStunden": 3,
+          "score": 63
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "20:00",
+          "bis": "21:30",
+          "score": 72,
+          "primetimeIn": ["London", "Berlin"]
+        },
+        {
+          "von": "13:45",
+          "bis": "15:15",
+          "score": 59,
+          "primetimeIn": ["Tokio"]
+        },
+        {
+          "von": "01:15",
+          "bis": "02:45",
+          "score": 56,
+          "primetimeIn": ["New York", "São Paulo"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "20:00",
+          "bis": "21:30",
+          "score": 84
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:30",
+          "bis": "03:00",
+          "score": 88
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "13:00",
+          "bis": "14:30",
+          "score": 75
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 53,
+          "status": "Im Aufbau",
+          "besteZeit": "20:00–21:30",
+          "besteZeitScore": 72
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 65,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:45–21:15",
+          "besteZeitScore": 95
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 30,
+          "status": "Ruhephase",
+          "besteZeit": "01:30–03:00",
+          "besteZeitScore": 88
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 53,
+          "status": "Im Aufbau",
+          "besteZeit": "20:00–21:30",
+          "besteZeitScore": 84
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 72,
+          "status": "Gutes Momentum",
+          "besteZeit": "13:00–14:30",
+          "besteZeitScore": 75
+        }
+      ],
+      "regionen": [
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "15:16",
+          "phase": "Aktiver Tag",
+          "score": 65,
+          "gewichtProzent": 27,
+          "beitragPunkte": 17
+        },
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "09:16",
+          "phase": "Aktiver Tag",
+          "score": 38,
+          "gewichtProzent": 26,
+          "beitragPunkte": 10
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "22:16",
+          "phase": "Spätabend",
+          "score": 78,
+          "gewichtProzent": 8,
+          "beitragPunkte": 6
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "10:16",
+          "phase": "Aktiver Tag",
+          "score": 64,
+          "gewichtProzent": 8,
+          "beitragPunkte": 5
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "14:16",
+          "phase": "Aktiver Tag",
+          "score": 68,
+          "gewichtProzent": 6,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "17:16",
+          "phase": "Aktiver Tag",
+          "score": 79,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "18:46",
+          "phase": "Primetime",
+          "score": 90,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "06:16",
+          "phase": "Morgen",
+          "score": 16,
+          "gewichtProzent": 16,
+          "beitragPunkte": 3
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5120,
+          "typisch": 4000,
+          "abweichungProzent": 28
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5390,
+          "typisch": 5500,
+          "abweichungProzent": -2
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 7070,
+          "typisch": 7000,
+          "abweichungProzent": 1
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8840,
+          "typisch": 8500,
+          "abweichungProzent": 4
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 9400,
+          "typisch": 10000,
+          "abweichungProzent": -6
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 0,
+        "gesternGleicheZeit": null,
+        "differenzZuGestern": null,
+        "wochenmittelGleicheStunde": null,
+        "wochenhoch": null,
+        "wochentief": null
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  },
+  {
+    "id": "g30",
+    "at": "2026-10-18T18:53:00.000Z",
+    "facts": {
+      "zeitpunkt": "20:53 MESZ",
+      "gewichtung": "Werbewert (Internetnutzer × BIP pro Kopf, Weltbank)",
+      "gesamt": {
+        "score": 72,
+        "status": "Gutes Momentum",
+        "empfehlung": "Guter Moment"
+      },
+      "trendNaechsteStunden": [
+        {
+          "inStunden": 1,
+          "score": 70
+        },
+        {
+          "inStunden": 2,
+          "score": 63
+        },
+        {
+          "inStunden": 3,
+          "score": 58
+        }
+      ],
+      "besteFenster24h": [
+        {
+          "von": "19:15",
+          "bis": "20:45",
+          "score": 74,
+          "primetimeIn": ["London", "Berlin", "Dubai"]
+        },
+        {
+          "von": "21:00",
+          "bis": "22:30",
+          "score": 70,
+          "primetimeIn": ["London", "Berlin"]
+        },
+        {
+          "von": "15:00",
+          "bis": "16:30",
+          "score": 63,
+          "primetimeIn": ["Mumbai"]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Transatlantik",
+          "von": "19:15",
+          "bis": "20:45",
+          "score": 85
+        },
+        {
+          "name": "USA coast-to-coast",
+          "von": "01:30",
+          "bis": "03:00",
+          "score": 88
+        },
+        {
+          "name": "Ost-Welle",
+          "von": "13:00",
+          "bis": "14:30",
+          "score": 75
+        }
+      ],
+      "zielgruppen": [
+        {
+          "name": "Global",
+          "scoreJetzt": 72,
+          "status": "Gutes Momentum",
+          "besteZeit": "19:15–20:45",
+          "besteZeitScore": 74
+        },
+        {
+          "name": "DACH & Europa",
+          "scoreJetzt": 97,
+          "status": "Hochphase",
+          "besteZeit": "19:15–20:45",
+          "besteZeitScore": 92
+        },
+        {
+          "name": "USA",
+          "scoreJetzt": 67,
+          "status": "Gutes Momentum",
+          "besteZeit": "01:30–03:00",
+          "besteZeitScore": 88
+        },
+        {
+          "name": "Transatlantik",
+          "scoreJetzt": 85,
+          "status": "Hochphase",
+          "besteZeit": "19:15–20:45",
+          "besteZeitScore": 85
+        },
+        {
+          "name": "Ost-Welle",
+          "scoreJetzt": 73,
+          "status": "Gutes Momentum",
+          "besteZeit": "13:00–14:30",
+          "besteZeitScore": 75
+        }
+      ],
+      "regionen": [
+        {
+          "id": "eu_central",
+          "flagge": "eu",
+          "ort": "Berlin",
+          "region": "Europa Zentral",
+          "ortszeit": "20:53",
+          "phase": "Primetime",
+          "score": 97,
+          "gewichtProzent": 27,
+          "beitragPunkte": 26
+        },
+        {
+          "id": "us_east",
+          "flagge": "us",
+          "ort": "New York",
+          "region": "USA Ost",
+          "ortszeit": "14:53",
+          "phase": "Aktiver Tag",
+          "score": 70,
+          "gewichtProzent": 26,
+          "beitragPunkte": 18
+        },
+        {
+          "id": "us_west",
+          "flagge": "us",
+          "ort": "Los Angeles",
+          "region": "USA West",
+          "ortszeit": "11:53",
+          "phase": "Aktiver Tag",
+          "score": 63,
+          "gewichtProzent": 16,
+          "beitragPunkte": 10
+        },
+        {
+          "id": "latam",
+          "flagge": "br",
+          "ort": "São Paulo",
+          "region": "Lateinamerika",
+          "ortszeit": "15:53",
+          "phase": "Aktiver Tag",
+          "score": 80,
+          "gewichtProzent": 8,
+          "beitragPunkte": 7
+        },
+        {
+          "id": "eu_uk",
+          "flagge": "gb",
+          "ort": "London",
+          "region": "UK & Irland",
+          "ortszeit": "19:53",
+          "phase": "Primetime",
+          "score": 95,
+          "gewichtProzent": 6,
+          "beitragPunkte": 6
+        },
+        {
+          "id": "mena",
+          "flagge": "ae",
+          "ort": "Dubai",
+          "region": "Nahost & Nordafrika",
+          "ortszeit": "22:53",
+          "phase": "Spätabend",
+          "score": 80,
+          "gewichtProzent": 5,
+          "beitragPunkte": 4
+        },
+        {
+          "id": "india",
+          "flagge": "in",
+          "ort": "Mumbai",
+          "region": "Südasien",
+          "ortszeit": "00:23",
+          "phase": "Nachtruhe",
+          "score": 26,
+          "gewichtProzent": 5,
+          "beitragPunkte": 1
+        },
+        {
+          "id": "east_asia",
+          "flagge": "jp",
+          "ort": "Tokio",
+          "region": "Ostasien",
+          "ortszeit": "03:53",
+          "phase": "Nachtruhe",
+          "score": 15,
+          "gewichtProzent": 8,
+          "beitragPunkte": 1
+        }
+      ],
+      "liveSignale": [
+        {
+          "ort": "Berlin",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 4080,
+          "typisch": 4000,
+          "abweichungProzent": 2
+        },
+        {
+          "ort": "São Paulo",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 5775,
+          "typisch": 5500,
+          "abweichungProzent": 5
+        },
+        {
+          "ort": "Dubai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 6650,
+          "typisch": 7000,
+          "abweichungProzent": -5
+        },
+        {
+          "ort": "Mumbai",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 8330,
+          "typisch": 8500,
+          "abweichungProzent": -2
+        },
+        {
+          "ort": "Tokio",
+          "letzteStundeOrtszeit": "—",
+          "aufrufe": 10100,
+          "typisch": 10000,
+          "abweichungProzent": 1
+        }
+      ],
+      "feiertage": [],
+      "gedaechtnis": {
+        "stundenImGedaechtnis": 0,
+        "gesternGleicheZeit": null,
+        "differenzZuGestern": null,
+        "wochenmittelGleicheStunde": null,
+        "wochenhoch": null,
+        "wochentief": null
+      },
+      "phasen": [
+        "Nachtruhe 0–6 Uhr",
+        "Morgen 6–9 Uhr",
+        "Aktiver Tag 9–18 Uhr",
+        "Primetime 18–22 Uhr",
+        "Spätabend 22–24 Uhr"
+      ]
+    }
+  }
+]
