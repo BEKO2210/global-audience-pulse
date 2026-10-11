@@ -15,7 +15,7 @@ export const PHASES = [
     icon: 'moon',
     from: 0,
     to: 6,
-    color: 'color-mix(in srgb, var(--ink) 25%, var(--paper))',
+    color: 'var(--phase-sleep)',
   },
   {
     id: 'morning',
@@ -23,7 +23,7 @@ export const PHASES = [
     icon: 'sunrise',
     from: 6,
     to: 9,
-    color: 'color-mix(in srgb, var(--ink) 60%, var(--paper))',
+    color: 'var(--phase-morning)',
   },
   {
     id: 'day',
@@ -31,7 +31,7 @@ export const PHASES = [
     icon: 'briefcase',
     from: 9,
     to: 18,
-    color: 'color-mix(in srgb, var(--ink) 85%, var(--paper))',
+    color: 'var(--phase-day)',
   },
   { id: 'prime', name: 'Primetime', icon: 'fire', from: 18, to: 22, color: 'var(--accent)' },
   {
@@ -40,7 +40,7 @@ export const PHASES = [
     icon: 'moon-stars',
     from: 22,
     to: 24,
-    color: 'color-mix(in srgb, var(--ink) 40%, var(--paper))',
+    color: 'var(--phase-late)',
   },
 ] as const
 

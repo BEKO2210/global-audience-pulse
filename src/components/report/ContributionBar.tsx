@@ -31,7 +31,7 @@ const EN: typeof DE = {
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
 function rankColor(rank: number, total: number): string {
-  if (rank === 0) return 'color-mix(in srgb, var(--ink) 88%, var(--paper))'
+  if (rank === 0) return 'var(--ink-strong)'
   if (total <= 2) return 'color-mix(in srgb, var(--ink) 70%, var(--paper))'
   const pct = Math.round(80 - ((rank - 1) / (total - 2)) * 55)
   return `color-mix(in srgb, var(--ink) ${pct}%, var(--paper))`

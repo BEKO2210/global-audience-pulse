@@ -47,6 +47,16 @@
 .rdc-band.is-day {
   fill: color-mix(in srgb, var(--ink) 10%, transparent);
 }
+[data-theme='dark'] .rdc-band {
+  fill: color-mix(in srgb, var(--ink) 3%, transparent);
+}
+[data-theme='dark'] .rdc-band.is-morning,
+[data-theme='dark'] .rdc-band.is-late {
+  fill: color-mix(in srgb, var(--ink) 9%, transparent);
+}
+[data-theme='dark'] .rdc-band.is-day {
+  fill: color-mix(in srgb, var(--ink) 16%, transparent);
+}
 .rdc-band.is-prime {
   fill: var(--accent-tint);
 }

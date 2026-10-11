@@ -43,6 +43,13 @@
   color: var(--ink);
   border-color: var(--accent);
 }
+[data-theme='dark'] .wt-option[aria-pressed='true'] {
+  border: 1px solid var(--accent);
+  background: var(--paper-2);
+}
+[data-theme='dark'] .wt-active {
+  background: transparent;
+}
 .wt-option:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
