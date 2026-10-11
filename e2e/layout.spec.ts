@@ -65,9 +65,11 @@ test('mobile time bar never shifts while scrubbing (fixed columns)', async ({ pa
       const b = el.getBoundingClientRect()
       return `${Math.round(b.left)}/${Math.round(b.width)}`
     })
-  const first = await box()
   const slider = page.getByRole('slider', { name: 'Zeitmaschine', exact: true })
   await slider.focus()
+  // focusing the chart slider scrolls the page, which may collapse the bar: measure in the settled state
+  await page.waitForTimeout(400)
+  const first = await box()
   for (let i = 0; i < 48; i += 1) {
     await page.keyboard.press('ArrowRight')
     if (i % 8 === 0) expect(await box()).toBe(first)

@@ -95,6 +95,7 @@ export function MobileTimeBar({
   const [localMinutes, setLocalMinutes] = useState(externalMinutes)
   const [dragging, setDragging] = useState(false)
   const [compact, setCompact] = useState(false)
+  const barRef = useRef<HTMLDivElement>(null)
   const frame = useRef(0)
   const pending = useRef(localMinutes)
   const bestState = useRef(false)
@@ -102,12 +103,26 @@ export function MobileTimeBar({
   useEffect(() => {
     let scrollFrame = 0
     let lastScrollPosition = window.scrollY
+    let lastHeight = document.documentElement.scrollHeight
     let direction = 0
     let distance = 0
 
     const updateBar = () => {
       scrollFrame = 0
+      // while the bar is being used (focus inside it, e.g. keyboard scrubbing) it never collapses
+      if (barRef.current?.contains(document.activeElement)) {
+        setCompact(false)
+        return
+      }
       const scrollPosition = window.scrollY
+      // a scroll that comes with a page-height change is content reflowing under the viewport (e.g. while a chart
+      // is scrubbed), not the user scrolling: never toggle the bar on it
+      const height = document.documentElement.scrollHeight
+      if (height !== lastHeight) {
+        lastHeight = height
+        lastScrollPosition = scrollPosition
+        return
+      }
       if (scrollPosition <= 0) {
         setCompact(false)
         lastScrollPosition = 0
@@ -220,8 +235,10 @@ export function MobileTimeBar({
   return (
     <div
       className={`mobile-bar${compact ? ' is-compact' : ''}`}
+      ref={barRef}
       role="region"
       aria-label={t.region}
+      onFocusCapture={() => setCompact(false)}
       // any touch on the compact bar expands it; the scrubber stays enabled, so a drag keeps working
       onPointerDownCapture={() => {
         if (compact) setCompact(false)
