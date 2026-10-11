@@ -89,6 +89,10 @@
   }
 }
 
+.heatmap-cursor[data-covered='true'] {
+  visibility: hidden;
+}
+
 .heatmap-cursor--now {
   width: 2px;
   /* Optical one-pixel alignment keeps the now-marker crisp. */
@@ -155,7 +159,6 @@
 @media (max-width: 420px) {
   .heatmap-panel .heatmap {
     --heatmap-label-width: 108px;
-    min-width: 360px;
   }
 }
 

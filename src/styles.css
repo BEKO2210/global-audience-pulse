@@ -1186,8 +1186,10 @@ button:active {
 }
 .heatmap {
   display: grid;
-  min-width: 742px;
-  width: 100%;
+  /* as wide as its tracks: a grid box narrower than its columns is the containing block of the sticky labels, so
+     they scrolled away with the cells on phones (the box was 360 px, the 24 columns ~780 px) */
+  width: max-content;
+  min-width: 100%;
   align-items: center;
   position: relative;
 }
@@ -1215,7 +1217,8 @@ button:active {
   /* stays in place while the 24 h scroll sideways on phones; fills the row so no cell shows behind it */
   position: sticky;
   left: 0;
-  z-index: 2;
+  /* above the cursor overlay (z 3): a scrolled "now"/selected cursor passes under the city names, not over them */
+  z-index: 4;
   align-self: stretch;
   background: var(--paper-2);
   box-shadow: 1px 0 0 var(--rule);

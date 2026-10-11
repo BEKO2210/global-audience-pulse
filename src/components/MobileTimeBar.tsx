@@ -120,8 +120,13 @@ export function MobileTimeBar({
       const height = document.documentElement.scrollHeight
       if (height !== lastHeight) {
         lastHeight = height
-        lastScrollPosition = scrollPosition
-        return
+        // only while something is focused (a chart slider being scrubbed): plain scrolling past lazily mounting
+        // sections also changes the height and must still collapse the bar
+        const active = document.activeElement
+        if (active && active !== document.body && active !== document.documentElement) {
+          lastScrollPosition = scrollPosition
+          return
+        }
       }
       if (scrollPosition <= 0) {
         setCompact(false)

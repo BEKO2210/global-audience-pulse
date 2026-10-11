@@ -1,4 +1,4 @@
-import { memo, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react'
+import { memo, useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react'
 import { REGIONS, type RegionId } from '../config/regions'
 import type { ScoreGrid } from '../lib/model'
 import { formatTime } from '../lib/time'
@@ -84,6 +84,25 @@ export const Heatmap = memo(function Heatmap({
     }
   })
   const cellRefs = useRef(new Map<string, HTMLButtonElement>())
+  const scrollRef = useRef<HTMLDivElement>(null)
+  // a cursor whose column has scrolled under the sticky city column hides, label and all – otherwise its pill
+  // and the "now" chip float over the city names (they sit outside the rows, where no label covers them)
+  const markCoveredCursors = () => {
+    const scroller = scrollRef.current
+    if (!scroller) return
+    const edge =
+      scroller.getBoundingClientRect().left +
+      (parseFloat(
+        getComputedStyle(scroller.querySelector('.heatmap-label') as Element)?.width ?? '0',
+      ) || 0)
+    scroller.querySelectorAll<HTMLElement>('.heatmap-cursor').forEach((cursor) => {
+      // 3 px slack: the first column's cursor legitimately sits on the label edge (1.5 px optical offset)
+      cursor.dataset.covered = String(cursor.getBoundingClientRect().left < edge - 3)
+    })
+  }
+  useEffect(() => {
+    markCoveredCursors()
+  })
   const heatLevel = (score: number) => {
     const index = ACTIVITY_LEVELS.findIndex((level) => score >= level.min && score <= level.max)
     return index < 0 ? ACTIVITY_LEVELS.length - 1 : index
@@ -128,8 +147,10 @@ export const Heatmap = memo(function Heatmap({
       </div>
       <div className="heatmap-scroll-shell">
         <div
+          ref={scrollRef}
           className="heatmap-scroll"
           onScroll={(event) => {
+            markCoveredCursors()
             if (!showSwipeHint || event.currentTarget.scrollLeft === 0) return
             setShowSwipeHint(false)
             try {
