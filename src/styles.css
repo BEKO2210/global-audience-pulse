@@ -271,7 +271,7 @@
   /* the audit's #d95a1e is too light for text on paper (3.6:1); text uses a deeper vermilion */
   --accent-ink: #a8400f;
   --accent-tint: rgba(217, 90, 30, 0.1);
-  --link: #a8400f;
+  --link: #1f6f78;
   --live: #30703e;
   --series-1: #b5471a;
   --series-2: #94761a;
@@ -853,7 +853,13 @@ button:active {
 .presets h2 {
   font: var(--display-weight) var(--text-2xl)/var(--leading-title) var(--font-display);
   margin: 0;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--display-tracking);
+}
+.section-head h2,
+.panel h2,
+.insight-strip strong,
+.live-report h2 {
+  text-wrap: balance;
 }
 .world-map {
   width: 100%;
@@ -1053,7 +1059,10 @@ button:active {
   color: var(--accent-ink);
 }
 .scrub-readout button:disabled {
-  opacity: 0.45;
+  opacity: 1;
+  border-color: var(--rule-solid);
+  color: var(--muted);
+  background: transparent;
 }
 .scrub-key-hint {
   display: none;
@@ -1079,6 +1088,8 @@ button:active {
   margin-bottom: var(--space-2);
 }
 .insight-strip strong {
+  /* a block, so text-wrap: balance can act (it ignores inline boxes – "New / York" stayed an orphan) */
+  display: block;
   font: var(--display-weight) var(--text-lg)/var(--leading-title) var(--font-display);
 }
 .insight-strip small {
@@ -1500,6 +1511,14 @@ button:active {
   padding: var(--space-4) 0;
   border-top: 1px solid var(--rule);
 }
+.planner-empty {
+  margin: 0;
+  padding: var(--space-4) 0;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  line-height: var(--leading-body);
+}
 .planner-list .window-index {
   grid-area: index;
   padding-top: var(--space-1);
@@ -1623,9 +1642,14 @@ button:active {
 }
 .share-table span:nth-child(n + 2) {
   color: var(--muted);
+  font-family: var(--font-ui);
+  text-align: right;
+}
+.share-table span:nth-child(n + 2) b {
+  color: inherit;
   font-family: var(--font-num);
   font-variant-numeric: tabular-nums;
-  text-align: right;
+  font-weight: inherit;
 }
 .source-fetched {
   color: var(--muted);
@@ -2129,7 +2153,7 @@ button:active {
   }
   .ap-links .ap-jump,
   .ap-links .week-link {
-    margin-top: var(--space-3);
+    margin-top: 0;
     padding-inline: 0;
   }
   .hero h1 {

@@ -1114,10 +1114,12 @@ export default function App() {
                             {cityName(region.id, region.city, locale)}
                           </span>
                           <span>
-                            {t.reach} {Math.round(activeSnapshot.weights.reach[region.id] * 100)} %
+                            {t.reach}{' '}
+                            <b>{Math.round(activeSnapshot.weights.reach[region.id] * 100)} %</b>
                           </span>
                           <span>
-                            {t.value} {Math.round(activeSnapshot.weights.value[region.id] * 100)} %
+                            {t.value}{' '}
+                            <b>{Math.round(activeSnapshot.weights.value[region.id] * 100)} %</b>
                           </span>
                         </div>
                       ))}

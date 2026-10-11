@@ -31,6 +31,10 @@ const DE = {
   copyPlan: 'Plan kopieren',
   shareLink: 'Link teilen',
   nextDst: 'Nächste Zeitumstellung:',
+  noWindowsToday: 'Heute kein starkes Fenster mehr – das nächste morgen.',
+  noWindowsTodayNextDays: 'Heute kein starkes Fenster mehr – das nächste in den nächsten 7 Tagen.',
+  noWindowsTomorrowNextDays: 'Morgen kein starkes Fenster – das nächste in den nächsten 7 Tagen.',
+  noWindowsWeek: 'Keine starken Fenster in den nächsten 7 Tagen.',
 }
 const EN: typeof DE = {
   icsSummary: 'Optimal posting window',
@@ -52,6 +56,10 @@ const EN: typeof DE = {
   copyPlan: 'Copy plan',
   shareLink: 'Share link',
   nextDst: 'Next clock change:',
+  noWindowsToday: 'No strong window left today – the next one is tomorrow.',
+  noWindowsTodayNextDays: 'No strong window left today – the next one is within the next 7 days.',
+  noWindowsTomorrowNextDays: 'No strong window tomorrow – the next one is within the next 7 days.',
+  noWindowsWeek: 'No strong windows in the next 7 days.',
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
@@ -107,6 +115,14 @@ export function Planner({
   }, [])
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const windows = windowSets[scope]
+  const emptyMessage =
+    windowSets.week.length === 0
+      ? t.noWindowsWeek
+      : scope === 'today' && windowSets.tomorrow.length > 0
+        ? t.noWindowsToday
+        : scope === 'today'
+          ? t.noWindowsTodayNextDays
+          : t.noWindowsTomorrowNextDays
   const zielgruppe =
     selected.length === 0 ? 'leer' : selected.length === REGIONS.length ? 'alle' : 'eigene-auswahl'
   const plan = windows
@@ -182,6 +198,7 @@ export function Planner({
         </button>
       </div>
       <div className="planner-list" role="tabpanel">
+        {windows.length === 0 && <p className="planner-empty">{emptyMessage}</p>}
         {windows.map((window, i) => (
           <article key={window.start.toISOString()}>
             <span className="window-index">{String(i + 1).padStart(2, '0')}</span>

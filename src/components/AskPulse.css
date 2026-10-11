@@ -57,12 +57,18 @@
   line-height: var(--leading-title);
 }
 .ap-regions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-2) var(--space-3);
   margin: 0 0 var(--space-3);
   color: var(--muted);
   font-size: var(--text-sm);
+}
+@media (min-width: 600px) {
+  .ap-regions {
+    display: flex;
+    flex-wrap: wrap;
+  }
 }
 .ap-regions span {
   display: inline-flex;
@@ -88,14 +94,15 @@
 .ap-links {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: baseline;
   gap: var(--space-2) var(--space-6);
 }
 /* text-style action in a text row: no button inset, so both quiet actions fit one line at 360px */
 .ap-links .ap-jump {
   padding-inline: 0;
-  margin-top: var(--space-3);
+  margin-top: 0;
 }
 .ap-links .week-link {
   margin-top: 0;
+  padding-inline: 0;
 }

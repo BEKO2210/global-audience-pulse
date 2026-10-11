@@ -50,6 +50,28 @@ test('switches weighting and planner tabs, exports a UTC ICS, and copies the pla
   await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toMatch(/^1\./)
 })
 
+test('an empty today tab points to the available windows tomorrow', async ({
+  page,
+  browserName,
+}) => {
+  test.fixme(browserName === 'webkit', 'page.clock.install freezes WebKit')
+  await page.clock.install({ time: new Date('2026-10-09T21:40:00Z') })
+  await openReady(page)
+
+  const planner = page.getByRole('region', { name: 'Die nächsten starken Fenster' })
+  await expect(planner.getByRole('tab', { name: 'Heute (0)' })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  )
+  await expect(planner.getByRole('tabpanel')).toContainText(
+    'Heute kein starkes Fenster mehr – das nächste morgen.',
+  )
+
+  await planner.getByRole('tab', { name: /Morgen/ }).click()
+  await expect(planner.locator('.planner-list article')).not.toHaveCount(0)
+  await expect(planner.locator('.planner-empty')).toHaveCount(0)
+})
+
 test('share link round-trips audience and weighting state', async ({
   page,
   context,

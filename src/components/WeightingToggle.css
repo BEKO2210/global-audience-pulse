@@ -123,4 +123,8 @@
   .wt-options {
     grid-template-columns: minmax(0, 1fr);
   }
+  .wt-option + .wt-option {
+    border-top: 1px solid var(--rule-solid);
+    border-left: 0;
+  }
 }
