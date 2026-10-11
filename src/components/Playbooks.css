@@ -365,7 +365,7 @@
 .pb-details summary::after {
   content: '+';
   color: var(--muted);
-  font: var(--weight-medium) var(--text-base)/var(--leading-body) var(--font-num);
+  font: var(--weight-semibold) var(--text-base) / 1 var(--font-num);
 }
 .pb-details[open] summary::after {
   content: '−';
