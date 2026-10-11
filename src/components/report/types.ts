@@ -28,6 +28,8 @@ export interface AnalysisFacts {
     wann: 'heute' | 'morgen'
     datum: string
     name: string
+    /** English name (T-015); absent in older payloads */
+    nameEn?: string
   }[]
   liveSignale?: {
     ort: string

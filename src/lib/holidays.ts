@@ -4,7 +4,21 @@ import { fastZonedParts } from './time'
 export interface Holiday {
   /** local calendar date, YYYY-MM-DD */
   date: string
+  /** local name, as the country writes it */
   name: string
+  /** English name, when it differs from the local one */
+  en?: string
+}
+
+/** Any letter outside Latin script (e.g. スポーツの日): German readers then also get the English name. */
+const NON_LATIN = /[^\p{Script=Latin}\p{Script=Common}\p{Script=Inherited}]/u
+
+/** Display name: English edition uses the English name; German keeps the local one, plus English if unreadable. */
+export function holidayLabel(holiday: Holiday, locale: 'de' | 'en') {
+  if (locale === 'en') return holiday.en ?? holiday.name
+  return holiday.en && NON_LATIN.test(holiday.name)
+    ? `${holiday.name} (${holiday.en})`
+    : holiday.name
 }
 
 /** Nationwide public holidays per region (from Nager.Date at build time; mena/india are not covered). */

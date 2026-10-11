@@ -109,13 +109,15 @@ function parseHolidays(input: unknown): Holidays {
   const out: Holidays = {}
   for (const [id, list] of Object.entries(input as Record<string, unknown>)) {
     if (!Array.isArray(list)) continue
-    const clean = list.filter(
-      (h): h is { date: string; name: string } =>
-        !!h &&
-        typeof h === 'object' &&
-        /^\d{4}-\d{2}-\d{2}$/.test((h as { date?: unknown }).date as string) &&
-        typeof (h as { name?: unknown }).name === 'string',
-    )
+    const clean = list
+      .filter(
+        (h): h is { date: string; name: string; en?: unknown } =>
+          !!h &&
+          typeof h === 'object' &&
+          /^\d{4}-\d{2}-\d{2}$/.test((h as { date?: unknown }).date as string) &&
+          typeof (h as { name?: unknown }).name === 'string',
+      )
+      .map(({ date, name, en }) => (typeof en === 'string' ? { date, name, en } : { date, name }))
     if (clean.length) out[id as RegionId] = clean
   }
   return out

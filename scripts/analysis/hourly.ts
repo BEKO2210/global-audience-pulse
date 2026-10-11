@@ -18,7 +18,7 @@ import {
   normalizedWeights,
 } from '../../src/lib/model'
 import { parseSnapshot, type Snapshot } from '../../src/lib/snapshot'
-import { holidayAt } from '../../src/lib/holidays'
+import { holidayAt, holidayLabel } from '../../src/lib/holidays'
 import { formatTime, localDecimalHour, timeZoneName } from '../../src/lib/time'
 import { compare, liveSignals, readHistory, writeHistory, type LiveSignal } from './signals'
 import type { AnalysisRun, DataFetchError, ModelCall, RunRejection } from './health'
@@ -34,6 +34,7 @@ import {
   sameShape,
   templateEn,
   translatePrompt,
+  withEnglishHolidays,
   withOriginalNames,
   type ReportBody,
 } from './english'
@@ -193,7 +194,16 @@ function buildFacts(
           new Date(now.getTime() + offset * 86_400_000),
         )
         return h
-          ? [{ ort: region.city, flagge: region.flag, wann, datum: h.date, name: h.name }]
+          ? [
+              {
+                ort: region.city,
+                flagge: region.flag,
+                wann,
+                datum: h.date,
+                name: holidayLabel(h, 'de'),
+                nameEn: holidayLabel(h, 'en'),
+              },
+            ]
           : []
       }),
     ),
@@ -419,7 +429,11 @@ async function checkClaims(
  * English edition (T-015): the writer model translates the checked German report; the translation must keep
  * every number (numbersMatch) and the shape, else the deterministic English template is used. Two tries.
  */
-async function translate(report: ReportBody, modelCalls: ModelCall[]) {
+async function translate(
+  report: ReportBody,
+  holidays: Facts['feiertage'],
+  modelCalls: ModelCall[],
+) {
   for (let attempt = 1; attempt <= 2; attempt += 1) {
     const callStarted = performance.now()
     try {
@@ -447,7 +461,7 @@ async function translate(report: ReportBody, modelCalls: ModelCall[]) {
         durationMs: Math.round(performance.now() - callStarted),
         ok,
       })
-      if (ok) return withOriginalNames(report, en)
+      if (ok) return withEnglishHolidays(withOriginalNames(report, en), holidays)
       console.warn(`Übersetzung ${attempt} verworfen: Zahlen oder Form weichen ab`)
     } catch (error) {
       modelCalls.push({
@@ -513,6 +527,7 @@ async function main() {
     const { schlagzeile, empfehlung, analyse, punkte, zielgruppen } = report
     reportEn = await translate(
       { schlagzeile, empfehlung, analyse, punkte, zielgruppen },
+      facts.feiertage,
       telemetry.modelCalls,
     )
   }

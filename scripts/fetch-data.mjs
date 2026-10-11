@@ -32,7 +32,11 @@ const stamp = (date) => date.toISOString().replace(/[-:T]/g, '').slice(0, 10)
 export function pickHolidays(items) {
   return items
     .filter((h) => h.global && (h.types ?? ['Public']).includes('Public'))
-    .map((h) => ({ date: h.date, name: h.localName }))
+    .map((h) => ({
+      date: h.date,
+      name: h.localName,
+      ...(h.name && h.name !== h.localName ? { en: h.name } : {}),
+    }))
 }
 
 async function holidays(years) {

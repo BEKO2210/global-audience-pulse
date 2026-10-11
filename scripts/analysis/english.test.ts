@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import fixture from '../../e2e/fixtures/analysis-v2.json'
-import { numbersMatch, sameShape, templateEn, withOriginalNames, type ReportBody } from './english'
+import {
+  numbersMatch,
+  withEnglishHolidays,
+  sameShape,
+  templateEn,
+  withOriginalNames,
+  type ReportBody,
+} from './english'
 
 const de = fixture.report as ReportBody
 const translated = (edit: (text: string) => string): ReportBody => ({
@@ -66,5 +73,13 @@ describe('English edition (T-015)', () => {
     expect(en.schlagzeile).toBe('Quiet: overall score 36')
     expect(text).not.toMatch(/Uhr|Punkte|Bestes|Ruhephase|Nachtruhe|Tokio|[äöüß]/)
     expect(en.zielgruppen).toHaveLength(fixture.facts.zielgruppen.length)
+  })
+
+  it('swaps holiday names for their English names after translation', () => {
+    const en = { ...de, analyse: 'Tomorrow is スポーツの日 (Sports Day) in Tokyo.' }
+    const out = withEnglishHolidays(en, [
+      { name: 'スポーツの日 (Sports Day)', nameEn: 'Sports Day' },
+    ])
+    expect(out.analyse).toBe('Tomorrow is Sports Day in Tokyo.')
   })
 })

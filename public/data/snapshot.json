@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-10-10T21:15:24.536Z",
+  "generatedAt": "2026-10-11T06:36:29.347Z",
   "sources": {
     "worldBank": {
-      "fetchedAt": "2026-10-10T21:15:24.536Z",
+      "fetchedAt": "2026-10-11T06:36:29.347Z",
       "urls": [
         "https://api.worldbank.org/v2/country/USA;BRA;MEX;ARG;COL;CHL;PER;VEN;ECU;GTM;BOL;DOM;HND;PRY;SLV;NIC;CRI;PAN;URY;GBR;IRL;DEU;AUT;CHE;FRA;NLD;BEL;POL;ITA;ESP;PRT;CZE;DNK;SWE;NOR;FIN;ARE;SAU;EGY;MAR;DZA;TUN;JOR;LBN;IRQ;KWT;QAT;OMN;BHR;IND;PAK;BGD;LKA;NPL;JPN;KOR;TWN/indicator/SP.POP.TOTL?format=json&mrnev=1&per_page=500",
         "https://api.worldbank.org/v2/country/USA;BRA;MEX;ARG;COL;CHL;PER;VEN;ECU;GTM;BOL;DOM;HND;PRY;SLV;NIC;CRI;PAN;URY;GBR;IRL;DEU;AUT;CHE;FRA;NLD;BEL;POL;ITA;ESP;PRT;CZE;DNK;SWE;NOR;FIN;ARE;SAU;EGY;MAR;DZA;TUN;JOR;LBN;IRQ;KWT;QAT;OMN;BHR;IND;PAK;BGD;LKA;NPL;JPN;KOR;TWN/indicator/IT.NET.USER.ZS?format=json&mrnev=1&per_page=500",
@@ -10,17 +10,17 @@
       ]
     },
     "wikimedia": {
-      "fetchedAt": "2026-10-10T21:15:24.536Z",
+      "fetchedAt": "2026-10-11T06:36:29.347Z",
       "urls": [
-        "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/pt.wikipedia/all-access/user/hourly/2026091220/2026101020",
-        "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/de.wikipedia/all-access/user/hourly/2026091220/2026101020",
-        "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/ar.wikipedia/all-access/user/hourly/2026091220/2026101020",
-        "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/hi.wikipedia/all-access/user/hourly/2026091220/2026101020",
-        "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/ja.wikipedia/all-access/user/hourly/2026091220/2026101020"
+        "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/pt.wikipedia/all-access/user/hourly/2026091305/2026101105",
+        "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/de.wikipedia/all-access/user/hourly/2026091305/2026101105",
+        "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/ar.wikipedia/all-access/user/hourly/2026091305/2026101105",
+        "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/hi.wikipedia/all-access/user/hourly/2026091305/2026101105",
+        "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/ja.wikipedia/all-access/user/hourly/2026091305/2026101105"
       ]
     },
     "holidays": {
-      "fetchedAt": "2026-10-10T21:15:24.536Z",
+      "fetchedAt": "2026-10-11T06:36:29.347Z",
       "urls": [
         "https://date.nager.at/api/v3/PublicHolidays/2025/US",
         "https://date.nager.at/api/v3/PublicHolidays/2026/US",
@@ -92,32 +92,32 @@
         77.1
       ],
       "weekend": [
-        53.6,
-        37.3,
-        26.1,
-        20.5,
-        19.1,
-        20.6,
-        26.6,
-        36.3,
-        47.7,
-        58.7,
-        67.7,
-        71.3,
-        74.4,
-        78.1,
-        80.7,
-        83.3,
-        84.7,
+        53.1,
+        36.8,
+        26.5,
+        20.8,
+        19.4,
+        20.9,
+        27,
+        36.9,
+        48.4,
+        59.6,
+        68.7,
+        72.4,
+        75.6,
+        79.3,
+        82,
+        82.9,
+        84.3,
         86.6,
-        90.1,
-        96.4,
-        98.7,
+        89.7,
+        95.6,
+        97.7,
         100,
-        90.8,
-        75
+        90.6,
+        75.1
       ],
-      "lastMeasuredAt": "2026-10-10T20:00:00.000Z"
+      "lastMeasuredAt": "2026-10-11T05:00:00.000Z"
     },
     "east_asia": {
       "weekday": [
@@ -150,17 +150,17 @@
         58.6,
         42.1,
         30.1,
-        23,
-        19.8,
-        22.5,
-        31.1,
-        42.5,
-        55,
-        61.6,
-        63.8,
-        65.7,
-        71.1,
-        74.4,
+        22.9,
+        19.6,
+        21.9,
+        30.5,
+        41.8,
+        54,
+        60.3,
+        62.7,
+        64.4,
+        69.9,
+        73.7,
         72.9,
         73,
         74.5,
@@ -172,7 +172,7 @@
         94.8,
         80.5
       ],
-      "lastMeasuredAt": "2026-10-10T20:00:00.000Z"
+      "lastMeasuredAt": "2026-10-11T05:00:00.000Z"
     },
     "eu_central": {
       "weekday": [
@@ -202,32 +202,32 @@
         59.3
       ],
       "weekend": [
-        41.2,
-        24.4,
+        41.1,
+        24.3,
         16.1,
         12.2,
-        10.4,
+        10.3,
         10.6,
-        14.5,
-        25.7,
-        39.8,
-        49.7,
-        54.2,
-        55.5,
-        56.8,
-        58.4,
-        59.1,
+        14.7,
+        26,
+        40.2,
+        50.3,
+        54.8,
+        56.1,
+        57.4,
+        59,
         59.7,
-        61.7,
-        63.3,
-        64.5,
-        70.9,
-        92.5,
+        60.4,
+        62.4,
+        64,
+        65.3,
+        71.7,
+        92.1,
         100,
-        89.7,
-        62.5
+        90.6,
+        62.7
       ],
-      "lastMeasuredAt": "2026-10-10T20:00:00.000Z"
+      "lastMeasuredAt": "2026-10-11T05:00:00.000Z"
     },
     "india": {
       "weekday": [
@@ -257,16 +257,16 @@
         54.2
       ],
       "weekend": [
-        38.5,
-        26,
-        20.1,
-        18.3,
-        20.1,
+        37.8,
+        24.7,
+        19.1,
+        17.8,
+        19.5,
         28.1,
-        40.5,
-        52.6,
-        63,
-        71.9,
+        40.1,
+        51.5,
+        61.4,
+        71.4,
         80,
         84.6,
         83.6,
@@ -280,9 +280,9 @@
         100,
         97.8,
         81.1,
-        59.2
+        58
       ],
-      "lastMeasuredAt": "2026-10-10T20:00:00.000Z"
+      "lastMeasuredAt": "2026-10-11T05:00:00.000Z"
     },
     "mena": {
       "weekday": [
@@ -312,32 +312,32 @@
         98.9
       ],
       "weekend": [
-        100,
-        96.1,
-        85.7,
-        73.4,
-        61.4,
-        50,
-        44.5,
-        42.5,
-        42.3,
-        45,
-        49.1,
-        54.2,
-        61.4,
-        65.9,
-        71.9,
-        78.5,
-        78.9,
-        79.3,
-        78.6,
-        76.6,
-        81.4,
-        85,
-        91.6,
-        97.9
+        99.7,
+        95.2,
+        84.4,
+        71.3,
+        60,
+        48.1,
+        43,
+        41.4,
+        40.3,
+        45.9,
+        50.1,
+        55.2,
+        62.6,
+        67.2,
+        73.3,
+        80,
+        80.4,
+        80.9,
+        80.2,
+        78.1,
+        83,
+        86.7,
+        93.6,
+        100
       ],
-      "lastMeasuredAt": "2026-10-10T20:00:00.000Z"
+      "lastMeasuredAt": "2026-10-11T05:00:00.000Z"
     }
   },
   "dataYears": {
@@ -522,7 +522,8 @@
       },
       {
         "date": "2025-02-17",
-        "name": "Washington's Birthday"
+        "name": "Washington's Birthday",
+        "en": "Presidents Day"
       },
       {
         "date": "2025-05-26",
@@ -538,7 +539,8 @@
       },
       {
         "date": "2025-09-01",
-        "name": "Labor Day"
+        "name": "Labor Day",
+        "en": "Labour Day"
       },
       {
         "date": "2025-11-11",
@@ -562,7 +564,8 @@
       },
       {
         "date": "2026-02-16",
-        "name": "Washington's Birthday"
+        "name": "Washington's Birthday",
+        "en": "Presidents Day"
       },
       {
         "date": "2026-05-25",
@@ -578,7 +581,8 @@
       },
       {
         "date": "2026-09-07",
-        "name": "Labor Day"
+        "name": "Labor Day",
+        "en": "Labour Day"
       },
       {
         "date": "2026-11-11",
@@ -602,7 +606,8 @@
       },
       {
         "date": "2027-02-15",
-        "name": "Washington's Birthday"
+        "name": "Washington's Birthday",
+        "en": "Presidents Day"
       },
       {
         "date": "2027-05-31",
@@ -618,7 +623,8 @@
       },
       {
         "date": "2027-09-06",
-        "name": "Labor Day"
+        "name": "Labor Day",
+        "en": "Labour Day"
       },
       {
         "date": "2027-11-11",
@@ -644,7 +650,8 @@
       },
       {
         "date": "2025-02-17",
-        "name": "Washington's Birthday"
+        "name": "Washington's Birthday",
+        "en": "Presidents Day"
       },
       {
         "date": "2025-05-26",
@@ -660,7 +667,8 @@
       },
       {
         "date": "2025-09-01",
-        "name": "Labor Day"
+        "name": "Labor Day",
+        "en": "Labour Day"
       },
       {
         "date": "2025-11-11",
@@ -684,7 +692,8 @@
       },
       {
         "date": "2026-02-16",
-        "name": "Washington's Birthday"
+        "name": "Washington's Birthday",
+        "en": "Presidents Day"
       },
       {
         "date": "2026-05-25",
@@ -700,7 +709,8 @@
       },
       {
         "date": "2026-09-07",
-        "name": "Labor Day"
+        "name": "Labor Day",
+        "en": "Labour Day"
       },
       {
         "date": "2026-11-11",
@@ -724,7 +734,8 @@
       },
       {
         "date": "2027-02-15",
-        "name": "Washington's Birthday"
+        "name": "Washington's Birthday",
+        "en": "Presidents Day"
       },
       {
         "date": "2027-05-31",
@@ -740,7 +751,8 @@
       },
       {
         "date": "2027-09-06",
-        "name": "Labor Day"
+        "name": "Labor Day",
+        "en": "Labour Day"
       },
       {
         "date": "2027-11-11",
@@ -758,23 +770,28 @@
     "latam": [
       {
         "date": "2025-01-01",
-        "name": "Confraternização Universal"
+        "name": "Confraternização Universal",
+        "en": "New Year's Day"
       },
       {
         "date": "2025-04-18",
-        "name": "Sexta-feira Santa"
+        "name": "Sexta-feira Santa",
+        "en": "Good Friday"
       },
       {
         "date": "2025-04-20",
-        "name": "Domingo de Páscoa"
+        "name": "Domingo de Páscoa",
+        "en": "Easter Sunday"
       },
       {
         "date": "2025-04-21",
-        "name": "Dia de Tiradentes"
+        "name": "Dia de Tiradentes",
+        "en": "Tiradentes"
       },
       {
         "date": "2025-05-01",
-        "name": "Dia do Trabalhador"
+        "name": "Dia do Trabalhador",
+        "en": "Labour Day"
       },
       {
         "date": "2025-06-19",
@@ -782,47 +799,58 @@
       },
       {
         "date": "2025-09-07",
-        "name": "Dia da Independência"
+        "name": "Dia da Independência",
+        "en": "Independence Day"
       },
       {
         "date": "2025-10-12",
-        "name": "Nossa Senhora Aparecida"
+        "name": "Nossa Senhora Aparecida",
+        "en": "Our Lady of Aparecida"
       },
       {
         "date": "2025-11-02",
-        "name": "Dia de Finados"
+        "name": "Dia de Finados",
+        "en": "All Souls' Day"
       },
       {
         "date": "2025-11-15",
-        "name": "Proclamação da República"
+        "name": "Proclamação da República",
+        "en": "Republic Proclamation Day"
       },
       {
         "date": "2025-11-20",
-        "name": "Dia da Consciência Negra"
+        "name": "Dia da Consciência Negra",
+        "en": "Black Awareness Day"
       },
       {
         "date": "2025-12-25",
-        "name": "Natal"
+        "name": "Natal",
+        "en": "Christmas Day"
       },
       {
         "date": "2026-01-01",
-        "name": "Confraternização Universal"
+        "name": "Confraternização Universal",
+        "en": "New Year's Day"
       },
       {
         "date": "2026-04-03",
-        "name": "Sexta-feira Santa"
+        "name": "Sexta-feira Santa",
+        "en": "Good Friday"
       },
       {
         "date": "2026-04-05",
-        "name": "Domingo de Páscoa"
+        "name": "Domingo de Páscoa",
+        "en": "Easter Sunday"
       },
       {
         "date": "2026-04-21",
-        "name": "Dia de Tiradentes"
+        "name": "Dia de Tiradentes",
+        "en": "Tiradentes"
       },
       {
         "date": "2026-05-01",
-        "name": "Dia do Trabalhador"
+        "name": "Dia do Trabalhador",
+        "en": "Labour Day"
       },
       {
         "date": "2026-06-04",
@@ -830,47 +858,58 @@
       },
       {
         "date": "2026-09-07",
-        "name": "Dia da Independência"
+        "name": "Dia da Independência",
+        "en": "Independence Day"
       },
       {
         "date": "2026-10-12",
-        "name": "Nossa Senhora Aparecida"
+        "name": "Nossa Senhora Aparecida",
+        "en": "Our Lady of Aparecida"
       },
       {
         "date": "2026-11-02",
-        "name": "Dia de Finados"
+        "name": "Dia de Finados",
+        "en": "All Souls' Day"
       },
       {
         "date": "2026-11-15",
-        "name": "Proclamação da República"
+        "name": "Proclamação da República",
+        "en": "Republic Proclamation Day"
       },
       {
         "date": "2026-11-20",
-        "name": "Dia da Consciência Negra"
+        "name": "Dia da Consciência Negra",
+        "en": "Black Awareness Day"
       },
       {
         "date": "2026-12-25",
-        "name": "Natal"
+        "name": "Natal",
+        "en": "Christmas Day"
       },
       {
         "date": "2027-01-01",
-        "name": "Confraternização Universal"
+        "name": "Confraternização Universal",
+        "en": "New Year's Day"
       },
       {
         "date": "2027-03-26",
-        "name": "Sexta-feira Santa"
+        "name": "Sexta-feira Santa",
+        "en": "Good Friday"
       },
       {
         "date": "2027-03-28",
-        "name": "Domingo de Páscoa"
+        "name": "Domingo de Páscoa",
+        "en": "Easter Sunday"
       },
       {
         "date": "2027-04-21",
-        "name": "Dia de Tiradentes"
+        "name": "Dia de Tiradentes",
+        "en": "Tiradentes"
       },
       {
         "date": "2027-05-01",
-        "name": "Dia do Trabalhador"
+        "name": "Dia do Trabalhador",
+        "en": "Labour Day"
       },
       {
         "date": "2027-05-27",
@@ -878,27 +917,33 @@
       },
       {
         "date": "2027-09-07",
-        "name": "Dia da Independência"
+        "name": "Dia da Independência",
+        "en": "Independence Day"
       },
       {
         "date": "2027-10-12",
-        "name": "Nossa Senhora Aparecida"
+        "name": "Nossa Senhora Aparecida",
+        "en": "Our Lady of Aparecida"
       },
       {
         "date": "2027-11-02",
-        "name": "Dia de Finados"
+        "name": "Dia de Finados",
+        "en": "All Souls' Day"
       },
       {
         "date": "2027-11-15",
-        "name": "Proclamação da República"
+        "name": "Proclamação da República",
+        "en": "Republic Proclamation Day"
       },
       {
         "date": "2027-11-20",
-        "name": "Dia da Consciência Negra"
+        "name": "Dia da Consciência Negra",
+        "en": "Black Awareness Day"
       },
       {
         "date": "2027-12-25",
-        "name": "Natal"
+        "name": "Natal",
+        "en": "Christmas Day"
       }
     ],
     "eu_uk": [
@@ -920,7 +965,8 @@
       },
       {
         "date": "2025-12-26",
-        "name": "Boxing Day"
+        "name": "Boxing Day",
+        "en": "St. Stephen's Day"
       },
       {
         "date": "2026-04-03",
@@ -940,7 +986,8 @@
       },
       {
         "date": "2026-12-28",
-        "name": "Boxing Day"
+        "name": "Boxing Day",
+        "en": "St. Stephen's Day"
       },
       {
         "date": "2027-03-26",
@@ -960,311 +1007,387 @@
       },
       {
         "date": "2027-12-28",
-        "name": "Boxing Day"
+        "name": "Boxing Day",
+        "en": "St. Stephen's Day"
       }
     ],
     "eu_central": [
       {
         "date": "2025-01-01",
-        "name": "Neujahr"
+        "name": "Neujahr",
+        "en": "New Year's Day"
       },
       {
         "date": "2025-04-18",
-        "name": "Karfreitag"
+        "name": "Karfreitag",
+        "en": "Good Friday"
       },
       {
         "date": "2025-04-21",
-        "name": "Ostermontag"
+        "name": "Ostermontag",
+        "en": "Easter Monday"
       },
       {
         "date": "2025-05-01",
-        "name": "Tag der Arbeit"
+        "name": "Tag der Arbeit",
+        "en": "Labour Day"
       },
       {
         "date": "2025-05-29",
-        "name": "Christi Himmelfahrt"
+        "name": "Christi Himmelfahrt",
+        "en": "Ascension Day"
       },
       {
         "date": "2025-06-09",
-        "name": "Pfingstmontag"
+        "name": "Pfingstmontag",
+        "en": "Whit Monday"
       },
       {
         "date": "2025-10-03",
-        "name": "Tag der Deutschen Einheit"
+        "name": "Tag der Deutschen Einheit",
+        "en": "German Unity Day"
       },
       {
         "date": "2025-12-25",
-        "name": "Erster Weihnachtstag"
+        "name": "Erster Weihnachtstag",
+        "en": "Christmas Day"
       },
       {
         "date": "2025-12-26",
-        "name": "Zweiter Weihnachtstag"
+        "name": "Zweiter Weihnachtstag",
+        "en": "St. Stephen's Day"
       },
       {
         "date": "2026-01-01",
-        "name": "Neujahr"
+        "name": "Neujahr",
+        "en": "New Year's Day"
       },
       {
         "date": "2026-04-03",
-        "name": "Karfreitag"
+        "name": "Karfreitag",
+        "en": "Good Friday"
       },
       {
         "date": "2026-04-06",
-        "name": "Ostermontag"
+        "name": "Ostermontag",
+        "en": "Easter Monday"
       },
       {
         "date": "2026-05-01",
-        "name": "Tag der Arbeit"
+        "name": "Tag der Arbeit",
+        "en": "Labour Day"
       },
       {
         "date": "2026-05-14",
-        "name": "Christi Himmelfahrt"
+        "name": "Christi Himmelfahrt",
+        "en": "Ascension Day"
       },
       {
         "date": "2026-05-25",
-        "name": "Pfingstmontag"
+        "name": "Pfingstmontag",
+        "en": "Whit Monday"
       },
       {
         "date": "2026-10-03",
-        "name": "Tag der Deutschen Einheit"
+        "name": "Tag der Deutschen Einheit",
+        "en": "German Unity Day"
       },
       {
         "date": "2026-12-25",
-        "name": "Erster Weihnachtstag"
+        "name": "Erster Weihnachtstag",
+        "en": "Christmas Day"
       },
       {
         "date": "2026-12-26",
-        "name": "Zweiter Weihnachtstag"
+        "name": "Zweiter Weihnachtstag",
+        "en": "St. Stephen's Day"
       },
       {
         "date": "2027-01-01",
-        "name": "Neujahr"
+        "name": "Neujahr",
+        "en": "New Year's Day"
       },
       {
         "date": "2027-03-26",
-        "name": "Karfreitag"
+        "name": "Karfreitag",
+        "en": "Good Friday"
       },
       {
         "date": "2027-03-29",
-        "name": "Ostermontag"
+        "name": "Ostermontag",
+        "en": "Easter Monday"
       },
       {
         "date": "2027-05-01",
-        "name": "Tag der Arbeit"
+        "name": "Tag der Arbeit",
+        "en": "Labour Day"
       },
       {
         "date": "2027-05-06",
-        "name": "Christi Himmelfahrt"
+        "name": "Christi Himmelfahrt",
+        "en": "Ascension Day"
       },
       {
         "date": "2027-05-17",
-        "name": "Pfingstmontag"
+        "name": "Pfingstmontag",
+        "en": "Whit Monday"
       },
       {
         "date": "2027-10-03",
-        "name": "Tag der Deutschen Einheit"
+        "name": "Tag der Deutschen Einheit",
+        "en": "German Unity Day"
       },
       {
         "date": "2027-12-25",
-        "name": "Erster Weihnachtstag"
+        "name": "Erster Weihnachtstag",
+        "en": "Christmas Day"
       },
       {
         "date": "2027-12-26",
-        "name": "Zweiter Weihnachtstag"
+        "name": "Zweiter Weihnachtstag",
+        "en": "St. Stephen's Day"
       }
     ],
     "east_asia": [
       {
         "date": "2025-01-01",
-        "name": "元日"
+        "name": "元日",
+        "en": "New Year's Day"
       },
       {
         "date": "2025-01-13",
-        "name": "成人の日"
+        "name": "成人の日",
+        "en": "Coming of Age Day"
       },
       {
         "date": "2025-02-11",
-        "name": "建国記念の日"
+        "name": "建国記念の日",
+        "en": "Foundation Day"
       },
       {
         "date": "2025-02-24",
-        "name": "天皇誕生日"
+        "name": "天皇誕生日",
+        "en": "The Emperor's Birthday"
       },
       {
         "date": "2025-03-20",
-        "name": "春分の日"
+        "name": "春分の日",
+        "en": "Vernal Equinox Day"
       },
       {
         "date": "2025-04-29",
-        "name": "昭和の日"
+        "name": "昭和の日",
+        "en": "Shōwa Day"
       },
       {
         "date": "2025-05-03",
-        "name": "憲法記念日"
+        "name": "憲法記念日",
+        "en": "Constitution Memorial Day"
       },
       {
         "date": "2025-05-06",
-        "name": "みどりの日"
+        "name": "みどりの日",
+        "en": "Greenery Day"
       },
       {
         "date": "2025-05-05",
-        "name": "こどもの日"
+        "name": "こどもの日",
+        "en": "Children's Day"
       },
       {
         "date": "2025-07-21",
-        "name": "海の日"
+        "name": "海の日",
+        "en": "Marine Day"
       },
       {
         "date": "2025-08-11",
-        "name": "山の日"
+        "name": "山の日",
+        "en": "Mountain Day"
       },
       {
         "date": "2025-09-15",
-        "name": "敬老の日"
+        "name": "敬老の日",
+        "en": "Respect for the Aged Day"
       },
       {
         "date": "2025-09-23",
-        "name": "秋分の日"
+        "name": "秋分の日",
+        "en": "Autumnal Equinox Day"
       },
       {
         "date": "2025-10-13",
-        "name": "スポーツの日"
+        "name": "スポーツの日",
+        "en": "Sports Day"
       },
       {
         "date": "2025-11-03",
-        "name": "文化の日"
+        "name": "文化の日",
+        "en": "Culture Day"
       },
       {
         "date": "2025-11-24",
-        "name": "勤労感謝の日"
+        "name": "勤労感謝の日",
+        "en": "Labour Thanksgiving Day"
       },
       {
         "date": "2026-01-01",
-        "name": "元日"
+        "name": "元日",
+        "en": "New Year's Day"
       },
       {
         "date": "2026-01-12",
-        "name": "成人の日"
+        "name": "成人の日",
+        "en": "Coming of Age Day"
       },
       {
         "date": "2026-02-11",
-        "name": "建国記念の日"
+        "name": "建国記念の日",
+        "en": "Foundation Day"
       },
       {
         "date": "2026-02-23",
-        "name": "天皇誕生日"
+        "name": "天皇誕生日",
+        "en": "The Emperor's Birthday"
       },
       {
         "date": "2026-03-20",
-        "name": "春分の日"
+        "name": "春分の日",
+        "en": "Vernal Equinox Day"
       },
       {
         "date": "2026-04-29",
-        "name": "昭和の日"
+        "name": "昭和の日",
+        "en": "Shōwa Day"
       },
       {
         "date": "2026-05-06",
-        "name": "憲法記念日"
+        "name": "憲法記念日",
+        "en": "Constitution Memorial Day"
       },
       {
         "date": "2026-05-04",
-        "name": "みどりの日"
+        "name": "みどりの日",
+        "en": "Greenery Day"
       },
       {
         "date": "2026-05-05",
-        "name": "こどもの日"
+        "name": "こどもの日",
+        "en": "Children's Day"
       },
       {
         "date": "2026-07-20",
-        "name": "海の日"
+        "name": "海の日",
+        "en": "Marine Day"
       },
       {
         "date": "2026-08-11",
-        "name": "山の日"
+        "name": "山の日",
+        "en": "Mountain Day"
       },
       {
         "date": "2026-09-21",
-        "name": "敬老の日"
+        "name": "敬老の日",
+        "en": "Respect for the Aged Day"
       },
       {
         "date": "2026-09-23",
-        "name": "秋分の日"
+        "name": "秋分の日",
+        "en": "Autumnal Equinox Day"
       },
       {
         "date": "2026-10-12",
-        "name": "スポーツの日"
+        "name": "スポーツの日",
+        "en": "Sports Day"
       },
       {
         "date": "2026-11-03",
-        "name": "文化の日"
+        "name": "文化の日",
+        "en": "Culture Day"
       },
       {
         "date": "2026-11-23",
-        "name": "勤労感謝の日"
+        "name": "勤労感謝の日",
+        "en": "Labour Thanksgiving Day"
       },
       {
         "date": "2027-01-01",
-        "name": "元日"
+        "name": "元日",
+        "en": "New Year's Day"
       },
       {
         "date": "2027-01-11",
-        "name": "成人の日"
+        "name": "成人の日",
+        "en": "Coming of Age Day"
       },
       {
         "date": "2027-02-11",
-        "name": "建国記念の日"
+        "name": "建国記念の日",
+        "en": "Foundation Day"
       },
       {
         "date": "2027-02-23",
-        "name": "天皇誕生日"
+        "name": "天皇誕生日",
+        "en": "The Emperor's Birthday"
       },
       {
         "date": "2027-03-21",
-        "name": "春分の日"
+        "name": "春分の日",
+        "en": "Vernal Equinox Day"
       },
       {
         "date": "2027-04-29",
-        "name": "昭和の日"
+        "name": "昭和の日",
+        "en": "Shōwa Day"
       },
       {
         "date": "2027-05-03",
-        "name": "憲法記念日"
+        "name": "憲法記念日",
+        "en": "Constitution Memorial Day"
       },
       {
         "date": "2027-05-04",
-        "name": "みどりの日"
+        "name": "みどりの日",
+        "en": "Greenery Day"
       },
       {
         "date": "2027-05-05",
-        "name": "こどもの日"
+        "name": "こどもの日",
+        "en": "Children's Day"
       },
       {
         "date": "2027-07-19",
-        "name": "海の日"
+        "name": "海の日",
+        "en": "Marine Day"
       },
       {
         "date": "2027-08-11",
-        "name": "山の日"
+        "name": "山の日",
+        "en": "Mountain Day"
       },
       {
         "date": "2027-09-20",
-        "name": "敬老の日"
+        "name": "敬老の日",
+        "en": "Respect for the Aged Day"
       },
       {
         "date": "2027-09-23",
-        "name": "秋分の日"
+        "name": "秋分の日",
+        "en": "Autumnal Equinox Day"
       },
       {
         "date": "2027-10-11",
-        "name": "スポーツの日"
+        "name": "スポーツの日",
+        "en": "Sports Day"
       },
       {
         "date": "2027-11-03",
-        "name": "文化の日"
+        "name": "文化の日",
+        "en": "Culture Day"
       },
       {
         "date": "2027-11-23",
-        "name": "勤労感謝の日"
+        "name": "勤労感謝の日",
+        "en": "Labour Thanksgiving Day"
       }
     ]
   }

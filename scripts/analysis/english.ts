@@ -58,6 +58,23 @@ export function withOriginalNames(de: ReportBody, en: ReportBody): ReportBody {
   }
 }
 
+/** Holiday names stay as written in the translation; swap in the English names afterwards (deterministic). */
+export function withEnglishHolidays(
+  en: ReportBody,
+  holidays: readonly { name: string; nameEn?: string }[],
+): ReportBody {
+  const swaps = holidays.filter((h) => h.nameEn && h.nameEn !== h.name)
+  if (!swaps.length) return en
+  const swap = (text: string) => swaps.reduce((out, h) => out.split(h.name).join(h.nameEn!), text)
+  return {
+    schlagzeile: swap(en.schlagzeile),
+    empfehlung: swap(en.empfehlung),
+    analyse: swap(en.analyse),
+    punkte: en.punkte.map(swap),
+    zielgruppen: en.zielgruppen.map((z) => ({ name: z.name, urteil: swap(z.urteil) })),
+  }
+}
+
 export function translatePrompt(report: ReportBody) {
   return `Translate this hourly audience report for creators from German into natural, concise British English.
 

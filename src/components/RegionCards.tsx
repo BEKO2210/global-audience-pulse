@@ -4,7 +4,7 @@ import { REGIONS, type RegionId } from '../config/regions'
 import type { LiveMeasure } from '../hooks/useLiveData'
 import { normalizedWeights, phaseAt, type ScoreGrid } from '../lib/model'
 import type { Snapshot } from '../lib/snapshot'
-import { holidayAt } from '../lib/holidays'
+import { holidayAt, holidayLabel } from '../lib/holidays'
 import { localDecimalHourFast } from '../lib/time'
 import { Sparkline } from './Sparkline'
 import { Flag } from './Flag'
@@ -237,7 +237,9 @@ export function RegionCards({
                   <p className="phase">
                     <PhaseIcon icon={phase.icon} /> {phaseLabel}
                   </p>
-                  {holiday && <p className="holiday-note">{t.holidayNote(holiday.name)}</p>}
+                  {holiday && (
+                    <p className="holiday-note">{t.holidayNote(holidayLabel(holiday, locale))}</p>
+                  )}
                   <div className="card-score">
                     <strong>
                       <AnimatedNumber value={score} />

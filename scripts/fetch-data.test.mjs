@@ -27,6 +27,17 @@ describe('Feiertage', () => {
     expect(pickHolidays(items)).toEqual([{ date: '2026-10-03', name: 'Tag der Deutschen Einheit' }])
   })
 
+  it('behält den englischen Namen, wenn er vom lokalen abweicht', () => {
+    const items = [
+      { date: '2026-10-12', localName: 'スポーツの日', name: 'Sports Day', global: true },
+      { date: '2026-07-04', localName: 'Independence Day', name: 'Independence Day', global: true },
+    ]
+    expect(pickHolidays(items)).toEqual([
+      { date: '2026-10-12', name: 'スポーツの日', en: 'Sports Day' },
+      { date: '2026-07-04', name: 'Independence Day' },
+    ])
+  })
+
   it('zählt Stunden eines Feiertags zum Wochenendprofil', () => {
     // Saturday 2026-10-03 is a weekend anyway; Thursday 2026-12-24 12:00 Berlin is a weekday unless listed.
     expect(localParts('2026122411', 'Europe/Berlin').weekend).toBe(false)

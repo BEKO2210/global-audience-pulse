@@ -32,7 +32,7 @@ export function HolidayChips({ facts }: { facts: AnalysisFacts }) {
       {list.map((h) => (
         <span key={`${h.ort}-${h.datum}`} className="lr-memory-badge lr-holiday" role="listitem">
           <Flag code={h.flagge} label="" size={16} />
-          {t.holiday(h.wann, city(h.ort), h.name)}
+          {t.holiday(h.wann, city(h.ort), locale === 'en' ? (h.nameEn ?? h.name) : h.name)}
         </span>
       ))}
     </div>
