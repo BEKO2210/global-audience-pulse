@@ -73,3 +73,20 @@ test('selected cursor sits inside the highlighted hour column', async ({ page })
   expect(x).toBeGreaterThanOrEqual(cell!.x - 1)
   expect(x).toBeLessThanOrEqual(cell!.x + cell!.width + 1)
 })
+
+test('mobile swipe hint is dismissed permanently after horizontal scrolling', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await openReady(page)
+  const hint = page.locator('.heatmap-swipe-hint')
+  const scroller = page.locator('.heatmap-scroll')
+
+  await expect(hint).toBeVisible()
+  await scroller.evaluate((element) => {
+    element.scrollLeft = 80
+  })
+  await expect(hint).toBeHidden()
+
+  await page.reload()
+  await expect(page.getByRole('heading', { name: /Jetzt posten oder warten/i })).toBeVisible()
+  await expect(hint).toBeHidden()
+})
