@@ -1044,6 +1044,8 @@ button:active {
 .heatmap-scroll {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  /* the right edge fades out: there is more to swipe to (acceptance audit) */
+  mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent);
   scroll-snap-type: x proximity;
   padding-bottom: var(--space-2);
   min-width: 0;
@@ -1076,6 +1078,13 @@ button:active {
   height: 20px;
 }
 .heatmap-label {
+  /* stays in place while the 24 h scroll sideways on phones; fills the row so no cell shows behind it */
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  align-self: stretch;
+  background: var(--paper-2);
+  box-shadow: 1px 0 0 var(--rule);
   font-size: var(--text-meta);
   line-height: var(--leading-meta);
   white-space: nowrap;
@@ -1355,6 +1364,7 @@ button:active {
   color: var(--accent-ink);
 }
 .planner-list strong {
+  font-family: var(--font-ui);
   font-size: var(--text-sm);
   display: block;
   text-align: left;
@@ -2375,4 +2385,10 @@ button:active {
 }
 .anchor {
   scroll-margin-top: var(--space-16);
+}
+
+@media (min-width: 1024px) {
+  .heatmap-scroll {
+    mask-image: none;
+  }
 }

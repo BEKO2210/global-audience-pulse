@@ -180,25 +180,28 @@ export function AskPulse({
                     ort="frage"
                   />
                 )}
-                <a
-                  className="week-link"
-                  href="#planer"
-                  onClick={() => track('Woche planen', { ort: 'frage' })}
-                >
-                  {t.planWeek}
-                </a>
-                {!answer.postNow && (
-                  <button
-                    type="button"
-                    className="pp-jump ap-jump"
-                    onClick={() => onJump(best.start)}
-                    aria-label={t.viewLabel(when)}
-                  >
-                    {t.view}
-                  </button>
-                )}
               </div>
             )}
+            {/* second row: the two quiet actions together, never one orphaned word under the buttons */}
+            <div className="ap-links">
+              {best && !answer.postNow && (
+                <button
+                  type="button"
+                  className="pp-jump ap-jump"
+                  onClick={() => onJump(best.start)}
+                  aria-label={t.viewLabel(when)}
+                >
+                  {t.view}
+                </button>
+              )}
+              <a
+                className="week-link ap-week"
+                href="#planer"
+                onClick={() => track('Woche planen', { ort: 'frage' })}
+              >
+                {t.planWeek}
+              </a>
+            </div>
           </div>
         </motion.div>
       </AnimatePresence>

@@ -110,3 +110,10 @@
     line-height: var(--leading-meta);
   }
 }
+
+/* 360px: two cards side by side broke "führt mit 27 %" apart – one column below 480px */
+@media (max-width: 479px) {
+  .wt-options {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

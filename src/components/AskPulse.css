@@ -80,3 +80,18 @@
   flex-wrap: wrap;
   gap: var(--space-2);
 }
+
+.ap-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-6);
+}
+/* text-style action in a text row: no button inset, so both quiet actions fit one line at 360px */
+.ap-links .ap-jump {
+  padding-inline: 0;
+  margin-top: var(--space-3);
+}
+.ap-links .week-link {
+  margin-top: 0;
+}
