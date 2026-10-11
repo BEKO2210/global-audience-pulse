@@ -384,12 +384,13 @@ button {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px 12px;
+  gap: 8px;
   min-height: 36px;
+  margin-top: 12px;
 }
 .hero-window-benefit {
   margin: 0;
+  min-height: 1.4em;
   font-size: 11px;
   color: var(--muted);
 }

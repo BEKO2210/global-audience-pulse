@@ -115,7 +115,7 @@ test('"In Kalender" at the optimal window downloads a valid UTC event (T-080)', 
   page,
 }) => {
   await openReady(page)
-  const button = page.locator('.hero-window-actions .calendar-button')
+  const button = page.locator('.hero-window-actions').getByRole('button', { name: 'In Kalender' })
   await expect(button).toBeVisible()
   const [download] = await Promise.all([page.waitForEvent('download'), button.click()])
   expect(download.suggestedFilename()).toBe('posting-fenster.ics')
@@ -124,4 +124,35 @@ test('"In Kalender" at the optimal window downloads a valid UTC event (T-080)', 
   expect(ics).toMatch(/DTEND:\d{8}T\d{6}Z\r\n/)
   expect(ics).toContain('SUMMARY:Posting-Fenster (Global Audience Pulse)')
   expect(ics).not.toContain('TZID')
+})
+
+test('"Erinnern" sets a reminder that survives a reload and can be removed (T-081)', async ({
+  page,
+}) => {
+  // headless Chromium always reports "denied"; a stand-in with granted permission tests the app's own logic
+  await page.addInitScript(() => {
+    class FakeNotification {
+      static permission = 'granted'
+      static requestPermission = () => Promise.resolve('granted')
+    }
+    Object.defineProperty(window, 'Notification', { value: FakeNotification })
+  })
+  await openReady(page)
+  const button = page.locator('.hero-window-actions').getByRole('button', { name: /Erinnern/ })
+  await button.click()
+  const active = page.locator('.hero-window-actions button[aria-pressed="true"]')
+  await expect(active).toContainText(/Erinnerung \d{2}:\d{2}/)
+  expect(
+    await page.evaluate(() => JSON.parse(localStorage.getItem('gap-reminders') ?? '[]').length),
+  ).toBe(1)
+
+  await page.reload()
+  await expect(page.locator('.hero-window-actions button[aria-pressed="true"]')).toBeVisible()
+  await page.locator('.hero-window-actions button[aria-pressed="true"]').click()
+  await expect(
+    page.locator('.hero-window-actions').getByRole('button', { name: /Erinnern/ }),
+  ).toBeVisible()
+  expect(
+    await page.evaluate(() => JSON.parse(localStorage.getItem('gap-reminders') ?? '[]').length),
+  ).toBe(0)
 })

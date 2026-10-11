@@ -46,6 +46,8 @@ import { WeightingToggle } from './components/WeightingToggle'
 import { PostingPlan } from './components/PostingPlan'
 import { AskPulse } from './components/AskPulse'
 import { CalendarButton } from './components/CalendarButton'
+import { ReminderButton } from './components/ReminderButton'
+import { restoreReminders } from './lib/reminder'
 import { pickPostingTimes } from './lib/postingPlan'
 import { awakeSummary, forecastPeak, overlapHour } from './lib/captions'
 import { Wordmark } from './components/LogoMark'
@@ -126,6 +128,8 @@ const DE = {
   inAudience: 'Ist in deiner Zielgruppe',
   addAudience: 'Zur Zielgruppe hinzufügen',
   calSummary: 'Posting-Fenster (Global Audience Pulse)',
+  remindTitle: 'Jetzt posten',
+  remindBody: (score: number) => `Dein Posting-Fenster beginnt – Score ${score}.`,
   capMap: (when: string | null, awake: number, total: number, prime: string) =>
     `${when ? `Um ${when}` : 'Gerade'} wach: ${awake} von ${total} Märkten · ${prime ? `Primetime in ${prime}` : 'kein Markt in der Primetime'}.`,
   capForecast: (score: number, at: string, now: number) =>
@@ -209,6 +213,8 @@ const EN: typeof DE = {
   inAudience: 'In your audience',
   addAudience: 'Add to audience',
   calSummary: 'Posting window (Global Audience Pulse)',
+  remindTitle: 'Post now',
+  remindBody: (score) => `Your posting window starts – score ${score}.`,
   capMap: (when, awake, total, prime) =>
     `${when ? `At ${when}` : 'Right now'}, ${awake} of ${total} markets are awake · ${prime ? `prime time in ${prime}` : 'no market in prime time'}.`,
   capForecast: (score, at, now) =>
@@ -432,6 +438,8 @@ export default function App() {
   const { selected, toggle, selectAll, setSelected, weightingMode, setWeightingMode } =
     useAudience()
   useEffect(() => initWebVitals(), [])
+  // T-081: reminders set in an earlier visit fire again while the page is open
+  useEffect(() => restoreReminders(), [])
   const refreshSnapshot = useCallback(() => {
     void loadSnapshot(import.meta.env.BASE_URL, true).then((next) => {
       setSnapshot(next)
@@ -828,20 +836,30 @@ export default function App() {
                     )}
                   </div>
                   {/* fixed-height row: the window arrives with the score grid, nothing below may jump (T-080) */}
+                  <p className="hero-window-benefit">
+                    {windows24[0] && (
+                      <>
+                        Score <AnimatedNumber value={windows24[0].score} /> ·{' '}
+                        {windows24[0].score >= score
+                          ? t.potential(Math.round(windows24[0].score - score))
+                          : t.bestRemaining}
+                      </>
+                    )}
+                  </p>
                   <div className="hero-window-actions">
                     {windows24[0] && (
                       <>
-                        <p className="hero-window-benefit">
-                          Score <AnimatedNumber value={windows24[0].score} /> ·{' '}
-                          {windows24[0].score >= score
-                            ? t.potential(Math.round(windows24[0].score - score))
-                            : t.bestRemaining}
-                        </p>
                         <CalendarButton
                           start={windows24[0].start}
                           end={windows24[0].end}
                           summary={t.calSummary}
                           detail={`Score ${Math.round(windows24[0].score)}`}
+                          ort="hero"
+                        />
+                        <ReminderButton
+                          at={windows24[0].start}
+                          title={t.remindTitle}
+                          body={t.remindBody(Math.round(windows24[0].score))}
                           ort="hero"
                         />
                       </>

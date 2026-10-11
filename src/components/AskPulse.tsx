@@ -13,6 +13,7 @@ import type { LiveAnalysisPayload } from './report/types'
 import { localizedReport } from './reportShared'
 import { Flag } from './Flag'
 import { CalendarButton } from './CalendarButton'
+import { ReminderButton } from './ReminderButton'
 import './AskPulse.css'
 
 const DE = {
@@ -32,6 +33,8 @@ const DE = {
   view: 'Ansehen',
   viewLabel: (when: string) => `Zeitmaschine auf ${when} stellen`,
   calSummary: (name: string) => `Posten für ${name} (Global Audience Pulse)`,
+  remindTitle: 'Jetzt posten',
+  remindBody: (name: string) => `Das beste Fenster für ${name} beginnt.`,
 }
 const EN: typeof DE = {
   eyebrow: 'Ask the Pulse',
@@ -49,6 +52,8 @@ const EN: typeof DE = {
   view: 'View',
   viewLabel: (when) => `Set the time machine to ${when}`,
   calSummary: (name) => `Post for ${name} (Global Audience Pulse)`,
+  remindTitle: 'Post now',
+  remindBody: (name) => `The best window for ${name} starts now.`,
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
@@ -171,6 +176,14 @@ export function AskPulse({
                   detail={`Score ${Math.round(best.score)}`}
                   ort="frage"
                 />
+                {!answer.postNow && (
+                  <ReminderButton
+                    at={best.start}
+                    title={t.remindTitle}
+                    body={t.remindBody(label(audience.name))}
+                    ort="frage"
+                  />
+                )}
                 {!answer.postNow && (
                   <button
                     type="button"
