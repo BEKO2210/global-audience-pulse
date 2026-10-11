@@ -116,7 +116,7 @@
 .pp-score b {
   font: var(--display-weight) var(--text-2xl)/var(--leading-title) var(--font-display);
   font-variant-numeric: tabular-nums;
-  color: var(--muted);
+  color: var(--ink);
 }
 .pp-score b.is-good {
   color: var(--accent-ink);

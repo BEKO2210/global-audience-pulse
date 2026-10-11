@@ -1131,7 +1131,7 @@ button:active {
 }
 .preset-cities li {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) auto auto;
   gap: var(--space-2);
   align-items: baseline;
 }
@@ -1142,11 +1142,13 @@ button:active {
 }
 .preset-cities li span:last-child {
   text-align: right;
+  white-space: nowrap;
 }
 .preset-cities time {
   color: var(--ink);
   font-family: var(--font-num);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 .heatmap-scroll {
   overflow-x: auto;
@@ -1397,6 +1399,16 @@ button:active {
 .dial-legend button[aria-pressed='true'] {
   border-color: var(--accent);
   color: var(--ink);
+}
+@media (max-width: 599px) {
+  .dial-legend {
+    gap: var(--space-2) var(--space-3);
+  }
+  .dial-legend button {
+    min-height: 0;
+    padding: var(--space-1) 0;
+    border: 0;
+  }
 }
 .dial-mean {
   fill: var(--ink) !important;
