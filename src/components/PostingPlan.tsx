@@ -10,6 +10,7 @@ import type { Locale, Messages } from '../i18n/locale'
 import { cityName } from '../i18n/labels'
 import { PLATFORM_ICONS } from './platformIcons'
 import { toggleMyPlatform, useMyPlatforms } from '../hooks/useMyPlatforms'
+import { CalendarButton } from './CalendarButton'
 import './PostingPlan.css'
 
 const DE = {
@@ -31,6 +32,7 @@ const DE = {
   mine: 'Meine Plattformen',
   mineHint: 'Nur in diesem Browser gespeichert',
   noneChosen: 'Wähle oben mindestens eine Plattform.',
+  calSummary: (name: string) => `Auf ${name} posten (Global Audience Pulse)`,
 }
 const EN: typeof DE = {
   today: 'Today',
@@ -50,6 +52,7 @@ const EN: typeof DE = {
   mine: 'My platforms',
   mineHint: 'Saved in this browser only',
   noneChosen: 'Pick at least one platform above.',
+  calSummary: (name) => `Post on ${name} (Global Audience Pulse)`,
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
@@ -195,18 +198,29 @@ export function PostingPlan({
                     )}
                   </span>
                 </span>
-                <button
-                  type="button"
-                  className="pp-jump"
-                  onClick={() => {
-                    track('Termin angesehen', { plattform: pick.platform })
-                    onJump(pick.at)
-                  }}
-                  aria-label={t.jump(name, when)}
-                >
-                  {t.view}
-                  <ArrowRight size={14} aria-hidden="true" />
-                </button>
+                <span className="pp-actions">
+                  <CalendarButton
+                    start={pick.at}
+                    end={new Date(pick.at.getTime() + 3_600_000)}
+                    summary={t.calSummary(name)}
+                    detail={`Score ${pick.score} · ${t.audienceShare(share)}`}
+                    ort="plan"
+                    accessibleLabel={`${name} ${when}`}
+                    compact
+                  />
+                  <button
+                    type="button"
+                    className="pp-jump"
+                    onClick={() => {
+                      track('Termin angesehen', { plattform: pick.platform })
+                      onJump(pick.at)
+                    }}
+                    aria-label={t.jump(name, when)}
+                  >
+                    {t.view}
+                    <ArrowRight size={14} aria-hidden="true" />
+                  </button>
+                </span>
               </motion.li>
             )
           })}

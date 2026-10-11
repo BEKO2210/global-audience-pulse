@@ -12,6 +12,7 @@ import { presetName, regionName } from '../i18n/labels'
 import type { LiveAnalysisPayload } from './report/types'
 import { localizedReport } from './reportShared'
 import { Flag } from './Flag'
+import { CalendarButton } from './CalendarButton'
 import './AskPulse.css'
 
 const DE = {
@@ -30,6 +31,7 @@ const DE = {
   ai: 'Lagebericht (KI)',
   view: 'Ansehen',
   viewLabel: (when: string) => `Zeitmaschine auf ${when} stellen`,
+  calSummary: (name: string) => `Posten für ${name} (Global Audience Pulse)`,
 }
 const EN: typeof DE = {
   eyebrow: 'Ask the Pulse',
@@ -46,6 +48,7 @@ const EN: typeof DE = {
   ai: 'Briefing (AI)',
   view: 'View',
   viewLabel: (when) => `Set the time machine to ${when}`,
+  calSummary: (name) => `Post for ${name} (Global Audience Pulse)`,
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
@@ -159,16 +162,27 @@ export function AskPulse({
                 <span>{t.ai}:</span> <q>{verdict}</q>
               </p>
             )}
-            {best && !answer.postNow && (
-              <button
-                type="button"
-                className="pp-jump ap-jump"
-                onClick={() => onJump(best.start)}
-                aria-label={t.viewLabel(when)}
-              >
-                {t.view}
-                <ArrowRight size={14} aria-hidden="true" />
-              </button>
+            {best && (
+              <div className="ap-actions">
+                <CalendarButton
+                  start={best.start}
+                  end={best.end}
+                  summary={t.calSummary(label(audience.name))}
+                  detail={`Score ${Math.round(best.score)}`}
+                  ort="frage"
+                />
+                {!answer.postNow && (
+                  <button
+                    type="button"
+                    className="pp-jump ap-jump"
+                    onClick={() => onJump(best.start)}
+                    aria-label={t.viewLabel(when)}
+                  >
+                    {t.view}
+                    <ArrowRight size={14} aria-hidden="true" />
+                  </button>
+                )}
+              </div>
             )}
           </div>
         </motion.div>

@@ -155,8 +155,13 @@
   height: 100%;
   background: var(--ink);
 }
-.pp-jump {
+.pp-actions {
   grid-area: jump;
+  display: inline-flex;
+  gap: 8px;
+  justify-self: end;
+}
+.pp-jump {
   display: inline-flex;
   align-items: center;
   gap: 6px;

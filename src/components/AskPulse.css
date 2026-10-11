@@ -105,8 +105,10 @@
 .ap-ai span {
   color: var(--muted);
 }
-.ap-jump {
-  justify-self: start;
+.ap-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 @media (prefers-reduced-motion: reduce) {
   .ap-question {

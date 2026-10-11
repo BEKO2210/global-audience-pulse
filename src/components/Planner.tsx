@@ -2,16 +2,12 @@ import { useState } from 'react'
 import { Check, DownloadSimple, Fire, ShareNetwork } from '@phosphor-icons/react'
 import { REGIONS, type RegionConfig, type RegionId } from '../config/regions'
 import { phaseAt, type PostingWindow } from '../lib/model'
-import {
-  fastZonedParts,
-  formatDateTime,
-  formatTime,
-  localDecimalHourFast,
-  timeZoneName,
-} from '../lib/time'
+import { formatDateTime, formatTime, localDecimalHourFast, timeZoneName } from '../lib/time'
 import { AnimatedNumber } from './AnimatedNumber'
 import { track } from '../lib/analytics'
 import { useLocale, useMessages } from '../i18n/LocaleProvider'
+import { downloadIcs } from '../lib/ics'
+import { SITE_URL } from '../i18n/locale'
 import type { Locale, Messages } from '../i18n/locale'
 import { cityName, phaseName } from '../i18n/labels'
 
@@ -81,41 +77,6 @@ function formatStart(date: Date, timeZone: string, locale: Locale, intl: string)
     dateTimeFormats.set(key, format)
   }
   return format.format(date)
-}
-
-function icsUtcDate(date: Date) {
-  return date
-    .toISOString()
-    .replace(/[-:]/g, '')
-    .replace(/\.\d{3}/, '')
-}
-function icsLocalDate(date: Date, timeZone: string) {
-  const p = fastZonedParts(date, timeZone)
-  return `${p.year}${String(p.month).padStart(2, '0')}${String(p.day).padStart(2, '0')}T${String(p.hour).padStart(2, '0')}${String(p.minute).padStart(2, '0')}${String(p.second).padStart(2, '0')}`
-}
-function downloadIcs(
-  window: PostingWindow,
-  timeZone: string,
-  text: { icsSummary: string; icsFile: string },
-) {
-  const body = [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//Global Audience Pulse//DE',
-    'BEGIN:VEVENT',
-    `UID:${window.start.getTime()}@global-audience-pulse`,
-    `DTSTAMP:${icsUtcDate(new Date())}`,
-    `DTSTART;TZID=${timeZone}:${icsLocalDate(window.start, timeZone)}`,
-    `DTEND;TZID=${timeZone}:${icsLocalDate(window.end, timeZone)}`,
-    `SUMMARY:${text.icsSummary}`,
-    'END:VEVENT',
-    'END:VCALENDAR',
-  ].join('\r\n')
-  const a = document.createElement('a')
-  a.href = URL.createObjectURL(new Blob([body], { type: 'text/calendar' }))
-  a.download = text.icsFile
-  a.click()
-  URL.revokeObjectURL(a.href)
 }
 
 export function Planner({
@@ -244,7 +205,16 @@ export function Planner({
             <button
               className="icon-button"
               onClick={() => {
-                downloadIcs(window, zone, t)
+                downloadIcs(
+                  {
+                    start: window.start,
+                    end: window.end,
+                    summary: t.icsSummary,
+                    description: `Score ${Math.round(window.score)}`,
+                    url: SITE_URL,
+                  },
+                  t.icsFile,
+                )
                 track('ICS Download', { zielgruppe })
               }}
               aria-label={t.download}

@@ -16,7 +16,7 @@ test('audience selection renormalizes and persists in URL and localStorage', asy
   expect(visibleWeights.filter((value) => value !== '—').length).toBeGreaterThan(1)
 })
 
-test('switches weighting and planner tabs, exports TZID ICS, and copies the plan', async ({
+test('switches weighting and planner tabs, exports a UTC ICS, and copies the plan', async ({
   page,
   context,
   browserName,
@@ -38,7 +38,8 @@ test('switches weighting and planner tabs, exports TZID ICS, and copies the plan
   const download = await downloadPromise
   const path = await download.path()
   expect(path).toBeTruthy()
-  expect(await readFile(path!, 'utf8')).toMatch(/DTSTART;TZID=Europe\/Berlin:/)
+  // UTC instead of TZID: a TZID without VTIMEZONE is rejected or misread by several calendars (T-080)
+  expect(await readFile(path!, 'utf8')).toMatch(/DTSTART:\d{8}T\d{6}Z\r\n/)
 
   await page.getByRole('button', { name: /Plan kopieren/ }).click()
   await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toMatch(/^1\./)
@@ -108,4 +109,19 @@ test('the optimal window is the best-scoring one, not just the next in time', as
       Number((await page.locator('.hero-window-benefit').innerText()).match(/Score (\d+)/)?.[1]),
     )
     .toBeGreaterThanOrEqual(Math.max(1, second))
+})
+
+test('"In Kalender" at the optimal window downloads a valid UTC event (T-080)', async ({
+  page,
+}) => {
+  await openReady(page)
+  const button = page.locator('.hero-window-actions .calendar-button')
+  await expect(button).toBeVisible()
+  const [download] = await Promise.all([page.waitForEvent('download'), button.click()])
+  expect(download.suggestedFilename()).toBe('posting-fenster.ics')
+  const ics = await readFile((await download.path())!, 'utf8')
+  expect(ics).toMatch(/DTSTART:\d{8}T\d{6}Z\r\n/)
+  expect(ics).toMatch(/DTEND:\d{8}T\d{6}Z\r\n/)
+  expect(ics).toContain('SUMMARY:Posting-Fenster (Global Audience Pulse)')
+  expect(ics).not.toContain('TZID')
 })
