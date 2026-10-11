@@ -62,7 +62,11 @@ test('region card marks a holiday on the region’s local date', async ({ page }
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight * 0.45))
   const card = page.locator('.region-card').filter({ hasText: 'Berlin' }).first()
   await expect(card).toBeVisible({ timeout: 15_000 })
-  await expect(card.locator('.holiday-mark')).toHaveText(/Feiertag/)
+  const holidayMark = card.locator('.holiday-mark')
+  await expect(holidayMark).toHaveText(/Feiertag/)
+  expect(await holidayMark.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(
+    true,
+  )
   await card.locator('.card-main').click()
   await expect(page.locator('.card-detail .holiday-note')).toContainText('Testfeiertag')
 })

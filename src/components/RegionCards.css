@@ -77,9 +77,11 @@
 .compact-card {
   display: grid;
   grid-template-columns: 28px minmax(0, 1fr) auto;
+  /* score and share stacked on the right; the phase line gets the full width (it was cut at 600/1024/1280 px) */
   grid-template-areas:
     'flag place score'
-    'flag phase share'
+    'flag place share'
+    'flag phase phase'
     'spark spark spark';
   align-items: end;
   gap: var(--space-1) var(--space-3);
@@ -124,11 +126,26 @@
   grid-area: phase;
   min-width: 0;
   display: flex;
-  align-items: center;
-  gap: var(--space-1);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
   overflow: hidden;
   color: var(--muted);
   font: var(--weight-regular) var(--text-meta) / var(--leading-meta) var(--font-ui);
+}
+
+.compact-phase-line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.compact-phase .holiday-mark {
+  display: block;
+  max-width: 100%;
   white-space: nowrap;
 }
 

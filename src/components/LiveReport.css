@@ -565,13 +565,7 @@
   }
 }
 
-@media (min-width: 1200px) {
-  .lr-audience-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
-/* "Global" leads as a full-width tile; the four audiences below form an even 2×2 / 1×4 grid. */
+/* "Global" leads as a full-width tile; the four audiences below form an even 2×2 grid. */
 .lr-audience-tile:first-child {
   grid-column: 1 / -1;
   padding: var(--space-4) var(--space-4) var(--space-4);
