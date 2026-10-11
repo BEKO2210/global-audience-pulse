@@ -128,6 +128,7 @@
   text-wrap: pretty;
 }
 .pb-ref {
+  position: relative;
   display: inline-grid;
   place-items: center;
   min-width: 18px;
@@ -140,7 +141,11 @@
   text-decoration: none;
   vertical-align: 1px;
 }
-.pb-ref:hover,
+.pb-ref::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+}
 .pb-ref:focus-visible {
   color: var(--ink);
   border-color: var(--ink);
@@ -319,6 +324,13 @@
 .pb-sources li:target {
   outline: 1px solid var(--accent);
   outline-offset: 6px;
+}
+/* source titles are plain text links 21.7 px tall: a 4 px pad on each side makes the hit box ≥ 24 px while the
+   negative margin keeps the list rhythm exactly as it was */
+.pb-sources a {
+  display: inline-block;
+  padding-block: var(--space-1);
+  margin-block: calc(-1 * var(--space-1));
 }
 .pb-source-num {
   color: var(--muted);

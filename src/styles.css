@@ -461,6 +461,58 @@ button {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+@media (hover: hover) {
+  .wordmark,
+  .footer-group a,
+  .source-list a,
+  .pb-ref {
+    transition: color 0.15s var(--motion-ease);
+  }
+  .wordmark:hover,
+  .footer-group a:hover,
+  .source-list a:hover,
+  .pb-ref:hover {
+    color: var(--ink);
+  }
+  .wordmark:hover,
+  .footer-group a:hover,
+  .source-list a:hover,
+  .pb-ref:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+    /* links that are underlined at rest (tafel/atlas sources) still react: the line gets heavier */
+    text-decoration-thickness: 2px;
+  }
+  .freshness,
+  .filter-row button:not([aria-pressed='true']):not([aria-selected='true']):not(.active),
+  .pb-tabs button:not([aria-selected='true']):not(.active),
+  .dial-legend button:not([aria-pressed='true']):not(.active),
+  .pp-chip:not([aria-pressed='true']):not(.active),
+  .ap-question:not([aria-checked='true']):not(.active),
+  .wt-option:not([aria-pressed='true']):not(.active),
+  .scrub-readout button:not(:disabled):not(.active),
+  .lr-details:not([open]) > summary,
+  .pb-details:not([open]) > summary {
+    transition:
+      color 0.15s var(--motion-ease),
+      border-color 0.15s var(--motion-ease),
+      background-color 0.15s var(--motion-ease);
+  }
+  .freshness:hover,
+  .filter-row button:not([aria-pressed='true']):not([aria-selected='true']):not(.active):hover,
+  .pb-tabs button:not([aria-selected='true']):not(.active):hover,
+  .dial-legend button:not([aria-pressed='true']):not(.active):hover,
+  .pp-chip:not([aria-pressed='true']):not(.active):hover,
+  .ap-question:not([aria-checked='true']):not(.active):hover,
+  .wt-option:not([aria-pressed='true']):not(.active):hover,
+  .scrub-readout button:not(:disabled):not(.active):hover,
+  .lr-details:not([open]) > summary:hover,
+  .pb-details:not([open]) > summary:hover {
+    border-color: var(--ink);
+    background: color-mix(in srgb, var(--ink) 4%, transparent);
+    color: var(--ink);
+  }
+}
 .app-shell {
   min-height: 100vh;
   padding-bottom: calc(var(--mobile-bar-height) + env(safe-area-inset-bottom));
@@ -866,6 +918,9 @@ button:active {
   display: block;
   touch-action: manipulation;
 }
+.world-map g[role='button'] {
+  cursor: pointer;
+}
 .ocean {
   fill: var(--paper);
 }
@@ -958,6 +1013,12 @@ button:active {
 .world-map g:focus-visible > circle:last-of-type {
   stroke: var(--accent) !important;
   stroke-width: 4px !important;
+}
+@media (hover: hover) {
+  .world-map g:hover > circle:last-of-type {
+    stroke: var(--accent) !important;
+    stroke-width: 4px !important;
+  }
 }
 .forecast {
   width: 100%;
@@ -1708,7 +1769,7 @@ button:active {
 .footer-group {
   display: grid;
   align-content: start;
-  gap: var(--space-2);
+  gap: 0;
   padding: var(--space-4) 0;
   border-top: 1px solid var(--rule);
 }
@@ -1720,19 +1781,20 @@ button:active {
   text-transform: none;
 }
 .footer-group a {
+  display: inline-block;
+  padding-block: var(--space-1);
   color: var(--ink);
   text-decoration-color: var(--accent);
   text-underline-offset: 3px;
   text-decoration: none;
   width: fit-content;
 }
-.footer-group a:hover,
 .footer-group a:focus-visible {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 .footer-freshness {
-  margin-top: calc(-1 * var(--space-2));
+  margin-top: calc(-1 * var(--space-1));
   color: var(--soft);
   font: var(--text-meta)/var(--leading-meta) var(--font-ui);
 }
@@ -2196,6 +2258,25 @@ button:active {
   }
   .hero::after {
     animation: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wordmark,
+  .footer-group a,
+  .source-list a,
+  .pb-ref,
+  .freshness,
+  .filter-row button,
+  .pb-tabs button,
+  .dial-legend button,
+  .pp-chip,
+  .ap-question,
+  .wt-option,
+  .scrub-readout button,
+  .lr-details > summary,
+  .pb-details > summary,
+  .region-switch-track {
+    transition: none !important;
   }
 }
 
