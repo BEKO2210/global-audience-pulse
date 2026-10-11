@@ -1,5 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
-import { formatTime, relativeTime, timeZoneName } from '../lib/time'
+import {
+  formatTime,
+  getOffsetTable,
+  offsetAt,
+  relativeTime,
+  timeZoneName,
+  zonedParts,
+} from '../lib/time'
+import type { PostingWindow } from '../lib/model'
 import { AudienceGrid } from './report/AudienceGrid'
 import { ContributionBar } from './report/ContributionBar'
 import { LiveSignals } from './report/LiveSignals'
@@ -19,6 +27,9 @@ const DE = {
   aiAnalysis: 'Automatische AI-Analyse',
   pausedSince: 'Pausiert seit ',
   asOf: 'Stand ',
+  reportScope: (total: number, time: string) => `Bericht für alle ${total} Märkte · Stand ${time}`,
+  selectionScope: (count: number, from: string, to: string) =>
+    ` · deine Auswahl (${count} Märkte) jetzt: ${from}–${to}`,
   readAll: 'Ganze Analyse lesen',
   noteLlm: (ago: string) =>
     `Automatische AI-Analyse aus den Zahlen dieser Seite, vor ${ago}, ohne menschliche Prüfung. Jede Zahl wird automatisch gegen die Daten geprüft; Einschätzungen können trotzdem danebenliegen.`,
@@ -30,6 +41,8 @@ const EN: typeof DE = {
   aiAnalysis: 'Automated AI analysis',
   pausedSince: 'Paused since ',
   asOf: 'As of ',
+  reportScope: (total, time) => `Report for all ${total} markets · as of ${time}`,
+  selectionScope: (count, from, to) => ` · your selection (${count} markets) now: ${from}–${to}`,
   readAll: 'Read the full analysis',
   noteLlm: (ago) =>
     `Automated AI analysis of the figures on this page, ${ago} ago, without human review. Every number is checked against the data automatically; assessments can still be off.`,
@@ -38,7 +51,29 @@ const EN: typeof DE = {
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
-export default function LiveReport({ now, data }: { now: Date; data: LiveAnalysisPayload | null }) {
+const REPORT_ZONE = 'Europe/Berlin'
+
+function reportWindowStart(generated: Date, time: string) {
+  const match = /^(\d{2}):(\d{2})$/.exec(time)
+  if (!match) return null
+  const date = zonedParts(generated, REPORT_ZONE)
+  const wallTime = Date.UTC(date.year, date.month - 1, date.day, Number(match[1]), Number(match[2]))
+  const offsets = getOffsetTable(REPORT_ZONE, generated)
+  let instant = wallTime - offsetAt(generated, offsets) * 60_000
+  instant = wallTime - offsetAt(new Date(instant), offsets) * 60_000
+  // the window lies within the next 24 h of the report: a time earlier than the report's own clock is tomorrow
+  if (instant < generated.getTime() - 60 * 60_000) instant += 24 * 3_600_000
+  return new Date(instant)
+}
+
+interface LiveReportProps {
+  now: Date
+  data: LiveAnalysisPayload | null
+  liveWindow?: PostingWindow
+  selection: { count: number; total: number }
+}
+
+export default function LiveReport({ now, data, liveWindow, selection }: LiveReportProps) {
   // O-015b: on wide screens the written analysis is open from the start (the left column was empty otherwise)
   const details = useRef<HTMLDetailsElement>(null)
   const autoOpened = useRef(false)
@@ -66,6 +101,15 @@ export default function LiveReport({ now, data }: { now: Date; data: LiveAnalysi
   const stale = ageHours > STALE_HOURS
   const { facts } = data
   const { report, lang, source } = localizedReport(data, locale)
+  const reportStart = facts?.besteFenster24h?.[0]
+    ? reportWindowStart(generated, facts.besteFenster24h[0].von)
+    : null
+  const showSelectionScope = Boolean(
+    facts &&
+    liveWindow &&
+    (selection.count !== selection.total ||
+      (reportStart && Math.abs(liveWindow.start.getTime() - reportStart.getTime()) > 30 * 60_000)),
+  )
   const hasVisuals = Boolean(
     facts?.regionen?.length ||
     facts?.trendNaechsteStunden?.length ||
@@ -98,6 +142,18 @@ export default function LiveReport({ now, data }: { now: Date; data: LiveAnalysi
         </h2>
         <p className="live-report-verdict" lang={lang}>
           {report.empfehlung}
+        </p>
+        <p className="live-report-scope">
+          {t.reportScope(selection.total, formatTime(generated, zone))}
+          {showSelectionScope && liveWindow && (
+            <a href="#optimal">
+              {t.selectionScope(
+                selection.count,
+                formatTime(liveWindow.start, zone),
+                formatTime(liveWindow.end, zone),
+              )}
+            </a>
+          )}
         </p>
       </div>
 

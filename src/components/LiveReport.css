@@ -35,6 +35,28 @@
   margin-bottom: var(--space-4);
 }
 
+/* phones: the live-selection part must stay readable, so two reserved lines (no shift); one line from 600 px */
+.live-report-scope {
+  margin: 0;
+  overflow: hidden;
+  color: var(--muted);
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
+  min-height: 2lh;
+  max-height: 2lh;
+}
+@media (min-width: 600px) {
+  .live-report-scope {
+    min-height: 1lh;
+    max-height: 1lh;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.live-report-scope a {
+  color: inherit;
+}
+
 .lr-layout {
   display: grid;
   gap: var(--space-8);

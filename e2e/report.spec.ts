@@ -129,6 +129,22 @@ test('renders visual blocks from the v2 fixture', async ({ page }) => {
   await expect(section).not.toHaveClass(/is-stale/)
 })
 
+test('explains the global report scope and links a changed selection to its live window', async ({
+  page,
+}) => {
+  await serve(page, withFreshTimestamp(analysisV2))
+  await openReady(page)
+  const scope = page.locator('.live-report-scope')
+
+  await expect(scope).toContainText('Bericht für alle 8 Märkte')
+  await page.getByRole('switch', { name: /Berlin in der Zielgruppe/ }).click()
+  await expect(scope).toContainText('deine Auswahl (7 Märkte)')
+  await expect(scope.getByRole('link')).toHaveAttribute('href', '#optimal')
+  expect(await scope.evaluate((element) => element.scrollHeight <= element.clientHeight + 2)).toBe(
+    true,
+  )
+})
+
 test('marks a report older than three hours as paused', async ({ page }) => {
   await serve(page, withFreshTimestamp(analysisV2, 5))
   await openReady(page)

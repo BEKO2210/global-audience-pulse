@@ -3,6 +3,7 @@ import type { FlagCode } from '../../config/flag-codes'
 export interface AnalysisFacts {
   zeitpunkt?: string
   gesamt?: { score: number; status: string; empfehlung: string }
+  besteFenster24h?: { von: string; bis: string; score: number }[]
   trendNaechsteStunden?: { inStunden: number; score: number }[]
   regionen?: {
     id: string
