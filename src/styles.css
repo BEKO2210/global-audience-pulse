@@ -1584,7 +1584,8 @@ button:active {
 }
 .map-skeleton {
   min-height: 300px;
-  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--ink) 3%, transparent);
 }
 .sheet-backdrop {
   position: fixed;
@@ -2077,28 +2078,20 @@ button:active {
   line-height: var(--leading-title);
 }
 .mobile-bar-score b {
-  font: var(--display-weight) var(--text-3xl)/var(--leading-title) var(--font-display);
+  font: var(--display-weight) var(--text-2xl)/1 var(--font-display);
+  color: var(--ink);
   transition: color 0.22s var(--motion-ease);
 }
 .mobile-bar-score > span {
   font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-ui);
-  color: var(--ink);
+  color: var(--muted);
   text-align: right;
-  /* Long status words ("Gutes Momentum") wrap to two short lines instead of being cut off. */
-  max-width: 7.5ch;
-  white-space: normal;
+  /* one line: two lines did not fit the 72px bar and the second one was cut off */
+  white-space: nowrap;
 }
+/* like the hero: the number is ink, only the strongest phase carries the accent */
 .mobile-bar-score.strong b {
   color: var(--accent-ink);
-}
-.mobile-bar-score.good b {
-  color: var(--series-2);
-}
-.mobile-bar-score.medium b {
-  color: var(--series-3);
-}
-.mobile-bar-score.quiet b {
-  color: var(--muted);
 }
 @media (min-width: 1024px) {
   .mobile-bar {
@@ -2257,6 +2250,10 @@ button:active {
 /* Placeholder for deferred below-the-fold sections; also skip off-screen layout work. */
 .deferred-placeholder {
   content-visibility: auto;
+  /* O-009: a quiet surface in the final size instead of an empty hole while the section mounts; no shimmer */
+  margin: var(--space-6) var(--gutter);
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--ink) 3%, transparent);
 }
 
 /* O-004: score field flush left with copy; hairline divider with equal inset; meta on the same baseline. */

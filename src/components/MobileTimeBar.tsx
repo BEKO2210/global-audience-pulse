@@ -123,13 +123,15 @@ export function MobileTimeBar({
     const result: { label: string; left: number }[] = []
     while (cursor.getTime() < now.getTime() + spanMs) {
       const left = ((cursor.getTime() - now.getTime()) / spanMs) * 100
-      result.push({
-        left,
-        label:
-          horizon === 24
-            ? formatTime(cursor, Intl.DateTimeFormat().resolvedOptions().timeZone)
-            : cursor.toLocaleDateString(intl, { weekday: 'short' }),
-      })
+      // hour only ("18") like the heatmap axis – full "18:00" labels collided at 360px; none at the very edges
+      if (left > 4 && left < 94)
+        result.push({
+          left,
+          label:
+            horizon === 24
+              ? formatTime(cursor, Intl.DateTimeFormat().resolvedOptions().timeZone).slice(0, 2)
+              : cursor.toLocaleDateString(intl, { weekday: 'short' }),
+        })
       if (horizon === 24) cursor.setHours(cursor.getHours() + 6)
       else cursor.setDate(cursor.getDate() + 1)
     }
