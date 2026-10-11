@@ -59,6 +59,14 @@
   color: var(--accent-ink);
   font-weight: var(--weight-semibold);
 }
+/* On a tie, accent only on the first maximum */
+.wr-bar-col:has(.is-top) ~ .wr-bar-col:has(.is-top) .wr-bar.is-top {
+  background: color-mix(in srgb, var(--ink) 30%, var(--paper));
+}
+.wr-bar-col:has(.is-top) ~ .wr-bar-col:has(.is-top) .wr-bar-value {
+  color: var(--muted);
+  font-weight: var(--weight-medium);
+}
 .wr-bar-day {
   position: absolute;
   bottom: -22px;

@@ -9,11 +9,39 @@ export const MODEL_CONFIG = {
 } as const
 
 export const PHASES = [
-  { id: 'sleep', name: 'Nachtruhe', icon: 'moon', from: 0, to: 6, color: 'var(--soft)' },
-  { id: 'morning', name: 'Morgen', icon: 'sunrise', from: 6, to: 9, color: 'var(--series-3)' },
-  { id: 'day', name: 'Aktiver Tag', icon: 'briefcase', from: 9, to: 18, color: 'var(--series-2)' },
+  {
+    id: 'sleep',
+    name: 'Nachtruhe',
+    icon: 'moon',
+    from: 0,
+    to: 6,
+    color: 'color-mix(in srgb, var(--ink) 25%, var(--paper))',
+  },
+  {
+    id: 'morning',
+    name: 'Morgen',
+    icon: 'sunrise',
+    from: 6,
+    to: 9,
+    color: 'color-mix(in srgb, var(--ink) 60%, var(--paper))',
+  },
+  {
+    id: 'day',
+    name: 'Aktiver Tag',
+    icon: 'briefcase',
+    from: 9,
+    to: 18,
+    color: 'color-mix(in srgb, var(--ink) 85%, var(--paper))',
+  },
   { id: 'prime', name: 'Primetime', icon: 'fire', from: 18, to: 22, color: 'var(--accent)' },
-  { id: 'late', name: 'Spätabend', icon: 'moon-stars', from: 22, to: 24, color: 'var(--series-4)' },
+  {
+    id: 'late',
+    name: 'Spätabend',
+    icon: 'moon-stars',
+    from: 22,
+    to: 24,
+    color: 'color-mix(in srgb, var(--ink) 40%, var(--paper))',
+  },
 ] as const
 
 export const STATUS_LEVELS = [
@@ -48,12 +76,12 @@ export const DATA_SOURCES = {
 } as const
 
 export const SERIES = [
-  'var(--series-1)',
-  'var(--series-2)',
-  'var(--series-3)',
-  'var(--series-4)',
-  'var(--series-5)',
-  '#8f8b77',
-  '#9c76a8',
-  '#62a39b',
+  'var(--accent)',
+  'color-mix(in srgb, var(--ink) 85%, var(--paper))',
+  'color-mix(in srgb, var(--ink) 75%, var(--paper))',
+  'color-mix(in srgb, var(--ink) 65%, var(--paper))',
+  'color-mix(in srgb, var(--ink) 55%, var(--paper))',
+  'color-mix(in srgb, var(--ink) 45%, var(--paper))',
+  'color-mix(in srgb, var(--ink) 35%, var(--paper))',
+  'color-mix(in srgb, var(--ink) 25%, var(--paper))',
 ] as const

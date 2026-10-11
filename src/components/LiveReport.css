@@ -1,24 +1,24 @@
 /* Visual Lagebericht — extends base .live-report rules in styles.css */
 :root {
-  --region-series-0: var(--series-1);
-  --region-series-1: var(--series-2);
-  --region-series-2: var(--series-3);
-  --region-series-3: var(--series-4);
-  --region-series-4: var(--series-5);
-  --region-series-5: #d4a373;
-  --region-series-6: #b58ecc;
-  --region-series-7: #5fb3a1;
+  --region-series-0: var(--accent);
+  --region-series-1: color-mix(in srgb, var(--ink) 80%, var(--paper));
+  --region-series-2: color-mix(in srgb, var(--ink) 71%, var(--paper));
+  --region-series-3: color-mix(in srgb, var(--ink) 62%, var(--paper));
+  --region-series-4: color-mix(in srgb, var(--ink) 53%, var(--paper));
+  --region-series-5: color-mix(in srgb, var(--ink) 44%, var(--paper));
+  --region-series-6: color-mix(in srgb, var(--ink) 35%, var(--paper));
+  --region-series-7: color-mix(in srgb, var(--ink) 25%, var(--paper));
 }
 
 [data-theme='light'] {
-  --region-series-0: var(--series-1);
-  --region-series-1: #9a7618;
-  --region-series-2: var(--series-3);
-  --region-series-3: var(--series-4);
-  --region-series-4: var(--series-5);
-  --region-series-5: #805826;
-  --region-series-6: #6e4a85;
-  --region-series-7: #236b5e;
+  --region-series-0: var(--accent);
+  --region-series-1: color-mix(in srgb, var(--ink) 80%, var(--paper));
+  --region-series-2: color-mix(in srgb, var(--ink) 71%, var(--paper));
+  --region-series-3: color-mix(in srgb, var(--ink) 62%, var(--paper));
+  --region-series-4: color-mix(in srgb, var(--ink) 53%, var(--paper));
+  --region-series-5: color-mix(in srgb, var(--ink) 44%, var(--paper));
+  --region-series-6: color-mix(in srgb, var(--ink) 35%, var(--paper));
+  --region-series-7: color-mix(in srgb, var(--ink) 25%, var(--paper));
 }
 
 .lr-root {
@@ -126,6 +126,11 @@
     opacity 0.2s ease,
     filter 0.2s ease;
   overflow: hidden;
+  border-right: 1px solid var(--paper-2);
+}
+
+.lr-contrib-segment:last-child {
+  border-right: none;
 }
 
 .lr-contrib-segment-flag {
@@ -180,7 +185,7 @@
 }
 
 .lr-contrib-legend li.is-dimmed {
-  opacity: 0.4;
+  opacity: 0.65;
 }
 
 .lr-contrib-meta {
@@ -196,6 +201,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: var(--ink);
+  font: var(--text-sm)/var(--leading-body) var(--font-ui);
 }
 
 .lr-contrib-row-track {
@@ -214,8 +221,8 @@
 
 .lr-contrib-pts {
   color: var(--muted);
-  font-size: var(--text-meta);
-  line-height: var(--leading-meta);
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
+  font-variant-numeric: tabular-nums;
   text-align: right;
 }
 

@@ -212,7 +212,7 @@ export function Forecast({
               y={pad.t}
               width={Math.max(2, x(win.end) - x(win.start))}
               height={height - pad.t - pad.b}
-              className="window-band"
+              className={`window-band ${index === 0 ? 'window-band-best' : 'window-band-neutral'}`}
             />
             <text
               x={x(win.start) + (x(win.end) - x(win.start)) / 2}

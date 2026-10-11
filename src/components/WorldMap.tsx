@@ -3,7 +3,7 @@ import { feature } from 'topojson-client'
 import landData from 'world-atlas/land-110m.json'
 import { motion, useReducedMotion } from 'motion/react'
 import { REGIONS, type RegionId } from '../config/regions'
-import { PHASES, SERIES } from '../config/model'
+import { PHASES } from '../config/model'
 import { phaseAt, type ScoreGrid } from '../lib/model'
 import { antipode, solarElevation, subsolarPoint } from '../lib/solar'
 import { localDecimalHourFast } from '../lib/time'
@@ -134,7 +134,7 @@ export function WorldMap({
           />
         </g>
         <path d={SPHERE_PATH} className="sphere-line" />
-        {REGIONS.map((region, index) => {
+        {REGIONS.map((region) => {
           const point = projection([...region.coordinates])
           if (!point) return null
           const score = grid.activityAt(region.id, date)
@@ -166,11 +166,11 @@ export function WorldMap({
             >
               <circle r={Math.max(24, 22 * k)} fill="transparent" className="map-hitbox" />
               {prime && selected.includes(region.id) && (
-                <circle r="12" fill="none" stroke={SERIES[index]} opacity="0.35" />
+                <circle r="12" fill="none" stroke="var(--accent)" opacity="0.35" />
               )}
               <motion.circle
                 r={5 + score / 30}
-                fill={SERIES[index]}
+                fill={prime ? 'var(--accent)' : 'var(--ink)'}
                 stroke="var(--paper)"
                 strokeWidth="2"
                 animate={{ r: 5 + score / 30 }}
@@ -181,7 +181,11 @@ export function WorldMap({
                 y={labelOffset.y}
                 textAnchor={labelOffset.anchor}
                 className="map-pin-label"
-                style={{ fontSize: `calc(var(--text-meta) * ${k})`, strokeWidth: 3 * k }}
+                style={{
+                  fontSize: `calc(var(--text-meta) * ${k})`,
+                  strokeWidth: 1.2 * k,
+                  fontFamily: 'var(--font-ui)',
+                }}
               >
                 {cityName(region.id, region.city, locale)}
               </text>

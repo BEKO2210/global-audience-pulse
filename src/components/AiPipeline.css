@@ -1,7 +1,8 @@
 /* KI-Pipeline – a technical desk in the diagram-design system: hairlines, mono for numbers, one accent. */
 
 .ai-pipeline {
-  --aip-ok: color-mix(in srgb, var(--ink) 62%, var(--paper));
+  --aip-ok: color-mix(in srgb, var(--ink) 60%, var(--paper));
+  --aip-template: color-mix(in srgb, var(--ink) 35%, var(--paper));
   --aip-retry: var(--accent);
   --aip-warn: var(--series-2);
   --aip-fail: var(--series-5);
@@ -123,7 +124,7 @@
   background: var(--aip-skip);
 }
 .aip-node.is-template::before {
-  background: var(--link);
+  background: var(--aip-template);
 }
 .aip-step {
   color: var(--muted);
@@ -275,7 +276,7 @@
 }
 .aip-matrix-row i.is-template,
 .aip-legend i.is-template {
-  background: var(--link);
+  background: var(--aip-template);
 }
 .aip-legend i.is-ok {
   background: var(--aip-ok);
@@ -328,7 +329,7 @@
 }
 .aip-bar i.is-checker,
 .aip-legend i.is-checker {
-  background: var(--link);
+  background: color-mix(in srgb, var(--ink) 35%, var(--paper));
 }
 .aip-bar i {
   display: block;
@@ -381,10 +382,10 @@
   background: var(--aip-ok);
 }
 .aip-log-outcome.is-published::before {
-  background: var(--series-3);
+  background: var(--aip-ok);
 }
 .aip-log-outcome.is-template::before {
-  background: var(--link);
+  background: var(--aip-template);
 }
 .aip-log-outcome.is-skipped-gpu::before {
   background: var(--aip-skip);

@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Flag } from '../Flag'
 import type { AnalysisFacts } from './types'
-import { seriesColorForRegion } from './regionSeries'
 import { useLocale, useMessages } from '../../i18n/LocaleProvider'
 import type { Messages } from '../../i18n/locale'
 import { cityName } from '../../i18n/labels'
@@ -30,6 +29,13 @@ const EN: typeof DE = {
   pointsHead: 'Points',
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
+
+function rankColor(rank: number, total: number): string {
+  if (rank === 0) return 'var(--accent)'
+  if (total <= 2) return 'color-mix(in srgb, var(--ink) 70%, var(--paper))'
+  const pct = Math.round(80 - ((rank - 1) / (total - 2)) * 55)
+  return `color-mix(in srgb, var(--ink) ${pct}%, var(--paper))`
+}
 
 export function ContributionBar({ facts }: { facts: AnalysisFacts }) {
   const [activeId, setActiveId] = useState<string | null>(null)
@@ -66,9 +72,9 @@ export function ContributionBar({ facts }: { facts: AnalysisFacts }) {
         role="group"
         aria-label={t.groupLabel(gesamt)}
       >
-        {sorted.map((r) => {
+        {sorted.map((r, index) => {
           const widthPct = (r.beitragPunkte / gesamt) * 100
-          const color = seriesColorForRegion(r.id)
+          const color = rankColor(index, sorted.length)
           const isActive = activeId === r.id
           const isDimmed = activeId != null && !isActive
 
@@ -97,8 +103,8 @@ export function ContributionBar({ facts }: { facts: AnalysisFacts }) {
         })}
       </div>
       <ul className={`lr-contrib-legend${activeId != null ? ' has-active' : ''}`}>
-        {sorted.map((r) => {
-          const color = seriesColorForRegion(r.id)
+        {sorted.map((r, index) => {
+          const color = rankColor(index, sorted.length)
           const rowBarPct = (r.beitragPunkte / maxBeitrag) * 100
           const isActive = activeId === r.id
           const isDimmed = activeId != null && !isActive

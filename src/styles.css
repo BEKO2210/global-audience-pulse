@@ -705,7 +705,7 @@ button:active {
   pointer-events: none;
   paint-order: stroke;
   stroke: var(--paper);
-  stroke-width: 2px;
+  stroke-width: 1.2px;
 }
 .world-map g:focus-visible {
   outline: none;
@@ -728,7 +728,13 @@ button:active {
   stroke-width: 1;
 }
 .window-band {
+  fill: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+.window-band-best {
   fill: var(--accent-tint);
+}
+.window-band-neutral {
+  fill: color-mix(in srgb, var(--ink) 6%, transparent);
 }
 .window-band-label {
   font-family: var(--font-ui) !important;
@@ -748,6 +754,7 @@ button:active {
   align-items: center;
   gap: var(--space-2);
   margin: var(--space-1) 0 var(--space-2);
+  white-space: nowrap;
 }
 .forecast-legend i {
   width: 10px;
@@ -756,23 +763,22 @@ button:active {
   border: 1px solid var(--accent);
 }
 .forecast-area {
-  fill: var(--accent-tint);
+  fill: color-mix(in srgb, var(--ink) 4%, transparent);
 }
 .forecast-line {
   fill: none;
-  stroke: var(--accent);
-  stroke-width: 2;
+  stroke: var(--ink);
+  stroke-width: 1.5;
   vector-effect: non-scaling-stroke;
 }
 .now-line {
-  stroke: var(--accent);
+  stroke: var(--rule-solid);
   stroke-width: 1;
-  stroke-dasharray: 3 3;
 }
 .now-point {
-  fill: var(--accent);
+  fill: var(--ink);
   stroke: var(--paper-2);
-  stroke-width: 2;
+  stroke-width: 1.5;
 }
 .axis-tick {
   stroke: var(--soft);
@@ -1045,6 +1051,7 @@ button:active {
 .dial {
   width: 100%;
   max-width: 360px;
+  margin: 0 auto;
 }
 .dial-ring {
   fill: none;
@@ -1083,31 +1090,45 @@ button:active {
   margin: 0;
 }
 .dial-legend {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-1);
+}
+@media (min-width: 640px) {
+  .dial-legend {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 .phase-colour-legend {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-2) var(--space-2);
+  gap: var(--space-2) var(--space-3);
   margin-top: var(--space-1);
 }
+@media (min-width: 640px) {
+  .phase-colour-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+  }
+}
 .phase-colour-legend span {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: var(--space-2);
   min-width: 0;
   color: var(--muted);
   font: var(--text-meta)/var(--leading-meta) var(--font-ui);
+  white-space: nowrap;
 }
 .phase-colour-legend span:last-child:nth-child(odd) {
   grid-column: 1 / -1;
 }
 .phase-colour-legend i {
-  width: 14px;
-  height: 5px;
+  width: 12px;
+  height: 6px;
   flex: none;
+  border: 1px solid var(--rule);
 }
 .ring-direction {
   margin: var(--space-1) 0 0;
@@ -1117,13 +1138,22 @@ button:active {
 .dial-legend button {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: var(--space-2);
   min-height: 36px;
   padding: var(--space-1) var(--space-2);
   border: 1px solid var(--rule);
   background: transparent;
   color: var(--muted);
   font: var(--text-meta)/var(--leading-meta) var(--font-ui);
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dial-legend button span:first-child {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  flex: none;
 }
 .dial-legend button[aria-pressed='true'] {
   border-color: var(--accent);
@@ -1170,15 +1200,22 @@ button:active {
   gap: var(--space-2) var(--space-4);
   margin-top: var(--space-4);
 }
+@media (min-width: 640px) {
+  .phase-legend {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
 .phase-legend span:last-child:nth-child(odd) {
   grid-column: 1 / -1;
 }
 .phase-legend span {
   font: var(--text-meta)/var(--leading-meta) var(--font-ui);
   color: var(--muted);
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: var(--space-1);
+  white-space: nowrap;
 }
 .text-button {
   background: transparent;
