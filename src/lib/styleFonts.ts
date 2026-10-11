@@ -5,6 +5,7 @@ const LOADERS: Record<StyleId, () => Promise<unknown>> = {
   tafel: () => import('../fonts/tafel'),
   atlas: () => import('../fonts/atlas'),
   praezision: () => import('../fonts/praezision'),
+  archiv: () => import('../fonts/archiv'),
 }
 
 export function loadStyleFonts(style: StyleId) {

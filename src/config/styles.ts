@@ -1,7 +1,7 @@
 // O-014: three visual styles the viewer can choose (Belkis 2026-10-11: "alle 3, der User entscheidet"), each in
 // light and dark. Tokens live in styles.css under [data-style]; this file names them and holds the bits JS needs.
 
-export const STYLE_IDS = ['tafel', 'atlas', 'praezision'] as const
+export const STYLE_IDS = ['tafel', 'atlas', 'praezision', 'archiv'] as const
 export type StyleId = (typeof STYLE_IDS)[number]
 export const DEFAULT_STYLE: StyleId = 'tafel'
 export const STYLE_KEY = 'gap-style'
@@ -33,6 +33,13 @@ export const STYLES: Record<
     note: { de: 'Klares Weiß, Kobalt', en: 'Clean white, cobalt' },
     themeColor: { light: '#fafaf8', dark: '#0b0d12' },
     swatch: { light: ['#fafaf8', '#0d1117', '#2546f0'], dark: ['#0b0d12', '#eef0f4', '#6d84ff'] },
+  },
+  // Antigravity's "archival paper" palette from the visual audit (Belkis 2026-10-11: "nimm die Farben mit auf")
+  archiv: {
+    name: { de: 'Archiv', en: 'Archive' },
+    note: { de: 'Archivpapier, Zinnober', en: 'Archival paper, vermilion' },
+    themeColor: { light: '#f8f6f0', dark: '#161513' },
+    swatch: { light: ['#f8f6f0', '#191816', '#d95a1e'], dark: ['#161513', '#ede8de', '#e8743a'] },
   },
 }
 

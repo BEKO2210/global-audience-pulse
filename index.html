@@ -15,11 +15,13 @@
               ? 'light'
               : 'dark'
         let style = localStorage.getItem('gap-style')
-        if (style !== 'tafel' && style !== 'atlas' && style !== 'praezision') style = 'tafel'
+        if (style !== 'tafel' && style !== 'atlas' && style !== 'praezision' && style !== 'archiv')
+          style = 'tafel'
         const colors = {
           tafel: { light: '#f4f4f1', dark: '#0f1113' },
           atlas: { light: '#eef1ee', dark: '#0f1a1d' },
           praezision: { light: '#fafaf8', dark: '#0b0d12' },
+          archiv: { light: '#f8f6f0', dark: '#161513' },
         }
         document.documentElement.dataset.theme = theme
         document.documentElement.dataset.style = style

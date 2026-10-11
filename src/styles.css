@@ -180,6 +180,54 @@
   --series-5: #b03a62;
   --map-day: #9aa0a8;
 }
+/* "Archiv": Antigravity's archival paper and nocturnal paper (visual audit), vermilion accent */
+[data-style='archiv'] {
+  --logo-pulse: #e8743a;
+  --font-display: 'Source Serif 4 Variable', Georgia, serif;
+  --font-ui: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-num: 'IBM Plex Mono', ui-monospace, monospace;
+  --display-weight: 600;
+  --display-tracking: -0.01em;
+  --display-tracking-xl: -0.02em;
+  --paper: #161513;
+  --paper-2: #201e1b;
+  --ink: #ede8de;
+  --muted: #8f897e;
+  --soft: #8a8479;
+  --rule: rgba(237, 232, 222, 0.12);
+  --rule-solid: #4a453d;
+  --accent: #e8743a;
+  --accent-ink: #f08c56;
+  --accent-tint: rgba(232, 116, 58, 0.14);
+  --link: #f08c56;
+  --series-1: #e8743a;
+  --series-2: #d5b65c;
+  --series-3: #6fae9f;
+  --series-4: #9aa3d0;
+  --series-5: #c98fae;
+  --map-day: #4a453d;
+}
+[data-style='archiv'][data-theme='light'] {
+  --paper: #f8f6f0;
+  --paper-2: #f0ece2;
+  --ink: #191816;
+  --muted: #5a564e;
+  --soft: #5f5b53;
+  --rule: rgba(25, 24, 22, 0.12);
+  --rule-solid: #a29a86;
+  --accent: #d95a1e;
+  /* the audit's #d95a1e is too light for text on paper (3.6:1); text uses a deeper vermilion */
+  --accent-ink: #a8400f;
+  --accent-tint: rgba(217, 90, 30, 0.1);
+  --link: #a8400f;
+  --series-1: #b5471a;
+  --series-2: #94761a;
+  --series-3: #2f7a6c;
+  --series-4: #4f63a8;
+  --series-5: #94577a;
+  --map-day: #a29a86;
+}
+
 * {
   box-sizing: border-box;
 }
