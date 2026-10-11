@@ -59,6 +59,8 @@ test('mobile time-bar scrub preserves scroll position and layout stability', asy
 
 test('mobile time bar never shifts while scrubbing (fixed columns)', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 800 })
+  // focusing the chart slider scrolls the page; instant scrolling keeps the measurement deterministic
+  await page.emulateMedia({ reducedMotion: 'reduce' })
   await openReady(page)
   const box = () =>
     page.locator('.mobile-bar-slider').evaluate((el) => {
