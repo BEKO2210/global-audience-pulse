@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "woche": "2026-W41",
+  "generatedAt": "2026-10-11T07:14:36.840Z",
+  "aiGenerated": true,
+  "source": "llm",
+  "sourceEn": "llm",
+  "facts": {
+    "woche": "2026-W41",
+    "stunden": 168,
+    "tage": [
+      {
+        "datum": "2026-10-04",
+        "tag": "Sonntag",
+        "hoch": 74,
+        "hochUm": "19:10",
+        "mittel": 58
+      },
+      {
+        "datum": "2026-10-05",
+        "tag": "Montag",
+        "hoch": 72,
+        "hochUm": "20:10",
+        "mittel": 46
+      },
+      {
+        "datum": "2026-10-06",
+        "tag": "Dienstag",
+        "hoch": 75,
+        "hochUm": "20:10",
+        "mittel": 46
+      },
+      {
+        "datum": "2026-10-07",
+        "tag": "Mittwoch",
+        "hoch": 74,
+        "hochUm": "19:10",
+        "mittel": 47
+      },
+      {
+        "datum": "2026-10-08",
+        "tag": "Donnerstag",
+        "hoch": 72,
+        "hochUm": "20:10",
+        "mittel": 46
+      },
+      {
+        "datum": "2026-10-09",
+        "tag": "Freitag",
+        "hoch": 75,
+        "hochUm": "20:10",
+        "mittel": 46
+      },
+      {
+        "datum": "2026-10-10",
+        "tag": "Samstag",
+        "hoch": 74,
+        "hochUm": "19:10",
+        "mittel": 47
+      },
+      {
+        "datum": "2026-10-11",
+        "tag": "Sonntag",
+        "hoch": 45,
+        "hochUm": "08:10",
+        "mittel": 29
+      }
+    ],
+    "besteStunden": [
+      {
+        "stunde": "20:00",
+        "mittel": 72
+      },
+      {
+        "stunde": "19:00",
+        "mittel": 71
+      },
+      {
+        "stunde": "18:00",
+        "mittel": 65
+      }
+    ],
+    "wochenhoch": {
+      "score": 75,
+      "tag": "Dienstag",
+      "um": "20:10"
+    },
+    "wochentief": {
+      "score": 18,
+      "tag": "Dienstag",
+      "um": "03:10"
+    },
+    "wochenmittel": 46
+  },
+  "report": {
+    "schlagzeile": "Die Woche 41 zeigte stabile Werte mit einem hohen Niveau am Dienstag",
+    "empfehlung": "Die Uhrzeit 20:00 war diese Woche am lohnenswertesten.",
+    "analyse": "Der stärkste Tag war der Dienstag mit einem Wert von 75. Der schwächste Tag war der Sonntag mit einem Wert von 45. Das Wochenhoch wurde am Dienstag um 20:10 erreicht, während das Wochentief am Dienstag um 03:10 lag.",
+    "punkte": [
+      "Wochenmittel von 46",
+      "Höchstwert von 75 am Dienstag",
+      "Tiefstwert von 18 am Dienstag"
+    ],
+    "zielgruppen": []
+  },
+  "reportEn": {
+    "schlagzeile": "Week 41 showed stable figures with a high level on Tuesday",
+    "empfehlung": "The time 20:00 was the most worthwhile this week.",
+    "analyse": "The strongest day was Tuesday with a value of 75. The weakest day was Sunday with a value of 45. The weekly high was reached on Tuesday at 20:10, while the weekly low was on Tuesday at 03:10.",
+    "punkte": ["Weekly average of 46", "Peak of 75 on Tuesday", "Low of 18 on Tuesday"],
+    "zielgruppen": []
+  }
+}

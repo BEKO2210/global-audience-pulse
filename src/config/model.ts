@@ -43,6 +43,8 @@ export const DATA_SOURCES = {
     'https://raw.githubusercontent.com/BEKO2210/global-audience-pulse/live-analysis/analysis.json',
   analysisHealth:
     'https://raw.githubusercontent.com/BEKO2210/global-audience-pulse/live-analysis/health.json',
+  weeklyReview:
+    'https://raw.githubusercontent.com/BEKO2210/global-audience-pulse/live-analysis/weekly.json',
 } as const
 
 export const SERIES = [

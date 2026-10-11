@@ -22,6 +22,15 @@ import {
 } from './report'
 import type { AnalysisRun, DataFetchError, ModelCall, RunRejection } from './health'
 import { TOPIC_SCHEMA, countTopics, topArticles, topicPrompt } from './topics'
+import {
+  WEEKLY_SCHEMA,
+  weeklyDue,
+  weeklyFacts,
+  weeklyPrompt,
+  weeklyTemplate,
+  weeklyTemplateEn,
+  type WeeklyFacts,
+} from './weekly'
 import type { LiveSignal } from './signals'
 import {
   CHECKER_SCHEMA,
@@ -351,6 +360,91 @@ async function translate(
   return null
 }
 
+/**
+ * T-014: the weekly review, written by the writer model from deterministic week statistics; the number guard
+ * applies as for the hourly report (two tries), the English edition goes through the same checked translation.
+ */
+async function writeWeekly(facts: WeeklyFacts, modelCalls: ModelCall[]) {
+  const allowed = allowedNumbers(facts)
+  let body: ReportBody | null = null
+  for (let attempt = 1; attempt <= 2 && !body; attempt += 1) {
+    const callStarted = performance.now()
+    try {
+      const response = await fetch(`${OLLAMA}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: MODEL,
+          stream: false,
+          think: false,
+          format: WEEKLY_SCHEMA,
+          options: { temperature: 0.4, num_ctx: 8192 },
+          keep_alive: 0,
+          messages: [{ role: 'user', content: weeklyPrompt(facts) }],
+        }),
+      })
+      if (!response.ok) throw new Error(`Ollama ${response.status}`)
+      const draft = JSON.parse((await response.json()).message.content) as ReportBody
+      const text = reportTexts(draft).join(' ')
+      const ok =
+        !invalidNumbers(text, allowed).length &&
+        draft.schlagzeile.length <= 90 &&
+        draft.punkte.length === 3
+      modelCalls.push({
+        model: MODEL,
+        role: 'writer',
+        attempt,
+        durationMs: Math.round(performance.now() - callStarted),
+        ok,
+      })
+      if (ok) body = { ...draft, zielgruppen: [] }
+    } catch (error) {
+      modelCalls.push({
+        model: MODEL,
+        role: 'writer',
+        attempt,
+        durationMs: Math.round(performance.now() - callStarted),
+        ok: false,
+      })
+      console.warn(`Wochenrückblick ${attempt}: ${short(error)}`)
+    }
+  }
+  const bodyEn = body ? await translate(body, [], modelCalls) : null
+  return {
+    version: 1,
+    woche: facts.woche,
+    generatedAt: new Date().toISOString(),
+    // EU AI Act Art. 50(2) marking, as for the hourly report
+    aiGenerated: body !== null,
+    source: body ? 'llm' : 'template',
+    sourceEn: bodyEn ? 'llm' : 'template',
+    facts,
+    report: body ?? weeklyTemplate(facts),
+    reportEn: bodyEn ?? weeklyTemplateEn(facts),
+  }
+}
+
+async function readJson<T>(path: string | undefined): Promise<T | null> {
+  if (!path) return null
+  try {
+    return JSON.parse(await readFile(path, 'utf8')) as T
+  } catch {
+    return null
+  }
+}
+
+/**
+ * An Ollama model that is still unloading shows up in nvidia-smi as "[No data]" for a few seconds (seen after
+ * golden-set runs), which looked like a foreign GPU job. Check three times, 10 s apart, before skipping.
+ */
+async function gpuBusyAfterRetries() {
+  for (let check = 1; check <= 3; check += 1) {
+    if (!gpuBusy()) return false
+    if (check < 3) await new Promise((resolve) => setTimeout(resolve, 10_000))
+  }
+  return true
+}
+
 /** Deterministic fallback so the page never shows an unchecked text. */
 function template(facts: Facts) {
   const [best] = facts.besteFenster24h
@@ -376,7 +470,10 @@ async function main() {
   const runStarted = new Date()
   const out = process.argv[2] ?? 'analysis.json'
   const historyPath = process.argv[3]
-  if (gpuBusy() && !process.env.FORCE) {
+  // T-014: previous weekly.json (data branch) and where a new one goes; both optional
+  const weeklyPrevPath = process.argv[4]
+  const weeklyOutPath = process.argv[5]
+  if (!process.env.FORCE && (await gpuBusyAfterRetries())) {
     console.log('GPU belegt (Training/llama-server) – diese Stunde übersprungen.')
     process.exit(3)
   }
@@ -440,13 +537,31 @@ async function main() {
     sourceEn,
   }
   await writeFile(out, `${JSON.stringify(result, null, 2)}\n`)
-  if (historyPath)
-    await writeHistory(historyPath, history, {
-      t: now.toISOString(),
-      score: facts.gesamt.score,
-      regions: Object.fromEntries(facts.regionen.map((r) => [r.id, r.score])),
-    })
+  const entry = {
+    t: now.toISOString(),
+    score: facts.gesamt.score,
+    regions: Object.fromEntries(facts.regionen.map((r) => [r.id, r.score])),
+  }
+  if (historyPath) await writeHistory(historyPath, history, entry)
   console.log(`${result.source} · ${result.report.schlagzeile}`)
+
+  if (weeklyOutPath) {
+    const previous = await readJson<{ woche?: string }>(weeklyPrevPath)
+    if (process.env.FORCE_WEEKLY || weeklyDue(now, previous?.woche ?? null)) {
+      const weekFacts = weeklyFacts([...history, entry], now)
+      if (weekFacts) {
+        const weekly = await writeWeekly(weekFacts, [])
+        await writeFile(
+          weeklyOutPath,
+          `${JSON.stringify(weekly, null, 2)}
+`,
+        )
+        console.log(
+          `Wochenrückblick ${weekly.woche} · ${weekly.source} · ${weekly.report.schlagzeile}`,
+        )
+      } else console.log('Wochenrückblick: zu wenig Verlauf')
+    }
+  }
 }
 
 main().catch((error) => {

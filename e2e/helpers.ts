@@ -17,6 +17,11 @@ export async function openReady(page: Page, interceptAnalytics = true, path = ''
       ? route.fallback()
       : route.fulfill({ status: 200, json: {} }),
   )
+  await page.route('https://raw.githubusercontent.com/**/weekly.json*', (route) =>
+    (page as Page & { __weeklyServed?: boolean }).__weeklyServed
+      ? route.fallback()
+      : route.fulfill({ status: 200, json: {} }),
+  )
   await page.goto(path)
   await expect(
     page.getByRole('heading', { name: /Jetzt posten oder warten|Post now or wait/i }),

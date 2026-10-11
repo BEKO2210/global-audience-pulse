@@ -11,6 +11,7 @@ import { useDeferredMount } from './hooks/useDeferredMount'
 import { ReportTeaser, useLiveReport } from './components/reportShared'
 const LiveReport = lazy(() => import('./components/LiveReport'))
 const AiPipeline = lazy(() => import('./components/AiPipeline'))
+const WeeklyReview = lazy(() => import('./components/WeeklyReview'))
 import {
   circularMean,
   fastZonedParts,
@@ -528,20 +529,22 @@ export default function App() {
   )
   const windows24 = useMemo(() => {
     const searchStart = new Date(minuteNow.getTime() - MODEL_CONFIG.windowMinutes * 60_000)
-    return findBestWindows(
-      (d) => scoreGrid.globalAt(selected, d),
-      searchStart,
-      24 + MODEL_CONFIG.windowMinutes / 60,
-      MODEL_CONFIG.windowMinutes,
-      4,
-    )
-      .filter(
-        (window) =>
-          window.end > minuteNow && window.start < new Date(minuteNow.getTime() + 24 * 3_600_000),
+    return (
+      findBestWindows(
+        (d) => scoreGrid.globalAt(selected, d),
+        searchStart,
+        24 + MODEL_CONFIG.windowMinutes / 60,
+        MODEL_CONFIG.windowMinutes,
+        4,
       )
-      .slice(0, 3)
-      // Ranked by score: [0] is the optimal window (hero, "No. 1"), [1] the second best.
-      .sort((a, b) => b.score - a.score)
+        .filter(
+          (window) =>
+            window.end > minuteNow && window.start < new Date(minuteNow.getTime() + 24 * 3_600_000),
+        )
+        .slice(0, 3)
+        // Ranked by score: [0] is the optimal window (hero, "No. 1"), [1] the second best.
+        .sort((a, b) => b.score - a.score)
+    )
   }, [minuteNow, selected, scoreGrid])
   const plannerSets = useMemo(() => {
     const tomorrow = startOfNextZonedDay(
@@ -890,6 +893,7 @@ export default function App() {
             )}
             <Section defer placeholderHeight={1100}>
               <Suspense fallback={null}>
+                <WeeklyReview />
                 <AiPipeline />
               </Suspense>
             </Section>

@@ -30,7 +30,9 @@ npx esbuild scripts/analysis/hourly.ts --bundle --platform=node --format=esm --t
 code=$?
 if [ "$code" -eq 0 ]; then
   # Shared GPU lock with the reel tools (T-034): wait up to 10 min, otherwise skip this hour like a busy GPU.
-  "$REPO/scripts/dev/gpu-lock.sh" -w 600 -- node "$OUT/hourly.mjs" "$OUT/analysis.json" "$OUT/history.jsonl"
+  rm -f "$OUT/weekly.json"
+  "$REPO/scripts/dev/gpu-lock.sh" -w 600 -- node "$OUT/hourly.mjs" "$OUT/analysis.json" "$OUT/history.jsonl" \
+    "$BRANCH_DIR/weekly.json" "$OUT/weekly.json"
   code=$?
   [ "$code" -eq 75 ] && code=3
 fi
@@ -65,6 +67,13 @@ cd "$BRANCH_DIR"
 if [ "$outcome" = published ]; then
   cp "$OUT/analysis.json" analysis.json
   [ -f "$OUT/history.jsonl" ] && cp "$OUT/history.jsonl" history.jsonl
+  # T-014: Sunday's weekly review, plus a small archive (one file per ISO week)
+  if [ -f "$OUT/weekly.json" ]; then
+    week=$(node -e 'console.log(JSON.parse(require("fs").readFileSync(process.argv[1], "utf8")).woche)' "$OUT/weekly.json")
+    mkdir -p weekly
+    cp "$OUT/weekly.json" weekly.json
+    cp "$OUT/weekly.json" "weekly/$week.json"
+  fi
 fi
 cp "$OUT/health.json" health.json
 cat > README.md <<'EOF'
@@ -75,6 +84,7 @@ git add health.json README.md
 if [ "$outcome" = published ]; then
   git add analysis.json
   [ -f history.jsonl ] && git add history.jsonl
+  [ -f weekly.json ] && git add weekly.json weekly
 fi
 # One commit only: amend and force-push so the data branch never grows.
 if git rev-parse -q --verify HEAD >/dev/null; then

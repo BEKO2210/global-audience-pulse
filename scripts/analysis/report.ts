@@ -190,7 +190,7 @@ Daten (JSON):
 ${JSON.stringify(facts, null, 1)}`
 
 /** Every number in the text must appear in the facts (anti-hallucination guard). */
-export function allowedNumbers(facts: Facts) {
+export function allowedNumbers(facts: object) {
   const allowed = new Set<string>()
   for (const match of JSON.stringify(facts).matchAll(/\d+/g)) {
     allowed.add(String(Number(match[0])))
