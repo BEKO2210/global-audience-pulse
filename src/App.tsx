@@ -91,6 +91,7 @@ const DE = {
   noSecondWindow: 'Kein weiteres Fenster heute',
   dstChange: 'Zeitumstellung',
   corridors: 'Strategische Posting-Korridore',
+  bestCorridor: 'Bester Korridor',
   nRegions: (n: number) => `${n} Regionen`,
   activateAllN: (n: number) => `Alle ${n} Regionen aktivieren`,
   method: 'Methodik & Quellen',
@@ -170,6 +171,7 @@ const EN: typeof DE = {
   noSecondWindow: 'No further window today',
   dstChange: 'Clock change',
   corridors: 'Strategic posting corridors',
+  bestCorridor: 'Best corridor',
   nRegions: (n: number) => `${n} regions`,
   activateAllN: (n: number) => `Select all ${n} regions`,
   method: 'Method & sources',
@@ -964,6 +966,7 @@ export default function App() {
                               <small>{timeZoneName(window.start, undefined, intl)}</small>
                             </div>
                             <div className={best ? 'preset-score is-best' : 'preset-score'}>
+                              {best && <span>{t.bestCorridor} · </span>}
                               Score <AnimatedNumber value={window.score} />
                             </div>
                             <ul className="preset-cities">

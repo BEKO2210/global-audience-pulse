@@ -751,6 +751,12 @@ button {
 }
 .hero-aside .week-link {
   margin-top: 0;
+  align-self: stretch;
+  justify-content: flex-start;
+  height: auto;
+  padding: var(--space-3) 0;
+  border: 0;
+  border-bottom: 1px solid var(--rule);
 }
 .desktop-grid,
 .analysis-grid {
@@ -910,6 +916,11 @@ button:active {
   stroke: var(--paper);
   stroke-width: 1.2px;
 }
+.map-label-leader {
+  stroke: var(--muted);
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
 .world-map g:focus-visible {
   outline: none;
 }
@@ -919,7 +930,7 @@ button:active {
 }
 .forecast {
   width: 100%;
-  /* fixed height: the chart draws in CSS pixels (useSvgBox), so labels stay 11 px on every screen */
+  /* fixed height: the chart draws in CSS pixels (useSvgBox), so labels stay at the 12 px step */
   height: 200px;
   display: block;
   touch-action: pan-y;
@@ -1019,6 +1030,14 @@ button:active {
 .scrub-readout button:disabled {
   opacity: 0.45;
 }
+.scrub-key-hint {
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .scrub-key-hint {
+    display: inline;
+  }
+}
 .insight-strip {
   border-block: 1px solid var(--rule);
   display: grid;
@@ -1051,6 +1070,9 @@ button:active {
   gap: var(--space-2);
 }
 .preset-grid button {
+  display: grid;
+  grid-template-rows: auto var(--space-16) auto calc(var(--space-6) * 2) 1fr;
+  align-content: start;
   text-align: left;
   background: transparent;
   border: 1px solid var(--rule-solid);
@@ -1068,7 +1090,7 @@ button:active {
 }
 .preset-grid h3 {
   font: var(--display-weight) var(--text-xl)/var(--leading-title) var(--font-display);
-  margin: var(--space-2) 0 var(--space-4);
+  margin: var(--space-2) 0 0;
 }
 .preset-time {
   font: var(--weight-medium) var(--text-base)/1.2 var(--font-num);
@@ -1081,7 +1103,7 @@ button:active {
 .preset-score {
   color: var(--muted);
   font: var(--text-meta)/var(--leading-meta) var(--font-ui);
-  margin: var(--space-2) 0 var(--space-4);
+  margin: var(--space-2) 0 0;
 }
 .preset-score.is-best {
   color: var(--accent-ink);
