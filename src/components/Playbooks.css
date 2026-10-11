@@ -42,14 +42,14 @@
   cursor: pointer;
 }
 .pb-tabs button[aria-selected='true'] {
-  color: var(--paper);
-  border-color: var(--ink);
+  color: var(--ink);
+  border-color: var(--accent);
 }
 .pb-tab-active {
   position: absolute;
   inset: -1px;
   z-index: -1;
-  background: var(--ink);
+  background: var(--accent-tint);
 }
 .pb-tabs button:focus-visible {
   outline: 2px solid var(--accent);
@@ -361,7 +361,9 @@
   overflow-wrap: anywhere;
 }
 .pb-sources a {
-  color: var(--link);
+  color: var(--ink);
+  text-decoration-color: var(--accent);
+  text-underline-offset: 3px;
   font-size: var(--text-sm);
   line-height: var(--leading-body);
 }

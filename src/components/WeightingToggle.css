@@ -37,10 +37,11 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: var(--ink);
+  background: var(--accent-tint);
 }
 .wt-option[aria-pressed='true'] {
-  color: var(--paper);
+  color: var(--ink);
+  border-color: var(--accent);
 }
 .wt-option:focus-visible {
   outline: 2px solid var(--accent);

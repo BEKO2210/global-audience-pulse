@@ -135,7 +135,14 @@ export const Heatmap = memo(function Heatmap({
                 role="columnheader"
                 className={i === selectedColumn ? 'axis-label selected-col-header' : 'axis-label'}
               >
-                {i === 0 ? t.now : i % 3 === 0 ? formatTime(date, userZone).slice(0, 2) : ''}
+                {i === 0 ? (
+                  // the floating "now" badge marks this column visually; keep the word for screen readers
+                  <span className="sr-only">{t.now}</span>
+                ) : i % 3 === 0 ? (
+                  formatTime(date, userZone).slice(0, 2)
+                ) : (
+                  ''
+                )}
               </span>
             ))}
           </div>

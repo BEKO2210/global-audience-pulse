@@ -651,7 +651,9 @@
   cursor: pointer;
   font-size: var(--text-sm);
   font-weight: var(--weight-semibold);
-  color: var(--link);
+  color: var(--ink);
+  text-decoration-color: var(--accent);
+  text-underline-offset: 3px;
   list-style: none;
 }
 

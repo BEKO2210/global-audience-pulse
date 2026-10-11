@@ -984,17 +984,18 @@ button:active {
     opacity: 1;
   }
 }
+/* One ink ramp; the accent marks only the peak level (diagram-design: accent for the focal cells). */
 .heat-0 {
   background: color-mix(in srgb, var(--ink) 5%, transparent);
 }
 .heat-1 {
-  background: color-mix(in srgb, var(--ink) 12%, transparent);
+  background: color-mix(in srgb, var(--ink) 14%, transparent);
 }
 .heat-2 {
-  background: color-mix(in srgb, var(--accent) 28%, transparent);
+  background: color-mix(in srgb, var(--ink) 28%, transparent);
 }
 .heat-3 {
-  background: color-mix(in srgb, var(--accent) 58%, transparent);
+  background: color-mix(in srgb, var(--ink) 50%, transparent);
 }
 .heat-4 {
   background: var(--accent);
@@ -1423,7 +1424,9 @@ button:active {
 .text-button {
   background: transparent;
   border: 0;
-  color: var(--link);
+  color: var(--ink);
+  text-decoration-color: var(--accent);
+  text-underline-offset: 3px;
   padding: var(--space-4);
   font-size: var(--text-meta);
   line-height: var(--leading-meta);
@@ -1570,7 +1573,7 @@ button:active {
 }
 .source-list span {
   font-family: var(--font-ui);
-  color: var(--link);
+  color: var(--muted);
   font-size: var(--text-meta);
   line-height: var(--leading-meta);
 }
@@ -1618,7 +1621,9 @@ button:active {
   text-transform: none;
 }
 .footer-group a {
-  color: var(--link);
+  color: var(--ink);
+  text-decoration-color: var(--accent);
+  text-underline-offset: 3px;
   text-decoration: none;
   width: fit-content;
 }
@@ -1649,7 +1654,9 @@ button:active {
   border-bottom: 1px solid var(--rule);
 }
 .legal-home-link {
-  color: var(--link);
+  color: var(--ink);
+  text-decoration-color: var(--accent);
+  text-underline-offset: 3px;
   text-decoration: none;
   font-size: var(--text-meta);
   line-height: var(--leading-meta);
@@ -1704,7 +1711,9 @@ button:active {
 }
 .legal-page a,
 .legal-page-footer a {
-  color: var(--link);
+  color: var(--ink);
+  text-decoration-color: var(--accent);
+  text-underline-offset: 3px;
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;

@@ -324,7 +324,7 @@
 }
 .aip-bar i.is-writer,
 .aip-legend i.is-writer {
-  background: var(--ink);
+  background: color-mix(in srgb, var(--ink) 70%, var(--paper));
 }
 .aip-bar i.is-checker,
 .aip-legend i.is-checker {
