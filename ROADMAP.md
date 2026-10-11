@@ -22,11 +22,11 @@ Auftragsdateien: T-001, T-002, T-003, T-010, T-011, T-012 liegen bereit; für di
 
 ### Phase A – Lagebericht sichtbar machen (jetzt)
 
-| ID    | Aufgabe                                                                                                                           | Agenten                               | Status                                |
-| ----- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | ------------------------------------- |
-| T-001 | Lagebericht-Visualisierung v2: Farbe↔Land eindeutig, Ranking-Balken statt Liste, besserer Trend, lesbares Live-Signal             | Antigravity → Cursor → Codex → Claude | erledigt (Antigravity, Review Claude) |
-| T-002 | Bericht-Gesundheit: Job-Status (letzter Lauf, Dauer, Versuche, Prüfer-Ablehnungen) als `health.json` + Anzeige in Methodik        | Codex → Cursor → Claude               | offen                                 |
-| T-003 | Zeit-Markierung in der Aktivitätsmatrix deutlich sichtbar (Cursor mit Etikett, „jetzt“ getrennt, Städtenamen nicht abgeschnitten) | Cursor → Antigravity → Claude         | erledigt (Cursor, Review/Fix Claude)  |
+| ID    | Aufgabe                                                                                                                           | Agenten                               | Status                                                              |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | ------------------------------------------------------------------- |
+| T-001 | Lagebericht-Visualisierung v2: Farbe↔Land eindeutig, Ranking-Balken statt Liste, besserer Trend, lesbares Live-Signal             | Antigravity → Cursor → Codex → Claude | erledigt (Antigravity, Review Claude)                               |
+| T-002 | Bericht-Gesundheit: Job-Status (letzter Lauf, Dauer, Versuche, Prüfer-Ablehnungen) als `health.json` + Anzeige in Methodik        | Codex → Cursor → Claude               | erledigt (KI-Pipeline-Ansicht: health.json, Stationen, Matrix, Log) |
+| T-003 | Zeit-Markierung in der Aktivitätsmatrix deutlich sichtbar (Cursor mit Etikett, „jetzt“ getrennt, Städtenamen nicht abgeschnitten) | Cursor → Antigravity → Claude         | erledigt (Cursor, Review/Fix Claude)                                |
 
 ### Phase B – Lokale Intelligenz vertiefen (Job auf pop-os, `scripts/analysis/`)
 
@@ -76,20 +76,20 @@ vorher nichts laden).
 
 ### Phase F – Lokale LLMs im Entwickler-Team (kostenlos, unbegrenzt)
 
-| ID    | Aufgabe                                                                                                                                                                                                                           | Agenten        | Status                       |
-| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | ---------------------------- |
-| T-050 | **Lokaler Coding-Agent** ins Runbook: OpenCode mit `ornith:9b-agent32k` (Tool-Calling, 60 t/s) für kleine, klar umrissene Aufgaben (Texte, CSS-Feinschliff, Tests ergänzen); feste Prompt-Vorlage, Abnahme wie immer durch Claude | Claude         | erledigt (OpenCode + Claude) |
-| T-051 | **Lokaler Review-Bot**: Skript `scripts/dev/local-review.mjs` – `git diff main...` → `qwen3.5:9b` (zweite Meinung: Bugs, A11y, harte Zahlen) → `REVIEW-LOCAL.md`; läuft vor jedem Merge zusätzlich zu Copilot                     | Claude → Codex | erledigt (Claude)            |
-| T-052 | **Lokaler Test-Schreiber**: für geänderte Module Vitest-Fälle vorschlagen (ornith), Claude übernimmt nur, was echte Fehler fangen würde                                                                                           | Claude         | offen                        |
-| T-053 | **Übersetzungen & Texte** durch lokale Modelle (EN-Fassung der UI, Alt-Texte, Meta-Beschreibungen), Prüfung durch zweites Modell                                                                                                  | Codex → Claude | offen                        |
+| ID    | Aufgabe                                                                                                                                                                                                                           | Agenten        | Status                                                    |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | --------------------------------------------------------- |
+| T-050 | **Lokaler Coding-Agent** ins Runbook: OpenCode mit `ornith:9b-agent32k` (Tool-Calling, 60 t/s) für kleine, klar umrissene Aufgaben (Texte, CSS-Feinschliff, Tests ergänzen); feste Prompt-Vorlage, Abnahme wie immer durch Claude | Claude         | erledigt (OpenCode + Claude)                              |
+| T-051 | **Lokaler Review-Bot**: Skript `scripts/dev/local-review.mjs` – `git diff main...` → `qwen3.5:9b` (zweite Meinung: Bugs, A11y, harte Zahlen) → `REVIEW-LOCAL.md`; läuft vor jedem Merge zusätzlich zu Copilot                     | Claude → Codex | erledigt (Claude)                                         |
+| T-052 | **Lokaler Test-Schreiber**: für geänderte Module Vitest-Fälle vorschlagen (ornith), Claude übernimmt nur, was echte Fehler fangen würde                                                                                           | Claude         | offen                                                     |
+| T-053 | **Übersetzungen & Texte** durch lokale Modelle (EN-Fassung der UI, Alt-Texte, Meta-Beschreibungen), Prüfung durch zweites Modell                                                                                                  | Codex → Claude | erledigt (UI-EN durch Claude, Bericht-EN lokal per T-015) |
 
 ### Phase G – Noch mehr automatische Intelligenz auf der Seite
 
-| ID    | Aufgabe                                                                                                                                                | Agenten             | Status |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------- | ------ |
-| T-017 | **Kurz-Erklärung unter jeder Grafik** (stündlich vom lokalen Modell, geprüft): Karte, Prognose, Heatmap, Rad – je ein Satz „was man hier gerade sieht“ | Claude → Codex      | offen  |
-| T-018 | **Empfehlung je Zielgruppe & Region** vorab berechnet (alle Presets + jede Einzelregion), Seite zeigt passend zur Auswahl                              | Claude → Codex      | offen  |
-| T-019 | **Auffälligkeits-Hinweis** oben (nur bei echter Anomalie, z. B. Live-Signal > 25 % oder Feiertag): ein Satz + Link zum Bericht                         | Codex → Antigravity | offen  |
+| ID    | Aufgabe                                                                                                                                                | Agenten             | Status                                                                             |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------- | ---------------------------------------------------------------------------------- |
+| T-017 | **Kurz-Erklärung unter jeder Grafik** (stündlich vom lokalen Modell, geprüft): Karte, Prognose, Heatmap, Rad – je ein Satz „was man hier gerade sieht“ | Claude → Codex      | offen                                                                              |
+| T-018 | **Empfehlung je Zielgruppe & Region** vorab berechnet (alle Presets + jede Einzelregion), Seite zeigt passend zur Auswahl                              | Claude → Codex      | offen                                                                              |
+| T-019 | **Auffälligkeits-Hinweis** oben (nur bei echter Anomalie, z. B. Live-Signal > 25 % oder Feiertag): ein Satz + Link zum Bericht                         | Codex → Antigravity | erledigt (Teaser-Zeile: Live-Signal > 25 % oder Feiertag heute, ohne Layout-Shift) |
 
 ### Phase H – UI/UX-Feinschliff auf allen Geräten
 

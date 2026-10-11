@@ -5,14 +5,23 @@ import type { LiveAnalysisPayload } from './report/types'
 import { useLocale, useMessages } from '../i18n/LocaleProvider'
 import type { Locale, Messages } from '../i18n/locale'
 import type { AnalysisReportBody } from './report/types'
+import { anomalyOf, type Anomaly } from '../lib/anomaly'
+import { cityName } from '../i18n/labels'
+import type { RegionId } from '../config/regions'
 
 const DE = {
   aiAnalysis: 'Automatische AI-Analyse',
   report: 'Lagebericht',
+  signal: (city: string, percent: number) =>
+    `${city} ${Math.abs(percent)} % ${percent > 0 ? 'aktiver' : 'ruhiger'} als üblich`,
+  holiday: (city: string, name: string) => `Feiertag in ${city}: ${name}`,
 }
 const EN: typeof DE = {
   aiAnalysis: 'Automated AI analysis',
   report: 'Briefing',
+  signal: (city, percent) =>
+    `${city} ${Math.abs(percent)}% ${percent > 0 ? 'busier' : 'quieter'} than usual`,
+  holiday: (city, name) => `Public holiday in ${city}: ${name}`,
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
@@ -84,6 +93,14 @@ export function useLiveReport() {
   return data
 }
 
+/** "Mumbai 41 % aktiver als üblich" / "Public holiday in Tokyo: Sports Day" (T-019). */
+function anomalyText(anomaly: Anomaly, data: LiveAnalysisPayload, locale: Locale, t: typeof DE) {
+  const id = data.facts?.regionen?.find((r) => r.ort === anomaly.ort)?.id
+  const city = id ? cityName(id as RegionId, anomaly.ort, locale) : anomaly.ort
+  if (anomaly.kind === 'signal') return t.signal(city, anomaly.percent)
+  return t.holiday(city, locale === 'en' ? (anomaly.nameEn ?? anomaly.name) : anomaly.name)
+}
+
 /**
  * One line in the hero, reserved while the report loads so it never shifts the layout; without a fresh
  * report (job paused for over a day) the line goes away instead of leaving an empty band.
@@ -104,12 +121,18 @@ export function ReportTeaser({
   if (!fresh || !data || !generated) return null
   const { report, lang, source } = localizedReport(data, locale)
   const ai = source === 'llm'
+  const anomaly = anomalyOf(data.facts)
   return (
     <a className="report-teaser" href="#lagebericht" {...(ai ? AI_MARK : {})}>
       <span className="report-teaser-label">
         {ai ? t.aiAnalysis : t.report} · {formatTime(generated, zone)}
       </span>
       <span className="report-teaser-text" lang={lang}>
+        {anomaly && (
+          <span className="report-teaser-flag" lang={locale}>
+            {anomalyText(anomaly, data, locale, t)}
+          </span>
+        )}
         {report.schlagzeile}
       </span>
     </a>

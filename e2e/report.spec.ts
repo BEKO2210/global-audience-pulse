@@ -124,6 +124,8 @@ test('renders visual blocks from the v2 fixture', async ({ page }) => {
   await expect(section).toHaveAttribute('data-ai-generated', 'true')
   await expect(section).toHaveAttribute('data-digital-source-type', /trainedAlgorithmicMedia/)
   await expect(page.locator('.report-teaser-label')).toContainText('Automatische AI-Analyse')
+  // T-019: the fixture's Berlin −28 % is a real anomaly and leads the teaser line
+  await expect(page.locator('.report-teaser-flag')).toHaveText('Berlin 28 % ruhiger als üblich')
   await expect(section).not.toHaveClass(/is-stale/)
 })
 
@@ -191,7 +193,8 @@ test.describe('English edition (T-015)', () => {
     await expect(section.locator('.lr-audience-urteil').first()).toHaveText(
       'Post later, between 20:00 and 21:30',
     )
-    await expect(page.locator('.report-teaser-text')).toHaveText(reportEn.schlagzeile)
+    await expect(page.locator('.report-teaser-text')).toContainText(reportEn.schlagzeile)
+    await expect(page.locator('.report-teaser-flag')).toHaveText('Berlin 28% quieter than usual')
   })
 
   test('falls back to the German original with a note for older payloads', async ({ page }) => {
