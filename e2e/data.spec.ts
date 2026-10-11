@@ -64,7 +64,7 @@ test('accepts a fresh snapshot and live Wikimedia samples', async ({ page }) => 
     .click()
   await expect(page.locator('.card-detail .badge.measured')).toContainText('Live')
   // the live signal names the covered hour and the source delay, not a bare "measured 5 h ago"
-  await expect(page.locator('.card-detail .deviation')).toContainText(/über üblich/)
+  await expect(page.locator('.card-detail .deviation')).toContainText(/über dem Üblichen/)
   await expect(page.locator('.deviation-note')).toContainText(
     /Stand \d\d:\d\d Uhr · Wikipedia liefert \d+ (Min|Std) verzögert/,
   )

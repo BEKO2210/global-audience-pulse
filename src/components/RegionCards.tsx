@@ -34,7 +34,7 @@ const DE = {
   modelBadge: 'Modell',
   holidayNote: (name: string) => `Feiertag: ${name} – wird wie ein Sonntag gerechnet`,
   deviation: (value: number) =>
-    value >= 0 ? `+${value} % über üblich` : `${Math.abs(value)} % unter üblich`,
+    value >= 0 ? `+${value} % über dem Üblichen` : `${Math.abs(value)} % unter dem Üblichen`,
   hourUntil: (time: string, lag: string) =>
     `Stand ${time} Uhr · Wikipedia liefert ${lag} verzögert`,
   profileAge: (age: string) => `Profil von vor ${age}`,

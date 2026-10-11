@@ -14,7 +14,7 @@ const DE = {
   data: 'Daten',
   wikimediaFresh: (ago: string) => `Stundenwerte · abgerufen ${ago}`,
   worldBank: 'Weltbank',
-  newestPublished: 'neueste veröffentlichte',
+  newestPublished: 'zuletzt veröffentlicht',
   fetched: (ago: string) => `abgerufen ${ago}`,
   project: 'Projekt',
   repo: 'GitHub-Repository',

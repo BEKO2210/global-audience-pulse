@@ -24,7 +24,7 @@ const DE = {
   tomorrow: (n: number) => `Morgen (${n})`,
   week: (n: number) => `7 Tage (${n})`,
   until: 'bis',
-  atPeak: 'Im Peak:',
+  atPeak: 'In der Hochphase:',
   noPeak: 'Kein Kernmarkt in der Hochphase',
   download: 'Als Kalenderdatei laden',
   copiedToClipboard: 'In Zwischenablage kopiert',

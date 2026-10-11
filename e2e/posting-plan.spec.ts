@@ -21,7 +21,7 @@ test('posting plan lists one upcoming, study-backed slot per platform with times
     await expect(row.locator('.pp-when strong')).toHaveText(
       /^(Heute|Morgen|Mo|Di|Mi|Do|Fr|Sa|So) \d{2}:\d{2}$/,
     )
-    await expect(row.locator('.pp-support')).toContainText(/\d+ % deines Publikums/)
+    await expect(row.locator('.pp-support')).toContainText(/\d+ % deiner Zielgruppe/)
   }
   await expect(section.locator('.pp-note')).toContainText('Hacker News')
 })

@@ -15,8 +15,8 @@ const DE = {
   busier: 'aktiver',
   notable: 'auffällig',
   trackLabel: (city: string, pct: string, notable: boolean) =>
-    `${city}: ${pct} Prozent gegenüber üblich${notable ? ', auffällig' : ''}`,
-  caption: 'Live-Signal Abweichung nach Ort',
+    `${city}: ${pct} Prozent gegenüber dem Üblichen${notable ? ', auffällig' : ''}`,
+  caption: 'Live-Signal-Abweichung nach Ort',
   place: 'Ort',
   deviation: 'Abweichung',
   status: 'Status',

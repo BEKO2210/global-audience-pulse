@@ -24,7 +24,8 @@ const EN: typeof DE = {
   title: 'The next momentum',
   scale: 'Scale: 0–100 activity score',
   timeMachine: 'Time machine',
-  windowNo: (n) => (n === 1 ? 'Best window' : `${n}${n === 2 ? 'nd' : 'rd'} window`),
+  windowNo: (n) =>
+    n === 1 ? 'Best window' : `${n}${n === 2 ? 'nd' : n === 3 ? 'rd' : 'th'} window`,
   legend: (min) => `Optimal posting window (score from ${min})`,
   hint: 'Drag',
   keyHint: 'arrow keys',

@@ -39,7 +39,7 @@ const EN: typeof DE = {
   title: 'When do I post for …?',
   question: (name) => `When do I post for ${name}?`,
   questions: 'Questions',
-  postNow: 'Post now – it does not get better in the next 24 hours.',
+  postNow: 'Post now – it won’t get better in the next 24 hours.',
   wait: (when, offset) => `Wait until ${when} (${offset}).`,
   notGood: (score) => `No window reaches score ${score} today; this is the best available.`,
   window: 'Best window in 24 hours',

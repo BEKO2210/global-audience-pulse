@@ -33,7 +33,7 @@ const DE = {
   heatLabel: (name: string, strongest: string) =>
     `Empfohlene Stunden bei ${name} je Wochentag und 4-Stunden-Block, summiert über die Studien. Am stärksten: ${strongest}.`,
   moreHours: 'mehr empfohlene Stunden',
-  localTime: 'Ortszeit deines Publikums',
+  localTime: 'Ortszeit deiner Zielgruppe',
   bestPerDay: 'Beste Zeit je Tag',
   bestOfWeek: 'Beste Zeiten der Woche',
   rank: 'Platz ',
@@ -61,7 +61,7 @@ const EN: typeof DE = {
   heatLabel: (name, strongest) =>
     `Recommended hours on ${name} per weekday and 4-hour block, summed across the studies. Strongest: ${strongest}.`,
   moreHours: 'more recommended hours',
-  localTime: 'your audience’s local time',
+  localTime: 'Your audience’s local time',
   bestPerDay: 'Best time per day',
   bestOfWeek: 'Best times of the week',
   rank: 'Rank ',

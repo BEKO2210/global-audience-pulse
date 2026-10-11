@@ -12,7 +12,7 @@ const DE = {
   chartLabel: (now: number, later: number, hours: number) =>
     `Score von ${now} jetzt auf ${later} in ${hours} Stunden`,
   from: (label: string, min: number) => `${label} ab ${min}`,
-  caption: 'Score-Trend nächste Stunden',
+  caption: 'Score-Trend der nächsten Stunden',
   time: 'Zeit',
   score: 'Score',
 }

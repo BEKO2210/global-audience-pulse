@@ -28,7 +28,7 @@ const SHOW_DAYS = 8
 const DE = {
   eyebrow: (week: string) => `KW ${week}`,
   ai: 'Automatische AI-Analyse',
-  chart: 'Tageshöchstwert der letzten sieben Tage',
+  chart: 'Tageshöchstwerte der letzten sieben Tage',
   chartLabel: (days: string) => `Tageshöchstwerte: ${days}`,
   bestHours: 'Beste Stunden der Woche',
   mean: (n: number) => `Wochenmittel ${n}`,
@@ -36,7 +36,7 @@ const DE = {
 const EN: typeof DE = {
   eyebrow: (week) => `Week ${week}`,
   ai: 'Automated AI analysis',
-  chart: 'Daily high of the last seven days',
+  chart: 'Daily highs of the last seven days',
   chartLabel: (days) => `Daily highs: ${days}`,
   bestHours: 'Best hours of the week',
   mean: (n) => `Weekly mean ${n}`,
