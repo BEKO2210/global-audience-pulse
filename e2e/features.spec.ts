@@ -95,3 +95,17 @@ test('every chart carries a one-sentence caption that follows the time machine (
   await page.keyboard.press('ArrowRight')
   await expect(captions.first()).toContainText(/^Um \d{2}:\d{2} wach/)
 })
+
+test('the optimal window is the best-scoring one, not just the next in time', async ({ page }) => {
+  await openReady(page)
+  const second = Number(
+    (await page.getByText(/^\d{2}:\d{2} \S+ · Score \d+$/).innerText()).match(/Score (\d+)/)?.[1] ??
+      0,
+  )
+  // the hero number counts up (AnimatedNumber); poll until it settles
+  await expect
+    .poll(async () =>
+      Number((await page.locator('.hero-window-benefit').innerText()).match(/Score (\d+)/)?.[1]),
+    )
+    .toBeGreaterThanOrEqual(Math.max(1, second))
+})

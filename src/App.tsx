@@ -540,6 +540,8 @@ export default function App() {
           window.end > minuteNow && window.start < new Date(minuteNow.getTime() + 24 * 3_600_000),
       )
       .slice(0, 3)
+      // Ranked by score: [0] is the optimal window (hero, "No. 1"), [1] the second best.
+      .sort((a, b) => b.score - a.score)
   }, [minuteNow, selected, scoreGrid])
   const plannerSets = useMemo(() => {
     const tomorrow = startOfNextZonedDay(
