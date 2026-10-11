@@ -31,10 +31,14 @@
 }
 .ap-window strong {
   color: var(--accent-ink);
-  font: var(--weight-semibold) clamp(var(--text-2xl), 5vw, var(--text-3xl)) / var(--leading-title)
-    var(--font-num);
+  font: var(--weight-semibold) var(--text-2xl) / var(--leading-title) var(--font-num);
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
+}
+@media (min-width: 800px) {
+  .ap-window strong {
+    font-size: var(--text-3xl);
+  }
 }
 .ap-window small {
   color: var(--muted);

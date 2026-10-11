@@ -168,8 +168,9 @@
   }
 }
 
-/* One aligned table row per platform from 720 px. */
-@media (min-width: 720px) {
+/* One aligned table row per platform from 880 px: the five columns need ~785 px of content, so at 720–879 px
+   (tablets upright) the actions ran 46 px past the edge – the stacked row stays until there is room. */
+@media (min-width: 880px) {
   .pp-head,
   .pp-row {
     display: grid;

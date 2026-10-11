@@ -142,7 +142,7 @@
   border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
 }
 .dm-dots i + i {
-  margin-left: -6px;
+  margin-left: calc(-1 * var(--space-1));
 }
 .dm-row-text {
   display: grid;

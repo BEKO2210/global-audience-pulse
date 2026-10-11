@@ -9,6 +9,9 @@
   --text-2xl: 32px;
   --text-3xl: 40px;
   --text-4xl: 56px;
+  /* display numbers only: the live score in the hero and the region detail sheet */
+  --text-display: 88px;
+  --text-display-xl: 120px;
   --weight-regular: 400;
   --weight-medium: 500;
   --weight-semibold: 600;
@@ -28,8 +31,9 @@
   --motion-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --mobile-bar-height: 72px;
   --content-width: 1440px;
-  --gutter: clamp(var(--space-4), 3.35vw, var(--space-12));
-  --section-space: clamp(var(--space-12), 5vw, var(--space-16));
+  /* gutter and section rhythm step at breakpoints on the 4 px grid (fluid vw values landed off-grid) */
+  --gutter: var(--space-4);
+  --section-space: var(--space-12);
   --control-h: 40px;
   --control-h-sm: 36px;
   --control-px: var(--space-4);
@@ -64,6 +68,22 @@
   --map-day: #4a5057;
   --map-twilight: rgba(35, 39, 47, 0.18);
   --map-night: rgba(4, 7, 12, 0.58);
+}
+@media (min-width: 600px) {
+  :root {
+    --gutter: var(--space-6);
+  }
+}
+@media (min-width: 960px) {
+  :root {
+    --gutter: var(--space-8);
+  }
+}
+@media (min-width: 1280px) {
+  :root {
+    --gutter: var(--space-12);
+    --section-space: var(--space-16);
+  }
 }
 [data-theme='light'] {
   color-scheme: light;
@@ -567,8 +587,7 @@ button {
   }
 }
 .hero h1 {
-  font: var(--display-weight) clamp(var(--text-3xl), 10vw, var(--text-3xl))/var(--leading-title)
-    var(--font-display);
+  font: var(--display-weight) var(--text-3xl) / var(--leading-title) var(--font-display);
   letter-spacing: var(--display-tracking-xl);
   margin: var(--space-3) 0 var(--space-4);
 }
@@ -582,7 +601,7 @@ button {
   gap: 0;
 }
 .hero-score {
-  font: var(--display-weight) 88px/0.75 var(--font-display);
+  font: var(--display-weight) var(--text-display) / 0.75 var(--font-display);
   color: var(--ink);
   letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
@@ -815,7 +834,7 @@ button:active {
 }
 .land {
   fill: var(--map-day);
-  stroke: #918c82;
+  stroke: color-mix(in srgb, var(--ink) 30%, var(--map-day));
   stroke-width: 0.35;
 }
 .twilight {
@@ -829,11 +848,12 @@ button:active {
 }
 [data-theme='light'] .land {
   fill: var(--map-day);
-  stroke: #5f5a52;
+  stroke: color-mix(in srgb, var(--ink) 55%, var(--map-day));
   stroke-width: 0.5px;
 }
+/* the lit ocean is the style's own paper, lifted towards white – not a fixed cream in every style */
 [data-theme='light'] .ocean {
-  fill: #faf7f0;
+  fill: color-mix(in srgb, var(--paper) 60%, white);
 }
 [data-theme='light'] .twilight {
   fill: var(--map-twilight);
@@ -970,6 +990,10 @@ button:active {
 .dial text {
   font: var(--text-meta)/var(--leading-meta) var(--font-num);
   fill: var(--muted);
+}
+/* the dial scales with its box: divide by the scale so its text renders at the token sizes */
+.dial text {
+  font-size: calc(var(--text-meta) / var(--dial-scale, 1));
 }
 .scrub-readout {
   border-top: 1px solid var(--rule);
@@ -1259,7 +1283,7 @@ button:active {
   font-family: var(--font-ui) !important;
   text-transform: none;
   letter-spacing: normal;
-  font-size: var(--text-meta) !important;
+  font-size: calc(var(--text-meta) / var(--dial-scale, 1)) !important;
   line-height: var(--leading-meta);
 }
 .dial-region {
@@ -1273,7 +1297,8 @@ button:active {
   stroke: var(--paper-2);
   stroke-width: 2.5px;
   paint-order: stroke;
-  font: var(--weight-semibold) var(--text-meta)/var(--leading-meta) var(--font-num) !important;
+  font: var(--weight-semibold) calc(var(--text-meta) / var(--dial-scale, 1)) / var(--leading-meta)
+    var(--font-num) !important;
 }
 .dial-explainer {
   color: var(--muted);
@@ -1353,11 +1378,11 @@ button:active {
 }
 .dial-mean {
   fill: var(--ink) !important;
-  font-size: var(--text-base) !important;
+  font-size: calc(var(--text-base) / var(--dial-scale, 1)) !important;
 }
 .dial-date {
   fill: var(--muted) !important;
-  font-size: var(--text-meta) !important;
+  font-size: calc(var(--text-meta) / var(--dial-scale, 1)) !important;
   line-height: var(--leading-meta);
   font-family: var(--font-ui) !important;
 }
@@ -1570,7 +1595,7 @@ button:active {
   line-height: var(--leading-meta);
 }
 .site-footer {
-  padding: clamp(40px, 5vw, var(--space-16)) var(--gutter);
+  padding: 40px var(--gutter);
   border-top: 1px solid var(--rule);
   display: grid;
   gap: var(--space-8);
@@ -1667,10 +1692,15 @@ button:active {
   line-height: var(--leading-body);
 }
 .legal-page h1 {
-  margin: var(--space-2) 0 clamp(var(--space-8), 5vw, var(--space-16));
-  font: var(--display-weight) clamp(var(--text-3xl), 10vw, var(--text-4xl)) / var(--leading-title)
-    var(--font-display);
+  margin: var(--space-2) 0 var(--space-8);
+  font: var(--display-weight) var(--text-3xl) / var(--leading-title) var(--font-display);
   letter-spacing: -0.025em;
+}
+/* type steps at breakpoints, never fluid: fluid sizes land between the scale steps */
+@media (min-width: 560px) {
+  .legal-page h1 {
+    font-size: var(--text-4xl);
+  }
 }
 .legal-page section {
   padding: var(--space-6) 0;
@@ -1762,7 +1792,7 @@ button:active {
   margin: var(--space-1) 0;
 }
 .detail-score {
-  font: var(--display-weight) 80px/0.9 var(--font-display);
+  font: var(--display-weight) var(--text-display) / 0.9 var(--font-display);
   color: var(--accent-ink);
 }
 .detail-score small {
@@ -1864,11 +1894,11 @@ button:active {
     grid-template-columns: minmax(0, 1.3fr) minmax(360px, 0.8fr);
   }
   .hero h1 {
-    font-size: clamp(var(--text-3xl), 5vw, var(--text-3xl));
+    font-size: var(--text-3xl);
     margin: var(--space-2) 0 var(--space-4);
   }
   .hero-score {
-    font-size: 120px;
+    font-size: var(--text-display-xl);
   }
   .desktop-grid {
     grid-template-columns: 1fr 1fr;
@@ -2256,10 +2286,19 @@ button:active {
   color: var(--muted);
 }
 .live-report h2 {
-  font: var(--display-weight) clamp(var(--text-xl), 6.4vw, var(--text-3xl)) / var(--leading-title)
-    var(--font-display);
+  font: var(--display-weight) var(--text-xl) / var(--leading-title) var(--font-display);
   margin: var(--space-2) 0 var(--space-3);
   letter-spacing: -0.01em;
+}
+@media (min-width: 600px) {
+  .live-report h2 {
+    font-size: var(--text-2xl);
+  }
+}
+@media (min-width: 1024px) {
+  .live-report h2 {
+    font-size: var(--text-3xl);
+  }
 }
 .live-report-verdict {
   font-size: var(--text-base);
@@ -2463,4 +2502,22 @@ button:active {
 .mobile-bar .mobile-horizon-toggle {
   min-width: 44px;
   padding-inline: var(--space-2);
+}
+
+/* footer and legal headline rhythm: stepped on the grid, after their base rules so the steps win */
+@media (min-width: 960px) {
+  .site-footer {
+    padding-block: var(--space-12);
+  }
+  .legal-page h1 {
+    margin-bottom: var(--space-12);
+  }
+}
+@media (min-width: 1280px) {
+  .site-footer {
+    padding-block: var(--space-16);
+  }
+  .legal-page h1 {
+    margin-bottom: var(--space-16);
+  }
 }

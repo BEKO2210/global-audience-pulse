@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, type CSSProperties } from 'react'
 import { PHASES } from '../config/model'
 import { REGIONS, type RegionId } from '../config/regions'
 import { formatDecimalHour, localDecimalHourFast } from '../lib/time'
 import { Flag } from './Flag'
+import { useSvgBox } from '../hooks/useSvgBox'
 import { useLocale, useMessages } from '../i18n/LocaleProvider'
 import type { Messages } from '../i18n/locale'
 import { cityName, phaseName, regionName } from '../i18n/labels'
@@ -62,6 +63,8 @@ export function Dial({
   const cy = 150
   const selectedRegions = REGIONS.filter((region) => selected.includes(region.id))
   const [highlighted, setHighlighted] = useState<RegionId | null>(null)
+  // the dial keeps its 300-unit geometry; its text divides by the rendered scale so it lands on the type scale
+  const { ref, width } = useSvgBox<SVGSVGElement>({ width: 300, height: 300 })
   const outer = selectedRegions[0]
   const inner = selectedRegions.at(-1)
   return (
@@ -70,7 +73,14 @@ export function Dial({
         <h2 id="dial-title">{t.title}</h2>
       </div>
       <div className="dial-wrap">
-        <svg viewBox="0 0 300 300" className="dial" role="img" aria-label={t.dialLabel}>
+        <svg
+          ref={ref}
+          viewBox="0 0 300 300"
+          className="dial"
+          style={{ '--dial-scale': width / 300 } as CSSProperties}
+          role="img"
+          aria-label={t.dialLabel}
+        >
           {Array.from({ length: 24 }, (_, hour) => {
             const outer = polar(cx, cy, 130, hour)
             const inner = polar(cx, cy, hour % 6 === 0 ? 119 : 124, hour)
