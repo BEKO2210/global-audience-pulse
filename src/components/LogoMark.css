@@ -143,6 +143,11 @@ a.wordmark .wordmark-text {
 .logo-tile {
   fill: #0f1113;
 }
+/* on dark paper the board-dark tile needs an edge, or only the globe floats (O-007) */
+[data-theme='dark'] .logo-tile {
+  stroke: color-mix(in srgb, var(--ink) 22%, transparent);
+  stroke-width: 1.5;
+}
 .logo-lines {
   stroke: #eceae4;
 }
