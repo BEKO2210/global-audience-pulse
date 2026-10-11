@@ -129,16 +129,15 @@ const DE = {
   planWeek: 'Ganze Woche planen',
   remindTitle: 'Jetzt posten',
   remindBody: (score: number) => `Dein Posting-Fenster beginnt – Score ${score}.`,
+  // one line each on a phone (Belkis: a second line made everything below jump while scrubbing)
   capMap: (when: string | null, awake: number, total: number, prime: string) =>
-    `${when ? `Um ${when}` : 'Gerade'} wach: ${awake} von ${total} Märkten · ${prime ? `Primetime in ${prime}` : 'kein Markt in der Primetime'}.`,
+    `${when ?? 'Jetzt'}: ${awake} von ${total} wach${prime ? ` · Primetime ${prime}` : ''}`,
   capForecast: (score: number, at: string, now: number) =>
-    `Höhepunkt der nächsten 24 Stunden: Score ${score} um ${at} (jetzt ${now}).`,
-  capHeatmap: (count: number, total: number, at: string, threshold: number) =>
-    `Die meisten Märkte gleichzeitig aktiv: ${count} von ${total} um ${at} (Score ab ${threshold}).`,
-  capHeatmapNone: (threshold: number) =>
-    `In den nächsten 24 Stunden erreicht kein Markt Score ${threshold}.`,
-  capDial: (time: string, phase: string) =>
-    `Gewichtete Ortszeit deines Publikums: ${time} – ${phase}.`,
+    `Höhepunkt ${score} um ${at} · jetzt ${now}`,
+  capHeatmap: (count: number, total: number, at: string) =>
+    `Meiste Märkte zugleich: ${count} von ${total} um ${at}`,
+  capHeatmapNone: (threshold: number) => `Kein Markt erreicht heute Score ${threshold}`,
+  capDial: (time: string, phase: string) => `Gewichtete Ortszeit ${time} · ${phase}`,
 }
 // English must provide exactly the German keys.
 const EN: typeof DE = {
@@ -211,14 +210,11 @@ const EN: typeof DE = {
   remindTitle: 'Post now',
   remindBody: (score) => `Your posting window starts – score ${score}.`,
   capMap: (when, awake, total, prime) =>
-    `${when ? `At ${when}` : 'Right now'}, ${awake} of ${total} markets are awake · ${prime ? `prime time in ${prime}` : 'no market in prime time'}.`,
-  capForecast: (score, at, now) =>
-    `Peak of the next 24 hours: score ${score} at ${at} (now ${now}).`,
-  capHeatmap: (count, total, at, threshold) =>
-    `Most markets active at once: ${count} of ${total} at ${at} (score ${threshold}+).`,
-  capHeatmapNone: (threshold) => `No market reaches score ${threshold} in the next 24 hours.`,
-  capDial: (time, phase) =>
-    `Your audience’s weighted local time: ${time} – ${phase.toLowerCase()}.`,
+    `${when ?? 'Now'}: ${awake} of ${total} awake${prime ? ` · prime time ${prime}` : ''}`,
+  capForecast: (score, at, now) => `Peak ${score} at ${at} · now ${now}`,
+  capHeatmap: (count, total, at) => `Most markets at once: ${count} of ${total} at ${at}`,
+  capHeatmapNone: (threshold) => `No market reaches score ${threshold} today`,
+  capDial: (time, phase) => `Weighted local time ${time} · ${phase.toLowerCase()}`,
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
@@ -610,7 +606,10 @@ export default function App() {
         scrubbed ? formatTime(date, viewerZone) : null,
         awake.awake,
         awake.total,
-        joinList(awake.prime, t.and),
+        // at most two cities, then "+n", so the caption stays on one line
+        awake.prime.length > 2
+          ? `${awake.prime.slice(0, 2).join(', ')} +${awake.prime.length - 2}`
+          : joinList(awake.prime, t.and),
       ),
       forecast: peak
         ? t.capForecast(
@@ -624,7 +623,6 @@ export default function App() {
             overlap.count,
             selected.length,
             formatTime(snapToMinutes(overlap.date, 15), viewerZone),
-            threshold,
           )
         : t.capHeatmapNone(threshold),
       dial: t.capDial(

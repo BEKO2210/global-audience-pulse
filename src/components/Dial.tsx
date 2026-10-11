@@ -186,7 +186,11 @@ export function Dial({
           ))}
         </div>
       </div>
-      {caption && <p className="chart-caption">{caption}</p>}
+      {caption && (
+        <p className="chart-caption" title={caption}>
+          {caption}
+        </p>
+      )}
     </section>
   )
 }

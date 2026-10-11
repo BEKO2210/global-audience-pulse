@@ -118,11 +118,19 @@ test('every chart carries a one-sentence caption that follows the time machine (
   }
   const captions = page.locator('.chart-caption')
   await expect(captions).toHaveCount(4)
-  await expect(captions.first()).toContainText(/^Gerade wach: \d von 8 Märkten/)
+  await expect(captions.first()).toContainText(/^Jetzt: \d von 8 wach/)
+  // one line each (a wrapping caption made the content below jump while scrubbing on phones)
+  for (const caption of await captions.all()) {
+    const { height, line } = await caption.evaluate((el) => ({
+      height: el.getBoundingClientRect().height,
+      line: parseFloat(getComputedStyle(el).lineHeight),
+    }))
+    expect(height).toBeLessThan(line * 1.5)
+  }
   const slider = page.getByRole('slider', { name: 'Zeitmaschine', exact: true })
   await slider.focus()
   await page.keyboard.press('ArrowRight')
-  await expect(captions.first()).toContainText(/^Um \d{2}:\d{2} wach/)
+  await expect(captions.first()).toContainText(/^\d{2}:\d{2}: \d von 8 wach/)
 })
 
 test('the optimal window is the best-scoring one, not just the next in time', async ({ page }) => {

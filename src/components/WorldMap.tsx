@@ -198,7 +198,11 @@ export function WorldMap({
           {t.night}
         </span>
       </div>
-      {caption && <p className="chart-caption">{caption}</p>}
+      {caption && (
+        <p className="chart-caption" title={caption}>
+          {caption}
+        </p>
+      )}
     </section>
   )
 }

@@ -2375,6 +2375,10 @@ button:active {
   font-size: var(--text-sm);
   line-height: var(--leading-body);
   max-width: 72ch;
+  /* always one line – a wrapping caption made the content below jump while scrubbing (full text in title) */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* O-011: quiet text link into the 7-day planner; the anchor clears the sticky header */

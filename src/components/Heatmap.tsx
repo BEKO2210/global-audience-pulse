@@ -240,7 +240,11 @@ export const Heatmap = memo(function Heatmap({
           </span>
         ))}
       </div>
-      {caption && <p className="chart-caption">{caption}</p>}
+      {caption && (
+        <p className="chart-caption" title={caption}>
+          {caption}
+        </p>
+      )}
     </section>
   )
 })
