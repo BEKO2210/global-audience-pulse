@@ -15,17 +15,19 @@ const DE = {
   title: 'Das nächste Momentum',
   scale: 'Skala: 0–100 Aktivitäts-Score',
   timeMachine: 'Zeitmaschine',
-  windowNo: (n: number) => (n === 1 ? 'Bestes Fenster' : `${n}.`),
+  windowNo: (n: number) => (n === 1 ? 'Bestes Fenster' : `${n}. Fenster`),
   legend: (min: number) => `Optimales Posting-Fenster (Score ab ${min})`,
-  hint: 'Ziehen · Pfeiltasten',
+  hint: 'Ziehen',
+  keyHint: 'Pfeiltasten',
 }
 const EN: typeof DE = {
   title: 'The next momentum',
   scale: 'Scale: 0–100 activity score',
   timeMachine: 'Time machine',
-  windowNo: (n) => (n === 1 ? 'Best window' : `${n}.`),
+  windowNo: (n) => (n === 1 ? 'Best window' : `${n}${n === 2 ? 'nd' : 'rd'} window`),
   legend: (min) => `Optimal posting window (score from ${min})`,
-  hint: 'Drag · arrow keys',
+  hint: 'Drag',
+  keyHint: 'arrow keys',
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
@@ -216,7 +218,7 @@ export function Forecast({
             />
             <text
               x={x(win.start) + (x(win.end) - x(win.start)) / 2}
-              y={pad.t + 12}
+              y={pad.t + 12 + index * 16}
               textAnchor="middle"
               className="window-band-label"
             >
@@ -270,7 +272,10 @@ export function Forecast({
             minute: '2-digit',
           })}
         </strong>
-        <span>{t.hint}</span>
+        <span className="scrub-hint">
+          {t.hint}
+          <span className="scrub-key-hint"> · {t.keyHint}</span>
+        </span>
         <button type="button" onClick={onLive} disabled={isLive}>
           Live
         </button>

@@ -43,14 +43,17 @@ const projection = geoEqualEarth().fitExtent(
 const path = geoPath(projection)
 const land = feature(landData as any, (landData as any).objects.land)
 // Static geometry: project once at module load, not on every scrub step.
-const LABEL_SIDE: Record<RegionId, { x: number; y: number; anchor: 'start' | 'middle' | 'end' }> = {
+const LABEL_SIDE: Record<
+  RegionId,
+  { x: number; y: number; anchor: 'start' | 'middle' | 'end'; leader?: boolean }
+> = {
   us_west: { x: 0, y: 16, anchor: 'middle' },
   us_east: { x: 9, y: 4, anchor: 'start' },
   latam: { x: 9, y: 4, anchor: 'start' },
-  eu_uk: { x: -9, y: -4, anchor: 'end' },
-  eu_central: { x: 9, y: -4, anchor: 'start' },
-  mena: { x: -9, y: 4, anchor: 'end' },
-  india: { x: 9, y: 8, anchor: 'start' },
+  eu_uk: { x: -16, y: -12, anchor: 'end', leader: true },
+  eu_central: { x: 16, y: 14, anchor: 'start', leader: true },
+  mena: { x: -16, y: -10, anchor: 'end', leader: true },
+  india: { x: 16, y: 14, anchor: 'start', leader: true },
   east_asia: { x: 9, y: 4, anchor: 'start' },
 }
 const SPHERE_PATH = path({ type: 'Sphere' }) ?? ''
@@ -72,7 +75,7 @@ export function WorldMap({
   const t = useMessages(M)
   const { locale, intl } = useLocale()
   const reduceMotion = useReducedMotion()
-  // The map scales with its panel; k converts CSS px to map units so labels stay 11 px and pin hit areas
+  // The map scales with its panel; k converts CSS px to map units so labels stay 12 px and pin hit areas
   // stay ≥ 44 px on every screen.
   const { ref: svgRef, width: renderedWidth } = useSvgBox<SVGSVGElement>({
     width: 800,
@@ -134,9 +137,11 @@ export function WorldMap({
           const hour = localDecimalHourFast(date, region.timeZone)
           const prime = primePhase ? phaseAt(hour).id === primePhase.id : false
           const elevation = solarElevation(region.coordinates[1], region.coordinates[0], date)
-          // Side labels placed by geography so neighbours never collide at 11 px, even on a phone.
+          // Side labels placed by geography so neighbours never collide at the 12 px step, even on a phone.
           const baseOffset = LABEL_SIDE[region.id]
           const labelOffset = { ...baseOffset, x: baseOffset.x * k, y: baseOffset.y * k }
+          const leaderLength = 8 * k
+          const leaderMagnitude = Math.hypot(labelOffset.x, labelOffset.y)
           return (
             <motion.g
               key={region.id}
@@ -175,6 +180,16 @@ export function WorldMap({
                 animate={{ r: 5 + score / 30 }}
                 transition={{ duration: reduceMotion ? 0 : MOTION.change, ease: MOTION.ease }}
               />
+              {baseOffset.leader && (
+                <line
+                  className="map-label-leader"
+                  x1={(labelOffset.x / leaderMagnitude) * leaderLength}
+                  y1={(labelOffset.y / leaderMagnitude) * leaderLength}
+                  x2={labelOffset.x}
+                  y2={labelOffset.y - 3 * k}
+                  strokeWidth={k}
+                />
+              )}
               <text
                 x={labelOffset.x}
                 y={labelOffset.y}
