@@ -31,6 +31,8 @@ export interface LiveSignal {
   aufrufe: number
   typisch: number
   abweichungProzent: number
+  /** T-010: topic areas of yesterday's most-read articles, only for clearly unusual regions */
+  themen?: string[]
 }
 
 export async function liveSignals(now: Date): Promise<LiveSignal[]> {

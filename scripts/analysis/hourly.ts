@@ -21,6 +21,8 @@ import {
   type Facts,
 } from './report'
 import type { AnalysisRun, DataFetchError, ModelCall, RunRejection } from './health'
+import { TOPIC_SCHEMA, countTopics, topArticles, topicPrompt } from './topics'
+import type { LiveSignal } from './signals'
 import {
   CHECKER_SCHEMA,
   checkerPrompt,
@@ -82,6 +84,62 @@ async function loadLiveSignals(now: Date, errors: DataFetchError[]) {
     return await liveSignals(now)
   } finally {
     globalThis.fetch = nativeFetch
+  }
+}
+
+/** Live deviation from which a region gets the "why?" topics (T-010), same bar as the report's live point. */
+const TOPIC_DEVIATION = 15
+
+/**
+ * T-010: for clearly unusual regions, the topic areas of yesterday's most-read articles in their Wikipedia.
+ * The model labels each title from a fixed list; countTopics keeps only topics shared by several articles.
+ */
+async function addTopics(live: LiveSignal[], now: Date, modelCalls: ModelCall[]) {
+  for (const signal of live) {
+    if (Math.abs(signal.abweichungProzent) <= TOPIC_DEVIATION) continue
+    const project = REGIONS.find((r) => r.city === signal.ort)?.project
+    if (!project) continue
+    const started = performance.now()
+    try {
+      const titles = await topArticles(project, now)
+      if (titles.length < 5) continue
+      const response = await fetch(`${OLLAMA}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: MODEL,
+          stream: false,
+          think: false,
+          format: TOPIC_SCHEMA,
+          options: { temperature: 0, num_ctx: 4096 },
+          keep_alive: 0,
+          messages: [{ role: 'user', content: topicPrompt(titles) }],
+        }),
+      })
+      if (!response.ok) throw new Error(`Ollama ${response.status}`)
+      const labels = JSON.parse((await response.json()).message.content).themen as string[]
+      const ok = Array.isArray(labels) && labels.length === titles.length
+      modelCalls.push({
+        model: MODEL,
+        role: 'classifier',
+        attempt: 1,
+        durationMs: Math.round(performance.now() - started),
+        ok,
+      })
+      if (ok) {
+        const themen = countTopics(labels)
+        if (themen.length) signal.themen = themen
+      }
+    } catch (error) {
+      modelCalls.push({
+        model: MODEL,
+        role: 'classifier',
+        attempt: 1,
+        durationMs: Math.round(performance.now() - started),
+        ok: false,
+      })
+      console.warn(`Themen ${signal.ort}: ${short(error)}`)
+    }
   }
 }
 
@@ -329,9 +387,10 @@ async function main() {
   const ids = REGIONS.map((r) => r.id)
   const scoreNow = Math.round(globalActivity(REGIONS, ids, now, snapshot))
   const live = await loadLiveSignals(now, dataFetchErrors)
-  const facts = buildFacts(snapshot, now, live, compare(history, now, scoreNow))
   const started = Date.now()
   const telemetry: GenerationTelemetry = { attempts: 0, rejections: [], modelCalls: [] }
+  await addTopics(live, now, telemetry.modelCalls)
+  const facts = buildFacts(snapshot, now, live, compare(history, now, scoreNow))
   let report = null
   try {
     report = await generate(facts, telemetry)

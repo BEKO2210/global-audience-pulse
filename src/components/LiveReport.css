@@ -383,6 +383,20 @@
   padding: 0;
 }
 
+.lr-live-topics {
+  grid-column: 1 / -1;
+  margin: -2px 0 4px;
+  padding-left: calc(6.5rem + 8px);
+  justify-self: start;
+  text-align: left;
+  color: var(--muted);
+  font-size: 12px;
+}
+@media (max-width: 480px) {
+  .lr-live-topics {
+    padding-left: 0;
+  }
+}
 .lr-live-row::before {
   display: none;
 }

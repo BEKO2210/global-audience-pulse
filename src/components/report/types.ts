@@ -37,6 +37,8 @@ export interface AnalysisFacts {
     aufrufe: number
     typisch: number
     abweichungProzent: number
+    /** T-010: topic ids (src/config/topics.ts) of yesterday's most-read articles */
+    themen?: string[]
   }[]
   gedaechtnis?: {
     gesternGleicheZeit: number | null

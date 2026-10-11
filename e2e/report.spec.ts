@@ -206,3 +206,18 @@ test.describe('English edition (T-015)', () => {
     await expect(section.locator('.report-language-note')).toBeVisible()
   })
 })
+
+test('an unusual region shows the topics of yesterday’s most-read articles (T-010)', async ({
+  page,
+}) => {
+  const facts = analysisV2.facts as { liveSignale: { ort: string; themen?: string[] }[] }
+  const liveSignale = facts.liveSignale.map((s) =>
+    s.ort === 'Berlin' ? { ...s, themen: ['politik', 'unterhaltung', 'erfunden'] } : s,
+  )
+  await serve(page, withFreshTimestamp({ ...analysisV2, facts: { ...facts, liveSignale } }))
+  await openReady(page)
+  const topics = page.locator('.lr-live-topics')
+  await topics.first().scrollIntoViewIfNeeded()
+  await expect(topics).toHaveCount(1)
+  await expect(topics).toHaveText('Meistgelesen gestern: Politik · Film & TV')
+})

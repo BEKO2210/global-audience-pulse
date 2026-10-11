@@ -178,6 +178,8 @@ Regeln:
 - empfehlung: 1–2 Sätze, konkret: jetzt posten oder wann. besteFenster24h ist nach Score sortiert; nenne das erste (beste) Fenster mit von–bis.
 - analyse: 3–4 Sätze: welche Märkte tragen den Wert gerade (größter beitragPunkte, nicht gewichtProzent), wohin entwickelt er sich in den nächsten Stunden, was bedeutet das für Creator.
 - punkte: genau 3 kurze Stichpunkte mit konkreten Fakten aus den Daten. Wenn liveSignale eine Region mit großer Abweichung (mehr als 15 Prozent) zeigen, ist das einer der Punkte ("gerade ungewöhnlich aktiv/ruhig laut Wikipedia-Aufrufen").
+- Hat ein liveSignale-Eintrag "themen", darfst du sie als "meistgelesen gestern" nennen (Themen-IDs als deutsche
+  Wörter, z. B. politik → Politik). Behaupte keinen Zusammenhang mit der Abweichung.
 - Wenn gedaechtnis Werte enthält, vergleiche in der analyse mit gestern oder dem Wochenmittel derselben Stunde. Sind sie null, erwähne das Gedächtnis nicht.
 - Wenn feiertage Einträge enthält, nenne sie sachlich in der analyse (Ort, heute/morgen, Name). Der Gesamtwert
   berücksichtigt sie bereits wie einen Sonntag. Erfinde keine Wirkung, die nicht aus den Zahlen folgt. Ist die Liste

@@ -12,7 +12,7 @@ export interface RunRejection {
 
 export interface ModelCall {
   model: string
-  role: 'writer' | 'checker' | 'translator'
+  role: 'writer' | 'checker' | 'translator' | 'classifier'
   attempt: number
   durationMs: number
   ok: boolean

@@ -5,6 +5,7 @@ import { useLocale, useMessages } from '../../i18n/LocaleProvider'
 import type { Messages } from '../../i18n/locale'
 import { cityName } from '../../i18n/labels'
 import type { RegionId } from '../../config/regions'
+import { TOPICS, type TopicId } from '../../config/topics'
 
 const DE = {
   title: 'Live-Signal',
@@ -19,6 +20,7 @@ const DE = {
   place: 'Ort',
   deviation: 'Abweichung',
   status: 'Status',
+  topics: 'Meistgelesen gestern',
 }
 const EN: typeof DE = {
   title: 'Live signal',
@@ -33,6 +35,7 @@ const EN: typeof DE = {
   place: 'Place',
   deviation: 'Deviation',
   status: 'Status',
+  topics: 'Most read yesterday',
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
@@ -121,6 +124,15 @@ export function LiveSignals({ facts }: { facts: AnalysisFacts }) {
                 </span>
                 {isNotable && <span className="lr-live-badge">{t.notable}</span>}
               </div>
+              {s.themen?.length ? (
+                <p className="lr-live-topics">
+                  {t.topics}:{' '}
+                  {s.themen
+                    .filter((id): id is TopicId => id in TOPICS)
+                    .map((id) => TOPICS[id][locale])
+                    .join(' · ')}
+                </p>
+              ) : null}
             </li>
           )
         })}
