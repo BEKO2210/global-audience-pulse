@@ -53,6 +53,13 @@ const EN: typeof DE = {
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
+const SHORT_STATUS: Record<string, Record<'de' | 'en', string>> = {
+  strong: { de: 'Hoch', en: 'Peak' },
+  good: { de: 'Gut', en: 'Good' },
+  medium: { de: 'Aufbau', en: 'Building' },
+  quiet: { de: 'Ruhig', en: 'Quiet' },
+}
+
 export function MobileTimeBar({
   now,
   selectedDate,
@@ -258,7 +265,10 @@ export function MobileTimeBar({
       </button>
       <div className={`mobile-bar-score ${status.tone}`} aria-label={t.total}>
         <b>{ready ? <AnimatedNumber value={score} /> : '—'}</b>
-        <span>{statusText(status.tone, locale).label}</span>
+        {/* short word in a fixed-width column: a long status widened the column and shifted the whole bar */}
+        <span title={statusText(status.tone, locale).label}>
+          {SHORT_STATUS[status.tone]?.[locale]}
+        </span>
       </div>
       <span className="sr-only">{t.bestFrom(STATUS_LEVELS[1].min)}</span>
     </div>

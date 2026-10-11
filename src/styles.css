@@ -2067,7 +2067,10 @@ button:active {
 .mobile-bar-when {
   display: grid;
   gap: var(--space-1);
+  /* fixed width like the score column: "Live" and "+23 Std Jetzt" must not move the slider */
+  width: 88px;
   min-width: 0;
+  overflow: hidden;
 }
 .mobile-bar-readout {
   font: var(--weight-medium) var(--text-base)/1.2 var(--font-num);
@@ -2194,6 +2197,8 @@ button:active {
 .mobile-bar-score {
   display: grid;
   justify-items: end;
+  /* fixed width: whatever the score and status, the slider beside it never changes size */
+  width: 64px;
   gap: var(--space-1);
   line-height: var(--leading-title);
 }
@@ -2439,4 +2444,10 @@ button:active {
   .heatmap-scroll {
     mask-image: none;
   }
+}
+
+/* compact horizon switch: the slider gets the room (the generic control padding made it ~60px wide) */
+.mobile-bar .mobile-horizon-toggle {
+  min-width: 44px;
+  padding-inline: var(--space-2);
 }

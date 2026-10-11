@@ -56,3 +56,20 @@ test('mobile time-bar scrub preserves scroll position and layout stability', asy
   expect(result.layoutShift).toBeLessThan(0.02)
   expect(result.scrollAfter).toBe(result.scrollBefore)
 })
+
+test('mobile time bar never shifts while scrubbing (fixed columns)', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 800 })
+  await openReady(page)
+  const box = () =>
+    page.locator('.mobile-bar-slider').evaluate((el) => {
+      const b = el.getBoundingClientRect()
+      return `${Math.round(b.left)}/${Math.round(b.width)}`
+    })
+  const first = await box()
+  const slider = page.getByRole('slider', { name: 'Zeitmaschine', exact: true })
+  await slider.focus()
+  for (let i = 0; i < 48; i += 1) {
+    await page.keyboard.press('ArrowRight')
+    if (i % 8 === 0) expect(await box()).toBe(first)
+  }
+})
