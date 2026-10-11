@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useId, useState, type ReactNode } from 'react'
 import './RegionCards.css'
 import { PHASES } from '../config/model'
 import { REGIONS, type RegionId } from '../config/regions'
@@ -8,6 +8,8 @@ import type { Snapshot } from '../lib/snapshot'
 import { holidayAt, holidayLabel } from '../lib/holidays'
 import { formatTime, localDecimalHourFast } from '../lib/time'
 import { Sparkline } from './Sparkline'
+import { RegionDayChart } from './RegionDayChart'
+import { useGridColumns } from '../hooks/useGridColumns'
 import { Flag } from './Flag'
 import { PhaseIcon } from './PhaseIcon'
 import { AnimatedNumber } from './AnimatedNumber'
@@ -36,9 +38,10 @@ const DE = {
   baseline: 'Statistisches Basismodell',
   share: 'Zielgruppenanteil',
   percent: (n: number) => `${n} %`,
-  toggle: (city: string, selected: boolean) => `${city} ${selected ? 'abwählen' : 'auswählen'}`,
-  inAudience: 'In Zielgruppe',
-  notInAudience: 'Nicht in Zielgruppe',
+  switchLabel: (city: string) => `${city} in der Zielgruppe`,
+  source: 'Datenquelle',
+  liveSignal: 'Live-Signal',
+  shareShort: (n: number) => `${n} % Anteil`,
   phaseRange: (name: string, from: string, to: string) => `${name} · ${from}–${to} Uhr`,
 }
 const EN: typeof DE = {
@@ -61,9 +64,10 @@ const EN: typeof DE = {
   baseline: 'Statistical baseline model',
   share: 'Audience share',
   percent: (n) => `${n}%`,
-  toggle: (city, selected) => `${selected ? 'Deselect' : 'Select'} ${city}`,
-  inAudience: 'In audience',
-  notInAudience: 'Not in audience',
+  switchLabel: (city) => `${city} in the audience`,
+  source: 'Data source',
+  liveSignal: 'Live signal',
+  shareShort: (n) => `${n}% share`,
   phaseRange: (name, from, to) => `${name} · ${from}:00–${to}:00`,
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
@@ -122,6 +126,8 @@ export function RegionCards({
   const { locale } = useLocale()
   const [filter, setFilter] = useState<'all' | 'measured' | 'model'>('all')
   const [expanded, setExpanded] = useState<RegionId | null>(null)
+  const columns = useGridColumns()
+  const detailId = useId()
   const weights = normalizedWeights(selected, snapshot)
   const measuredCount = REGIONS.filter((region) => Boolean(snapshot.profiles[region.id])).length
   const visible = REGIONS.filter(
@@ -137,6 +143,13 @@ export function RegionCards({
     const bestScore = grid.activityAt(bestId, date)
     return regionScore > bestScore ? region.id : bestId
   }, null)
+  // Bento grid: every tile keeps its size and place; the detail opens as a full row right after the row of the
+  // chosen tile (Belkis: "eine Karte groß, eine klein, unten fehlt eine Karte").
+  const expandedIndex = visible.findIndex((region) => region.id === expanded)
+  const detailAfter =
+    expandedIndex < 0
+      ? -1
+      : Math.min(visible.length - 1, Math.floor(expandedIndex / columns) * columns + columns - 1)
   const toggleRegion = (region: RegionId) => {
     const aktiv = !selected.includes(region)
     track('Zielgruppe', {
@@ -189,136 +202,146 @@ export function RegionCards({
         </button>
       </div>
       <div className="region-grid">
-        {visible.map((region) => {
-          const score = grid.activityAt(region.id, date)
-          const phase = phaseAt(localDecimalHourFast(date, region.timeZone))
-          const holiday = holidayAt(snapshot.holidays, region, date)
-          const measured = Boolean(snapshot.profiles[region.id])
-          const values = Array.from({ length: 48 }, (_, i) =>
-            grid.activityAt(region.id, new Date(date.getTime() + (i - 12) * 30 * 60_000)),
-          )
-          const measure = live[region.id]
-          const measuredAt = measure?.lastMeasuredAt ?? snapshot.profiles[region.id]?.lastMeasuredAt
-          const isExpanded = expanded === region.id
-          const name = regionName(region.id, locale)
-          const city = cityName(region.id, region.city, locale)
-          const phaseLabel = phaseName(phase.id, phase.name, locale)
-          const isSelected = selected.includes(region.id)
-          const highlightSpark =
-            isSelected || (selected.length === 0 && region.id === strongestRegionId)
-          return (
-            <article
-              key={region.id}
-              className={`${isSelected ? 'region-card' : 'region-card unselected'}${isExpanded ? ' expanded' : ''}`}
-            >
-              <button
-                className="card-main"
-                onClick={() => {
-                  if (!isExpanded) track('Region Details', { region: region.id })
-                  setExpanded(isExpanded ? null : region.id)
-                }}
-                aria-expanded={isExpanded}
-              >
-                <div className="compact-card">
-                  <span className="flag">
-                    <Flag code={region.flag} label={name} size={28} />
-                  </span>
-                  <span className="compact-place">
-                    <b>{city}</b>
-                    {liveStatus === 'fallback' && region.project && (
-                      <small className="compact-profile">{t.snapshotProfile}</small>
-                    )}
-                  </span>
-                  <span className="compact-phase">
-                    <PhaseIcon icon={phase.icon} /> {phaseLabel}
-                    {holiday && <span className="holiday-mark"> · {t.holiday}</span>}
-                  </span>
-                  <span className="compact-time">
-                    <RegionTime date={date} timeZone={region.timeZone} live={isLive} />
-                  </span>
-                  <Sparkline values={values} height={28} highlightLast={highlightSpark} />
-                  <strong className="compact-score">
-                    <AnimatedNumber value={score} />
-                  </strong>
-                </div>
-                <div className="card-detail">
-                  <div className="card-top">
-                    <p className="eyebrow">{name}</p>
-                    <span className={measure ? 'badge measured' : 'badge'}>
-                      {measure
-                        ? t.live
-                        : liveStatus === 'fallback' && region.project
-                          ? t.snapshotProfile
-                          : measured
-                            ? t.dataProfile
-                            : t.modelBadge}
-                    </span>
+        {visible
+          .map((region): { id: RegionId; tile: ReactNode; detail: ReactNode } => {
+            const score = grid.activityAt(region.id, date)
+            const phase = phaseAt(localDecimalHourFast(date, region.timeZone))
+            const holiday = holidayAt(snapshot.holidays, region, date)
+            const measured = Boolean(snapshot.profiles[region.id])
+            const values = Array.from({ length: 48 }, (_, i) =>
+              grid.activityAt(region.id, new Date(date.getTime() + (i - 12) * 30 * 60_000)),
+            )
+            const measure = live[region.id]
+            const measuredAt =
+              measure?.lastMeasuredAt ?? snapshot.profiles[region.id]?.lastMeasuredAt
+            const isExpanded = expanded === region.id
+            const name = regionName(region.id, locale)
+            const city = cityName(region.id, region.city, locale)
+            const phaseLabel = phaseName(phase.id, phase.name, locale)
+            const isSelected = selected.includes(region.id)
+            const shareText = isSelected
+              ? t.percent(Math.round((weights[region.id] ?? 0) * 100))
+              : '—'
+            const detail = isExpanded && (
+              <div className="card-detail" id={detailId}>
+                <RegionDayChart region={region} city={city} date={date} snapshot={snapshot} />
+                <dl className="card-facts">
+                  <div>
+                    <dt>{t.source}</dt>
+                    <dd>
+                      <span className={measure ? 'badge measured' : 'badge'}>
+                        {measure
+                          ? t.live
+                          : liveStatus === 'fallback' && region.project
+                            ? t.snapshotProfile
+                            : measured
+                              ? t.dataProfile
+                              : t.modelBadge}
+                      </span>
+                    </dd>
                   </div>
-                  <div className="card-score">
-                    <strong>
-                      <AnimatedNumber value={score} />
-                    </strong>
-                    <span>/100</span>
+                  <div>
+                    <dt>{t.liveSignal}</dt>
+                    <dd className="deviation">
+                      {measuredAt ? (
+                        <>
+                          {measure
+                            ? t.deviationNow(
+                                `${measure.deviation >= 0 ? '+' : ''}${Math.round(measure.deviation)}`,
+                              )
+                            : ''}
+                          {t.measuredAgo(measuredAge(measuredAt, locale))}
+                        </>
+                      ) : (
+                        <span className="deviation-placeholder">{t.baseline}</span>
+                      )}
+                    </dd>
                   </div>
-                  <p className="phase">
-                    <PhaseIcon icon={phase.icon} /> {phaseLabel}
-                  </p>
-                  <div className="region-time">
-                    <RegionTime date={date} timeZone={region.timeZone} live={isLive} />
+                  <div>
+                    <dt>{t.share}</dt>
+                    <dd className="card-share">
+                      <span className="weight" aria-hidden="true">
+                        <span style={{ width: `${(weights[region.id] ?? 0) * 100}%` }} />
+                      </span>
+                      <b>{shareText}</b>
+                    </dd>
                   </div>
                   {holiday && (
-                    <p className="holiday-note">{t.holidayNote(holidayLabel(holiday, locale))}</p>
+                    <div>
+                      <dt>{t.holiday}</dt>
+                      <dd className="holiday-note">
+                        {t.holidayNote(holidayLabel(holiday, locale))}
+                      </dd>
+                    </div>
                   )}
-                  <Sparkline values={values} height={36} highlightLast={highlightSpark} />
-                  <p className="deviation">
-                    {measuredAt ? (
-                      <>
-                        {measure
-                          ? t.deviationNow(
-                              `${measure.deviation >= 0 ? '+' : ''}${Math.round(measure.deviation)}`,
-                            )
-                          : ''}
-                        {t.measuredAgo(measuredAge(measuredAt, locale))}
-                      </>
-                    ) : (
-                      <span className="deviation-placeholder">{t.baseline}</span>
-                    )}
-                  </p>
-                  <div className="weight">
-                    <span
-                      style={{
-                        width: `${(weights[region.id] ?? 0) * 100}%`,
-                      }}
-                    />
+                </dl>
+              </div>
+            )
+            const highlightSpark =
+              isSelected || (selected.length === 0 && region.id === strongestRegionId)
+            const tile = (
+              <article
+                className={`${isSelected ? 'region-card' : 'region-card unselected'}${isExpanded ? ' expanded' : ''}`}
+              >
+                <button
+                  className="card-main"
+                  onClick={() => {
+                    if (!isExpanded) track('Region Details', { region: region.id })
+                    setExpanded(isExpanded ? null : region.id)
+                  }}
+                  aria-expanded={isExpanded}
+                  aria-controls={isExpanded ? detailId : undefined}
+                >
+                  <div className="compact-card">
+                    <span className="flag">
+                      <Flag code={region.flag} label={name} size={28} />
+                    </span>
+                    <span className="compact-place">
+                      <b>{city}</b>
+                      <small className="compact-region">{name}</small>
+                      {liveStatus === 'fallback' && region.project && (
+                        <small className="compact-profile">{t.snapshotProfile}</small>
+                      )}
+                    </span>
+                    <span className="compact-phase">
+                      <PhaseIcon icon={phase.icon} /> {phaseLabel} ·{' '}
+                      <span className="compact-time">
+                        <RegionTime date={date} timeZone={region.timeZone} live={isLive} />
+                      </span>
+                      {holiday && <span className="holiday-mark"> · {t.holiday}</span>}
+                    </span>
+                    <Sparkline values={values} height={28} highlightLast={highlightSpark} />
+                    <strong className="compact-score">
+                      <AnimatedNumber value={score} />
+                    </strong>
+                    <span className="compact-share">
+                      {isSelected ? t.shareShort(Math.round((weights[region.id] ?? 0) * 100)) : '—'}
+                    </span>
                   </div>
-                  <p className="weight-label">
-                    <span>{t.share}</span>
-                    <b>
-                      {isSelected ? t.percent(Math.round((weights[region.id] ?? 0) * 100)) : '—'}
-                    </b>
-                  </p>
-                </div>
-              </button>
-              <button
-                className="compact-toggle"
-                onClick={() => toggleRegion(region.id)}
-                aria-pressed={isSelected}
-                aria-label={t.toggle(city, isSelected)}
-              >
-                <i />
-              </button>
-              <button
-                className="include-button"
-                onClick={() => toggleRegion(region.id)}
-                aria-pressed={isSelected}
-                aria-label={t.toggle(city, isSelected)}
-              >
-                <span>{isSelected ? t.inAudience : t.notInAudience}</span>
-                <i />
-              </button>
-            </article>
-          )
-        })}
+                </button>
+                {/* selection as a real switch (role=switch), not a checkbox square */}
+                <button
+                  type="button"
+                  role="switch"
+                  className="region-switch"
+                  aria-checked={isSelected}
+                  aria-label={t.switchLabel(city)}
+                  onClick={() => toggleRegion(region.id)}
+                >
+                  <span className="region-switch-track" aria-hidden="true">
+                    <span className="region-switch-knob" />
+                  </span>
+                </button>
+              </article>
+            )
+            return { id: region.id, tile, detail }
+          })
+          .map(({ id, tile }, index, tiles) => (
+            <Fragment key={id}>
+              {tile}
+              {index === detailAfter && tiles[expandedIndex]?.detail}
+            </Fragment>
+          ))}
       </div>
       <div className="phase-legend">
         {PHASES.map((phase) => (

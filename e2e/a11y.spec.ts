@@ -44,7 +44,7 @@ test('keyboard reaches scrubber, heatmap, toggles, and focus-trapped sheet', asy
   await page.keyboard.press('Enter')
   await tabUntil(page, () =>
     page
-      .getByRole('button', { name: /Berlin abwählen/ })
+      .getByRole('switch', { name: /Berlin in der Zielgruppe/ })
       .evaluate((el) => el === document.activeElement),
   )
   await page.keyboard.press('Enter')

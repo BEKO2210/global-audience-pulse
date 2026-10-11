@@ -57,7 +57,12 @@ test('accepts a fresh snapshot and live Wikimedia samples', async ({ page }) => 
   // O-013: no decorative eyebrow any more – live data shows the active regions, without the offline note
   await expect(page.getByTestId('data-state')).toContainText(/\d Regionen aktiv/)
   await expect(page.getByTestId('data-state')).not.toContainText('Beispieldaten')
-  await expect(page.locator('.badge.measured').first()).toContainText('Live')
+  // the source badge lives in the region detail
+  await page
+    .locator('.region-card', { has: page.getByRole('switch', { name: /Berlin/ }) })
+    .locator('.card-main')
+    .click()
+  await expect(page.locator('.card-detail .badge.measured')).toContainText('Live')
   await expectNoInvalidNumbers(page)
 })
 

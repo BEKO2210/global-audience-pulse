@@ -5,15 +5,19 @@ import { allowClipboard, openReady } from './helpers'
 
 test('audience selection renormalizes and persists in URL and localStorage', async ({ page }) => {
   await openReady(page)
-  const toggle = page.getByRole('button', { name: /Berlin abwählen/ })
+  const toggle = page.getByRole('switch', { name: /Berlin in der Zielgruppe/ })
+  await expect(toggle).toHaveAttribute('aria-checked', 'true')
   await toggle.click()
   await expect(page).toHaveURL(/audience=/)
   expect(await page.evaluate(() => localStorage.getItem('gap-audience'))).not.toContain(
     'eu_central',
   )
   await page.reload()
-  await expect(page.getByRole('button', { name: /Berlin auswählen/ })).toBeVisible()
-  const visibleWeights = await page.locator('.weight-label b').allTextContents()
+  await expect(page.getByRole('switch', { name: /Berlin in der Zielgruppe/ })).toHaveAttribute(
+    'aria-checked',
+    'false',
+  )
+  const visibleWeights = await page.locator('.compact-share').allTextContents()
   expect(visibleWeights.filter((value) => value !== '—').length).toBeGreaterThan(1)
 })
 
@@ -54,14 +58,17 @@ test('share link round-trips audience and weighting state', async ({
   await allowClipboard(page, context, browserName)
   await page.addInitScript(() => Object.defineProperty(navigator, 'share', { value: undefined }))
   await openReady(page)
-  await page.getByRole('button', { name: /Berlin abwählen/ }).click()
+  await page.getByRole('switch', { name: /Berlin in der Zielgruppe/ }).click()
   await page.getByRole('button', { name: 'Reichweite' }).click()
   await page.getByRole('button', { name: /Link teilen/ }).click()
   const link = await page.evaluate(() => navigator.clipboard.readText())
   expect(link).toContain('audience=')
   expect(link).toContain('weight=reach')
   await page.goto(link)
-  await expect(page.getByRole('button', { name: /Berlin auswählen/ })).toBeVisible()
+  await expect(page.getByRole('switch', { name: /Berlin in der Zielgruppe/ })).toHaveAttribute(
+    'aria-checked',
+    'false',
+  )
   await expect(page.getByRole('button', { name: 'Reichweite' })).toHaveAttribute(
     'aria-pressed',
     'true',
@@ -215,6 +222,55 @@ for (const theme of ['light', 'dark'] as const)
     await page.waitForTimeout(300)
     const results = await new AxeBuilder({ page })
       .include('.dm-panel')
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
+      .analyze()
+    expect(
+      results.violations.filter((v) => ['serious', 'critical'].includes(v.impact ?? '')),
+    ).toEqual([])
+  })
+
+for (const theme of ['light', 'dark'] as const)
+  test(`region detail opens as a full row below the tile's row, tiles keep their size, passes axe (${theme})`, async ({
+    page,
+  }) => {
+    await page.addInitScript((t) => localStorage.setItem('gap-theme', t), theme)
+    await openReady(page)
+    const tiles = page.locator('.region-card')
+    await expect(tiles).toHaveCount(8)
+    const widthsBefore = await tiles.evaluateAll((els) =>
+      els.map((el) => el.getBoundingClientRect().width),
+    )
+    const card = page.locator('.region-card', {
+      has: page.getByRole('switch', { name: /Berlin in der Zielgruppe/ }),
+    })
+    await card.locator('.card-main').click()
+    await expect(card).toHaveClass(/expanded/)
+    const detail = page.locator('.card-detail')
+    await expect(detail.getByRole('img', { name: /über den Tag in Ortszeit/ })).toBeVisible()
+    await expect(detail.locator('.card-share b')).toHaveText(/\d+\s?%/)
+    // bento: every tile keeps its width, the detail spans the grid and starts right below the tile's row
+    const widthsAfter = await tiles.evaluateAll((els) =>
+      els.map((el) => el.getBoundingClientRect().width),
+    )
+    expect(widthsAfter).toEqual(widthsBefore)
+    const [gridBox, cardBox, detailBox] = await Promise.all([
+      page.locator('.region-grid').boundingBox(),
+      card.boundingBox(),
+      detail.boundingBox(),
+    ])
+    expect(Math.abs(detailBox!.width - gridBox!.width)).toBeLessThanOrEqual(1)
+    expect(detailBox!.y - (cardBox!.y + cardBox!.height)).toBeGreaterThan(0)
+    expect(detailBox!.y - (cardBox!.y + cardBox!.height)).toBeLessThanOrEqual(12)
+    // switch: knob centred vertically in its track
+    const [track, knob] = await Promise.all([
+      card.locator('.region-switch-track').boundingBox(),
+      card.locator('.region-switch-knob').boundingBox(),
+    ])
+    expect(
+      Math.abs(track!.y + track!.height / 2 - (knob!.y + knob!.height / 2)),
+    ).toBeLessThanOrEqual(0.5)
+    const results = await new AxeBuilder({ page })
+      .include('.region-grid')
       .withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa'])
       .analyze()
     expect(

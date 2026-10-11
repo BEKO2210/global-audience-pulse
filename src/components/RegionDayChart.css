@@ -1,0 +1,83 @@
+/* Region detail: the local day as one ink line, phase bands on the ink ramp, accent for prime time and "now". */
+.rdc {
+  margin: 0;
+}
+.rdc-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-4);
+  margin-bottom: var(--space-2);
+  color: var(--ink);
+  font: var(--weight-medium) var(--text-sm) / var(--leading-title) var(--font-ui);
+}
+.rdc-legend {
+  display: inline-flex;
+  gap: var(--space-4);
+  color: var(--muted);
+  font: var(--weight-regular) var(--text-meta) / var(--leading-meta) var(--font-ui);
+}
+.rdc-legend > span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.rdc-key {
+  display: inline-block;
+  width: 16px;
+  height: 0;
+  border-top: 2px solid var(--ink);
+}
+.rdc-key.is-other {
+  border-top: 2px dashed var(--muted);
+}
+.rdc-svg {
+  display: block;
+  width: 100%;
+  height: 132px;
+  overflow: visible;
+}
+.rdc-band {
+  fill: color-mix(in srgb, var(--ink) 4%, transparent);
+}
+.rdc-band.is-morning,
+.rdc-band.is-late {
+  fill: color-mix(in srgb, var(--ink) 7%, transparent);
+}
+.rdc-band.is-day {
+  fill: color-mix(in srgb, var(--ink) 10%, transparent);
+}
+.rdc-band.is-prime {
+  fill: var(--accent-tint);
+}
+.rdc-today {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+.rdc-other {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 4;
+}
+.rdc-now {
+  stroke: var(--accent-ink);
+  stroke-width: 1;
+}
+.rdc-now-dot {
+  fill: var(--accent);
+  stroke: var(--paper-2);
+  stroke-width: 2;
+}
+.rdc-peak-dot {
+  fill: var(--ink);
+}
+.rdc-peak {
+  fill: var(--ink);
+  font: var(--weight-medium) var(--text-meta) var(--font-ui);
+}
+.rdc-axis {
+  fill: var(--muted);
+  font: var(--text-meta) var(--font-num);
+}

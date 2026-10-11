@@ -64,5 +64,5 @@ test('region card marks a holiday on the region’s local date', async ({ page }
   await expect(card).toBeVisible({ timeout: 15_000 })
   await expect(card.locator('.holiday-mark')).toHaveText(/Feiertag/)
   await card.locator('.card-main').click()
-  await expect(card.locator('.holiday-note')).toContainText('Testfeiertag')
+  await expect(page.locator('.card-detail .holiday-note')).toContainText('Testfeiertag')
 })
