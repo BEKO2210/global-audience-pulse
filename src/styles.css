@@ -2261,9 +2261,11 @@ button:active {
 }
 .mobile-bar-score {
   display: grid;
-  justify-items: end;
-  /* fixed width: whatever the score and status, the slider beside it never changes size */
-  width: 64px;
+  justify-items: start;
+  /* fixed width of exactly three score digits (1ch cells in the score font): the slider never changes size,
+     and a two-digit score sits right next to the 24 h switch instead of leaving a gap (Belkis 2026-10-11) */
+  font: var(--display-weight) var(--text-2xl) / 1 var(--font-display);
+  width: 3ch;
   gap: var(--space-1);
   line-height: var(--leading-title);
 }
@@ -2275,7 +2277,7 @@ button:active {
 .mobile-bar-score > span {
   font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-ui);
   color: var(--muted);
-  text-align: right;
+  text-align: left;
   /* one line: two lines did not fit the 72px bar and the second one was cut off */
   white-space: nowrap;
 }

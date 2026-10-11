@@ -224,3 +224,32 @@ test('an unusual region shows the topics of yesterday’s most-read articles (T-
   await expect(topics).toHaveCount(1)
   await expect(topics).toHaveText('Meistgelesen gestern: Politik, Film & TV')
 })
+
+for (const style of ['tafel', 'archiv'])
+  test(`report teaser keeps whole words and is never cut down to one word when there is room (${style})`, async ({
+    page,
+  }) => {
+    await page.addInitScript((s) => localStorage.setItem('gap-style', s), style)
+    await page.setViewportSize({ width: 390, height: 844 })
+    await serve(page, withFreshTimestamp(analysisV2))
+    await openReady(page)
+    const line = page.locator('.report-teaser-text')
+    await expect(line).toBeVisible()
+    const text = (await line.innerText()).trim()
+    // a one-word stub like "Der…" was shipped once; at 390 px several words fit
+    expect(text).not.toMatch(/^\S+…$/)
+    expect(text.split(/\s+/).length).toBeGreaterThan(2)
+    // neither the line nor the headline inside clips text – also after the style's own fonts arrived
+    await page.evaluate(() => document.fonts.ready)
+    await expect
+      .poll(() =>
+        line.evaluate((el) =>
+          [el, ...el.querySelectorAll('*')].every((n) => n.scrollWidth <= n.clientWidth + 1),
+        ),
+      )
+      .toBe(true)
+    // a headline after the flag is at least two words, never a lone stub like "Aktueller…"
+    const head = page.locator('.report-teaser-headline')
+    if (await head.count())
+      expect((await head.innerText()).trim().split(/\s+/).length).toBeGreaterThan(1)
+  })

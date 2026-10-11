@@ -101,47 +101,41 @@ function anomalyText(anomaly: Anomaly, data: LiveAnalysisPayload, locale: Locale
   return t.holiday(city, locale === 'en' ? (anomaly.nameEn ?? anomaly.name) : anomaly.name)
 }
 
-/** Pseudo-elements on the live flag need a little slack in off-DOM measurement. */
-const TEASER_MEASURE_SLACK = 12
-
-function measureTeaserWidth(flag: string | null, headline: string): number {
-  const root = document.createElement('span')
-  root.className = 'report-teaser-text'
-  root.style.cssText = 'position:fixed;left:-9999px;top:0;visibility:hidden;pointer-events:none;'
-  if (flag) {
-    const flagEl = document.createElement('span')
-    flagEl.className = 'report-teaser-flag'
-    flagEl.textContent = flag
-    root.appendChild(flagEl)
-  }
-  if (headline) {
-    const headEl = document.createElement('span')
-    headEl.className = 'report-teaser-headline'
-    headEl.textContent = headline
-    root.appendChild(headEl)
-  }
-  document.body.appendChild(root)
-  const width = root.getBoundingClientRect().width
-  root.remove()
-  return width
-}
-
+/**
+ * Fit flag + headline into the real line: a hidden clone of the line, in the same place and width, is shortened by
+ * whole words until it no longer overflows. (Measuring off-DOM inherited `width: 100%` and cut to the first word.)
+ */
 function fitTeaserLine(
-  maxWidth: number,
+  line: HTMLElement,
   flag: string | null,
   headline: string,
 ): { mode: 'full' | 'flag-only' | 'truncated'; headline: string } {
-  const budget = maxWidth - TEASER_MEASURE_SLACK
-  if (measureTeaserWidth(flag, headline) <= budget) return { mode: 'full', headline }
-  // shorten by whole words; at least one word must stay, otherwise show the flag alone (never a lone "…")
-  const words = headline.split(' ')
-  for (let n = words.length - 1; n >= 1; n -= 1) {
-    const clipped = `${words.slice(0, n).join(' ')}…`
-    if (measureTeaserWidth(flag, clipped) <= budget) return { mode: 'truncated', headline: clipped }
+  const probe = line.cloneNode(true) as HTMLElement
+  probe.style.cssText = `position:absolute;visibility:hidden;pointer-events:none;width:${line.clientWidth}px`
+  probe.setAttribute('aria-hidden', 'true')
+  let head = probe.querySelector<HTMLElement>('.report-teaser-headline')
+  if (!head) {
+    head = document.createElement('span')
+    head.className = 'report-teaser-headline'
+    probe.append(head)
   }
-  return flag
-    ? { mode: 'flag-only', headline: '' }
-    : { mode: 'truncated', headline: `${words[0]}…` }
+  // in the live line the headline shrinks and clips itself; in the probe it keeps its full width so overflow shows
+  head.style.cssText = 'flex:none;overflow:visible'
+  line.parentElement?.append(probe)
+  const fits = () => probe.scrollWidth <= probe.clientWidth + 1
+  try {
+    head.textContent = headline
+    if (fits()) return { mode: 'full', headline }
+    // at least two whole words stay; otherwise the flag alone (never a lone "…" or a one-word stub)
+    const words = headline.split(' ')
+    for (let n = words.length - 1; n >= 2; n -= 1) {
+      head.textContent = `${words.slice(0, n).join(' ')}…`
+      if (fits()) return { mode: 'truncated', headline: head.textContent }
+    }
+    return flag ? { mode: 'flag-only', headline: '' } : { mode: 'truncated', headline: '' }
+  } finally {
+    probe.remove()
+  }
 }
 
 function ReportTeaserLine({
@@ -166,14 +160,19 @@ function ReportTeaserLine({
     if (!el) return
     const host = el.closest('.report-teaser')
     const update = () => {
-      const width = host?.clientWidth ?? el.clientWidth
-      if (!width) return
-      setFit(fitTeaserLine(width, flag, headline))
+      if (!el.clientWidth) return
+      setFit(fitTeaserLine(el, flag, headline))
     }
     update()
     const ro = new ResizeObserver(update)
     ro.observe(host ?? el)
-    return () => ro.disconnect()
+    // each style loads its fonts later; the real font is wider than the fallback, so fit again once it is in
+    document.fonts?.addEventListener('loadingdone', update)
+    void document.fonts?.ready.then(update)
+    return () => {
+      ro.disconnect()
+      document.fonts?.removeEventListener('loadingdone', update)
+    }
   }, [flag, headline])
 
   return (

@@ -73,3 +73,13 @@ test('mobile time bar never shifts while scrubbing (fixed columns)', async ({ pa
     if (i % 8 === 0) expect(await box()).toBe(first)
   }
 })
+
+test('mobile time bar: the score sits right next to the 24 h switch, no gap', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await openReady(page)
+  const toggle = await page.locator('.mobile-bar .mobile-horizon-toggle').boundingBox()
+  const score = await page.locator('.mobile-bar-score > b').boundingBox()
+  expect(toggle && score).toBeTruthy()
+  // grid gap (8 px) + at most a thin margin; the old right-aligned 64 px column left ~30 px empty
+  expect(score!.x - (toggle!.x + toggle!.width)).toBeLessThanOrEqual(12)
+})
