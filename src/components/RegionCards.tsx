@@ -33,8 +33,11 @@ const DE = {
   dataProfile: 'Datenprofil',
   modelBadge: 'Modell',
   holidayNote: (name: string) => `Feiertag: ${name} – wird wie ein Sonntag gerechnet`,
-  deviationNow: (value: string) => `gerade ${value} % · `,
-  measuredAgo: (age: string) => `Messung vor ${age}`,
+  deviation: (value: number) =>
+    value >= 0 ? `+${value} % über üblich` : `${Math.abs(value)} % unter üblich`,
+  hourUntil: (time: string, lag: string) =>
+    `Stand ${time} Uhr · Wikipedia liefert ${lag} verzögert`,
+  profileAge: (age: string) => `Profil von vor ${age}`,
   baseline: 'Statistisches Basismodell',
   share: 'Zielgruppenanteil',
   percent: (n: number) => `${n} %`,
@@ -59,8 +62,9 @@ const EN: typeof DE = {
   dataProfile: 'Data profile',
   modelBadge: 'Model',
   holidayNote: (name) => `Public holiday: ${name} – counted like a Sunday`,
-  deviationNow: (value) => `now ${value}% · `,
-  measuredAgo: (age) => `Measured ${age} ago`,
+  deviation: (value) => (value >= 0 ? `+${value}% above usual` : `${Math.abs(value)}% below usual`),
+  hourUntil: (time, lag) => `As of ${time} · Wikipedia is ${lag} behind`,
+  profileAge: (age) => `Profile from ${age} ago`,
   baseline: 'Statistical baseline model',
   share: 'Audience share',
   percent: (n) => `${n}%`,
@@ -92,6 +96,11 @@ function RegionTime({
   }, [live, withSeconds])
   return <>{formatTime(live ? now : date, timeZone, withSeconds)}</>
 }
+
+const viewerTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
+// lastMeasuredAt is the start of Wikimedia's hourly bucket; the data covers views up to its end
+const hourEnd = (iso: string) => new Date(iso).getTime() + 3_600_000
 
 function measuredAge(iso: string, locale: Locale) {
   const minutes = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60_000))
@@ -243,15 +252,22 @@ export function RegionCards({
                   <div>
                     <dt>{t.liveSignal}</dt>
                     <dd className="deviation">
-                      {measuredAt ? (
+                      {/* Wikimedia publishes hourly views with a varying delay: name the covered hour and the measured lag */}
+                      {measure ? (
                         <>
-                          {measure
-                            ? t.deviationNow(
-                                `${measure.deviation >= 0 ? '+' : ''}${Math.round(measure.deviation)}`,
-                              )
-                            : ''}
-                          {t.measuredAgo(measuredAge(measuredAt, locale))}
+                          {t.deviation(Math.round(measure.deviation))}
+                          <small className="deviation-note">
+                            {t.hourUntil(
+                              formatTime(new Date(hourEnd(measure.lastMeasuredAt)), viewerTimeZone),
+                              measuredAge(
+                                new Date(hourEnd(measure.lastMeasuredAt)).toISOString(),
+                                locale,
+                              ),
+                            )}
+                          </small>
                         </>
+                      ) : measuredAt ? (
+                        t.profileAge(measuredAge(measuredAt, locale))
                       ) : (
                         <span className="deviation-placeholder">{t.baseline}</span>
                       )}

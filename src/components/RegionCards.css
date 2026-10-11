@@ -374,3 +374,10 @@
 .deviation-placeholder {
   color: var(--muted);
 }
+
+.deviation-note {
+  display: block;
+  margin-top: var(--space-1);
+  color: var(--muted);
+  font: var(--weight-regular) var(--text-meta) / var(--leading-meta) var(--font-ui);
+}
