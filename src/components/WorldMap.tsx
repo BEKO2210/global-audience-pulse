@@ -20,6 +20,7 @@ const DE = {
   day: 'Tag',
   twilight: 'Dämmerung',
   night: 'Nacht',
+  prime: 'Primetime',
 }
 const EN: typeof DE = {
   title: 'Who’s awake right now',
@@ -28,6 +29,7 @@ const EN: typeof DE = {
   day: 'Day',
   twilight: 'Twilight',
   night: 'Night',
+  prime: 'Prime time',
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
@@ -156,12 +158,18 @@ export function WorldMap({
               transition={{ duration: reduceMotion ? 0 : MOTION.change, ease: MOTION.ease }}
             >
               <circle r={Math.max(24, 22 * k)} fill="transparent" className="map-hitbox" />
-              {prime && selected.includes(region.id) && (
-                <circle r="12" fill="none" stroke="var(--accent)" opacity="0.35" />
+              {prime && (
+                <circle
+                  className="map-prime-ring"
+                  r="12"
+                  fill="none"
+                  stroke="var(--ink)"
+                  strokeWidth="1"
+                />
               )}
               <motion.circle
                 r={5 + score / 30}
-                fill={prime ? 'var(--accent)' : 'var(--ink)'}
+                fill="var(--ink)"
                 stroke="var(--paper)"
                 strokeWidth="2"
                 animate={{ r: 5 + score / 30 }}
@@ -196,6 +204,10 @@ export function WorldMap({
         <span>
           <i className="night-dot" />
           {t.night}
+        </span>
+        <span>
+          <i className="prime-dot" />
+          {t.prime}
         </span>
       </div>
       {caption && (

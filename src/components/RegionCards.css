@@ -117,7 +117,7 @@
 }
 
 .compact-place .compact-profile {
-  color: var(--accent-ink);
+  color: var(--muted);
 }
 
 .compact-phase {
@@ -291,7 +291,7 @@
 }
 
 .badge.measured::before {
-  background: var(--link);
+  background: var(--live);
 }
 
 @media (min-width: 600px) {

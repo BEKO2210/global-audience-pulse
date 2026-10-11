@@ -99,7 +99,7 @@
 .wt-bar i {
   display: block;
   height: 100%;
-  background: var(--accent);
+  background: var(--ink);
 }
 @media (max-width: 420px) {
   .wt-option {

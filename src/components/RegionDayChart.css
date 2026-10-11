@@ -1,4 +1,4 @@
-/* Region detail: the local day as one ink line, phase bands on the ink ramp, accent for prime time and "now". */
+/* Region detail: the local day and now marker use ink; the accent is reserved for prime time. */
 .rdc {
   margin: 0;
 }
@@ -62,11 +62,11 @@
   stroke-dasharray: 4 4;
 }
 .rdc-now {
-  stroke: var(--accent-ink);
+  stroke: var(--ink);
   stroke-width: 1;
 }
 .rdc-now-dot {
-  fill: var(--accent);
+  fill: var(--ink);
   stroke: var(--paper-2);
   stroke-width: 2;
 }

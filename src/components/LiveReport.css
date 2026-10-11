@@ -1,6 +1,6 @@
 /* Visual Lagebericht — extends base .live-report rules in styles.css */
 :root {
-  --region-series-0: var(--accent);
+  --region-series-0: color-mix(in srgb, var(--ink) 89%, var(--paper));
   --region-series-1: color-mix(in srgb, var(--ink) 80%, var(--paper));
   --region-series-2: color-mix(in srgb, var(--ink) 71%, var(--paper));
   --region-series-3: color-mix(in srgb, var(--ink) 62%, var(--paper));
@@ -11,7 +11,7 @@
 }
 
 [data-theme='light'] {
-  --region-series-0: var(--accent);
+  --region-series-0: color-mix(in srgb, var(--ink) 89%, var(--paper));
   --region-series-1: color-mix(in srgb, var(--ink) 80%, var(--paper));
   --region-series-2: color-mix(in srgb, var(--ink) 71%, var(--paper));
   --region-series-3: color-mix(in srgb, var(--ink) 62%, var(--paper));
@@ -272,18 +272,18 @@
 }
 
 .lr-trend-area {
-  fill: var(--accent-tint);
+  fill: color-mix(in srgb, var(--ink) 5%, transparent);
   stroke: none;
 }
 
 .lr-trend-line {
-  stroke: var(--accent);
+  stroke: color-mix(in srgb, var(--ink) 70%, var(--paper));
   stroke-width: 1.5;
 }
 
 .lr-trend-dot {
   fill: var(--paper);
-  stroke: var(--accent);
+  stroke: var(--ink);
   stroke-width: 1.5;
 }
 
@@ -489,11 +489,11 @@
 }
 
 .lr-live-bar-quiet {
-  background: var(--link);
+  background: var(--live);
 }
 
 .lr-live-bar-active {
-  background: var(--accent);
+  background: var(--live);
 }
 
 .lr-live-val-col {
@@ -511,11 +511,11 @@
 }
 
 .lr-live-val-active {
-  color: var(--accent-ink);
+  color: var(--live);
 }
 
 .lr-live-val-quiet {
-  color: var(--link);
+  color: var(--live);
 }
 
 .lr-live-val-flat {
@@ -527,9 +527,10 @@
   text-transform: none;
   letter-spacing: normal;
   padding: var(--space-1) var(--space-1);
-  border: 1px solid var(--accent);
-  color: var(--accent-ink, var(--accent));
-  background: var(--accent-tint);
+  border: 1px solid var(--live);
+  /* green carries the live meaning in border and tint; text stays ink for contrast in every style */
+  color: var(--ink);
+  background: color-mix(in srgb, var(--live) 10%, transparent);
   border-radius: 2px;
   white-space: nowrap;
 }
@@ -625,7 +626,7 @@
 .lr-audience-score .lr-mono {
   font-size: var(--text-xl);
   line-height: var(--leading-title);
-  color: var(--accent-ink);
+  color: var(--ink);
 }
 
 .lr-audience-status {

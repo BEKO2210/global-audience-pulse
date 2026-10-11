@@ -45,13 +45,7 @@ export function Sparkline({
         transition={{ duration: reduceMotion ? 0 : MOTION.change, ease: MOTION.ease }}
       />
       {highlightLast && (
-        <circle
-          cx={lastX}
-          cy={lastY}
-          r="2.5"
-          fill="var(--accent)"
-          vectorEffect="non-scaling-stroke"
-        />
+        <circle cx={lastX} cy={lastY} r="2.5" fill="var(--ink)" vectorEffect="non-scaling-stroke" />
       )}
     </svg>
   )
