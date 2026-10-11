@@ -1284,10 +1284,15 @@ button:active {
   font: var(--display-weight) var(--text-3xl)/var(--leading-title) var(--font-display);
   margin: var(--space-4) 0;
 }
-.method-copy > p {
+.method-copy > p,
+.method-intro {
   max-width: var(--prose);
   color: var(--muted);
   font-size: var(--text-sm);
+  line-height: var(--leading-body);
+}
+.method-intro strong {
+  color: var(--ink);
 }
 .method-copy strong {
   color: var(--ink);
@@ -1598,7 +1603,13 @@ button:active {
     margin: var(--space-4);
   }
   .method {
-    grid-template-columns: 0.7fr 1.3fr;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: var(--space-12);
+  }
+  .method-head {
+    position: sticky;
+    top: var(--space-8);
+    align-self: start;
   }
   .detail-sheet {
     max-width: 470px;

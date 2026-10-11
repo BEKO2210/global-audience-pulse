@@ -1104,13 +1104,20 @@ export default function App() {
             </Section>
             <Section defer placeholderHeight={900}>
               <section className="method" aria-labelledby="method-title">
-                <div>
+                {/* O-015: title and the explanation stay in view (sticky) next to the long right column */}
+                <div className="method-head">
                   <p className="eyebrow">{t.method}</p>
                   <h2 id="method-title">
                     {t.methodTitle[0]}
                     <br />
                     {t.methodTitle[1]}
                   </h2>
+                  <p className="method-intro">
+                    {t.methodText(
+                      MODEL_CONFIG.measuredBlend * 100,
+                      MODEL_CONFIG.baselineBlend * 100,
+                    )}
+                  </p>
                 </div>
                 <div className="method-copy">
                   <WeightingToggle
@@ -1118,12 +1125,6 @@ export default function App() {
                     weights={activeSnapshot.weights}
                     onChange={changeWeighting}
                   />
-                  <p>
-                    {t.methodText(
-                      MODEL_CONFIG.measuredBlend * 100,
-                      MODEL_CONFIG.baselineBlend * 100,
-                    )}
-                  </p>
                   {snapshotState === 'live' ? (
                     <div className="share-table">
                       {REGIONS.map((region) => (
