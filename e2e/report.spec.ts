@@ -193,7 +193,10 @@ test.describe('English edition (T-015)', () => {
     await expect(section.locator('.lr-audience-urteil').first()).toHaveText(
       'Post later, between 20:00 and 21:30',
     )
-    await expect(page.locator('.report-teaser-text')).toContainText(reportEn.schlagzeile)
+    await expect(page.locator('.report-teaser')).toHaveAttribute(
+      'aria-label',
+      expect.stringContaining(reportEn.schlagzeile),
+    )
     await expect(page.locator('.report-teaser-flag')).toHaveText('Berlin 28% quieter than usual')
   })
 

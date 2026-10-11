@@ -2358,6 +2358,7 @@ button:active {
   display: grid;
   gap: var(--space-1);
   min-height: 46px;
+  min-width: 0;
   padding: 0 0 var(--space-2);
   border-bottom: 1px solid var(--rule);
   color: inherit;
@@ -2373,10 +2374,18 @@ button:active {
 .report-teaser-text {
   /* Kept small on purpose: it arrives after a network fetch and must not become the LCP element. */
   font: var(--weight-medium) var(--text-sm)/var(--leading-body) var(--font-ui);
-  /* One line by nowrap, not line-clamp: a clamped block still lays out (and is measured as) every line. */
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  width: 100%;
+  min-width: 0;
   overflow: hidden;
   white-space: nowrap;
-  text-overflow: ellipsis;
+}
+.report-teaser-headline {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
 }
 /* T-019: a real anomaly leads the teaser line (live mark, no extra row, so no layout shift). */
 .report-teaser-flag {

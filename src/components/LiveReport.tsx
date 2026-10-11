@@ -99,42 +99,40 @@ export default function LiveReport({ now, data }: { now: Date; data: LiveAnalysi
         <p className="live-report-verdict" lang={lang}>
           {report.empfehlung}
         </p>
-        {facts ? <MemoryBadges facts={facts} /> : null}
-        {facts ? <HolidayChips facts={facts} /> : null}
       </div>
 
       {hasVisuals && facts ? (
-        <>
-          <div className="lr-layout">
-            <div className="lr-text-col">
-              <details
-                ref={details}
-                className="lr-details"
-                onToggle={(event) => {
-                  // opened by the reader, not by the desktop default below
-                  if (event.currentTarget.open && !autoOpened.current) track('Bericht aufgeklappt')
-                  autoOpened.current = false
-                }}
-              >
-                <summary>{t.readAll}</summary>
-                <p className="live-report-body" lang={lang}>
-                  {report.analyse}
-                </p>
-                <ul lang={lang}>
-                  {report.punkte.map((point) => (
-                    <li key={point}>{point}</li>
-                  ))}
-                </ul>
-              </details>
-            </div>
-            <div className="lr-visual-col">
-              <ContributionBar facts={facts} />
-              <TrendChart facts={facts} />
-              <LiveSignals facts={facts} />
-            </div>
+        <div className="lr-layout">
+          <div className="lr-text-col">
+            <MemoryBadges facts={facts} />
+            <HolidayChips facts={facts} />
+            <details
+              ref={details}
+              className="lr-details"
+              onToggle={(event) => {
+                // opened by the reader, not by the desktop default below
+                if (event.currentTarget.open && !autoOpened.current) track('Bericht aufgeklappt')
+                autoOpened.current = false
+              }}
+            >
+              <summary>{t.readAll}</summary>
+              <p className="live-report-body" lang={lang}>
+                {report.analyse}
+              </p>
+              <ul lang={lang}>
+                {report.punkte.map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
+              </ul>
+            </details>
+            <AudienceGrid facts={facts} report={report} lang={lang} />
           </div>
-          <AudienceGrid facts={facts} report={report} lang={lang} />
-        </>
+          <div className="lr-visual-col">
+            <ContributionBar facts={facts} />
+            <TrendChart facts={facts} />
+            <LiveSignals facts={facts} />
+          </div>
+        </div>
       ) : (
         <>
           <p className="live-report-body" lang={lang}>

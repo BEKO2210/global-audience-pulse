@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { DATA_SOURCES } from '../config/model'
 import { formatTime } from '../lib/time'
 import type { LiveAnalysisPayload } from './report/types'
@@ -101,6 +101,109 @@ function anomalyText(anomaly: Anomaly, data: LiveAnalysisPayload, locale: Locale
   return t.holiday(city, locale === 'en' ? (anomaly.nameEn ?? anomaly.name) : anomaly.name)
 }
 
+/** Pseudo-elements on the live flag need a little slack in off-DOM measurement. */
+const TEASER_MEASURE_SLACK = 12
+
+/** Ellipsis at a word boundary (never mid-word). */
+function truncateWords(text: string, maxChars: number): string {
+  if (text.length <= maxChars) return text
+  const slice = text.slice(0, maxChars)
+  const lastSpace = slice.lastIndexOf(' ')
+  if (lastSpace > 0) return `${slice.slice(0, lastSpace)}…`
+  return `${slice.slice(0, maxChars - 1)}…`
+}
+
+function measureTeaserWidth(flag: string | null, headline: string): number {
+  const root = document.createElement('span')
+  root.className = 'report-teaser-text'
+  root.style.cssText = 'position:fixed;left:-9999px;top:0;visibility:hidden;pointer-events:none;'
+  if (flag) {
+    const flagEl = document.createElement('span')
+    flagEl.className = 'report-teaser-flag'
+    flagEl.textContent = flag
+    root.appendChild(flagEl)
+  }
+  if (headline) {
+    const headEl = document.createElement('span')
+    headEl.className = 'report-teaser-headline'
+    headEl.textContent = headline
+    root.appendChild(headEl)
+  }
+  document.body.appendChild(root)
+  const width = root.getBoundingClientRect().width
+  root.remove()
+  return width
+}
+
+function fitTeaserLine(
+  maxWidth: number,
+  flag: string | null,
+  headline: string,
+): { mode: 'full' | 'flag-only' | 'truncated'; headline: string } {
+  const budget = maxWidth - TEASER_MEASURE_SLACK
+  if (measureTeaserWidth(flag, headline) <= budget) {
+    return { mode: 'full', headline }
+  }
+  for (let chars = headline.length; chars > 0; chars--) {
+    const clipped = truncateWords(headline, chars)
+    if (measureTeaserWidth(flag, clipped) <= budget) {
+      return { mode: 'truncated', headline: clipped }
+    }
+  }
+  if (flag && measureTeaserWidth(flag, '') <= budget) {
+    return { mode: 'flag-only', headline: '' }
+  }
+  return { mode: 'truncated', headline: truncateWords(headline, 1) }
+}
+
+function ReportTeaserLine({
+  flag,
+  headline,
+  lang,
+  flagLang,
+}: {
+  flag: string | null
+  headline: string
+  lang: Locale
+  flagLang: Locale
+}) {
+  const lineRef = useRef<HTMLSpanElement>(null)
+  const [fit, setFit] = useState<{ mode: 'full' | 'flag-only' | 'truncated'; headline: string }>({
+    mode: 'full',
+    headline,
+  })
+
+  useLayoutEffect(() => {
+    const el = lineRef.current
+    if (!el) return
+    const host = el.closest('.report-teaser')
+    const update = () => {
+      const width = host?.clientWidth ?? el.clientWidth
+      if (!width) return
+      setFit(fitTeaserLine(width, flag, headline))
+    }
+    update()
+    const ro = new ResizeObserver(update)
+    ro.observe(host ?? el)
+    return () => ro.disconnect()
+  }, [flag, headline])
+
+  return (
+    <span ref={lineRef} className="report-teaser-text" lang={lang}>
+      {flag ? (
+        <span className="report-teaser-flag" lang={flagLang}>
+          {flag}
+        </span>
+      ) : null}
+      {headline && fit.mode !== 'flag-only' ? (
+        <span className="report-teaser-headline">
+          {fit.mode === 'truncated' ? fit.headline : headline}
+        </span>
+      ) : null}
+    </span>
+  )
+}
+
 /**
  * One line in the hero, reserved while the report loads so it never shifts the layout; without a fresh
  * report (job paused for over a day) the line goes away instead of leaving an empty band.
@@ -122,19 +225,24 @@ export function ReportTeaser({
   const { report, lang, source } = localizedReport(data, locale)
   const ai = source === 'llm'
   const anomaly = anomalyOf(data.facts)
+  const flagLine = anomaly ? anomalyText(anomaly, data, locale, t) : null
+  const teaserAria = [flagLine, report.schlagzeile].filter(Boolean).join(' · ')
   return (
-    <a className="report-teaser" href="#lagebericht" {...(ai ? AI_MARK : {})}>
+    <a
+      className="report-teaser"
+      href="#lagebericht"
+      aria-label={teaserAria}
+      {...(ai ? AI_MARK : {})}
+    >
       <span className="report-teaser-label">
         {ai ? t.aiAnalysis : t.report} · {formatTime(generated, zone)}
       </span>
-      <span className="report-teaser-text" lang={lang}>
-        {anomaly && (
-          <span className="report-teaser-flag" lang={locale}>
-            {anomalyText(anomaly, data, locale, t)}
-          </span>
-        )}
-        {report.schlagzeile}
-      </span>
+      <ReportTeaserLine
+        lang={lang}
+        flagLang={locale}
+        flag={flagLine}
+        headline={report.schlagzeile}
+      />
     </a>
   )
 }

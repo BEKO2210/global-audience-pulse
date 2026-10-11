@@ -29,7 +29,9 @@ const EN: typeof DE = {
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
-const PAD = { t: 26, r: 34, b: 24, l: 24 }
+const PAD = { t: 30, r: 44, b: 24, l: 24 }
+const SCORE_LABEL_GAP = 12
+const THRESHOLD_LABEL_CLEARANCE = 16
 
 export function TrendChart({ facts }: { facts: AnalysisFacts }) {
   // 1 SVG unit = 1 CSS px (height from CSS), so labels keep their size on every screen.
@@ -73,6 +75,16 @@ export function TrendChart({ facts }: { facts: AnalysisFacts }) {
   const yAt = (score: number) => PAD.t + innerH - ((score - yMin) / span) * innerH
 
   const visibleLevels = candidateThresholds.filter((l) => l.min >= yMin + 2 && l.min <= yMax - 2)
+  const plotRight = PAD.l + innerW
+
+  const scoreLabelY = (cy: number) => {
+    let y = cy - SCORE_LABEL_GAP
+    for (const lvl of visibleLevels) {
+      const ty = yAt(lvl.min) + 3.5
+      if (Math.abs(y - ty) < THRESHOLD_LABEL_CLEARANCE) y = cy - SCORE_LABEL_GAP - 8
+    }
+    return y
+  }
 
   const line = points.map((p, i) => `${xAt(i)},${yAt(p.score)}`).join(' ')
   const area = `${PAD.l},${PAD.t + innerH} ${line} ${xAt(points.length - 1)},${PAD.t + innerH}`
@@ -106,8 +118,8 @@ export function TrendChart({ facts }: { facts: AnalysisFacts }) {
             const y = yAt(lvl.min)
             return (
               <g key={lvl.min} className="lr-trend-threshold">
-                <line x1={PAD.l} x2={W - PAD.r} y1={y} y2={y} className="lr-trend-threshold-line" />
-                <text x={W - PAD.r + 6} y={y + 3.5} className="lr-trend-threshold-value">
+                <line x1={PAD.l} x2={plotRight} y1={y} y2={y} className="lr-trend-threshold-line" />
+                <text x={plotRight + 6} y={y + 3.5} className="lr-trend-threshold-value">
                   {lvl.min}
                 </text>
               </g>
@@ -120,7 +132,7 @@ export function TrendChart({ facts }: { facts: AnalysisFacts }) {
             return (
               <g key={p.label} className="lr-trend-point">
                 <circle className="lr-trend-dot" cx={cx} cy={cy} r={3.5} />
-                <text className="lr-trend-score" x={cx} y={cy - 8} textAnchor="middle">
+                <text className="lr-trend-score" x={cx} y={scoreLabelY(cy)} textAnchor="middle">
                   {p.score}
                 </text>
                 <text className="lr-trend-label" x={cx} y={H - 6} textAnchor="middle">
