@@ -70,14 +70,42 @@ test('share link round-trips audience and weighting state', async ({
 test('supports System, Hell, and Dunkel including OS color changes', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'light' })
   await page.goto('')
-  await page.getByRole('button', { name: 'System' }).click()
+  const menu = page.getByRole('button', { name: 'Darstellung' })
+  await menu.click()
+  await page.getByRole('radio', { name: 'System' }).click()
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
   await page.emulateMedia({ colorScheme: 'dark' })
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
-  await page.getByRole('button', { name: 'Hell' }).click()
+  await page.getByRole('radio', { name: 'Hell' }).click()
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
-  await page.getByRole('button', { name: 'Dunkel' }).click()
+  await page.getByRole('radio', { name: 'Dunkel' }).click()
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+})
+
+test('three styles can be chosen, are remembered and load their own fonts (O-014)', async ({
+  page,
+}) => {
+  await page.goto('')
+  await expect(page.locator('html')).toHaveAttribute('data-style', 'tafel')
+  await page.getByRole('button', { name: 'Darstellung' }).click()
+  await expect(page.getByRole('radio', { name: /Abflugtafel/ })).toHaveAttribute(
+    'aria-checked',
+    'true',
+  )
+  await page.getByRole('radio', { name: /Atlas/ }).click()
+  await expect(page.locator('html')).toHaveAttribute('data-style', 'atlas')
+  await expect
+    .poll(() => page.evaluate(() => document.fonts.check('600 32px "Source Serif 4 Variable"')))
+    .toBe(true)
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('radio', { name: /Atlas/ })).toHaveCount(0)
+  await expect(page.getByRole('button', { name: 'Darstellung' })).toBeFocused()
+  await page.reload()
+  await expect(page.locator('html')).toHaveAttribute('data-style', 'atlas')
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute(
+    'content',
+    /#(eef1ee|0f1a1d)/,
+  )
 })
 
 test('every chart carries a one-sentence caption that follows the time machine (T-017)', async ({

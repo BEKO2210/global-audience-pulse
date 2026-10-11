@@ -1,10 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import '@fontsource/instrument-serif/400.css'
-import '@fontsource-variable/geist'
-import '@fontsource-variable/geist-mono'
 import './styles.css'
+import { readStoredStyle } from './config/styles'
+import { loadStyleFonts } from './lib/styleFonts'
 import { LegalPage } from './components/LegalPage'
+
+// Same style as the main page (O-014): data-style is set by the inline script, fonts follow.
+void loadStyleFonts(readStoredStyle())
 
 const kind = document.body.dataset.legalPage
 if (kind !== 'impressum' && kind !== 'datenschutz') {

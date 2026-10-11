@@ -52,18 +52,14 @@
 }
 .ap-label {
   color: var(--muted);
-  font:
-    var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 .ap-window strong {
   color: var(--accent-ink);
-  font:
-    var(--weight-semibold) clamp(var(--text-2xl), 5vw, var(--text-3xl)) / var(--leading-title)
-      'Geist Mono Variable',
-    monospace;
+  font: var(--weight-semibold) clamp(var(--text-2xl), 5vw, var(--text-3xl)) / var(--leading-title)
+    var(--font-num);
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
 }

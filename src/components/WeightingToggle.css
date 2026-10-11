@@ -6,9 +6,7 @@
 }
 .wt-label {
   color: var(--muted);
-  font:
-    var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -56,10 +54,7 @@
 .wt .wt-head strong {
   /* the methodology text styles <strong> in ink; here it must follow the option's colour */
   color: inherit;
-  font:
-    var(--weight-semibold) var(--text-base)/var(--leading-body) 'Geist Variable',
-    system-ui,
-    sans-serif;
+  font: var(--weight-semibold) var(--text-base)/var(--leading-body) var(--font-ui);
 }
 .wt-radio {
   display: grid;
@@ -93,9 +88,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  font:
-    var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
   font-variant-numeric: tabular-nums;
 }
 .wt-bar {

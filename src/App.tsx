@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Desktop, Moon, Sun, X } from '@phosphor-icons/react'
+import { X } from '@phosphor-icons/react'
 import { AnimatePresence, MotionConfig, motion, useReducedMotion } from 'motion/react'
 import { DATA_SOURCES, MODEL_CONFIG, PHASES, STATUS_LEVELS } from './config/model'
 import { MOTION } from './config/motion'
@@ -47,6 +47,9 @@ import { PostingPlan } from './components/PostingPlan'
 import { AskPulse } from './components/AskPulse'
 import { CalendarButton } from './components/CalendarButton'
 import { ReminderButton } from './components/ReminderButton'
+import { DisplayMenu, type ThemePreference } from './components/DisplayMenu'
+import { STYLES, STYLE_KEY, readStoredStyle, type StyleId } from './config/styles'
+import { loadStyleFonts } from './lib/styleFonts'
 import { restoreReminders } from './lib/reminder'
 import { pickPostingTimes } from './lib/postingPlan'
 import { awakeSummary, forecastPeak, overlapHour } from './lib/captions'
@@ -65,8 +68,6 @@ const DE = {
   refreshTitle: (min: number) => `Automatischer Abruf alle ${min} Min. · Klick lädt sofort neu`,
   measured: (ago: string) => `Messdaten ${ago}`,
   noData: 'Messdaten nicht verfügbar',
-  display: 'Darstellung',
-  themes: { system: 'System', light: 'Hell', dark: 'Dunkel' },
   language: 'Sprache',
   eyebrowLive: 'Aktuelles Publikumsradar',
   eyebrowFallback: 'Beispieldaten · Offline-Modell',
@@ -150,8 +151,6 @@ const EN: typeof DE = {
   refreshTitle: (min: number) => `Refreshes every ${min} min · click to refresh now`,
   measured: (ago: string) => `Data ${ago}`,
   noData: 'Data unavailable',
-  display: 'Appearance',
-  themes: { system: 'System', light: 'Light', dark: 'Dark' },
   language: 'Language',
   eyebrowLive: 'Live audience radar',
   eyebrowFallback: 'Sample data · offline model',
@@ -323,13 +322,19 @@ function Header({
   snapshot,
   liveScore,
   themePreference,
+  activeTheme,
   onTheme,
+  style,
+  onStyle,
   onRefresh,
 }: {
   snapshot: Snapshot
   liveScore?: number
   themePreference: ThemePreference
+  activeTheme: 'light' | 'dark'
   onTheme: (theme: ThemePreference) => void
+  style: StyleId
+  onStyle: (style: StyleId) => void
   onRefresh: () => void
 }) {
   const { locale, setLocale } = useLocale()
@@ -371,31 +376,17 @@ function Header({
             </button>
           ))}
         </div>
-        <div className="theme-toggle" aria-label={t.display} role="group">
-          {(
-            [
-              ['system', Desktop, t.themes.system],
-              ['light', Sun, t.themes.light],
-              ['dark', Moon, t.themes.dark],
-            ] as const
-          ).map(([value, Icon, label]) => (
-            <button
-              key={value}
-              onClick={() => onTheme(value)}
-              aria-pressed={themePreference === value}
-              aria-label={label}
-              title={label}
-            >
-              <Icon size={16} weight="regular" aria-hidden="true" />
-            </button>
-          ))}
-        </div>
+        <DisplayMenu
+          style={style}
+          onStyle={onStyle}
+          theme={themePreference}
+          activeTheme={activeTheme}
+          onTheme={onTheme}
+        />
       </div>
     </motion.header>
   )
 }
-
-type ThemePreference = 'system' | 'light' | 'dark'
 
 function initialThemePreference(): ThemePreference {
   try {
@@ -425,6 +416,7 @@ export default function App() {
     window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark',
   )
   const activeTheme = themePreference === 'system' ? systemTheme : themePreference
+  const [style, setStyle] = useState<StyleId>(readStoredStyle)
   const [mobileHorizon, setMobileHorizon] = useState<24 | 168>(24)
   const [heroCountsFromZero] = useState(() => {
     try {
@@ -471,15 +463,18 @@ export default function App() {
   }, [])
   useEffect(() => {
     document.documentElement.dataset.theme = activeTheme
+    document.documentElement.dataset.style = style
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute('content', activeTheme === 'light' ? '#f4f0e7' : '#11110f')
+      ?.setAttribute('content', STYLES[style].themeColor[activeTheme])
+    void loadStyleFonts(style)
     try {
       localStorage.setItem('gap-theme', themePreference)
+      localStorage.setItem(STYLE_KEY, style)
     } catch {
       /* optional */
     }
-  }, [activeTheme, themePreference])
+  }, [activeTheme, themePreference, style])
   useEffect(() => {
     if (!detail) return
     returnFocusRef.current = document.activeElement as HTMLElement | null
@@ -709,9 +704,15 @@ export default function App() {
             snapshot={snapshot}
             liveScore={scoreGridReady ? scoreGrid.globalAt(selected, minuteNow) : undefined}
             themePreference={themePreference}
+            activeTheme={activeTheme}
             onTheme={(theme) => {
               track('Theme', { wert: theme })
               setThemePreference(theme)
+            }}
+            style={style}
+            onStyle={(next) => {
+              track('Stil', { wert: next })
+              setStyle(next)
             }}
             onRefresh={refreshSnapshot}
           />

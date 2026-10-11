@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#11110f" />
+    <meta name="theme-color" content="#0f1113" />
     <script>
+      // Style (O-014) and light/dark before first paint; colours mirror src/config/styles.ts (checked by a test).
       try {
         const saved = localStorage.getItem('gap-theme')
         const theme =
@@ -13,9 +14,16 @@
             : matchMedia('(prefers-color-scheme: light)').matches
               ? 'light'
               : 'dark'
+        let style = localStorage.getItem('gap-style')
+        if (style !== 'tafel' && style !== 'atlas' && style !== 'praezision') style = 'tafel'
+        const colors = {
+          tafel: { light: '#f4f4f1', dark: '#0f1113' },
+          atlas: { light: '#eef1ee', dark: '#0f1a1d' },
+          praezision: { light: '#fafaf8', dark: '#0b0d12' },
+        }
         document.documentElement.dataset.theme = theme
-        document.querySelector('meta[name="theme-color"]').content =
-          theme === 'light' ? '#f4f0e7' : '#11110f'
+        document.documentElement.dataset.style = style
+        document.querySelector('meta[name="theme-color"]').content = colors[style][theme]
       } catch {}
       // Language (T-065), same rule as src/i18n/locale.ts: ?lang= > saved choice > system language.
       try {
@@ -145,8 +153,8 @@
               aria-hidden="true"
               focusable="false"
             >
-              <rect width="64" height="64" rx="14" fill="#11110f" />
-              <g fill="none" stroke="#f3efe6">
+              <rect class="logo-tile" width="64" height="64" rx="14" />
+              <g class="logo-lines" fill="none">
                 <circle class="logo-draw" cx="32" cy="32" r="20" stroke-width="3" pathLength="1" />
                 <g class="logo-meridians">
                   <ellipse class="logo-meridian" style="--i: 0" cx="32" cy="32" rx="20" ry="20" />
@@ -164,7 +172,6 @@
                 class="logo-draw logo-pulse"
                 d="M7 35h13l5-10 7 18 6-13 4 5h15"
                 fill="none"
-                stroke="#f08a59"
                 stroke-width="4"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -174,7 +181,6 @@
                 class="logo-beat"
                 d="M7 35h13l5-10 7 18 6-13 4 5h15"
                 fill="none"
-                stroke="#fff7ef"
                 stroke-width="2.4"
                 stroke-linecap="round"
                 stroke-linejoin="round"

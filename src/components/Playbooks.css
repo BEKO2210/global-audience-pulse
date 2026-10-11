@@ -36,10 +36,7 @@
   border: 1px solid var(--rule-solid);
   background: transparent;
   color: var(--muted);
-  font:
-    var(--weight-medium) var(--text-sm)/var(--leading-body) 'Geist Variable',
-    system-ui,
-    sans-serif;
+  font: var(--weight-medium) var(--text-sm)/var(--leading-body) var(--font-ui);
   white-space: nowrap;
   scroll-snap-align: start;
   cursor: pointer;
@@ -93,17 +90,12 @@
   margin: 0 0 var(--space-4);
   padding-bottom: var(--space-3);
   border-bottom: 1px solid var(--rule-solid);
-  font:
-    var(--weight-regular) var(--text-xl)/var(--leading-title) 'Instrument Serif',
-    serif;
+  font: var(--display-weight) var(--text-xl)/var(--leading-title) var(--font-display);
   letter-spacing: -0.01em;
 }
 .pb-col > h3 small {
   color: var(--muted);
-  font:
-    var(--weight-regular) var(--text-sm)/var(--leading-body) 'Geist Variable',
-    system-ui,
-    sans-serif;
+  font: var(--weight-regular) var(--text-sm)/var(--leading-body) var(--font-ui);
   letter-spacing: 0;
 }
 
@@ -117,10 +109,7 @@
   gap: var(--space-2);
   margin: 0 0 var(--space-1);
   color: var(--muted);
-  font:
-    var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Variable',
-    system-ui,
-    sans-serif;
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-ui);
   letter-spacing: 0.02em;
 }
 .pb-list-mark {
@@ -129,9 +118,7 @@
   width: 20px;
   height: 20px;
   border: 1px solid currentColor;
-  font:
-    var(--weight-semibold) var(--text-sm)/var(--leading-body) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-semibold) var(--text-sm)/var(--leading-body) var(--font-num);
 }
 .pb-list.is-plus .pb-list-mark {
   color: var(--accent-ink);
@@ -154,10 +141,7 @@
   border-bottom: 0;
 }
 .pb-list li strong {
-  font:
-    var(--weight-semibold) var(--text-base)/var(--leading-body) 'Geist Variable',
-    system-ui,
-    sans-serif;
+  font: var(--weight-semibold) var(--text-base)/var(--leading-body) var(--font-ui);
   letter-spacing: -0.005em;
 }
 .pb-list li p {
@@ -178,9 +162,7 @@
   padding: 0 var(--space-1);
   border: 1px solid var(--rule-solid);
   color: var(--muted);
-  font:
-    var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
   text-decoration: none;
   vertical-align: 1px;
 }
@@ -222,9 +204,7 @@
 .pb-heat-col {
   padding-bottom: var(--space-1);
   color: var(--muted);
-  font:
-    var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
 }
 .pb-heat-row {
   display: grid;
@@ -234,9 +214,7 @@
 }
 .pb-heat-day {
   color: var(--muted);
-  font:
-    var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
 }
 .pb-heat-cell {
   --fill: 0;
@@ -305,16 +283,11 @@
   margin-bottom: var(--space-2);
 }
 .pb-study dt strong {
-  font:
-    var(--weight-semibold) var(--text-sm)/var(--leading-body) 'Geist Variable',
-    system-ui,
-    sans-serif;
+  font: var(--weight-semibold) var(--text-sm)/var(--leading-body) var(--font-ui);
 }
 .pb-study dt span {
   color: var(--muted);
-  font:
-    var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
 }
 .pb-study dd {
   display: grid;
@@ -345,9 +318,7 @@
   border-radius: 50%;
   background: var(--ink);
   color: var(--paper);
-  font:
-    var(--weight-semibold) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-semibold) var(--text-meta)/var(--leading-meta) var(--font-num);
 }
 .pb-weak {
   color: var(--muted);
@@ -381,9 +352,7 @@
 }
 .pb-source-num {
   color: var(--muted);
-  font:
-    var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
 }
 .pb-sources li > div {
   display: grid;
@@ -424,9 +393,7 @@
 .pb-details summary::after {
   content: '+';
   color: var(--muted);
-  font:
-    var(--weight-medium) var(--text-base)/var(--leading-body) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-medium) var(--text-base)/var(--leading-body) var(--font-num);
 }
 .pb-details[open] summary::after {
   content: '−';

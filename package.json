@@ -24,9 +24,14 @@
     "gpu:status": "scripts/dev/gpu-status.sh"
   },
   "dependencies": {
-    "@fontsource-variable/geist": "^5.3.0",
-    "@fontsource-variable/geist-mono": "^5.3.0",
-    "@fontsource/instrument-serif": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource-variable/schibsted-grotesk": "^5.3.0",
+    "@fontsource-variable/source-code-pro": "^5.3.1",
+    "@fontsource-variable/source-sans-3": "^5.3.1",
+    "@fontsource-variable/source-serif-4": "^5.3.1",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans": "^5.3.0",
+    "@fontsource/ibm-plex-sans-condensed": "^5.3.0",
     "@phosphor-icons/react": "^2.1.10",
     "d3-geo": "^3.1.1",
     "d3-scale": "^4.0.2",

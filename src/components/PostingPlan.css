@@ -108,9 +108,7 @@
   gap: var(--space-1);
 }
 .pp-when strong {
-  font:
-    var(--weight-medium) var(--text-lg)/var(--leading-body) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-medium) var(--text-lg)/var(--leading-body) var(--font-num);
   font-variant-numeric: tabular-nums;
 }
 .pp-when small,
@@ -127,9 +125,7 @@
   gap: var(--space-1);
 }
 .pp-score b {
-  font:
-    var(--weight-regular) var(--text-2xl)/var(--leading-title) 'Instrument Serif',
-    serif;
+  font: var(--display-weight) var(--text-2xl)/var(--leading-title) var(--font-display);
   font-variant-numeric: tabular-nums;
   color: var(--muted);
 }
@@ -198,9 +194,7 @@
   .pp-head {
     padding: 0 0 var(--space-2);
     color: var(--muted);
-    font:
-      var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-      monospace;
+    font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
   }
   .pp-row > * {
     grid-area: auto;

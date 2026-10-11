@@ -107,10 +107,7 @@ a.wordmark {
   gap: var(--space-3);
 }
 a.wordmark .wordmark-text {
-  font:
-    var(--weight-semibold) var(--text-base)/var(--leading-body) 'Geist Variable',
-    system-ui,
-    sans-serif;
+  font: var(--weight-semibold) var(--text-base)/var(--leading-body) var(--font-ui);
   letter-spacing: -0.02em;
 }
 .wm-word {
@@ -140,4 +137,18 @@ a.wordmark .wordmark-text {
     opacity: 1;
     transform: none;
   }
+}
+
+/* O-014: board-dark tile in every style; the pulse takes the style's accent */
+.logo-tile {
+  fill: #0f1113;
+}
+.logo-lines {
+  stroke: #eceae4;
+}
+.logo-pulse {
+  stroke: var(--logo-pulse, #f5a524);
+}
+.logo-beat {
+  stroke: #ffffff;
 }

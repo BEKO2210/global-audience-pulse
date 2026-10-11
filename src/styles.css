@@ -24,53 +24,155 @@
   --space-12: 48px;
   --space-16: 64px;
   --prose: 68ch;
-  color-scheme: dark;
-  --paper: #11110f;
-  --paper-2: #181815;
-  --ink: #f3efe6;
-  --muted: #aaa69a;
-  --soft: #817e75;
-  --rule: rgba(243, 239, 230, 0.12);
-  --rule-solid: #656159;
-  --accent: #f08a59;
-  --accent-ink: #f08a59;
-  --accent-tint: rgba(240, 138, 89, 0.14);
-  --link: #9fc5bf;
-  --series-1: #df7457;
-  --series-2: #d5b65c;
-  --series-3: #62a39b;
-  --series-4: #8997c7;
-  --series-5: #bc7f9f;
   --motion-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --mobile-bar-height: 72px;
   --content-width: 1440px;
   --gutter: clamp(var(--space-4), 3.35vw, var(--space-12));
   --section-space: clamp(var(--space-12), 5vw, var(--space-16));
-  --map-day: #656159;
+  /* O-014 style "Abflugtafel" (default), dark */
+  color-scheme: dark;
+  --font-display: 'IBM Plex Sans Condensed', system-ui, sans-serif;
+  --font-ui: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-num: 'IBM Plex Mono', ui-monospace, monospace;
+  --display-weight: 600;
+  --display-tracking: -0.01em;
+  --display-tracking-xl: -0.02em;
+  --logo-pulse: #f5a524;
+  --paper: #0f1113;
+  --paper-2: #171a1d;
+  --ink: #eceae4;
+  --muted: #a3a7ad;
+  --soft: #8a8f96;
+  --rule: rgba(236, 234, 228, 0.12);
+  --rule-solid: #4a5057;
+  --accent: #f5a524;
+  --accent-ink: #f5b54a;
+  --accent-tint: rgba(245, 165, 36, 0.14);
+  --link: #8fb8ff;
+  --series-1: #f5a524;
+  --series-2: #d5b65c;
+  --series-3: #5fb3a4;
+  --series-4: #8fa4e0;
+  --series-5: #c88aaa;
+  --map-day: #4a5057;
   --map-twilight: rgba(35, 39, 47, 0.18);
   --map-night: rgba(4, 7, 12, 0.58);
 }
 [data-theme='light'] {
   color-scheme: light;
-  --paper: #f4f0e7;
-  --paper-2: #ebe6dc;
-  --ink: #201f1b;
-  --muted: #67645d;
-  --soft: #635f58;
-  --rule: rgba(32, 31, 27, 0.14);
-  --rule-solid: #827c72;
-  --accent: #eb6c36;
-  --accent-ink: #9f3d12;
-  --accent-tint: rgba(235, 108, 54, 0.13);
-  --link: #286c68;
-  --series-1: #c95d42;
-  --series-2: #a98220;
-  --series-3: #327d76;
-  --series-4: #5f6fa5;
-  --series-5: #9a5f7f;
-  --map-day: #827c72;
-  --map-twilight: rgba(180, 150, 120, 0.14);
+  --paper: #f4f4f1;
+  --paper-2: #e9e9e5;
+  --ink: #15171a;
+  --muted: #5b6067;
+  --soft: #5f646b;
+  --rule: rgba(21, 23, 26, 0.12);
+  --rule-solid: #8b9097;
+  --accent: #d98a0b;
+  --accent-ink: #8a5400;
+  --accent-tint: rgba(217, 138, 11, 0.14);
+  --link: #1f5fbf;
+  --series-1: #b26f00;
+  --series-2: #8f7a1c;
+  --series-3: #2f7d70;
+  --series-4: #4f63a8;
+  --series-5: #94577a;
+  --map-day: #8b9097;
+  --map-twilight: rgba(150, 140, 120, 0.14);
   --map-night: rgba(30, 36, 50, 0.16);
+}
+
+/* "Atlas": map paper, petrol ink, signal red */
+[data-style='atlas'] {
+  --logo-pulse: #ff5a6e;
+  --font-display: 'Source Serif 4 Variable', Georgia, serif;
+  --font-ui: 'Source Sans 3 Variable', system-ui, sans-serif;
+  --font-num: 'Source Code Pro Variable', ui-monospace, monospace;
+  --display-weight: 600;
+  --display-tracking: -0.005em;
+  --display-tracking-xl: -0.02em;
+  --paper: #0f1a1d;
+  --paper-2: #16252a;
+  --ink: #e6eeec;
+  --muted: #9fb1b3;
+  --soft: #84979a;
+  --rule: rgba(230, 238, 236, 0.12);
+  --rule-solid: #4b5f63;
+  --accent: #ff5a6e;
+  --accent-ink: #ff7a8a;
+  --accent-tint: rgba(255, 90, 110, 0.14);
+  --link: #7cc4c9;
+  --series-1: #ff6b7d;
+  --series-2: #d9b863;
+  --series-3: #5fb8b2;
+  --series-4: #8ea6dd;
+  --series-5: #c391b4;
+  --map-day: #4b5f63;
+}
+[data-style='atlas'][data-theme='light'] {
+  --paper: #eef1ee;
+  --paper-2: #e2e7e3;
+  --ink: #16292e;
+  --muted: #4f6166;
+  --soft: #55676b;
+  --rule: rgba(22, 41, 46, 0.14);
+  --rule-solid: #84959a;
+  --accent: #d7263d;
+  --accent-ink: #b01e31;
+  --accent-tint: rgba(215, 38, 61, 0.1);
+  --link: #1f6f78;
+  --series-1: #c4283c;
+  --series-2: #9a7b17;
+  --series-3: #1f7a73;
+  --series-4: #46609e;
+  --series-5: #8d4f76;
+  --map-day: #84959a;
+}
+
+/* "Präzision": near white, deep ink, cobalt */
+[data-style='praezision'] {
+  --logo-pulse: #7d92ff;
+  --font-display: 'Schibsted Grotesk Variable', system-ui, sans-serif;
+  --font-ui: 'Schibsted Grotesk Variable', system-ui, sans-serif;
+  --font-num: 'JetBrains Mono Variable', ui-monospace, monospace;
+  --display-weight: 600;
+  --display-tracking: -0.02em;
+  --display-tracking-xl: -0.04em;
+  --paper: #0b0d12;
+  --paper-2: #12151c;
+  --ink: #eef0f4;
+  --muted: #a2a9b5;
+  --soft: #858c98;
+  --rule: rgba(238, 240, 244, 0.1);
+  --rule-solid: #474e5a;
+  --accent: #6d84ff;
+  --accent-ink: #8b9dff;
+  --accent-tint: rgba(109, 132, 255, 0.14);
+  --link: #8b9dff;
+  --series-1: #7d92ff;
+  --series-2: #d4b45a;
+  --series-3: #4fb8a8;
+  --series-4: #b48cf0;
+  --series-5: #e0829f;
+  --map-day: #474e5a;
+}
+[data-style='praezision'][data-theme='light'] {
+  --paper: #fafaf8;
+  --paper-2: #f0f0ed;
+  --ink: #0d1117;
+  --muted: #545b66;
+  --soft: #5a616b;
+  --rule: rgba(13, 17, 23, 0.1);
+  --rule-solid: #9aa0a8;
+  --accent: #2546f0;
+  --accent-ink: #1f3bd1;
+  --accent-tint: rgba(37, 70, 240, 0.08);
+  --link: #2546f0;
+  --series-1: #2546f0;
+  --series-2: #94761a;
+  --series-3: #127467;
+  --series-4: #6a43c9;
+  --series-5: #b03a62;
+  --map-day: #9aa0a8;
 }
 * {
   box-sizing: border-box;
@@ -83,7 +185,7 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: 'Geist Variable', sans-serif;
+  font-family: var(--font-ui);
   font-size: var(--text-base);
   line-height: var(--leading-body);
   overflow-x: hidden;
@@ -154,7 +256,7 @@ button {
 }
 .live-clock {
   display: none;
-  font-family: 'Geist Mono Variable', monospace;
+  font-family: var(--font-num);
   text-align: right;
   line-height: var(--leading-meta);
   font-variant-numeric: tabular-nums;
@@ -180,7 +282,7 @@ button {
   border: 0;
   background: transparent;
   padding: var(--space-2) 0;
-  font-family: 'Geist Mono Variable', monospace;
+  font-family: var(--font-num);
   text-transform: uppercase;
   font-size: var(--text-meta);
   line-height: var(--leading-meta);
@@ -258,9 +360,7 @@ button {
 }
 .lang-toggle button {
   width: 34px;
-  font:
-    var(--weight-semibold) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-semibold) var(--text-meta)/var(--leading-meta) var(--font-num);
   letter-spacing: 0.04em;
 }
 .theme-toggle button[aria-pressed='true'],
@@ -270,7 +370,7 @@ button {
 }
 .eyebrow,
 .micro {
-  font-family: 'Geist Mono Variable', monospace;
+  font-family: var(--font-num);
   font-size: var(--text-meta);
   line-height: var(--leading-meta);
   letter-spacing: 0.08em;
@@ -308,11 +408,9 @@ button {
   }
 }
 .hero h1 {
-  font:
-    var(--weight-regular) clamp(var(--text-3xl), 10vw, var(--text-3xl))/var(--leading-title)
-      'Instrument Serif',
-    serif;
-  letter-spacing: -0.055em;
+  font: var(--display-weight) clamp(var(--text-3xl), 10vw, var(--text-3xl))/var(--leading-title)
+    var(--font-display);
+  letter-spacing: var(--display-tracking-xl);
   margin: var(--space-3) 0 var(--space-4);
 }
 .hero h1 em {
@@ -325,11 +423,9 @@ button {
   gap: var(--space-4);
 }
 .hero-score {
-  font:
-    var(--weight-regular) 88px/0.75 'Instrument Serif',
-    serif;
+  font: var(--display-weight) 88px/0.75 var(--font-display);
   color: var(--accent-ink);
-  letter-spacing: -0.055em;
+  letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
   min-width: 3.05ch;
   transition: color 0.22s var(--motion-ease);
@@ -344,9 +440,7 @@ button {
   color: var(--muted);
 }
 .hero-score small {
-  font:
-    var(--weight-regular) var(--text-base)/1.2 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-regular) var(--text-base)/1.2 var(--font-num);
   color: var(--muted);
   letter-spacing: 0;
 }
@@ -359,9 +453,7 @@ button {
   display: inline-flex;
   gap: var(--space-2);
   align-items: center;
-  font:
-    var(--weight-semibold) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-semibold) var(--text-meta)/var(--leading-meta) var(--font-num);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   border: 1px solid var(--rule-solid);
@@ -403,9 +495,7 @@ button {
   padding: var(--space-4);
 }
 .hero-window-time {
-  font:
-    var(--weight-medium) var(--text-xl)/var(--leading-body) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-medium) var(--text-xl)/var(--leading-body) var(--font-num);
   color: var(--accent-ink);
   margin: var(--space-2) 0 var(--space-1);
   min-height: 30px;
@@ -456,9 +546,7 @@ button {
 }
 .hero-aside dd {
   margin: 0;
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
 }
 .hero-aside .best-region {
   display: inline-flex;
@@ -538,9 +626,7 @@ button:active {
 .section-head h2,
 .regions-section h2,
 .presets h2 {
-  font:
-    var(--weight-regular) var(--text-2xl)/var(--leading-title) 'Instrument Serif',
-    serif;
+  font: var(--display-weight) var(--text-2xl)/var(--leading-title) var(--font-display);
   margin: 0;
   letter-spacing: -0.02em;
 }
@@ -588,9 +674,7 @@ button:active {
 .map-key {
   display: flex;
   gap: var(--space-4);
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
   color: var(--muted);
   justify-content: flex-end;
   flex-wrap: wrap;
@@ -619,9 +703,7 @@ button:active {
     linear-gradient(var(--map-twilight), var(--map-twilight)), var(--map-day);
 }
 .map-pin-label {
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
   fill: var(--ink);
   pointer-events: none;
   paint-order: stroke;
@@ -663,9 +745,7 @@ button:active {
 }
 .forecast-legend {
   color: var(--muted);
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -701,9 +781,7 @@ button:active {
 }
 .forecast text,
 .dial text {
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
   fill: var(--muted);
 }
 .scrub-readout {
@@ -712,9 +790,7 @@ button:active {
   display: flex;
   justify-content: space-between;
   gap: var(--space-2);
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
   color: var(--muted);
 }
 .scrub-readout strong {
@@ -746,9 +822,7 @@ button:active {
   margin-bottom: var(--space-2);
 }
 .insight-strip strong {
-  font:
-    var(--weight-regular) var(--text-lg)/var(--leading-title) 'Instrument Serif',
-    serif;
+  font: var(--display-weight) var(--text-lg)/var(--leading-title) var(--font-display);
 }
 .insight-strip small {
   display: block;
@@ -784,15 +858,11 @@ button:active {
   color: var(--accent-ink);
 }
 .preset-grid h3 {
-  font:
-    var(--weight-regular) var(--text-xl)/var(--leading-title) 'Instrument Serif',
-    serif;
+  font: var(--display-weight) var(--text-xl)/var(--leading-title) var(--font-display);
   margin: var(--space-2) 0 var(--space-4);
 }
 .preset-time {
-  font:
-    var(--weight-medium) var(--text-base)/1.2 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-medium) var(--text-base)/1.2 var(--font-num);
 }
 .preset-time small {
   color: var(--muted);
@@ -801,9 +871,7 @@ button:active {
 }
 .preset-score {
   color: var(--accent-ink);
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
   margin: var(--space-2) 0 var(--space-4);
 }
 .preset-grid p {
@@ -846,9 +914,7 @@ button:active {
   display: contents;
 }
 .axis-label {
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
   color: var(--muted);
   text-align: center;
   height: 20px;
@@ -892,34 +958,19 @@ button:active {
   }
 }
 .heat-0 {
-  background: rgba(243, 239, 230, 0.04);
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
 }
 .heat-1 {
-  background: rgba(243, 239, 230, 0.12);
+  background: color-mix(in srgb, var(--ink) 12%, transparent);
 }
 .heat-2 {
-  background: rgba(240, 138, 89, 0.28);
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
 }
 .heat-3 {
-  background: rgba(240, 138, 89, 0.6);
+  background: color-mix(in srgb, var(--accent) 58%, transparent);
 }
 .heat-4 {
-  background: #f08a59;
-}
-[data-theme='light'] .heat-0 {
-  background: rgba(32, 31, 27, 0.04);
-}
-[data-theme='light'] .heat-1 {
-  background: rgba(32, 31, 27, 0.1);
-}
-[data-theme='light'] .heat-2 {
-  background: rgba(235, 108, 54, 0.25);
-}
-[data-theme='light'] .heat-3 {
-  background: rgba(235, 108, 54, 0.55);
-}
-[data-theme='light'] .heat-4 {
-  background: #eb6c36;
+  background: var(--accent);
 }
 .heat-legend {
   display: flex;
@@ -928,9 +979,7 @@ button:active {
   gap: var(--space-1);
   margin-top: var(--space-2);
   color: var(--muted);
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
 }
 .heat-legend strong {
   margin-right: var(--space-1);
@@ -995,9 +1044,7 @@ button:active {
   stroke: var(--paper-2);
   stroke-width: 2.5px;
   paint-order: stroke;
-  font:
-    var(--weight-semibold) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace !important;
+  font: var(--weight-semibold) var(--text-meta)/var(--leading-meta) var(--font-num) !important;
 }
 .dial-explainer {
   color: var(--muted);
@@ -1022,9 +1069,7 @@ button:active {
   gap: var(--space-2);
   min-width: 0;
   color: var(--muted);
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
 }
 .phase-colour-legend span:last-child:nth-child(odd) {
   grid-column: 1 / -1;
@@ -1037,9 +1082,7 @@ button:active {
 .ring-direction {
   margin: var(--space-1) 0 0;
   color: var(--ink);
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
 }
 .dial-legend button {
   display: inline-flex;
@@ -1050,9 +1093,7 @@ button:active {
   border: 1px solid var(--rule);
   background: transparent;
   color: var(--muted);
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
 }
 .dial-legend button[aria-pressed='true'] {
   border-color: var(--accent);
@@ -1142,7 +1183,7 @@ button:active {
 }
 .compact-time,
 .compact-score {
-  font-family: 'Geist Mono Variable', monospace;
+  font-family: var(--font-num);
   font-size: var(--text-meta);
   line-height: var(--leading-meta);
   font-variant-numeric: tabular-nums;
@@ -1195,9 +1236,7 @@ button:active {
   align-items: center;
 }
 .badge {
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   padding: var(--space-1) var(--space-2);
@@ -1208,9 +1247,7 @@ button:active {
   color: var(--link);
 }
 .region-time {
-  font:
-    var(--weight-regular) var(--text-3xl)/var(--leading-title) 'Instrument Serif',
-    serif;
+  font: var(--display-weight) var(--text-3xl)/var(--leading-title) var(--font-display);
   margin: var(--space-2) 0;
 }
 .phase {
@@ -1225,16 +1262,12 @@ button:active {
   align-items: baseline;
 }
 .card-score strong {
-  font:
-    var(--weight-regular) var(--text-3xl)/var(--leading-title) 'Instrument Serif',
-    serif;
+  font: var(--display-weight) var(--text-3xl)/var(--leading-title) var(--font-display);
   min-width: 2ch;
   font-variant-numeric: tabular-nums;
 }
 .card-score span {
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
   color: var(--muted);
 }
 .region-card .sparkline {
@@ -1242,9 +1275,7 @@ button:active {
   margin: var(--space-2) 0;
 }
 .deviation {
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
   color: var(--muted);
   height: 14px;
 }
@@ -1265,7 +1296,7 @@ button:active {
   color: var(--muted);
 }
 .weight-label b {
-  font-family: 'Geist Mono Variable', monospace;
+  font-family: var(--font-num);
   color: var(--ink);
 }
 .include-button {
@@ -1354,9 +1385,7 @@ button:active {
   grid-column: 1 / -1;
 }
 .phase-legend span {
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
   color: var(--muted);
   display: flex;
   align-items: center;
@@ -1385,9 +1414,7 @@ button:active {
   min-width: 0;
 }
 .window-index {
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
   color: var(--accent-ink);
 }
 .planner-list strong {
@@ -1463,9 +1490,7 @@ button:active {
   margin-top: var(--space-12);
 }
 .method h2 {
-  font:
-    var(--weight-regular) var(--text-3xl)/var(--leading-title) 'Instrument Serif',
-    serif;
+  font: var(--display-weight) var(--text-3xl)/var(--leading-title) var(--font-display);
   margin: var(--space-4) 0;
 }
 .method-copy > p {
@@ -1491,16 +1516,14 @@ button:active {
 }
 .share-table span:nth-child(n + 2) {
   color: var(--muted);
-  font-family: 'Geist Mono Variable', monospace;
+  font-family: var(--font-num);
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
 .source-fetched {
   color: var(--muted);
   padding: var(--space-3) 0;
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
 }
 .source-list {
   border-top: 1px solid var(--rule);
@@ -1517,7 +1540,7 @@ button:active {
   line-height: var(--leading-meta);
 }
 .source-list span {
-  font-family: 'Geist Mono Variable', monospace;
+  font-family: var(--font-num);
   color: var(--link);
   font-size: var(--text-meta);
   line-height: var(--leading-meta);
@@ -1561,9 +1584,7 @@ button:active {
 .footer-group h2 {
   margin: 0 0 var(--space-1);
   color: var(--ink);
-  font:
-    var(--weight-semibold) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-semibold) var(--text-meta)/var(--leading-meta) var(--font-num);
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -1580,9 +1601,7 @@ button:active {
 .footer-freshness {
   margin-top: calc(-1 * var(--space-2));
   color: var(--soft);
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
 }
 .legal-page-shell {
   min-height: 100vh;
@@ -1626,10 +1645,8 @@ button:active {
 }
 .legal-page h1 {
   margin: var(--space-2) 0 clamp(var(--space-8), 5vw, var(--space-16));
-  font:
-    var(--weight-regular) clamp(var(--text-3xl), 10vw, var(--text-4xl)) / var(--leading-title)
-      'Instrument Serif',
-    serif;
+  font: var(--display-weight) clamp(var(--text-3xl), 10vw, var(--text-4xl)) / var(--leading-title)
+    var(--font-display);
   letter-spacing: -0.025em;
 }
 .legal-page section {
@@ -1638,9 +1655,7 @@ button:active {
 }
 .legal-page h2 {
   margin: 0 0 var(--space-3);
-  font:
-    var(--weight-regular) var(--text-xl)/var(--leading-title) 'Instrument Serif',
-    serif;
+  font: var(--display-weight) var(--text-xl)/var(--leading-title) var(--font-display);
 }
 .legal-page p {
   margin: 0;
@@ -1717,21 +1732,15 @@ button:active {
   font-size: var(--text-2xl);
 }
 .detail-sheet h2 {
-  font:
-    var(--weight-regular) var(--text-3xl)/var(--leading-title) 'Instrument Serif',
-    serif;
+  font: var(--display-weight) var(--text-3xl)/var(--leading-title) var(--font-display);
   margin: var(--space-1) 0;
 }
 .detail-score {
-  font:
-    var(--weight-regular) 80px/0.9 'Instrument Serif',
-    serif;
+  font: var(--display-weight) 80px/0.9 var(--font-display);
   color: var(--accent-ink);
 }
 .detail-score small {
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
   color: var(--muted);
 }
 .detail-sheet p {
@@ -1992,9 +2001,7 @@ button:active {
   border: 1px solid var(--rule-solid);
   background: transparent;
   color: var(--muted);
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
 }
 .filter-row button[aria-pressed='true'],
 .filter-row button[aria-selected='true'] {
@@ -2110,9 +2117,7 @@ button:active {
   min-width: 0;
 }
 .mobile-bar-readout {
-  font:
-    var(--weight-medium) var(--text-base)/1.2 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-medium) var(--text-base)/1.2 var(--font-num);
   font-variant-numeric: tabular-nums;
   color: var(--ink);
   white-space: nowrap;
@@ -2125,9 +2130,7 @@ button:active {
   padding: 0;
   border: 0;
   background: none;
-  font:
-    var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Variable',
-    sans-serif;
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-ui);
   color: var(--muted);
   white-space: nowrap;
   text-align: left;
@@ -2184,9 +2187,7 @@ button:active {
   position: absolute;
   bottom: 0;
   transform: translateX(-50%);
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
   color: var(--muted);
   white-space: nowrap;
 }
@@ -2240,9 +2241,7 @@ button:active {
   padding: 0 var(--space-2);
   border: 1px solid var(--rule-solid);
   background: var(--paper);
-  font:
-    var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
   color: var(--ink);
 }
 .mobile-bar-score {
@@ -2252,15 +2251,11 @@ button:active {
   line-height: var(--leading-title);
 }
 .mobile-bar-score b {
-  font:
-    var(--weight-regular) var(--text-3xl)/var(--leading-title) 'Instrument Serif',
-    serif;
+  font: var(--display-weight) var(--text-3xl)/var(--leading-title) var(--font-display);
   transition: color 0.22s var(--motion-ease);
 }
 .mobile-bar-score > span {
-  font:
-    var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Variable',
-    sans-serif;
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-ui);
   color: var(--ink);
   text-align: right;
   /* Long status words ("Gutes Momentum") wrap to two short lines instead of being cut off. */
@@ -2300,16 +2295,12 @@ button:active {
   gap: var(--space-3);
 }
 .live-report-time {
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
   color: var(--muted);
 }
 .live-report h2 {
-  font:
-    var(--weight-regular) clamp(var(--text-xl), 6.4vw, var(--text-3xl)) / var(--leading-title)
-      'Instrument Serif',
-    serif;
+  font: var(--display-weight) clamp(var(--text-xl), 6.4vw, var(--text-3xl)) / var(--leading-title)
+    var(--font-display);
   margin: var(--space-2) 0 var(--space-3);
   letter-spacing: -0.01em;
 }
@@ -2380,16 +2371,12 @@ button:active {
   pointer-events: none;
 }
 .report-teaser-label {
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
   color: var(--muted);
 }
 .report-teaser-text {
   /* Kept small on purpose: it arrives after a network fetch and must not become the LCP element. */
-  font:
-    var(--weight-medium) var(--text-sm)/var(--leading-body) 'Geist Variable',
-    sans-serif;
+  font: var(--weight-medium) var(--text-sm)/var(--leading-body) var(--font-ui);
   /* One line by nowrap, not line-clamp: a clamped block still lays out (and is measured as) every line. */
   overflow: hidden;
   white-space: nowrap;
@@ -2427,9 +2414,7 @@ button:active {
   margin-left: var(--space-2);
   padding: var(--space-1) var(--space-2);
   border: 1px solid var(--rule-solid);
-  font:
-    var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Variable',
-    sans-serif;
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-ui);
   letter-spacing: 0;
   text-transform: none;
   color: var(--ink);

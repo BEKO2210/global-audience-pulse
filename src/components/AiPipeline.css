@@ -14,9 +14,7 @@
   gap: var(--space-2);
   padding: var(--space-2) var(--space-2);
   border: 1px solid var(--rule-solid);
-  font:
-    var(--weight-semibold) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-semibold) var(--text-meta)/var(--leading-meta) var(--font-num);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -35,9 +33,7 @@
 .aip-fresh {
   margin: calc(-1 * var(--space-2)) 0 var(--space-6);
   color: var(--muted);
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
 }
 
 /* KPI ledger */
@@ -59,9 +55,7 @@
 }
 .aip-kpis b {
   white-space: nowrap;
-  font:
-    var(--weight-medium) var(--text-xl)/var(--leading-body) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-medium) var(--text-xl)/var(--leading-body) var(--font-num);
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
 }
@@ -131,9 +125,7 @@
 }
 .aip-step {
   color: var(--muted);
-  font:
-    var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
 }
 .aip-node strong {
   font-size: var(--text-base);
@@ -155,9 +147,7 @@
   text-align: right;
 }
 .aip-metric {
-  font:
-    var(--weight-medium) var(--text-base)/var(--leading-body) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-medium) var(--text-base)/var(--leading-body) var(--font-num);
   font-variant-numeric: tabular-nums;
 }
 .aip-link {
@@ -241,9 +231,7 @@
 .ai-pipeline figcaption {
   margin-bottom: var(--space-3);
   color: var(--muted);
-  font:
-    var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -293,9 +281,7 @@
 .aip-matrix-axis {
   grid-template-columns: 92px 1fr 1fr;
   color: var(--muted);
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
 }
 .aip-axis-end {
   text-align: right;
@@ -351,9 +337,7 @@
   justify-content: space-between;
   margin-top: var(--space-2);
   color: var(--muted);
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
 }
 
 /* Run log: terminal register */
@@ -363,9 +347,7 @@
   list-style: none;
   border: 1px solid var(--rule-solid);
   background: color-mix(in srgb, var(--ink) 4%, var(--paper));
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
 }
 .aip-log li {
   display: grid;

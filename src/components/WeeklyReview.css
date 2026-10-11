@@ -20,9 +20,7 @@
 .weekly-review figcaption {
   margin-bottom: var(--space-3);
   color: var(--muted);
-  font:
-    var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -42,9 +40,7 @@
 }
 .wr-bar-value {
   color: var(--muted);
-  font:
-    var(--weight-medium) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
   margin-bottom: var(--space-2);
   align-self: end;
 }
@@ -67,9 +63,7 @@
   position: absolute;
   bottom: -22px;
   color: var(--muted);
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
 }
 .wr-chart {
   padding-bottom: var(--space-6);

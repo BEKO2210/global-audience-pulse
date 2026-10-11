@@ -28,8 +28,8 @@ export function LogoMark({ score, intro = true }: { score?: number; intro?: bool
       aria-hidden="true"
       focusable="false"
     >
-      <rect width="64" height="64" rx="14" fill="#11110f" />
-      <g fill="none" stroke="#f3efe6">
+      <rect className="logo-tile" width="64" height="64" rx="14" />
+      <g className="logo-lines" fill="none">
         <circle className="logo-draw" cx="32" cy="32" r="20" strokeWidth="3" pathLength={1} />
         <g className="logo-meridians">
           {MERIDIANS.map((i) => (
@@ -50,7 +50,6 @@ export function LogoMark({ score, intro = true }: { score?: number; intro?: bool
         className="logo-draw logo-pulse"
         d="M7 35h13l5-10 7 18 6-13 4 5h15"
         fill="none"
-        stroke="#f08a59"
         strokeWidth="4"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -60,7 +59,6 @@ export function LogoMark({ score, intro = true }: { score?: number; intro?: bool
         className="logo-beat"
         d="M7 35h13l5-10 7 18 6-13 4 5h15"
         fill="none"
-        stroke="#fff7ef"
         strokeWidth="2.4"
         strokeLinecap="round"
         strokeLinejoin="round"

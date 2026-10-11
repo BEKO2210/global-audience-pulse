@@ -17,6 +17,9 @@
             : matchMedia('(prefers-color-scheme: light)').matches
               ? 'light'
               : 'dark'
+        const style = localStorage.getItem('gap-style')
+        document.documentElement.dataset.style =
+          style === 'atlas' || style === 'praezision' ? style : 'tafel'
       } catch {}
     </script>
     <script>

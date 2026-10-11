@@ -26,7 +26,7 @@
 }
 
 .lr-mono {
-  font-family: 'Geist Mono Variable', monospace;
+  font-family: var(--font-num);
   font-variant-numeric: tabular-nums;
 }
 
@@ -60,9 +60,7 @@
 }
 
 .lr-block-title {
-  font:
-    var(--weight-semibold) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-semibold) var(--text-meta)/var(--leading-meta) var(--font-num);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--muted);
@@ -222,9 +220,7 @@
 }
 
 .lr-delta {
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
   border: 1px solid var(--rule-solid);
   padding: var(--space-1) var(--space-2);
   color: var(--ink);
@@ -269,17 +265,13 @@
 }
 
 .lr-trend-score {
-  font:
-    var(--weight-semibold) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-semibold) var(--text-meta)/var(--leading-meta) var(--font-num);
   font-variant-numeric: tabular-nums;
   fill: var(--ink);
 }
 
 .lr-trend-label {
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
   fill: var(--muted);
   text-transform: lowercase;
 }
@@ -292,9 +284,7 @@
 }
 
 .lr-trend-threshold-value {
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
   font-variant-numeric: tabular-nums;
   fill: var(--muted);
 }
@@ -340,9 +330,7 @@
   grid-template-columns: 6.5rem minmax(0, 1fr) 3.6rem;
   gap: var(--space-2);
   align-items: center;
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
   color: var(--muted);
   margin-bottom: var(--space-2);
 }
@@ -511,9 +499,7 @@
 }
 
 .lr-live-badge {
-  font:
-    var(--weight-semibold) var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--weight-semibold) var(--text-meta)/var(--leading-meta) var(--font-num);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   padding: var(--space-1) var(--space-1);
@@ -647,9 +633,7 @@
 }
 
 .lr-memory-badge {
-  font:
-    var(--text-meta)/var(--leading-meta) 'Geist Mono Variable',
-    monospace;
+  font: var(--text-meta)/var(--leading-meta) var(--font-num);
   text-transform: none;
   letter-spacing: 0.02em;
   border: 1px solid var(--rule-solid);
