@@ -26,7 +26,7 @@ interface WeeklyPayload {
 const SHOW_DAYS = 8
 
 const DE = {
-  eyebrow: (week: string) => `Wochenrückblick · KW ${week}`,
+  eyebrow: (week: string) => `KW ${week}`,
   ai: 'Automatische AI-Analyse',
   chart: 'Tageshöchstwert der letzten sieben Tage',
   chartLabel: (days: string) => `Tageshöchstwerte: ${days}`,
@@ -34,7 +34,7 @@ const DE = {
   mean: (n: number) => `Wochenmittel ${n}`,
 }
 const EN: typeof DE = {
-  eyebrow: (week) => `Weekly review · week ${week}`,
+  eyebrow: (week) => `Week ${week}`,
   ai: 'Automated AI analysis',
   chart: 'Daily high of the last seven days',
   chartLabel: (days) => `Daily highs: ${days}`,

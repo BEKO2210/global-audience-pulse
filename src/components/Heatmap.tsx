@@ -12,7 +12,6 @@ import { cityName, regionName } from '../i18n/labels'
 
 const DE = {
   now: 'jetzt',
-  eyebrow: 'Zielgruppe × Zeit',
   title: 'Aktivitätsmatrix',
   yourZone: 'Deine Zeitzone',
   gridLabel: 'Aktivität nach Region und Zeit',
@@ -22,7 +21,6 @@ const DE = {
 }
 const EN: typeof DE = {
   now: 'now',
-  eyebrow: 'Audience × time',
   title: 'Activity matrix',
   yourZone: 'Your time zone',
   gridLabel: 'Activity by region and time',
@@ -114,10 +112,7 @@ export const Heatmap = memo(function Heatmap({
   return (
     <section className="panel heatmap-panel" aria-labelledby="heatmap-title">
       <div className="section-head">
-        <div>
-          <p className="eyebrow">{t.eyebrow}</p>
-          <h2 id="heatmap-title">{t.title}</h2>
-        </div>
+        <h2 id="heatmap-title">{t.title}</h2>
         <span className="micro">{t.yourZone}</span>
       </div>
       <div className="heatmap-scroll">

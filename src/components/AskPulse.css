@@ -52,9 +52,9 @@
 }
 .ap-label {
   color: var(--muted);
-  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-ui);
+  letter-spacing: normal;
+  text-transform: none;
 }
 .ap-window strong {
   color: var(--accent-ink);

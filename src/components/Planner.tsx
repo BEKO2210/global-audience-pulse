@@ -17,7 +17,6 @@ const DE = {
   planCopied: 'Plan kopiert',
   shareTitle: 'Mein Posting-Plan',
   linkCopied: 'Link kopiert',
-  eyebrow: '7-Tage-Planer',
   title: 'Die nächsten starken Fenster',
   zoneNote: 'Kalendertage in deiner Zeitzone',
   period: 'Planungszeitraum',
@@ -39,7 +38,6 @@ const EN: typeof DE = {
   planCopied: 'Plan copied',
   shareTitle: 'My posting plan',
   linkCopied: 'Link copied',
-  eyebrow: '7-day planner',
   title: 'The next strong windows',
   zoneNote: 'Calendar days in your time zone',
   period: 'Planning period',
@@ -137,10 +135,7 @@ export function Planner({
   return (
     <section className="panel planner" aria-labelledby="planner-title">
       <div className="section-head">
-        <div>
-          <p className="eyebrow">{t.eyebrow}</p>
-          <h2 id="planner-title">{t.title}</h2>
-        </div>
+        <h2 id="planner-title">{t.title}</h2>
         <span className="micro">{timeZoneName(new Date(), zone, intl)}</span>
       </div>
       <p className="planner-zone-note">{t.zoneNote}</p>
@@ -199,7 +194,7 @@ export function Planner({
                     const phase = phaseAt(localDecimalHourFast(window.start, region.timeZone))
                     return `${cityName(region.id, region.city, locale)} (${formatTime(window.start, region.timeZone)} ${phaseName(phase.id, phase.name, locale)})`
                   })
-                  .join(' · ') || t.noPeak}
+                  .join(', ') || t.noPeak}
               </small>
             </div>
             <button

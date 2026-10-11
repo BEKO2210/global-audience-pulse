@@ -194,7 +194,7 @@
   .pp-head {
     padding: 0 0 var(--space-2);
     color: var(--muted);
-    font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
+    font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-ui);
   }
   .pp-row > * {
     grid-area: auto;

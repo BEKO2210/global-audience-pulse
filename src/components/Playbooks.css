@@ -110,7 +110,7 @@
   margin: 0 0 var(--space-1);
   color: var(--muted);
   font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-ui);
-  letter-spacing: 0.02em;
+  letter-spacing: normal;
 }
 .pb-list-mark {
   display: grid;
@@ -204,7 +204,7 @@
 .pb-heat-col {
   padding-bottom: var(--space-1);
   color: var(--muted);
-  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-ui);
 }
 .pb-heat-row {
   display: grid;
@@ -214,7 +214,7 @@
 }
 .pb-heat-day {
   color: var(--muted);
-  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-ui);
 }
 .pb-heat-cell {
   --fill: 0;
@@ -287,7 +287,7 @@
 }
 .pb-study dt span {
   color: var(--muted);
-  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-ui);
 }
 .pb-study dd {
   display: grid;

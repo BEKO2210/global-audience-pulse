@@ -6,9 +6,9 @@
 }
 .wt-label {
   color: var(--muted);
-  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-ui);
+  letter-spacing: normal;
+  text-transform: none;
 }
 .wt-options {
   display: grid;
@@ -88,7 +88,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-ui);
   font-variant-numeric: tabular-nums;
 }
 .wt-bar {

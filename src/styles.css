@@ -267,6 +267,7 @@ button {
 }
 .live-clock small {
   color: var(--muted);
+  font-family: var(--font-ui);
   font-size: var(--text-meta);
   line-height: var(--leading-meta);
 }
@@ -282,11 +283,11 @@ button {
   border: 0;
   background: transparent;
   padding: var(--space-2) 0;
-  font-family: var(--font-num);
-  text-transform: uppercase;
+  font-family: var(--font-ui);
+  text-transform: none;
   font-size: var(--text-meta);
   line-height: var(--leading-meta);
-  letter-spacing: 0.08em;
+  letter-spacing: normal;
   color: var(--muted);
   white-space: nowrap;
 }
@@ -369,17 +370,15 @@ button {
   background: var(--accent-tint);
 }
 .eyebrow,
-.micro {
-  font-family: var(--font-num);
+.micro,
+.hero-meta {
+  font-family: var(--font-ui);
   font-size: var(--text-meta);
   line-height: var(--leading-meta);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
   color: var(--muted);
   font-weight: var(--weight-medium);
-}
-.micro {
-  letter-spacing: 0.06em;
 }
 .hero {
   padding: var(--space-6) var(--space-4) var(--space-4);
@@ -453,9 +452,9 @@ button {
   display: inline-flex;
   gap: var(--space-2);
   align-items: center;
-  font: var(--weight-semibold) var(--text-meta)/var(--leading-meta) var(--font-num);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  font: var(--weight-semibold) var(--text-meta)/var(--leading-meta) var(--font-ui);
+  text-transform: none;
+  letter-spacing: normal;
   border: 1px solid var(--rule-solid);
   padding: var(--space-2) var(--space-2);
 }
@@ -546,7 +545,7 @@ button {
 }
 .hero-aside dd {
   margin: 0;
-  font: var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
 }
 .hero-aside .best-region {
   display: inline-flex;
@@ -674,7 +673,7 @@ button:active {
 .map-key {
   display: flex;
   gap: var(--space-4);
-  font: var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
   color: var(--muted);
   justify-content: flex-end;
   flex-wrap: wrap;
@@ -703,7 +702,7 @@ button:active {
     linear-gradient(var(--map-twilight), var(--map-twilight)), var(--map-day);
 }
 .map-pin-label {
-  font: var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
   fill: var(--ink);
   pointer-events: none;
   paint-order: stroke;
@@ -734,7 +733,8 @@ button:active {
   fill: var(--accent-tint);
 }
 .window-band-label {
-  fill: var(--accent-ink) !important;
+  font-family: var(--font-ui) !important;
+  fill: var(--muted) !important;
   font-size: var(--text-meta) !important;
   line-height: var(--leading-meta);
 }
@@ -745,7 +745,7 @@ button:active {
 }
 .forecast-legend {
   color: var(--muted);
-  font: var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -790,11 +790,13 @@ button:active {
   display: flex;
   justify-content: space-between;
   gap: var(--space-2);
-  font: var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
   color: var(--muted);
 }
 .scrub-readout strong {
   color: var(--ink);
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
 }
 .scrub-readout button {
   min-height: 36px;
@@ -854,9 +856,6 @@ button:active {
   border-color: var(--accent);
   background: var(--paper-2);
 }
-.preset-grid button.active .eyebrow {
-  color: var(--accent-ink);
-}
 .preset-grid h3 {
   font: var(--display-weight) var(--text-xl)/var(--leading-title) var(--font-display);
   margin: var(--space-2) 0 var(--space-4);
@@ -871,7 +870,7 @@ button:active {
 }
 .preset-score {
   color: var(--accent-ink);
-  font: var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
   margin: var(--space-2) 0 var(--space-4);
 }
 .preset-grid p {
@@ -884,6 +883,34 @@ button:active {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   overflow: hidden;
+}
+.preset-cities {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--muted);
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
+}
+.preset-cities li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: var(--space-2);
+  align-items: baseline;
+}
+.preset-cities li span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.preset-cities li span:last-child {
+  text-align: right;
+}
+.preset-cities time {
+  color: var(--ink);
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
 }
 .heatmap-scroll {
   overflow-x: auto;
@@ -979,7 +1006,7 @@ button:active {
   gap: var(--space-1);
   margin-top: var(--space-2);
   color: var(--muted);
-  font: var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
 }
 .heat-legend strong {
   margin-right: var(--space-1);
@@ -1028,8 +1055,9 @@ button:active {
   stroke-width: 1;
 }
 .dial-center-label {
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  font-family: var(--font-ui) !important;
+  text-transform: none;
+  letter-spacing: normal;
   font-size: var(--text-meta) !important;
   line-height: var(--leading-meta);
 }
@@ -1069,7 +1097,7 @@ button:active {
   gap: var(--space-2);
   min-width: 0;
   color: var(--muted);
-  font: var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
 }
 .phase-colour-legend span:last-child:nth-child(odd) {
   grid-column: 1 / -1;
@@ -1082,7 +1110,7 @@ button:active {
 .ring-direction {
   margin: var(--space-1) 0 0;
   color: var(--ink);
-  font: var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
 }
 .dial-legend button {
   display: inline-flex;
@@ -1093,7 +1121,7 @@ button:active {
   border: 1px solid var(--rule);
   background: transparent;
   color: var(--muted);
-  font: var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
 }
 .dial-legend button[aria-pressed='true'] {
   border-color: var(--accent);
@@ -1107,6 +1135,7 @@ button:active {
   fill: var(--muted) !important;
   font-size: var(--text-meta) !important;
   line-height: var(--leading-meta);
+  font-family: var(--font-ui) !important;
 }
 .regions-section {
   border-top: 1px solid var(--rule);
@@ -1236,9 +1265,9 @@ button:active {
   align-items: center;
 }
 .badge {
-  font: var(--text-meta)/var(--leading-meta) var(--font-num);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
+  text-transform: none;
+  letter-spacing: normal;
   padding: var(--space-1) var(--space-2);
   border: 1px solid var(--rule-solid);
   color: var(--muted);
@@ -1275,7 +1304,7 @@ button:active {
   margin: var(--space-2) 0;
 }
 .deviation {
-  font: var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
   color: var(--muted);
   height: 14px;
 }
@@ -1385,7 +1414,7 @@ button:active {
   grid-column: 1 / -1;
 }
 .phase-legend span {
-  font: var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
   color: var(--muted);
   display: flex;
   align-items: center;
@@ -1523,7 +1552,7 @@ button:active {
 .source-fetched {
   color: var(--muted);
   padding: var(--space-3) 0;
-  font: var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
 }
 .source-list {
   border-top: 1px solid var(--rule);
@@ -1540,7 +1569,7 @@ button:active {
   line-height: var(--leading-meta);
 }
 .source-list span {
-  font-family: var(--font-num);
+  font-family: var(--font-ui);
   color: var(--link);
   font-size: var(--text-meta);
   line-height: var(--leading-meta);
@@ -1584,9 +1613,9 @@ button:active {
 .footer-group h2 {
   margin: 0 0 var(--space-1);
   color: var(--ink);
-  font: var(--weight-semibold) var(--text-meta)/var(--leading-meta) var(--font-num);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font: var(--weight-semibold) var(--text-meta)/var(--leading-meta) var(--font-ui);
+  letter-spacing: normal;
+  text-transform: none;
 }
 .footer-group a {
   color: var(--link);
@@ -1601,7 +1630,7 @@ button:active {
 .footer-freshness {
   margin-top: calc(-1 * var(--space-2));
   color: var(--soft);
-  font: var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
 }
 .legal-page-shell {
   min-height: 100vh;
@@ -2001,7 +2030,7 @@ button:active {
   border: 1px solid var(--rule-solid);
   background: transparent;
   color: var(--muted);
-  font: var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
 }
 .filter-row button[aria-pressed='true'],
 .filter-row button[aria-selected='true'] {
@@ -2048,9 +2077,9 @@ button:active {
   white-space: nowrap;
 }
 .hero-score .animated-number {
+  /* two tabular digits in whatever display font the style uses (the old fixed 1.02em fit only one serif) */
   display: inline-block;
-  width: 1.02em;
-  min-width: 0;
+  min-width: 2ch;
   text-align: right;
 }
 .hero-aside dd.best-region {
@@ -2082,11 +2111,10 @@ button:active {
   text-align: center;
   font-weight: inherit;
 }
-/* Serif numerals: tighter fixed cells than 1ch so the digits read as one number. */
+/* Fixed digit cells (1ch = one tabular figure of the style's font) keep counting numbers from jittering. */
 .hero-score .digit,
 .mobile-bar-score b .digit,
 .region-time .digit {
-  width: 0.4em;
   letter-spacing: 0;
 }
 .hero-aside dd.best-region .flag-image {
@@ -2295,7 +2323,7 @@ button:active {
   gap: var(--space-3);
 }
 .live-report-time {
-  font: var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
   color: var(--muted);
 }
 .live-report h2 {
@@ -2371,7 +2399,7 @@ button:active {
   pointer-events: none;
 }
 .report-teaser-label {
-  font: var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
   color: var(--muted);
 }
 .report-teaser-text {
@@ -2417,8 +2445,16 @@ button:active {
   font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-ui);
   letter-spacing: 0;
   text-transform: none;
-  color: var(--ink);
+  color: var(--muted);
   vertical-align: 1px;
+}
+.detail-place-time {
+  display: grid;
+  gap: var(--space-1);
+}
+.detail-place-time span:last-child {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
 }
 /* Placeholder for deferred below-the-fold sections; also skip off-screen layout work. */
 .deferred-placeholder {

@@ -54,12 +54,12 @@ const DE = {
   published: (n: number) => `${n} veröffentlicht`,
   templates: (n: number) => `${n}× Vorlage`,
   onlyAi: 'nur KI-Texte',
-  eyebrow: 'KI-Pipeline · lokal',
+  eyebrow: 'Lokale KI-Pipeline',
   title: 'So entsteht der Lagebericht',
   lastReport: (ago: string) => `Letzter Bericht vor ${ago}`,
   noReport: 'Noch kein erfolgreicher Bericht',
-  nextRun: (time: string) =>
-    `· nächster Lauf ${time} · stündlich, solange der Rechner des Betreibers läuft`,
+  nextRun: (time: string) => `Nächster Lauf ${time}`,
+  schedule: 'Stündlich, solange der Rechner des Betreibers läuft',
   kpisLabel: 'Kennzahlen der letzten 24 Stunden',
   kpiRuns: 'Läufe 24 h',
   kpiPublished: 'veröffentlicht',
@@ -116,11 +116,12 @@ const EN: typeof DE = {
   published: (n) => `${n} published`,
   templates: (n) => `${n}× template`,
   onlyAi: 'AI texts only',
-  eyebrow: 'AI pipeline · local',
+  eyebrow: 'Local AI pipeline',
   title: 'How the briefing is made',
   lastReport: (ago) => `Last report ${ago} ago`,
   noReport: 'No successful report yet',
-  nextRun: (time) => `· next run ${time} · hourly, while the operator’s computer is on`,
+  nextRun: (time) => `Next run ${time}`,
+  schedule: 'Hourly while the operator’s computer is on',
   kpisLabel: 'Key figures for the last 24 hours',
   kpiRuns: 'runs 24 h',
   kpiPublished: 'published',
@@ -246,10 +247,13 @@ export default function AiPipeline() {
         </span>
       </div>
       <p className="aip-fresh">
-        {summary.lastSuccess
-          ? t.lastReport(humanAgo(minutesAgo(summary.lastSuccess, now), locale))
-          : t.noReport}{' '}
-        {t.nextRun(time(summary.nextExpectedAt))}
+        <span>
+          {summary.lastSuccess
+            ? t.lastReport(humanAgo(minutesAgo(summary.lastSuccess, now), locale))
+            : t.noReport}{' '}
+          · {t.nextRun(time(summary.nextExpectedAt))}
+        </span>
+        <span>{t.schedule}</span>
       </p>
 
       <ul className="aip-kpis" aria-label={t.kpisLabel}>
@@ -350,7 +354,7 @@ export default function AiPipeline() {
               <span
                 key={runs[i]!.startedAt}
                 className="aip-bar"
-                title={`${time(runs[i]!.startedAt)} · ${t.writer} ${sec(s.writer)} · ${t.checker} ${sec(s.checker)}`}
+                title={`${time(runs[i]!.startedAt)} — ${t.writer} ${sec(s.writer)}, ${t.checker} ${sec(s.checker)}`}
               >
                 <i
                   className="is-checker"
@@ -388,7 +392,7 @@ export default function AiPipeline() {
                 <span className={`aip-log-outcome is-${line.outcome}`}>
                   {t.outcome[line.outcome] ?? line.outcome}
                 </span>
-                <span className="aip-log-steps">{line.steps}</span>
+                <span className="aip-log-steps">{line.steps.split(' · ').join(', ')}</span>
                 {line.note && <span className="aip-log-note">{line.note}</span>}
               </span>
             </li>

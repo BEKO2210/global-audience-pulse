@@ -130,7 +130,7 @@ export function LiveSignals({ facts }: { facts: AnalysisFacts }) {
                   {s.themen
                     .filter((id): id is TopicId => id in TOPICS)
                     .map((id) => TOPICS[id][locale])
-                    .join(' · ')}
+                    .join(', ')}
                 </p>
               ) : null}
             </li>

@@ -17,7 +17,6 @@ import type { Locale, Messages } from '../i18n/locale'
 import { cityName, phaseName, regionName } from '../i18n/labels'
 
 const DE = {
-  eyebrow: 'Regionen',
   title: 'Deine Zielgruppen-Märkte',
   active: (n: number, total: number) => `${n} von ${total} aktiv`,
   selectAll: 'Alle auswählen',
@@ -43,7 +42,6 @@ const DE = {
   phaseRange: (name: string, from: string, to: string) => `${name} · ${from}–${to} Uhr`,
 }
 const EN: typeof DE = {
-  eyebrow: 'Regions',
   title: 'Your audience markets',
   active: (n, total) => `${n} of ${total} active`,
   selectAll: 'Select all',
@@ -129,10 +127,7 @@ export function RegionCards({
       aria-labelledby="regions-title"
     >
       <div className="section-head">
-        <div>
-          <p className="eyebrow">{t.eyebrow}</p>
-          <h2 id="regions-title">{t.title}</h2>
-        </div>
+        <h2 id="regions-title">{t.title}</h2>
         <div className="selection-actions">
           <span className="micro">{t.active(selected.length, REGIONS.length)}</span>
           <button

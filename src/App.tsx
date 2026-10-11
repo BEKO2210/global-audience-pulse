@@ -69,8 +69,7 @@ const DE = {
   measured: (ago: string) => `Messdaten ${ago}`,
   noData: 'Messdaten nicht verfügbar',
   language: 'Sprache',
-  eyebrowLive: 'Aktuelles Publikumsradar',
-  eyebrowFallback: 'Beispieldaten · Offline-Modell',
+  eyebrowFallback: 'Beispieldaten, Offline-Modell',
   eyebrowLoading: 'Daten werden geladen',
   regionsActive: (n: number) => `${n} Regionen aktiv`,
   headline: 'Jetzt posten oder warten?',
@@ -92,7 +91,6 @@ const DE = {
   secondWindow: 'Zweites Zeitfenster heute',
   noSecondWindow: 'Kein weiteres Fenster heute',
   dstChange: 'Zeitumstellung',
-  scenarios: 'Berechnete Szenarien',
   corridors: 'Strategische Posting-Korridore',
   nRegions: (n: number) => `${n} Regionen`,
   activateAllN: (n: number) => `Alle ${n} Regionen aktivieren`,
@@ -125,7 +123,6 @@ const DE = {
   limitations:
     'Wikipedia ist ein Aktivitäts-Proxy, keine Social-Plattform-Messung. Englischsprachige Wikipedia wird bewusst nicht für USA/UK verwendet, da sie Zeitzonen mischt. Ländergruppen und der dokumentierte US-Split approximieren globale Zielgruppen; sie ersetzen keine eigenen Analytics. Bundesweite Feiertage (USA, Brasilien, UK, Deutschland, Japan) werden wie ein Sonntag gerechnet; für Nahost und Indien liefert die Quelle keine Feiertage.',
   close: 'Schließen',
-  regionFocus: 'Region im Fokus',
   inAudience: 'Ist in deiner Zielgruppe',
   addAudience: 'Zur Zielgruppe hinzufügen',
   calSummary: 'Posting-Fenster (Global Audience Pulse)',
@@ -152,8 +149,7 @@ const EN: typeof DE = {
   measured: (ago: string) => `Data ${ago}`,
   noData: 'Data unavailable',
   language: 'Language',
-  eyebrowLive: 'Live audience radar',
-  eyebrowFallback: 'Sample data · offline model',
+  eyebrowFallback: 'Sample data, offline model',
   eyebrowLoading: 'Loading data',
   regionsActive: (n: number) => `${n} regions active`,
   headline: 'Post now or wait?',
@@ -175,7 +171,6 @@ const EN: typeof DE = {
   secondWindow: 'Second window today',
   noSecondWindow: 'No further window today',
   dstChange: 'Clock change',
-  scenarios: 'Calculated scenarios',
   corridors: 'Strategic posting corridors',
   nRegions: (n: number) => `${n} regions`,
   activateAllN: (n: number) => `Select all ${n} regions`,
@@ -208,7 +203,6 @@ const EN: typeof DE = {
   limitations:
     'Wikipedia is a proxy for activity, not a social-platform measurement. English Wikipedia is deliberately not used for the US/UK because it mixes time zones. Country groups and the documented US split approximate global audiences; they do not replace your own analytics. Nationwide public holidays (US, Brazil, UK, Germany, Japan) count like a Sunday; the source has no holidays for the Middle East and India.',
   close: 'Close',
-  regionFocus: 'Region in focus',
   inAudience: 'In your audience',
   addAudience: 'Add to audience',
   calSummary: 'Posting window (Global Audience Pulse)',
@@ -549,7 +543,7 @@ export default function App() {
             window.end > minuteNow && window.start < new Date(minuteNow.getTime() + 24 * 3_600_000),
         )
         .slice(0, 3)
-        // Ranked by score: [0] is the optimal window (hero, "No. 1"), [1] the second best.
+        // Ranked by score: [0] is the best window shown in the hero, [1] the second best.
         .sort((a, b) => b.score - a.score)
     )
   }, [minuteNow, selected, scoreGrid])
@@ -719,13 +713,15 @@ export default function App() {
           <main>
             <Section className="hero" immediate>
               <div className="hero-copy">
-                <p className="eyebrow" data-testid="data-state">
-                  {snapshotState === 'live'
-                    ? t.eyebrowLive
-                    : snapshotState === 'fallback'
-                      ? t.eyebrowFallback
-                      : t.eyebrowLoading}{' '}
-                  · {t.regionsActive(selected.length)}
+                <p className="hero-meta" data-testid="data-state">
+                  {snapshotState === 'live' ? (
+                    t.regionsActive(selected.length)
+                  ) : (
+                    <>
+                      {snapshotState === 'fallback' ? t.eyebrowFallback : t.eyebrowLoading} ·{' '}
+                      {t.regionsActive(selected.length)}
+                    </>
+                  )}
                 </p>
                 <h1>{t.headline}</h1>
                 {selected.length === 0 ? (
@@ -964,10 +960,7 @@ export default function App() {
             <Section defer placeholderHeight={520}>
               <section className="presets" aria-labelledby="presets-title">
                 <div className="section-head">
-                  <div>
-                    <p className="eyebrow">{t.scenarios}</p>
-                    <h2 id="presets-title">{t.corridors}</h2>
-                  </div>
+                  <h2 id="presets-title">{t.corridors}</h2>
                 </div>
                 <div className="preset-grid">
                   {presetWindows.map(({ preset, window }) => {
@@ -1003,17 +996,21 @@ export default function App() {
                             <div className="preset-score">
                               Score <AnimatedNumber value={window.score} />
                             </div>
-                            <p>
-                              {preset.ids
-                                .map((id) => {
-                                  const r = REGION_BY_ID[id]
-                                  const phase = phaseAt(
-                                    localDecimalHourFast(window.start, r.timeZone),
-                                  )
-                                  return `${cityName(r.id, r.city, locale)} ${formatTime(window.start, r.timeZone)} · ${phaseName(phase.id, phase.name, locale)}`
-                                })
-                                .join(' · ')}
-                            </p>
+                            <ul className="preset-cities">
+                              {preset.ids.map((id) => {
+                                const r = REGION_BY_ID[id]
+                                const phase = phaseAt(
+                                  localDecimalHourFast(window.start, r.timeZone),
+                                )
+                                return (
+                                  <li key={id}>
+                                    <span>{cityName(r.id, r.city, locale)}</span>
+                                    <time>{formatTime(window.start, r.timeZone)}</time>
+                                    <span>{phaseName(phase.id, phase.name, locale)}</span>
+                                  </li>
+                                )
+                              })}
+                            </ul>
                           </>
                         )}
                       </button>
@@ -1246,16 +1243,17 @@ export default function App() {
                   label={regionName(detailRegion.id, locale)}
                   size={28}
                 />
-                <p className="eyebrow">{t.regionFocus}</p>
                 <h2 id="detail-title">{regionName(detailRegion.id, locale)}</h2>
                 <div className="detail-score">
                   <AnimatedNumber value={scoreGrid.activityAt(detailRegion.id, date)} />
                   <small>/100</small>
                 </div>
-                <p>
-                  {cityName(detailRegion.id, detailRegion.city, locale)} ·{' '}
-                  {formatTime(date, detailRegion.timeZone)} ·{' '}
-                  {timeZoneName(date, detailRegion.timeZone, intl)}
+                <p className="detail-place-time">
+                  <span>{cityName(detailRegion.id, detailRegion.city, locale)}</span>
+                  <span>
+                    {formatTime(date, detailRegion.timeZone)} ·{' '}
+                    {timeZoneName(date, detailRegion.timeZone, intl)}
+                  </span>
                 </p>
                 <p>
                   <PhaseIcon

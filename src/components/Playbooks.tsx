@@ -51,7 +51,6 @@ const DE = {
   sources: 'Quellen',
   official: 'Offizielle Dokumentation',
   study: 'Studie',
-  eyebrow: 'Plattform-Playbooks',
   title: 'Was die Algorithmen belohnen',
   asOf: (date: string) => `Stand ${date}`,
   lede: 'Aus der Dokumentation der Plattformen und aus Studien mit offengelegter Methodik. Mit KI recherchiert, jede Aussage an der Quelle geprüft – keine Live-Daten.',
@@ -80,7 +79,6 @@ const EN: typeof DE = {
   sources: 'Sources',
   official: 'Official documentation',
   study: 'Study',
-  eyebrow: 'Platform playbooks',
   title: 'What the algorithms reward',
   asOf: (date) => `As of ${date}`,
   lede: 'From the platforms’ own documentation and from studies with a published methodology. Researched with AI, every statement checked against its source – no live data.',
@@ -381,9 +379,9 @@ function Panel({
               <a href={s.url} target="_blank" rel="noopener noreferrer">
                 {tr(s.title, locale)}
               </a>
+              <span>{s.publisher}</span>
               <span>
-                {s.publisher} · {s.kind === 'offiziell' ? t.official : t.study} ·{' '}
-                {formatSourceDate(s.date, locale)}
+                {s.kind === 'offiziell' ? t.official : t.study} · {formatSourceDate(s.date, locale)}
               </span>
               {s.basis && <span>{tr(s.basis, locale)}</span>}
             </div>
@@ -432,10 +430,7 @@ export function Playbooks() {
   return (
     <section className="panel playbooks" aria-labelledby="playbooks-title">
       <div className="section-head">
-        <div>
-          <p className="eyebrow">{t.eyebrow}</p>
-          <h2 id="playbooks-title">{t.title}</h2>
-        </div>
+        <h2 id="playbooks-title">{t.title}</h2>
         <span className="micro">{t.asOf(formatSourceDate(RESEARCHED_AT, locale))}</span>
       </div>
       <p className="pb-lede">{t.lede}</p>

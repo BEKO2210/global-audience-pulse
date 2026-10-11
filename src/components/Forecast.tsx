@@ -12,20 +12,18 @@ import { useLocale, useMessages } from '../i18n/LocaleProvider'
 import type { Messages } from '../i18n/locale'
 
 const DE = {
-  eyebrow: '24-Stunden-Prognose',
   title: 'Das nächste Momentum',
   scale: 'Skala: 0–100 Aktivitäts-Score',
   timeMachine: 'Zeitmaschine',
-  windowNo: (n: number) => `Nr. ${n}`,
+  windowNo: (n: number) => (n === 1 ? 'Bestes Fenster' : `${n}.`),
   legend: (min: number) => `Optimales Posting-Fenster (Score ab ${min})`,
   hint: 'Ziehen · Pfeiltasten',
 }
 const EN: typeof DE = {
-  eyebrow: '24-hour forecast',
   title: 'The next momentum',
   scale: 'Scale: 0–100 activity score',
   timeMachine: 'Time machine',
-  windowNo: (n) => `No. ${n}`,
+  windowNo: (n) => (n === 1 ? 'Best window' : `${n}.`),
   legend: (min) => `Optimal posting window (score from ${min})`,
   hint: 'Drag · arrow keys',
 }
@@ -117,10 +115,7 @@ export function Forecast({
   return (
     <section className="panel forecast-panel" aria-labelledby="forecast-title">
       <div className="section-head">
-        <div>
-          <p className="eyebrow">{t.eyebrow}</p>
-          <h2 id="forecast-title">{t.title}</h2>
-        </div>
+        <h2 id="forecast-title">{t.title}</h2>
         <span className="micro">{t.scale}</span>
       </div>
       <svg

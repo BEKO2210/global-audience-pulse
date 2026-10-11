@@ -14,7 +14,6 @@ import type { Messages } from '../i18n/locale'
 import { cityName, regionName } from '../i18n/labels'
 
 const DE = {
-  eyebrow: 'Live-Karte',
   title: 'Wo die Welt gerade wach ist',
   mapLabel: 'Weltkarte mit Tag-Nacht-Grenze und Aktivitätspunkten',
   pin: (region: string, score: number) => `${region}: ${score} Prozent Aktivität`,
@@ -23,7 +22,6 @@ const DE = {
   night: 'Nacht',
 }
 const EN: typeof DE = {
-  eyebrow: 'Live map',
   title: 'Who’s awake right now',
   mapLabel: 'World map with day–night line and activity points',
   pin: (region, score) => `${region}: ${score}% activity`,
@@ -92,10 +90,7 @@ export function WorldMap({
       aria-labelledby="map-title"
     >
       <div className="section-head">
-        <div>
-          <p className="eyebrow">{t.eyebrow}</p>
-          <h2 id="map-title">{t.title}</h2>
-        </div>
+        <h2 id="map-title">{t.title}</h2>
         <span className="micro">
           {date.toLocaleDateString(intl, { weekday: 'short', day: '2-digit', month: 'short' })}
         </span>

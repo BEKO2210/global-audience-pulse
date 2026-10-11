@@ -14,9 +14,9 @@
   gap: var(--space-2);
   padding: var(--space-2) var(--space-2);
   border: 1px solid var(--rule-solid);
-  font: var(--weight-semibold) var(--text-meta)/var(--leading-meta) var(--font-num);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font: var(--weight-semibold) var(--text-meta)/var(--leading-meta) var(--font-ui);
+  letter-spacing: normal;
+  text-transform: none;
 }
 .aip-status i {
   width: 8px;
@@ -33,7 +33,9 @@
 .aip-fresh {
   margin: calc(-1 * var(--space-2)) 0 var(--space-6);
   color: var(--muted);
-  font: var(--text-meta)/var(--leading-meta) var(--font-num);
+  display: grid;
+  gap: var(--space-1);
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
 }
 
 /* KPI ledger */
@@ -147,7 +149,7 @@
   text-align: right;
 }
 .aip-metric {
-  font: var(--weight-medium) var(--text-base)/var(--leading-body) var(--font-num);
+  font: var(--weight-medium) var(--text-base)/var(--leading-body) var(--font-ui);
   font-variant-numeric: tabular-nums;
 }
 .aip-link {
@@ -231,9 +233,9 @@
 .ai-pipeline figcaption {
   margin-bottom: var(--space-3);
   color: var(--muted);
-  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-num);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-ui);
+  letter-spacing: normal;
+  text-transform: none;
 }
 .aip-matrix-body {
   display: grid;
@@ -347,7 +349,7 @@
   list-style: none;
   border: 1px solid var(--rule-solid);
   background: color-mix(in srgb, var(--ink) 4%, var(--paper));
-  font: var(--text-meta)/var(--leading-meta) var(--font-num);
+  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
 }
 .aip-log li {
   display: grid;
@@ -361,6 +363,8 @@
   gap: 0 var(--space-3);
 }
 .aip-log time {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
   color: var(--muted);
 }
 /* status as a coloured mark; the text stays ink so it keeps 4.5:1 on the tinted log */

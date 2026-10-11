@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { ArrowRight } from '@phosphor-icons/react'
 import { REGION_BY_ID } from '../config/regions'
 import { ASK_AUDIENCES, askPulse, type AskAudienceId } from '../lib/askPulse'
 import type { ScoreGrid } from '../lib/model'
@@ -17,7 +16,6 @@ import { ReminderButton } from './ReminderButton'
 import './AskPulse.css'
 
 const DE = {
-  eyebrow: 'Frag den Pulse',
   title: 'Wann poste ich für …?',
   question: (name: string) => `Wann poste ich für ${name}?`,
   questions: 'Fragen',
@@ -37,7 +35,6 @@ const DE = {
   remindBody: (name: string) => `Das beste Fenster für ${name} beginnt.`,
 }
 const EN: typeof DE = {
-  eyebrow: 'Ask the Pulse',
   title: 'When do I post for …?',
   question: (name) => `When do I post for ${name}?`,
   questions: 'Questions',
@@ -99,10 +96,7 @@ export function AskPulse({
   return (
     <section className="panel ask-pulse" aria-labelledby="ask-title">
       <div className="section-head">
-        <div>
-          <p className="eyebrow">{t.eyebrow}</p>
-          <h2 id="ask-title">{t.title}</h2>
-        </div>
+        <h2 id="ask-title">{t.title}</h2>
       </div>
       <div className="ap-questions" role="radiogroup" aria-label={t.questions}>
         {ASK_AUDIENCES.map((a) => (
@@ -192,7 +186,6 @@ export function AskPulse({
                     aria-label={t.viewLabel(when)}
                   >
                     {t.view}
-                    <ArrowRight size={14} aria-hidden="true" />
                   </button>
                 )}
               </div>

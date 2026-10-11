@@ -54,7 +54,9 @@ test('accepts a fresh snapshot and live Wikimedia samples', async ({ page }) => 
     }),
   )
   await openReady(page)
-  await expect(page.getByTestId('data-state')).toContainText('Aktuelles Publikumsradar')
+  // O-013: no decorative eyebrow any more – live data shows the active regions, without the offline note
+  await expect(page.getByTestId('data-state')).toContainText(/\d Regionen aktiv/)
+  await expect(page.getByTestId('data-state')).not.toContainText('Beispieldaten')
   await expect(page.locator('.badge.measured').first()).toContainText('Live')
   await expectNoInvalidNumbers(page)
 })
@@ -72,7 +74,7 @@ test('uses explicit offline copy when the snapshot fails', async ({ page }) => {
   await page.route('**/data/snapshot.json*', (route) => route.abort('failed'))
   await page.route('https://wikimedia.org/**', (route) => route.abort('failed'))
   await openReady(page)
-  await expect(page.getByTestId('data-state')).toContainText('Beispieldaten · Offline-Modell')
+  await expect(page.getByTestId('data-state')).toContainText('Beispieldaten, Offline-Modell')
   await expect(page.locator('body')).toContainText('Gewichtungsdaten sind derzeit nicht verfügbar')
   await expectNoInvalidNumbers(page)
 })

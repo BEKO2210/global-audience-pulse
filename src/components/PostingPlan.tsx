@@ -1,5 +1,4 @@
 import { motion, useReducedMotion } from 'motion/react'
-import { ArrowRight } from '@phosphor-icons/react'
 import { PLAYBOOKS, dayNames } from '../data/playbooks'
 import { REGIONS } from '../config/regions'
 import type { PostingPick } from '../lib/postingPlan'
@@ -16,9 +15,8 @@ import './PostingPlan.css'
 const DE = {
   today: 'Heute',
   tomorrow: 'Morgen',
-  eyebrow: 'Was & wann posten',
   title: 'Nächste Gelegenheit je Plattform',
-  regions: (n: number) => `${n} ${n === 1 ? 'Region' : 'Regionen'} · deine Zeitzone`,
+  regions: (n: number) => `${n} ${n === 1 ? 'Region' : 'Regionen'}, deine Zeitzone`,
   lede: (score: number) =>
     `Erste Stunde, in der dein Publikum laut Modell aktiv ist (Score ab ${score}) und die Plattform-Studien für mindestens die Hälfte davon eine empfohlene Uhrzeit nennen – jeweils in dessen Ortszeit.`,
   empty: 'Wähle mindestens eine Region, dann erscheinen hier die Termine.',
@@ -37,9 +35,8 @@ const DE = {
 const EN: typeof DE = {
   today: 'Today',
   tomorrow: 'Tomorrow',
-  eyebrow: 'What & when to post',
   title: 'Next opportunity per platform',
-  regions: (n) => `${n} ${n === 1 ? 'region' : 'regions'} · your time zone`,
+  regions: (n) => `${n} ${n === 1 ? 'region' : 'regions'}, your time zone`,
   lede: (score) =>
     `The first hour in which the model shows your audience as active (score ${score} or higher) and the platform studies recommend that time for at least half of it – each in its own local time.`,
   empty: 'Select at least one region and the times will appear here.',
@@ -106,10 +103,7 @@ export function PostingPlan({
   return (
     <section className="panel posting-plan" aria-labelledby="posting-plan-title">
       <div className="section-head">
-        <div>
-          <p className="eyebrow">{t.eyebrow}</p>
-          <h2 id="posting-plan-title">{t.title}</h2>
-        </div>
+        <h2 id="posting-plan-title">{t.title}</h2>
         <span className="micro">{t.regions(regionCount)}</span>
       </div>
       <p className="pp-lede">{t.lede(goodScore)}</p>
@@ -218,7 +212,6 @@ export function PostingPlan({
                     aria-label={t.jump(name, when)}
                   >
                     {t.view}
-                    <ArrowRight size={14} aria-hidden="true" />
                   </button>
                 </span>
               </motion.li>

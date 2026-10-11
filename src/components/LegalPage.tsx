@@ -42,7 +42,6 @@ function Impressum() {
   const { contact } = LEGAL
   return (
     <>
-      <p className="eyebrow">Rechtliches</p>
       <h1>Impressum</h1>
       <section aria-labelledby="provider-heading">
         <h2 id="provider-heading">Angaben gemäß § 5 DDG</h2>
@@ -83,7 +82,6 @@ function Datenschutz() {
   const { contact } = LEGAL
   return (
     <>
-      <p className="eyebrow">Transparenz</p>
       <h1>Datenschutz</h1>
       <p className="legal-intro">
         Diese Hinweise erklären, welche technischen Daten beim Besuch von Global Audience Pulse

@@ -219,5 +219,5 @@ test('an unusual region shows the topics of yesterday’s most-read articles (T-
   const topics = page.locator('.lr-live-topics')
   await topics.first().scrollIntoViewIfNeeded()
   await expect(topics).toHaveCount(1)
-  await expect(topics).toHaveText('Meistgelesen gestern: Politik · Film & TV')
+  await expect(topics).toHaveText('Meistgelesen gestern: Politik, Film & TV')
 })

@@ -8,7 +8,6 @@ import type { Messages } from '../i18n/locale'
 import { cityName, phaseName, regionName } from '../i18n/labels'
 
 const DE = {
-  eyebrow: '24-Stunden-Aktivitätsrad',
   title: 'Wann deine Märkte wach sind',
   dialLabel: 'Aktivitätsphasen der ausgewählten Märkte über 24 Stunden',
   ring: (n: number, region: string, city: string) => `Ring ${n}: ${region} (${city})`,
@@ -21,7 +20,6 @@ const DE = {
   order: 'Ringreihenfolge außen nach innen',
 }
 const EN: typeof DE = {
-  eyebrow: '24-hour activity wheel',
   title: 'When your markets are awake',
   dialLabel: 'Activity phases of the selected markets over 24 hours',
   ring: (n, region, city) => `Ring ${n}: ${region} (${city})`,
@@ -69,10 +67,7 @@ export function Dial({
   return (
     <section className="panel dial-panel" aria-labelledby="dial-title">
       <div className="section-head">
-        <div>
-          <p className="eyebrow">{t.eyebrow}</p>
-          <h2 id="dial-title">{t.title}</h2>
-        </div>
+        <h2 id="dial-title">{t.title}</h2>
       </div>
       <div className="dial-wrap">
         <svg viewBox="0 0 300 300" className="dial" role="img" aria-label={t.dialLabel}>
