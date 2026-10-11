@@ -101,3 +101,13 @@ Status in ROADMAP.md auf `erledigt (Commit)`.
 key, rates and funnel computed in code, the local model writes what visitors do / what gets stuck / 3–5
 proposals (number guard). Output stays on the PC: `~/.local/share/gap-live/stats/YYYY-Www.md`. Proposals go into
 the roadmap only after review.
+
+## Local test writer (T-052)
+
+`npm run tests:local [-- <module.ts> …]` (default: changed `src/lib` and `scripts/analysis` modules vs.
+`origin/main`) asks `ornith:9b-agent32k` for 3–5 extra Vitest cases per module, runs each proposal once next to the
+module and writes `LOCAL-TESTS.md` plus `.local-tests/<module>.proposed.test.ts` (both gitignored). A ✗ means a bug
+or – far more often – a wrong expectation. First run 2026-10-11: captions 8/9 green (the red one expected invalid
+dates to be skipped – never produced by the code), askPulse 6/9 green, all 3 reds wrong expectations; one boundary
+case (score exactly at the threshold, earliest hour on ties) adopted into `captions.test.ts`. Ollama is streamed:
+long answers otherwise hit Node's 300 s headers timeout.

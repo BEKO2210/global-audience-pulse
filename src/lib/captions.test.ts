@@ -32,4 +32,10 @@ describe('chart captions (T-017)', () => {
     expect(overlapHour(hours, ['a', 'b', 'c'], at, 62)).toEqual({ date: hours[1], count: 2 })
     expect(overlapHour(hours, ['a'], () => 10, 62)).toBeNull()
   })
+
+  // adopted from the local test writer (T-052): >= at the threshold, and the earliest hour wins a tie
+  it('counts a market exactly at the threshold and keeps the earliest of equal hours', () => {
+    const hours = [0, 1, 2].map((h) => new Date(Date.UTC(2026, 9, 11, h)))
+    expect(overlapHour(hours, ['a', 'b'], () => 62, 62)).toEqual({ date: hours[0], count: 2 })
+  })
 })

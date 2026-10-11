@@ -8,3 +8,6 @@ test-results
 .lighthouseci
 .lighthouse-dist
 REVIEW-LOCAL.md
+.local-tests
+LOCAL-TESTS.md
+*.local.test.ts

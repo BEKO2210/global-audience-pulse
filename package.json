@@ -20,6 +20,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "review:local": "scripts/dev/gpu-lock.sh -w 1800 -- node scripts/dev/local-review.mjs",
+    "tests:local": "scripts/dev/gpu-lock.sh -w 1800 -- node scripts/dev/local-tests.mjs",
     "gpu:status": "scripts/dev/gpu-status.sh"
   },
   "dependencies": {
