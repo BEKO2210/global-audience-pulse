@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { formatTime, relativeTime, timeZoneName } from '../lib/time'
 import { AudienceGrid } from './report/AudienceGrid'
 import { ContributionBar } from './report/ContributionBar'
@@ -39,6 +39,15 @@ const EN: typeof DE = {
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
 export default function LiveReport({ now, data }: { now: Date; data: LiveAnalysisPayload | null }) {
+  // O-015b: on wide screens the written analysis is open from the start (the left column was empty otherwise)
+  const details = useRef<HTMLDetailsElement>(null)
+  const autoOpened = useRef(false)
+  useEffect(() => {
+    if (details.current && window.matchMedia('(min-width: 1024px)').matches) {
+      autoOpened.current = true
+      details.current.open = true
+    }
+  }, [])
   const [entered, setEntered] = useState(false)
   const t = useMessages(M)
   const { locale, intl } = useLocale()
@@ -95,32 +104,37 @@ export default function LiveReport({ now, data }: { now: Date; data: LiveAnalysi
       </div>
 
       {hasVisuals && facts ? (
-        <div className="lr-layout">
-          <div className="lr-text-col">
-            <details
-              className="lr-details"
-              onToggle={(event) => {
-                if (event.currentTarget.open) track('Bericht aufgeklappt')
-              }}
-            >
-              <summary>{t.readAll}</summary>
-              <p className="live-report-body" lang={lang}>
-                {report.analyse}
-              </p>
-              <ul lang={lang}>
-                {report.punkte.map((point) => (
-                  <li key={point}>{point}</li>
-                ))}
-              </ul>
-            </details>
+        <>
+          <div className="lr-layout">
+            <div className="lr-text-col">
+              <details
+                ref={details}
+                className="lr-details"
+                onToggle={(event) => {
+                  // opened by the reader, not by the desktop default below
+                  if (event.currentTarget.open && !autoOpened.current) track('Bericht aufgeklappt')
+                  autoOpened.current = false
+                }}
+              >
+                <summary>{t.readAll}</summary>
+                <p className="live-report-body" lang={lang}>
+                  {report.analyse}
+                </p>
+                <ul lang={lang}>
+                  {report.punkte.map((point) => (
+                    <li key={point}>{point}</li>
+                  ))}
+                </ul>
+              </details>
+            </div>
+            <div className="lr-visual-col">
+              <ContributionBar facts={facts} />
+              <TrendChart facts={facts} />
+              <LiveSignals facts={facts} />
+            </div>
           </div>
-          <div className="lr-visual-col">
-            <ContributionBar facts={facts} />
-            <TrendChart facts={facts} />
-            <LiveSignals facts={facts} />
-            <AudienceGrid facts={facts} report={report} lang={lang} />
-          </div>
-        </div>
+          <AudienceGrid facts={facts} report={report} lang={lang} />
+        </>
       ) : (
         <>
           <p className="live-report-body" lang={lang}>

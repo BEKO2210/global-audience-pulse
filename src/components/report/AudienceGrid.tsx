@@ -42,7 +42,7 @@ export function AudienceGrid({
   const urteile = new Map(report.zielgruppen?.map((z) => [z.name, z.urteil]) ?? [])
 
   return (
-    <section className="lr-block" aria-labelledby="lr-audience-title">
+    <section className="lr-block lr-audience-band" aria-labelledby="lr-audience-title">
       <h3 id="lr-audience-title" className="lr-block-title">
         {t.title}
       </h3>
