@@ -1250,13 +1250,21 @@ button:active {
 }
 .planner-list article {
   display: grid;
-  grid-template-columns: 32px 1fr 44px;
-  gap: var(--space-2);
-  align-items: center;
+  grid-template-columns: 24px minmax(0, 1fr) 44px;
+  grid-template-areas:
+    'index time action'
+    '. markets markets';
+  gap: var(--space-2) var(--space-3);
+  align-items: start;
   padding: var(--space-4) 0;
   border-top: 1px solid var(--rule);
 }
-.planner-list article > div {
+.planner-list .window-index {
+  grid-area: index;
+  padding-top: var(--space-1);
+}
+.planner-window-time {
+  grid-area: time;
   min-width: 0;
 }
 .window-index {
@@ -1266,7 +1274,7 @@ button:active {
 .planner-list strong {
   font-size: var(--text-sm);
   display: block;
-  text-align: right;
+  text-align: left;
   font-variant-numeric: tabular-nums;
 }
 .planner-list p,
@@ -1277,7 +1285,7 @@ button:active {
   line-height: var(--leading-meta);
 }
 .planner-list p {
-  text-align: right;
+  text-align: left;
   font-variant-numeric: tabular-nums;
 }
 .window-index {
@@ -1288,10 +1296,21 @@ button:active {
   display: block;
   line-height: var(--leading-body);
 }
-.window-markets {
+.planner-list .window-markets {
+  grid-area: markets;
   display: flex !important;
   gap: var(--space-1);
   align-items: flex-start;
+  min-width: 0;
+  margin: 0;
+}
+.planner-list .window-markets svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+.planner-list .icon-button {
+  grid-area: action;
+  align-self: start;
 }
 .planner-actions {
   display: flex;
@@ -1322,6 +1341,13 @@ button:active {
   margin-top: var(--space-4);
   border-top: 1px solid var(--rule);
   padding-top: var(--space-3);
+}
+@media (min-width: 720px) {
+  .planner-list article {
+    grid-template-columns: 24px minmax(200px, 0.7fr) minmax(0, 2fr) 44px;
+    grid-template-areas: 'index time markets action';
+    gap: var(--space-4);
+  }
 }
 .button.primary {
   /* outline like every other button (O-015: the only filled button on the page drew the eye to a side action) */

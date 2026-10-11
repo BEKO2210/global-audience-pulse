@@ -185,28 +185,28 @@ export function Planner({
         {windows.map((window, i) => (
           <article key={window.start.toISOString()}>
             <span className="window-index">{String(i + 1).padStart(2, '0')}</span>
-            <div>
+            <div className="planner-window-time">
               <strong>{formatStart(window.start, zone, locale, intl)}</strong>
               <p>
                 {t.until} {formatTime(window.end, zone)} · Score{' '}
                 <AnimatedNumber value={window.score} />
               </p>
-              <small className="window-markets">
-                <Fire size={14} weight="regular" aria-hidden="true" /> {t.atPeak}{' '}
-                {REGIONS.filter((region) => selected.includes(region.id))
-                  .filter((region) =>
-                    ['prime', 'day'].includes(
-                      phaseAt(localDecimalHourFast(window.start, region.timeZone)).id,
-                    ),
-                  )
-                  .slice(0, 4)
-                  .map((region) => {
-                    const phase = phaseAt(localDecimalHourFast(window.start, region.timeZone))
-                    return `${cityName(region.id, region.city, locale)} (${formatTime(window.start, region.timeZone)} ${phaseName(phase.id, phase.name, locale)})`
-                  })
-                  .join(', ') || t.noPeak}
-              </small>
             </div>
+            <small className="window-markets">
+              <Fire size={14} weight="regular" aria-hidden="true" /> {t.atPeak}{' '}
+              {REGIONS.filter((region) => selected.includes(region.id))
+                .filter((region) =>
+                  ['prime', 'day'].includes(
+                    phaseAt(localDecimalHourFast(window.start, region.timeZone)).id,
+                  ),
+                )
+                .slice(0, 4)
+                .map((region) => {
+                  const phase = phaseAt(localDecimalHourFast(window.start, region.timeZone))
+                  return `${cityName(region.id, region.city, locale)} (${formatTime(window.start, region.timeZone)} ${phaseName(phase.id, phase.name, locale)})`
+                })
+                .join(', ') || t.noPeak}
+            </small>
             <button
               className="icon-button"
               onClick={() => {
