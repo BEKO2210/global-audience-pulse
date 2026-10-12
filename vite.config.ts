@@ -6,7 +6,53 @@ import { motionStudio } from 'motion-studio'
 import { resolve } from 'node:path'
 import type { Plugin } from 'vite'
 
-const SITE = 'https://beko2210.github.io/global-audience-pulse/'
+const BASE = '/global-audience-pulse/'
+const SITE = `https://beko2210.github.io${BASE}`
+
+/**
+ * Latin woff2 of the fonts the static shell paints per style: display 600 (h1), ui 500/600 (eyebrow, wordmark)
+ * and ui 400 for the body right after. The inline style script in index.html preloads the stored style's files
+ * only (O-014), so the headline no longer waits for main.js -> style chunk -> css -> font.
+ */
+const SHELL_FONTS: Record<string, string[]> = {
+  tafel: [
+    'ibm-plex-sans-condensed-latin-600',
+    'ibm-plex-sans-latin-600',
+    'ibm-plex-sans-latin-500',
+    'ibm-plex-sans-latin-400',
+  ],
+  atlas: ['source-serif-4-latin-wght', 'source-sans-3-latin-wght'],
+  praezision: ['schibsted-grotesk-latin-wght'],
+  archiv: [
+    'source-serif-4-latin-wght',
+    'ibm-plex-sans-latin-600',
+    'ibm-plex-sans-latin-500',
+    'ibm-plex-sans-latin-400',
+  ],
+}
+
+/** Fills `const fonts = {}` in the index.html style script with the hashed URLs from the bundle. */
+function fontPreload(): Plugin {
+  return {
+    name: 'gap-font-preload',
+    apply: 'build',
+    transformIndexHtml: {
+      order: 'post',
+      handler(html, ctx) {
+        const files = Object.keys(ctx.bundle ?? {}).filter((f) => f.endsWith('.woff2'))
+        const fonts = Object.fromEntries(
+          Object.entries(SHELL_FONTS).map(([style, names]) => [
+            style,
+            names.flatMap((name) =>
+              files.filter((f) => f.includes(`/${name}-normal-`)).map((f) => BASE + f),
+            ),
+          ]),
+        )
+        return html.replace('const fonts = {}', `const fonts = ${JSON.stringify(fonts)}`)
+      },
+    },
+  }
+}
 
 /** sitemap.xml with the build date: the home page plus the legal pages (those are noindex, so only home). */
 function sitemap(): Plugin {
@@ -38,7 +84,7 @@ ${['', '?lang=en']
 }
 
 export default defineConfig({
-  base: '/global-audience-pulse/',
+  base: BASE,
   define: { __APP_VERSION__: JSON.stringify(process.env.npm_package_version ?? 'dev') },
   build: {
     // No eager modulepreload of the big chunks: on slow links they compete with the CSS that gates
@@ -67,6 +113,7 @@ export default defineConfig({
     tailwindcss(),
     motionStudio(),
     sitemap(),
+    fontPreload(),
     VitePWA({
       // Registered by UpdateToast after idle; a waiting deploy is announced instead of silently skipped,
       // so open tabs and installed apps never keep running an old build.
@@ -96,6 +143,8 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2,json}'],
+        // The DE/EN UI never requests these subsets (@font-face unicode-range): 39 files, 440 kB less to precache.
+        globIgnores: ['**/*-{cyrillic,cyrillic-ext,greek,greek-ext,vietnamese}-*.woff2'],
         navigateFallbackDenylist: [/\/(?:impressum|datenschutz)\/?$/],
         runtimeCaching: [
           {
