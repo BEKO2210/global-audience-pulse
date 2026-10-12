@@ -13,12 +13,15 @@
 
 @media (max-width: 599px) {
   .heatmap-swipe-hint {
+    /* sits in the 20 px hour-label row (right of the last hour number), never over the data cells it points to */
     position: absolute;
     z-index: 4;
-    top: 50%;
+    top: 0;
     right: var(--space-1);
-    display: block;
-    padding: var(--space-1) var(--space-2);
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+    padding: 0 var(--space-2);
     border: 1px solid var(--rule-solid);
     border-radius: 999px;
     color: var(--ink);
@@ -27,7 +30,6 @@
     font-weight: var(--weight-medium);
     white-space: nowrap;
     pointer-events: none;
-    transform: translateY(-50%);
   }
 }
 

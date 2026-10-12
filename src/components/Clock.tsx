@@ -17,7 +17,7 @@ export function LiveClock() {
   }, [])
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone
   return (
-    <div className="live-clock" aria-label={t.current}>
+    <div className="live-clock" role="timer" aria-label={t.current}>
       <span>{formatTime(now, zone, true)}</span>
       <small>
         {timeZoneName(now, zone, intl)} · {formatTime(now, 'UTC')} UTC

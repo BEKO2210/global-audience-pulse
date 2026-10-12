@@ -96,6 +96,9 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2,json}'],
+        // the snapshot is refreshed by the data workflow without a rebuild: never serve it from the revisioned
+        // precache (that route wins over runtimeCaching); NetworkFirst below keeps the last real one for offline
+        globIgnores: ['**/data/snapshot.json'],
         navigateFallbackDenylist: [/\/(?:impressum|datenschutz)\/?$/],
         runtimeCaching: [
           {

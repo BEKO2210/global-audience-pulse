@@ -205,7 +205,7 @@ export function RegionCards({
           </button>
         </div>
       </div>
-      <div className="filter-row" aria-label={t.filter}>
+      <div className="filter-row" role="group" aria-label={t.filter}>
         <button onClick={() => setFilter('all')} aria-pressed={filter === 'all'}>
           {t.all(REGIONS.length)}
         </button>

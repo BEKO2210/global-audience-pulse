@@ -7,7 +7,7 @@ import { PRESETS, REGIONS, REGION_BY_ID, type RegionId } from './config/regions'
 import { useAudience } from './hooks/useAudience'
 import { useLiveData } from './hooks/useLiveData'
 import { useScoreGrid } from './hooks/useScoreGrid'
-import { useDeferredMount } from './hooks/useDeferredMount'
+import { requestIdle, useDeferredMount } from './hooks/useDeferredMount'
 import { ReportTeaser, useLiveReport } from './components/reportShared'
 const LiveReport = lazy(() => import('./components/LiveReport'))
 const AiPipeline = lazy(() => import('./components/AiPipeline'))
@@ -249,6 +249,11 @@ function Section({
   return <div className={className}>{children}</div>
 }
 
+/** Reserved height of the live report (quiet surface like the deferred sections) while its data and chunk load. */
+function ReportSlot() {
+  return <div className="deferred-placeholder" style={{ minHeight: 640 }} aria-busy="true" />
+}
+
 function nextPhaseStart(region: (typeof REGIONS)[number], from: Date, phaseId = 'prime') {
   const targetHour = PHASES.find((phase) => phase.id === phaseId)?.from ?? PHASES[0].from
   const parts = fastZonedParts(from, region.timeZone)
@@ -393,6 +398,14 @@ export default function App() {
     })
   }, [])
   useEffect(() => refreshSnapshot(), [refreshSnapshot])
+  // warm the lazy report chunks in an idle slot: when their JSON lands, the section mounts in the same commit
+  useEffect(() => {
+    requestIdle(() => {
+      void import('./components/LiveReport')
+      void import('./components/AiPipeline')
+      void import('./components/WeeklyReview')
+    })
+  }, [])
   useEffect(() => {
     let interval = 0
     const timeout = window.setTimeout(
@@ -882,18 +895,25 @@ export default function App() {
                   }}
                   isLive={!scrubbed}
                   recommendationThreshold={STATUS_LEVELS[1].min}
+                  score={score}
                   caption={captions?.forecast}
                 />
               </Section>
             </div>
-            {liveReport && (
-              <Suspense fallback={null}>
-                <LiveReport
-                  now={minuteNow}
-                  data={liveReport}
-                  liveWindow={windows24[0]}
-                  selection={{ count: selected.length, total: REGIONS.length }}
-                />
+            {/* the slot keeps its height while the JSON and the chunk load, so the report never pushes the
+                sections below it down; it collapses only when there is definitively no report */}
+            {liveReport !== null && (
+              <Suspense fallback={<ReportSlot />}>
+                {liveReport ? (
+                  <LiveReport
+                    now={minuteNow}
+                    data={liveReport}
+                    liveWindow={windows24[0]}
+                    selection={{ count: selected.length, total: REGIONS.length }}
+                  />
+                ) : (
+                  <ReportSlot />
+                )}
               </Suspense>
             )}
             <Section defer placeholderHeight={1100}>
@@ -1016,6 +1036,7 @@ export default function App() {
                   worldMean={worldMean}
                   viewerZone={viewerZone}
                   minuteNow={minuteNow}
+                  score={score}
                   onScrub={scrubTo}
                   caption={captions?.dial}
                 />

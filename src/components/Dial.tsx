@@ -1,7 +1,7 @@
 import { useRef, useState, type CSSProperties } from 'react'
 import { MODEL_CONFIG, PHASES } from '../config/model'
 import { REGIONS, type RegionId } from '../config/regions'
-import { formatDecimalHour, localDecimalHourFast, snapToMinutes } from '../lib/time'
+import { formatDecimalHour, localDecimalHourFast, snapToMinutes, timeValueText } from '../lib/time'
 import { track } from '../lib/analytics'
 import { Flag } from './Flag'
 import { useSvgBox } from '../hooks/useSvgBox'
@@ -26,7 +26,7 @@ const EN: typeof DE = {
   title: 'When your markets are awake',
   dialLabel: 'Activity phases of the selected markets over 24 hours',
   ring: (n, region, city) => `Ring ${n}: ${region} (${city})`,
-  centre: 'Weighted',
+  centre: 'Weighted mean',
   markets: (n) => `${n} ${n === 1 ? 'market' : 'markets'}`,
   explainer:
     'Rings in your time zone: each segment shows a market’s activity phase, the hand the selected time.',
@@ -36,6 +36,17 @@ const EN: typeof DE = {
   order: 'Ring order, outer to inner',
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
+
+const SLIDER_KEYS = [
+  'ArrowLeft',
+  'ArrowRight',
+  'ArrowUp',
+  'ArrowDown',
+  'PageUp',
+  'PageDown',
+  'Home',
+  'End',
+]
 
 const polar = (cx: number, cy: number, radius: number, hour: number) => {
   const angle = (hour / 24) * Math.PI * 2 - Math.PI / 2
@@ -54,6 +65,7 @@ export function Dial({
   worldMean,
   viewerZone,
   minuteNow,
+  score,
   onScrub,
   caption,
 }: {
@@ -62,6 +74,8 @@ export function Dial({
   worldMean: number
   viewerZone: string
   minuteNow: Date
+  /** Overall score at `date`, spoken with the time so the three sliders announce the same value. */
+  score?: number
   onScrub: (date: Date) => void
   caption?: string
 }) {
@@ -124,15 +138,8 @@ export function Dial({
           aria-valuemin={minimum}
           aria-valuemax={maximum}
           aria-valuenow={selectedInDomain.getTime()}
-          aria-valuetext={date.toLocaleString(intl, {
-            timeZone: viewerZone,
-            weekday: 'short',
-            day: locale === 'en' ? 'numeric' : '2-digit',
-            month: locale === 'en' ? 'short' : '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            timeZoneName: 'short',
-          })}
+          aria-valuetext={timeValueText(date, viewerZone, locale, intl, score)}
+          aria-keyshortcuts="Home"
           onPointerDown={(e) => {
             // Mouse/pen scrub immediately. Touch waits for intent: the browser keeps vertical
             // pans (touch-action: pan-y) so scrolling over the chart scrolls the page.
@@ -173,12 +180,12 @@ export function Dial({
             touchStart.current = null
           }}
           onKeyDown={(e) => {
-            if (['ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home'].includes(e.key))
-              e.preventDefault()
+            // role=slider promises Up/Down as well as Left/Right (APG); Home is "now", End the last hour
+            if (SLIDER_KEYS.includes(e.key)) e.preventDefault()
             const next =
-              e.key === 'ArrowLeft'
+              e.key === 'ArrowLeft' || e.key === 'ArrowDown'
                 ? new Date(date.getTime() - 15 * 60_000)
-                : e.key === 'ArrowRight'
+                : e.key === 'ArrowRight' || e.key === 'ArrowUp'
                   ? new Date(date.getTime() + 15 * 60_000)
                   : e.key === 'PageUp'
                     ? new Date(date.getTime() + 12 * 3_600_000)
@@ -186,7 +193,9 @@ export function Dial({
                       ? new Date(date.getTime() - 12 * 3_600_000)
                       : e.key === 'Home'
                         ? minuteNow
-                        : null
+                        : e.key === 'End'
+                          ? new Date(maximum)
+                          : null
             if (next) {
               onScrub(next)
               trackScrub('tastatur', next)
@@ -287,7 +296,7 @@ export function Dial({
           </text>
         </svg>
         <p className="dial-explainer">{t.explainer}</p>
-        <div className="phase-colour-legend" aria-label={t.phases}>
+        <div className="phase-colour-legend" role="group" aria-label={t.phases}>
           {PHASES.map((phase) => (
             <span key={phase.id}>
               <i style={{ background: phase.color }} />
@@ -299,7 +308,7 @@ export function Dial({
         {outer && inner && (
           <p className="ring-direction">{t.direction(city(outer), city(inner))}</p>
         )}
-        <div className="dial-legend" aria-label={t.order}>
+        <div className="dial-legend" role="group" aria-label={t.order}>
           {selectedRegions.map((region, index) => (
             <button
               key={region.id}

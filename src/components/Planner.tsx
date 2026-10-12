@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { Check, DownloadSimple, Fire, ShareNetwork } from '@phosphor-icons/react'
 import { REGIONS, type RegionConfig, type RegionId } from '../config/regions'
+import { rovingKey } from '../lib/roving'
 import { phaseAt, type PostingWindow } from '../lib/model'
 import { formatDateTime, formatTime, localDecimalHourFast, timeZoneName } from '../lib/time'
 import { AnimatedNumber } from './AnimatedNumber'
@@ -10,6 +11,9 @@ import { downloadIcs } from '../lib/ics'
 import { SITE_URL } from '../i18n/locale'
 import type { Locale, Messages } from '../i18n/locale'
 import { cityName, phaseName } from '../i18n/labels'
+
+const SCOPES = ['today', 'tomorrow', 'week'] as const
+const SCOPE_TRACK = { today: 'heute', tomorrow: 'morgen', week: '7-tage' } as const
 
 const DE = {
   icsSummary: 'Optimales Posting-Fenster',
@@ -113,6 +117,11 @@ export function Planner({
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
   }, [])
+  const baseId = useId()
+  const choose = (next: (typeof SCOPES)[number]) => {
+    setScope(next)
+    track('Planer Tab', { tab: SCOPE_TRACK[next] })
+  }
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const windows = windowSets[scope]
   const emptyMessage =
@@ -165,39 +174,32 @@ export function Planner({
         <span className="micro">{timeZoneName(new Date(), zone, intl)}</span>
       </div>
       <p className="planner-zone-note">{t.zoneNote}</p>
-      <div className="filter-row planner-tabs" role="tablist" aria-label={t.period}>
-        <button
-          role="tab"
-          onClick={() => {
-            setScope('today')
-            track('Planer Tab', { tab: 'heute' })
-          }}
-          aria-selected={scope === 'today'}
-        >
-          {t.today(windowSets.today.length)}
-        </button>
-        <button
-          role="tab"
-          onClick={() => {
-            setScope('tomorrow')
-            track('Planer Tab', { tab: 'morgen' })
-          }}
-          aria-selected={scope === 'tomorrow'}
-        >
-          {t.tomorrow(windowSets.tomorrow.length)}
-        </button>
-        <button
-          role="tab"
-          onClick={() => {
-            setScope('week')
-            track('Planer Tab', { tab: '7-tage' })
-          }}
-          aria-selected={scope === 'week'}
-        >
-          {t.week(windowSets.week.length)}
-        </button>
+      <div
+        className="filter-row planner-tabs"
+        role="tablist"
+        aria-label={t.period}
+        onKeyDown={(event) => rovingKey(event, SCOPES, scope, choose)}
+      >
+        {SCOPES.map((id) => (
+          <button
+            key={id}
+            id={`${baseId}-tab-${id}`}
+            role="tab"
+            aria-selected={scope === id}
+            aria-controls={`${baseId}-panel`}
+            tabIndex={scope === id ? 0 : -1}
+            onClick={() => choose(id)}
+          >
+            {t[id](windowSets[id].length)}
+          </button>
+        ))}
       </div>
-      <div className="planner-list" role="tabpanel">
+      <div
+        id={`${baseId}-panel`}
+        className="planner-list"
+        role="tabpanel"
+        aria-labelledby={`${baseId}-tab-${scope}`}
+      >
         {windows.length === 0 && <p className="planner-empty">{emptyMessage}</p>}
         {windows.map((window, i) => (
           <article key={window.start.toISOString()}>

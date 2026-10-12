@@ -1,10 +1,10 @@
 import { startTransition, useEffect, useMemo, useRef, useState } from 'react'
 import { area, curveMonotoneX, line } from 'd3-shape'
 import { motion, useReducedMotion } from 'motion/react'
-import { STATUS_LEVELS } from '../config/model'
+import { MODEL_CONFIG, STATUS_LEVELS } from '../config/model'
 import { MOTION } from '../config/motion'
 import { statusFor, type PostingWindow } from '../lib/model'
-import { formatOffset, formatTime } from '../lib/time'
+import { formatOffset, formatTime, snapToMinutes, timeValueText } from '../lib/time'
 import type { ForecastPoint } from './Forecast'
 import { AnimatedNumber } from './AnimatedNumber'
 import { track } from '../lib/analytics'
@@ -87,8 +87,11 @@ export function MobileTimeBar({
   const { locale, intl } = useLocale()
   const reduceMotion = useReducedMotion()
   const maxMinutes = horizon * 60
+  // The bar walks the same 15-minute grid as the forecast and the heatmap (scrubTo snaps to it), so its clock
+  // reads 15:30 like theirs, not 15:25 from an offset added to the live minute.
+  const origin = snapToMinutes(now, MODEL_CONFIG.scanStepMinutes).getTime()
   const externalMinutes = clamp(
-    Math.round((selectedDate.getTime() - now.getTime()) / 60_000 / 15) * 15,
+    Math.round((selectedDate.getTime() - origin) / 60_000 / 15) * 15,
     0,
     maxMinutes,
   )
@@ -162,7 +165,7 @@ export function MobileTimeBar({
   }, [])
 
   const displayedMinutes = dragging ? localMinutes : externalMinutes
-  const date = new Date(now.getTime() + displayedMinutes * 60_000)
+  const date = new Date(origin + displayedMinutes * 60_000)
   const pointIndex = clamp(Math.round(displayedMinutes / 15), 0, Math.max(0, points.length - 1))
   const score = points[pointIndex]?.score ?? 0
   const status = statusFor(score)
@@ -213,7 +216,7 @@ export function MobileTimeBar({
     const next = clamp(minutes, 0, maxMinutes)
     setLocalMinutes(next)
     pending.current = next
-    const nextDate = new Date(now.getTime() + next * 60_000)
+    const nextDate = new Date(origin + next * 60_000)
     const nextBest = windows.some((window) => nextDate >= window.start && nextDate <= window.end)
     if (nextBest !== bestState.current) {
       bestState.current = nextBest
@@ -223,7 +226,7 @@ export function MobileTimeBar({
     cancelAnimationFrame(frame.current)
     frame.current = requestAnimationFrame(() => {
       const committed = pending.current
-      startTransition(() => onScrub(new Date(now.getTime() + committed * 60_000)))
+      startTransition(() => onScrub(new Date(origin + committed * 60_000)))
     })
   }
 
@@ -260,20 +263,29 @@ export function MobileTimeBar({
       )}
       <div className="mobile-bar-when">
         <span className="mobile-bar-readout">{formatTime(live ? now : date, userZone)}</span>
-        {live ? (
-          <span className="mobile-bar-live is-live" role="status">
-            <i aria-hidden="true" /> Live
-          </span>
-        ) : (
-          <button
-            className="mobile-bar-live"
-            onClick={onLive}
-            aria-label={t.backToNow(formatOffset(date.getTime() - now.getTime(), locale))}
-          >
-            {t.shortOffset(displayedMinutes)}
-            <span className="mobile-bar-back">{t.now}</span>
-          </button>
-        )}
+        {/* one button in both states (aria-disabled while live): a keyboard "back to now" keeps its focus */}
+        <button
+          className={`mobile-bar-live${live ? ' is-live' : ''}`}
+          type="button"
+          aria-disabled={live}
+          aria-label={
+            live ? undefined : t.backToNow(formatOffset(date.getTime() - now.getTime(), locale))
+          }
+          onClick={() => {
+            if (!live) onLive()
+          }}
+        >
+          {live ? (
+            <>
+              <i aria-hidden="true" /> Live
+            </>
+          ) : (
+            <>
+              {t.shortOffset(displayedMinutes)}
+              <span className="mobile-bar-back">{t.now}</span>
+            </>
+          )}
+        </button>
       </div>
 
       <div className={`mobile-bar-slider${dragging ? ' is-dragging' : ''}`}>
@@ -313,7 +325,7 @@ export function MobileTimeBar({
         </div>
         <input
           aria-label={t.slider}
-          aria-valuetext={`${date.toLocaleString(intl, { weekday: 'long', hour: '2-digit', minute: '2-digit' })}, Score ${Math.round(score)}`}
+          aria-valuetext={timeValueText(live ? now : date, userZone, locale, intl, score)}
           type="range"
           min={0}
           max={maxMinutes}
@@ -346,7 +358,7 @@ export function MobileTimeBar({
       >
         {horizon === 24 ? t.short24 : t.short7}
       </button>
-      <div className={`mobile-bar-score ${status.tone}`} aria-label={t.total}>
+      <div className={`mobile-bar-score ${status.tone}`} role="group" aria-label={t.total}>
         <b>{ready ? <AnimatedNumber value={score} /> : '—'}</b>
         {/* short word in a fixed-width column: a long status widened the column and shifted the whole bar */}
         <span title={statusText(status.tone, locale).label}>

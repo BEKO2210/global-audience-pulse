@@ -29,9 +29,12 @@ const EN: typeof DE = {
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
-const PAD = { t: 30, r: 44, b: 24, l: 24 }
+// threshold values sit inside the plot at the left edge, like the forecast's y labels: symmetric padding
+const PAD = { t: 30, r: 24, b: 24, l: 24 }
 const SCORE_LABEL_GAP = 12
 const THRESHOLD_LABEL_CLEARANCE = 16
+// threshold value: baseline 4 px above its line, starting 4 px right of the plot edge
+const THRESHOLD_VALUE_OFFSET = 4
 
 export function TrendChart({ facts }: { facts: AnalysisFacts }) {
   // 1 SVG unit = 1 CSS px (height from CSS), so labels keep their size on every screen.
@@ -77,11 +80,15 @@ export function TrendChart({ facts }: { facts: AnalysisFacts }) {
   const visibleLevels = candidateThresholds.filter((l) => l.min >= yMin + 2 && l.min <= yMax - 2)
   const plotRight = PAD.l + innerW
 
-  const scoreLabelY = (cy: number) => {
+  // Only the first ("now") label is centred on the left edge where the threshold values start; when the two
+  // rows would touch, the score moves above the threshold value instead of over it.
+  const scoreLabelY = (cy: number, index: number) => {
     let y = cy - SCORE_LABEL_GAP
+    if (index !== 0) return y
     for (const lvl of visibleLevels) {
-      const ty = yAt(lvl.min) + 3.5
-      if (Math.abs(y - ty) < THRESHOLD_LABEL_CLEARANCE) y = cy - SCORE_LABEL_GAP - 8
+      const ty = yAt(lvl.min) - THRESHOLD_VALUE_OFFSET
+      if (Math.abs(y - ty) < THRESHOLD_LABEL_CLEARANCE)
+        y = Math.min(y, ty - THRESHOLD_LABEL_CLEARANCE)
     }
     return y
   }
@@ -119,7 +126,12 @@ export function TrendChart({ facts }: { facts: AnalysisFacts }) {
             return (
               <g key={lvl.min} className="lr-trend-threshold">
                 <line x1={PAD.l} x2={plotRight} y1={y} y2={y} className="lr-trend-threshold-line" />
-                <text x={plotRight + 6} y={y + 3.5} className="lr-trend-threshold-value">
+                <text
+                  x={PAD.l + THRESHOLD_VALUE_OFFSET}
+                  y={y - THRESHOLD_VALUE_OFFSET}
+                  textAnchor="start"
+                  className="lr-trend-threshold-value"
+                >
                   {lvl.min}
                 </text>
               </g>
@@ -132,7 +144,7 @@ export function TrendChart({ facts }: { facts: AnalysisFacts }) {
             return (
               <g key={p.label} className="lr-trend-point">
                 <circle className="lr-trend-dot" cx={cx} cy={cy} r={3.5} />
-                <text className="lr-trend-score" x={cx} y={scoreLabelY(cy)} textAnchor="middle">
+                <text className="lr-trend-score" x={cx} y={scoreLabelY(cy, i)} textAnchor="middle">
                   {p.score}
                 </text>
                 <text className="lr-trend-label" x={cx} y={H - 6} textAnchor="middle">
