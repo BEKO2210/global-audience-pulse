@@ -41,22 +41,22 @@ it('rundet Dezimalstunden vor dem Aufteilen', () => {
 describe('formatOffset', () => {
   it('formats the time machine distance from now', () => {
     expect(formatOffset(0)).toBe('jetzt')
-    expect(formatOffset(135 * 60_000)).toBe('in 2 Std 15 Min')
-    expect(formatOffset(16 * 3_600_000)).toBe('in 16 Std')
-    expect(formatOffset((3 * 24 + 4) * 3_600_000 + 20 * 60_000)).toBe('in 3 Tagen 4 Std')
-    expect(formatOffset(-45 * 60_000)).toBe('vor 45 Min')
+    expect(formatOffset(135 * 60_000)).toBe('in 2\u00A0Std 15\u00A0Min')
+    expect(formatOffset(16 * 3_600_000)).toBe('in 16\u00A0Std')
+    expect(formatOffset((3 * 24 + 4) * 3_600_000 + 20 * 60_000)).toBe('in 3\u00A0Tagen 4\u00A0Std')
+    expect(formatOffset(-45 * 60_000)).toBe('vor 45\u00A0Min')
   })
 })
 
 describe('formatOffset / relativeTime in English', () => {
   it('uses English words and order', async () => {
     const { formatOffset, relativeTime } = await import('./time')
-    expect(formatOffset(135 * 60_000, 'en')).toBe('in 2 h 15 min')
-    expect(formatOffset(-45 * 60_000, 'en')).toBe('45 min ago')
+    expect(formatOffset(135 * 60_000, 'en')).toBe('in 2\u00A0h 15\u00A0min')
+    expect(formatOffset(-45 * 60_000, 'en')).toBe('45\u00A0min ago')
     expect(formatOffset(0, 'en')).toBe('now')
-    expect(formatOffset((3 * 24 + 4) * 3_600_000, 'en')).toBe('in 3 days 4 h')
+    expect(formatOffset((3 * 24 + 4) * 3_600_000, 'en')).toBe('in 3\u00A0days 4\u00A0h')
     const from = new Date('2026-10-10T10:00:00Z')
-    expect(relativeTime(new Date('2026-10-10T11:48:00Z'), from, 'en')).toBe('1 h 48 min')
-    expect(relativeTime(new Date('2026-10-10T11:48:00Z'), from)).toBe('1 Std 48 Min')
+    expect(relativeTime(new Date('2026-10-10T11:48:00Z'), from, 'en')).toBe('1\u00A0h 48\u00A0min')
+    expect(relativeTime(new Date('2026-10-10T11:48:00Z'), from)).toBe('1\u00A0Std 48\u00A0Min')
   })
 })

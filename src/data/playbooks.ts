@@ -796,15 +796,18 @@ export function dayNames(locale: Locale = 'de'): readonly string[] {
   return locale === 'de' ? DAYS : DAYS_EN
 }
 
-/** de "12–18 Uhr", en "12:00–18:00" (several ranges share one "Uhr" in German). */
+/**
+ * de "12–18 Uhr", en "12:00–18:00" (several ranges share one "Uhr" in German).
+ * A no-break space (U+00A0) keeps "Uhr" with its number in wrapping chips and lists.
+ */
 function hourRanges(ranges: readonly (readonly [number, number])[], locale: Locale) {
-  if (locale === 'de') return `${ranges.map(([a, b]) => `${a}–${b}`).join(', ')} Uhr`
+  if (locale === 'de') return `${ranges.map(([a, b]) => `${a}–${b}`).join(', ')}\u00A0Uhr`
   return ranges.map(([a, b]) => `${clock(a, locale)}–${clock(b, locale)}`).join(', ')
 }
 
 /** de "16 Uhr", en "16:00" */
 function clock(hour: number, locale: Locale) {
-  return locale === 'de' ? `${hour} Uhr` : `${String(hour).padStart(2, '0')}:00`
+  return locale === 'de' ? `${hour}\u00A0Uhr` : `${String(hour).padStart(2, '0')}:00`
 }
 
 /** "Di–Do 12–18 Uhr · Fr 11–12, 13–14 Uhr": per-day ranges, consecutive identical days merged. */
