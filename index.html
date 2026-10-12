@@ -26,6 +26,17 @@
         document.documentElement.dataset.theme = theme
         document.documentElement.dataset.style = style
         document.querySelector('meta[name="theme-color"]').content = colors[style][theme]
+        // Latin woff2 of this style's shell fonts; filled at build time by gap-font-preload (vite.config.ts).
+        const fonts = {}
+        for (const href of fonts[style] || []) {
+          const link = document.createElement('link')
+          link.rel = 'preload'
+          link.as = 'font'
+          link.type = 'font/woff2'
+          link.href = href
+          link.crossOrigin = 'anonymous'
+          document.head.append(link)
+        }
       } catch {}
       // Language (T-065), same rule as src/i18n/locale.ts: ?lang= > saved choice > system language.
       try {

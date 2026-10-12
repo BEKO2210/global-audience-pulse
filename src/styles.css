@@ -1,5 +1,33 @@
 @import 'tailwindcss';
 
+/* Metric fallbacks for the display font: local faces scaled to the web font's average advance (fontTools, wght 600
+   against the regular local face), so the h1 keeps its line breaks while the woff2 still loads. The 600 descriptor
+   stops synthetic bold, which would widen the fallback again. */
+@font-face {
+  font-family: 'Plex Condensed Fallback';
+  font-weight: 600;
+  src: local('Arial'), local('Roboto'), local('Helvetica'), local('Liberation Sans');
+  size-adjust: 94.5%;
+}
+@font-face {
+  font-family: 'Schibsted Fallback';
+  font-weight: 600;
+  src: local('Arial'), local('Roboto'), local('Helvetica'), local('Liberation Sans');
+  size-adjust: 107.7%;
+}
+@font-face {
+  font-family: 'Source Serif Fallback';
+  font-weight: 600;
+  src: local('Georgia');
+  size-adjust: 108.3%;
+}
+@font-face {
+  font-family: 'Source Serif Fallback Noto';
+  font-weight: 600;
+  src: local('Noto Serif');
+  size-adjust: 100.6%;
+}
+
 :root {
   --text-meta: 12px;
   --text-sm: 14px;
@@ -41,7 +69,7 @@
   --control-font: var(--weight-medium) var(--text-sm) / 1 var(--font-ui);
   /* O-014 style "Abflugtafel" (default), dark */
   color-scheme: dark;
-  --font-display: 'IBM Plex Sans Condensed', system-ui, sans-serif;
+  --font-display: 'IBM Plex Sans Condensed', 'Plex Condensed Fallback', system-ui, sans-serif;
   --font-ui: 'IBM Plex Sans', system-ui, sans-serif;
   --font-num: 'IBM Plex Mono', ui-monospace, monospace;
   --display-weight: 600;
@@ -123,7 +151,8 @@
 /* "Atlas": map paper, petrol ink, signal red */
 [data-style='atlas'] {
   --logo-pulse: #ff5a6e;
-  --font-display: 'Source Serif 4 Variable', Georgia, serif;
+  --font-display:
+    'Source Serif 4 Variable', 'Source Serif Fallback', 'Source Serif Fallback Noto', Georgia, serif;
   --font-ui: 'Source Sans 3 Variable', system-ui, sans-serif;
   --font-num: 'Source Code Pro Variable', ui-monospace, monospace;
   --display-weight: 600;
@@ -176,7 +205,7 @@
 /* "Präzision": near white, deep ink, cobalt */
 [data-style='praezision'] {
   --logo-pulse: #7d92ff;
-  --font-display: 'Schibsted Grotesk Variable', system-ui, sans-serif;
+  --font-display: 'Schibsted Grotesk Variable', 'Schibsted Fallback', system-ui, sans-serif;
   --font-ui: 'Schibsted Grotesk Variable', system-ui, sans-serif;
   --font-num: 'JetBrains Mono Variable', ui-monospace, monospace;
   --display-weight: 600;
@@ -229,7 +258,8 @@
 /* "Archiv": Antigravity's archival paper and nocturnal paper (visual audit), vermilion accent */
 [data-style='archiv'] {
   --logo-pulse: #e8743a;
-  --font-display: 'Source Serif 4 Variable', Georgia, serif;
+  --font-display:
+    'Source Serif 4 Variable', 'Source Serif Fallback', 'Source Serif Fallback Noto', Georgia, serif;
   --font-ui: 'IBM Plex Sans', system-ui, sans-serif;
   --font-num: 'IBM Plex Mono', ui-monospace, monospace;
   --display-weight: 600;
