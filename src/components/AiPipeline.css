@@ -26,7 +26,7 @@
 }
 .aip-status.is-active i {
   background: var(--series-3);
-  animation: aip-blink 2.4s ease-in-out infinite;
+  animation: live-dot 2.4s var(--motion-ease) infinite;
 }
 .aip-status.is-delayed i {
   background: var(--series-2);
@@ -172,6 +172,7 @@
 }
 .aip-loop {
   margin: var(--space-3) 0 0;
+  max-width: var(--prose);
   color: var(--muted);
   font-size: var(--text-sm);
 }
@@ -411,11 +412,6 @@
   }
   to {
     top: 100%;
-  }
-}
-@keyframes aip-blink {
-  50% {
-    opacity: 0.35;
   }
 }
 @media (prefers-reduced-motion: reduce) {

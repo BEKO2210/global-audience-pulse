@@ -13,7 +13,7 @@
 .wt-options {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  border: 1px solid var(--rule-solid);
+  border: 1px solid var(--edge);
 }
 .wt-option {
   position: relative;
@@ -31,7 +31,7 @@
   cursor: pointer;
 }
 .wt-option + .wt-option {
-  border-left: 1px solid var(--rule-solid);
+  border-left: 1px solid var(--edge);
 }
 .wt-active {
   position: absolute;
@@ -39,20 +39,15 @@
   z-index: -1;
   background: var(--accent-tint);
 }
+/* the chip recipe in both themes: ink edge (an inset shadow, so the box never changes) over the accent tint –
+   the old dark variant added a real border and re-wrapped "führt mit 27 %" */
 .wt-option[aria-pressed='true'] {
   color: var(--ink);
-  border-color: var(--accent);
-}
-[data-theme='dark'] .wt-option[aria-pressed='true'] {
-  border: 1px solid var(--accent);
-  background: var(--paper-2);
-}
-[data-theme='dark'] .wt-active {
-  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--ink);
 }
 .wt-option:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .wt-head {
   display: inline-flex;
@@ -124,7 +119,7 @@
     grid-template-columns: minmax(0, 1fr);
   }
   .wt-option + .wt-option {
-    border-top: 1px solid var(--rule-solid);
+    border-top: 1px solid var(--edge);
     border-left: 0;
   }
 }

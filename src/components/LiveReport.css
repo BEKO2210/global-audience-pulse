@@ -171,8 +171,8 @@
   outline: none;
   position: relative;
   transition:
-    opacity 0.2s ease,
-    filter 0.2s ease;
+    opacity var(--dur-base) var(--motion-ease),
+    filter var(--dur-base) var(--motion-ease);
   overflow: hidden;
   border-right: 1px solid var(--paper-2);
 }
@@ -214,22 +214,27 @@
   gap: var(--space-2);
   font-size: var(--text-sm);
   padding: var(--space-1) var(--space-2);
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition:
-    background-color 0.15s ease,
-    opacity 0.15s ease;
+    background-color var(--dur-fast) var(--motion-ease),
+    opacity var(--dur-fast) var(--motion-ease);
 }
 
 .lr-contrib-legend li::before {
   display: none;
 }
 
-.lr-contrib-legend li:focus-visible,
 .lr-contrib-legend li:hover,
 .lr-contrib-legend li.is-active {
   background: var(--paper-2);
   outline: 1px solid var(--rule-solid);
+}
+/* keyboard focus is its own state, not the hover hairline (2.3:1) */
+.lr-contrib-legend li:focus-visible {
+  background: var(--paper-2);
+  outline: var(--focus-ring);
+  outline-offset: -2px;
 }
 
 .lr-contrib-legend li.is-dimmed {
@@ -374,6 +379,7 @@
 }
 
 .lr-live-hint {
+  max-width: var(--prose);
   font-size: var(--text-meta);
   line-height: var(--leading-meta);
   color: var(--muted);
@@ -568,7 +574,7 @@
   /* green carries the live meaning in border and tint; text stays ink for contrast in every style */
   color: var(--ink);
   background: color-mix(in srgb, var(--live) 10%, transparent);
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
   white-space: nowrap;
 }
 

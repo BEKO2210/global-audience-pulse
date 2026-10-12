@@ -1,7 +1,7 @@
 /* Plattform-Playbooks – diagram-design tokens, 4-px grid, one accent (the strongest window). */
 
 .pb-lede {
-  max-width: 62ch;
+  max-width: var(--prose);
   margin: calc(-1 * var(--space-2)) 0 var(--space-6);
   color: var(--muted);
   font-size: var(--text-base);
@@ -383,8 +383,8 @@
   content: '−';
 }
 .pb-details summary:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .pb-details .pb-studies {
   margin-top: var(--space-1);

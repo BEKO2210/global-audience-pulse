@@ -239,7 +239,7 @@ export function MobileTimeBar({
 
   return (
     <div
-      className={`mobile-bar${compact ? ' is-compact' : ''}`}
+      className={`mobile-bar${compact ? ' is-compact' : ''}${live ? '' : ' is-scrubbed'}`}
       ref={barRef}
       role="region"
       aria-label={t.region}

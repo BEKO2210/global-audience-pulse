@@ -644,6 +644,7 @@ export default function App() {
     [minuteNow, scoreGrid],
   )
   const detailRegion = detail ? REGION_BY_ID[detail] : null
+  const detailActivity = detailRegion ? scoreGrid.activityAt(detailRegion.id, date) : 0
   const showRegionDetails = (region: RegionId) => {
     track('Region Details', { region })
     setDetail(region)
@@ -1212,6 +1213,7 @@ export default function App() {
               <motion.aside
                 ref={sheetRef}
                 className="detail-sheet"
+                data-tone={statusFor(detailActivity).tone}
                 initial={{ y: '100%' }}
                 animate={{ y: 0 }}
                 exit={{ y: '100%' }}
@@ -1242,7 +1244,7 @@ export default function App() {
                 />
                 <h2 id="detail-title">{regionName(detailRegion.id, locale)}</h2>
                 <div className="detail-score">
-                  <AnimatedNumber value={scoreGrid.activityAt(detailRegion.id, date)} />
+                  <AnimatedNumber value={detailActivity} />
                   <small>/100</small>
                 </div>
                 <p className="detail-place-time">
