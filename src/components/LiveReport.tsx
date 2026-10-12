@@ -21,16 +21,18 @@ import { AI_MARK, GermanReportNote, HIDE_HOURS, STALE_HOURS, localizedReport } f
 import { track } from '../lib/analytics'
 import { useLocale, useMessages } from '../i18n/LocaleProvider'
 import type { Messages } from '../i18n/locale'
+import { glueNumberUnits } from '../lib/format'
 
 const DE = {
   report: 'Lagebericht',
   aiAnalysis: 'Automatische AI-Analyse',
   pausedSince: 'Pausiert seit ',
   asOf: 'Stand ',
-  reportScope: (total: number, time: string) => `Bericht für alle ${total} Märkte · Stand ${time}`,
+  reportScope: (total: number, time: string) =>
+    `Lagebericht für alle ${total} Märkte · Stand ${time}`,
   selectionScope: (count: number, from: string, to: string) =>
     ` · deine Auswahl (${count} Märkte) jetzt: ${from}–${to}`,
-  readAll: 'Ganze Analyse lesen',
+  readAll: 'Ganzen Lagebericht lesen',
   noteLlm: (ago: string) =>
     `Automatische AI-Analyse aus den Zahlen dieser Seite, vor ${ago}, ohne menschliche Prüfung. Jede Zahl wird automatisch gegen die Daten geprüft; Einschätzungen können trotzdem danebenliegen.`,
   noteTemplate: 'Automatisch aus den Zahlen dieser Seite zusammengestellt (Vorlage, ohne KI).',
@@ -41,9 +43,9 @@ const EN: typeof DE = {
   aiAnalysis: 'Automated AI analysis',
   pausedSince: 'Paused since ',
   asOf: 'As of ',
-  reportScope: (total, time) => `Report for all ${total} markets · as of ${time}`,
+  reportScope: (total, time) => `Briefing for all ${total} markets · as of ${time}`,
   selectionScope: (count, from, to) => ` · your selection (${count} markets) now: ${from}–${to}`,
-  readAll: 'Read the full analysis',
+  readAll: 'Read the full briefing',
   noteLlm: (ago) =>
     `Automated AI analysis of the figures on this page, ${ago} ago, without human review. Every number is checked against the data automatically; assessments can still be off.`,
   noteTemplate: 'Compiled automatically from the figures on this page (template, no AI).',
@@ -138,7 +140,7 @@ export default function LiveReport({ now, data, liveWindow, selection }: LiveRep
 
       <div className="lr-intro">
         <h2 id="live-report-title" lang={lang}>
-          {report.schlagzeile}
+          {glueNumberUnits(report.schlagzeile)}
         </h2>
         <p className="live-report-verdict" lang={lang}>
           {report.empfehlung}

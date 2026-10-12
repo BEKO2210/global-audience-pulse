@@ -9,12 +9,13 @@ import { track } from '../lib/analytics'
 import { useLocale, useMessages } from '../i18n/LocaleProvider'
 import type { Messages } from '../i18n/locale'
 import { cityName, regionName } from '../i18n/labels'
+import { formatPercent } from '../lib/format'
 
 const DE = {
   now: 'jetzt',
   title: 'Aktivitätsmatrix',
   yourZone: 'Deine Zeitzone',
-  gridLabel: 'Aktivität nach Region und Zeit',
+  gridLabel: 'Aktivität nach Markt und Zeit',
   cell: (city: string, time: string, score: number) => `${city}, ${time}: ${score} Prozent`,
   legendLabel: 'Aktivität 0 bis 100',
   legend: 'Aktivität 0–100',
@@ -24,8 +25,8 @@ const EN: typeof DE = {
   now: 'now',
   title: 'Activity matrix',
   yourZone: 'Your time zone',
-  gridLabel: 'Activity by region and time',
-  cell: (city, time, score) => `${city}, ${time}: ${score}%`,
+  gridLabel: 'Activity by market and time',
+  cell: (city, time, score) => `${city}, ${time}: ${formatPercent(score, 'en')}`,
   legendLabel: 'Activity 0 to 100',
   legend: 'Activity 0–100',
   swipeHint: 'Swipe →',

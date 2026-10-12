@@ -11,18 +11,19 @@ import { PLATFORM_ICONS } from './platformIcons'
 import { toggleMyPlatform, useMyPlatforms } from '../hooks/useMyPlatforms'
 import { CalendarButton } from './CalendarButton'
 import './PostingPlan.css'
+import { formatPercent } from '../lib/format'
 
 const DE = {
   today: 'Heute',
   tomorrow: 'Morgen',
   title: 'Nächste Gelegenheit je Plattform',
-  regions: (n: number) => `${n} ${n === 1 ? 'Region' : 'Regionen'}, deine Zeitzone`,
+  regions: (n: number) => `${n} ${n === 1 ? 'Markt' : 'Märkte'}, deine Zeitzone`,
   lede: (score: number) =>
     `Erste Stunde, in der dein Publikum laut Modell aktiv ist (Score ab ${score}) und die Plattform-Studien für mindestens die Hälfte davon eine empfohlene Uhrzeit nennen – jeweils in dessen Ortszeit.`,
-  empty: 'Wähle mindestens eine Region, dann erscheinen hier die Termine.',
+  empty: 'Wähle mindestens einen Markt, dann erscheinen hier die Termine.',
   head: ['Plattform', 'Termin', 'Score', 'Studienabdeckung'] as readonly string[],
-  bestAvailable: 'bestes verfügbares',
-  audienceShare: (share: number) => `${share} % deiner Zielgruppe (modelliert)`,
+  bestAvailable: 'Bestes verfügbares',
+  audienceShare: (share: number) => `${formatPercent(share, 'de')} deiner Zielgruppe (modelliert)`,
   jump: (name: string, when: string) => `${name}: Zeitmaschine auf ${when} stellen`,
   view: 'Ansehen',
   missing: (names: string) =>
@@ -36,16 +37,16 @@ const EN: typeof DE = {
   today: 'Today',
   tomorrow: 'Tomorrow',
   title: 'Next opportunity per platform',
-  regions: (n) => `${n} ${n === 1 ? 'region' : 'regions'}, your time zone`,
+  regions: (n) => `${n} ${n === 1 ? 'market' : 'markets'}, your time zone`,
   lede: (score) =>
     `The first hour in which the model shows your audience as active (score ${score} or higher) and the platform studies recommend that time for at least half of it – each in its own local time.`,
-  empty: 'Select at least one region and the times will appear here.',
+  empty: 'Select at least one market and the times will appear here.',
   head: ['Platform', 'When', 'Score', 'Study coverage'],
-  bestAvailable: 'best available',
-  audienceShare: (share) => `${share}% of your audience (modelled)`,
+  bestAvailable: 'Best available',
+  audienceShare: (share) => `${formatPercent(share, 'en')} of your audience (modelled)`,
   jump: (name, when) => `${name}: set the time machine to ${when}`,
-  view: 'View',
-  missing: (names) => `No time slot: ${names} – no study on posting times is available.`,
+  view: 'Show in chart',
+  missing: (names) => `No window for ${names} – no study on posting times available.`,
   mine: 'My platforms',
   mineHint: 'Saved in this browser only',
   noneChosen: 'Pick at least one platform above.',

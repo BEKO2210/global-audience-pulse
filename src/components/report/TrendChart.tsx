@@ -22,7 +22,7 @@ const EN: typeof DE = {
   change: (delta) => `Change ${delta}`,
   chartLabel: (now, later, hours) =>
     `Score from ${now} now to ${later} in ${hours} ${hours === 1 ? 'hour' : 'hours'}`,
-  from: (label, min) => `${label} from ${min}`,
+  from: (label, min) => `${label} (${min}+)`,
   caption: 'Score trend for the next hours',
   time: 'Time',
   score: 'Score',

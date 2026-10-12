@@ -6,6 +6,7 @@ import type { Messages } from '../../i18n/locale'
 import { cityName } from '../../i18n/labels'
 import type { RegionId } from '../../config/regions'
 import { TOPICS, type TopicId } from '../../config/topics'
+import { formatPercent } from '../../lib/format'
 
 const DE = {
   title: 'Live-Signal',
@@ -13,7 +14,8 @@ const DE = {
   quieter: 'ruhiger',
   usual: 'üblich',
   busier: 'aktiver',
-  notable: 'auffällig',
+  notable: 'Auffällig',
+  statusNotable: 'auffällig',
   trackLabel: (city: string, pct: string, notable: boolean) =>
     `${city}: ${pct} Prozent gegenüber dem Üblichen${notable ? ', auffällig' : ''}`,
   caption: 'Live-Signal-Abweichung nach Ort',
@@ -24,11 +26,12 @@ const DE = {
 }
 const EN: typeof DE = {
   title: 'Live signal',
-  hint: 'last full hour vs. median of the same local time last week (Wikipedia views)',
+  hint: 'Last full hour vs. median of the same local time last week (Wikipedia views)',
   quieter: 'quieter',
   usual: 'usual',
   busier: 'busier',
-  notable: 'notable',
+  notable: 'Notable',
+  statusNotable: 'notable',
   trackLabel: (city, pct, notable) =>
     `${city}: ${pct} percent vs. usual${notable ? ', notable' : ''}`,
   caption: 'Live signal deviation by place',
@@ -120,7 +123,7 @@ export function LiveSignals({ facts }: { facts: AnalysisFacts }) {
               <div className="lr-live-val-col">
                 <span className={`lr-mono lr-live-val ${dirClass}`}>
                   {pct > 0 ? '+' : ''}
-                  {pct} %
+                  {formatPercent(pct, locale)}
                 </span>
                 {isNotable && <span className="lr-live-badge">{t.notable}</span>}
               </div>
@@ -150,8 +153,8 @@ export function LiveSignals({ facts }: { facts: AnalysisFacts }) {
           {sorted.map((s) => (
             <tr key={s.ort}>
               <td>{cityOf(s.ort)}</td>
-              <td>{s.abweichungProzent}%</td>
-              <td>{Math.abs(s.abweichungProzent) > 15 ? t.notable : t.usual}</td>
+              <td>{formatPercent(s.abweichungProzent, locale)}</td>
+              <td>{Math.abs(s.abweichungProzent) > 15 ? t.statusNotable : t.usual}</td>
             </tr>
           ))}
         </tbody>

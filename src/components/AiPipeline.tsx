@@ -18,6 +18,7 @@ import {
 import { useLocale, useMessages } from '../i18n/LocaleProvider'
 import type { Messages } from '../i18n/locale'
 import './AiPipeline.css'
+import { formatPercent } from '../lib/format'
 
 const DE = {
   status: { active: 'Aktiv', delayed: 'Verzögert', paused: 'Pausiert' },
@@ -259,8 +260,8 @@ export default function AiPipeline() {
       <ul className="aip-kpis" aria-label={t.kpisLabel}>
         {[
           [`${summary.runs}`, t.kpiRuns],
-          [`${summary.successRatePercent} %`, t.kpiPublished],
-          [`${llmShare} %`, t.kpiAiShare],
+          [formatPercent(summary.successRatePercent, locale), t.kpiPublished],
+          [formatPercent(llmShare, locale), t.kpiAiShare],
           [formatDuration(summary.averageDurationSeconds, locale), t.kpiDuration],
           [`${stats.checkerRejections + stats.numberRejections}`, t.kpiRejections],
           [`${stats.retries}`, t.kpiRetries],

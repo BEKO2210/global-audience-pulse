@@ -100,7 +100,7 @@ test('renders visual blocks from the v2 fixture', async ({ page }) => {
   expect(signalCities).toEqual(['Berlin', 'São Paulo', 'Dubai', 'Mumbai', 'Tokio'])
 
   // Bei |Abweichung| > 15 % Hinweis „auffällig“ (Berlin: -28 %)
-  await expect(section.locator('.lr-live-badge')).toHaveText('auffällig')
+  await expect(section.locator('.lr-live-badge')).toHaveText('Auffällig')
 
   // Farbcodierung nach Richtung
   await expect(section.locator('.lr-live-val-quiet').first()).toContainText('-28 %')
@@ -118,7 +118,7 @@ test('renders visual blocks from the v2 fixture', async ({ page }) => {
   await expect(section.getByText('DACH & Europa')).toBeVisible()
   await expect(section.getByText('Später posten zwischen 19:45 und 21:15 Uhr')).toBeVisible()
 
-  await expect(section.getByText('Ganze Analyse lesen')).toBeVisible()
+  await expect(section.getByText('Ganzen Lagebericht lesen')).toBeVisible()
   // EU AI Act Art. 50: visible disclosure at first exposure + machine-readable marking.
   await expect(section.locator('.ai-badge')).toHaveText('Automatische AI-Analyse')
   await expect(section).toHaveAttribute('data-ai-generated', 'true')
@@ -136,7 +136,7 @@ test('explains the global report scope and links a changed selection to its live
   await openReady(page)
   const scope = page.locator('.live-report-scope')
 
-  await expect(scope).toContainText('Bericht für alle 8 Märkte')
+  await expect(scope).toContainText('Lagebericht für alle 8 Märkte')
   await page.getByRole('switch', { name: /Berlin in der Zielgruppe/ }).click()
   await expect(scope).toContainText('deine Auswahl (7 Märkte)')
   await expect(scope.getByRole('link')).toHaveAttribute('href', '#optimal')
@@ -206,6 +206,11 @@ test.describe('English edition (T-015)', () => {
     await expect(section.locator('#live-report-title')).toHaveText(reportEn.schlagzeile)
     await expect(section.locator('#live-report-title')).toHaveAttribute('lang', 'en')
     await expect(section.locator('.report-language-note')).toHaveCount(0)
+    await expect(section.locator('.live-report-scope')).toContainText('Briefing for all 8 markets')
+    await expect(section.getByText('Read the full briefing')).toBeVisible()
+    await expect(section.locator('.lr-live-hint')).toContainText('Last full hour')
+    await expect(section.locator('.lr-live-val-quiet').first()).toContainText('-28%')
+    await expect(section.locator('.lr-trend-legend')).toContainText('Building (42+)')
     await expect(section.locator('.lr-audience-urteil').first()).toHaveText(
       'Post later, between 20:00 and 21:30',
     )

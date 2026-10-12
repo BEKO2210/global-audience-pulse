@@ -71,7 +71,7 @@ export interface Playbook {
 
 const SPROUT_BASIS: Text = {
   de: '≈ 2 Mrd. Interaktionen · ≈ 307.000 Profile · 27.11.2025–27.02.2026',
-  en: '≈ 2B interactions · ≈ 307,000 profiles · 27/11/2025–27/02/2026',
+  en: '≈ 2B interactions · ≈ 307,000 profiles · 27 Nov 2025 – 27 Feb 2026',
 }
 
 export const SOURCES: readonly Source[] = [
@@ -216,7 +216,7 @@ export const SOURCES: readonly Source[] = [
     kind: 'studie',
     basis: {
       de: '9,6 Mio. Posts · über 200.000 Accounts · 01/2024–12/2025',
-      en: '9.6M posts · over 200,000 accounts · 01/2024–12/2025',
+      en: '9.6M posts · over 200,000 accounts · Jan 2024 – Dec 2025',
     },
   },
   {

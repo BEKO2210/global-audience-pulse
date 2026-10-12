@@ -148,7 +148,7 @@ test('every chart carries a one-sentence caption that follows the time machine (
   }
   const captions = page.locator('.chart-caption')
   await expect(captions).toHaveCount(4)
-  await expect(captions.first()).toContainText(/^Jetzt: \d von 8 wach/)
+  await expect(captions.first()).toContainText(/^\d von 8 wach/)
   // one line each (a wrapping caption made the content below jump while scrubbing on phones)
   for (const caption of await captions.all()) {
     const { height, line } = await caption.evaluate((el) => ({
