@@ -12,7 +12,7 @@ import type { Locale, Messages } from '../i18n/locale'
 import { cityName, phaseName } from '../i18n/labels'
 
 const DE = {
-  icsSummary: 'Optimales Posting-Fenster',
+  icsSummary: 'Starkes Posting-Fenster',
   icsFile: 'posting-fenster.ics',
   planCopied: 'Plan kopiert',
   shareTitle: 'Mein Posting-Plan',
@@ -25,7 +25,7 @@ const DE = {
   week: (n: number) => `7 Tage (${n})`,
   until: 'bis',
   atPeak: 'In der Hochphase:',
-  noPeak: 'Kein Kernmarkt in der Hochphase',
+  noPeak: 'Keiner deiner Märkte in der Hochphase',
   download: (n: number, time: string) => `Fenster ${n} (${time}) als Kalenderdatei laden`,
   copiedToClipboard: 'In Zwischenablage kopiert',
   copyPlan: 'Plan kopieren',
@@ -37,7 +37,7 @@ const DE = {
   noWindowsWeek: 'Keine starken Fenster in den nächsten 7 Tagen.',
 }
 const EN: typeof DE = {
-  icsSummary: 'Best posting window',
+  icsSummary: 'Strong posting window',
   icsFile: 'posting-window.ics',
   planCopied: 'Plan copied',
   shareTitle: 'My posting plan',
@@ -50,7 +50,7 @@ const EN: typeof DE = {
   week: (n) => `7 days (${n})`,
   until: 'until',
   atPeak: 'At peak:',
-  noPeak: 'No core market at its peak',
+  noPeak: 'None of your markets at peak',
   download: (n, time) => `Download window ${n} (${time}) as calendar file`,
   copiedToClipboard: 'Copied to clipboard',
   copyPlan: 'Copy plan',

@@ -123,92 +123,94 @@ export function AskPulse({
         ))}
       </div>
 
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={active}
-          className="ap-answer"
-          aria-live="polite"
-          initial={reduce ? false : { opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={reduce ? undefined : { opacity: 0, y: -8 }}
-          transition={{ duration: 0.32, ease: [0.2, 0.8, 0.2, 1] }}
-        >
-          <div className="ap-window">
-            <span className="ap-label">{t.window}</span>
-            {best ? (
-              <strong>
-                {formatTime(best.start, zone)}–{formatTime(best.end, zone)}{' '}
-                <small>{timeZoneName(best.start, undefined, intl)}</small>
-              </strong>
-            ) : (
-              <strong>—</strong>
-            )}
-            <span className="ap-scores">
-              {t.scores(Math.round(best?.score ?? answer.nowScore), answer.nowScore)}
-            </span>
-          </div>
-          <div className="ap-text">
-            <p className="ap-verdict">
-              {answer.postNow || !best
-                ? t.postNow
-                : t.wait(when, formatOffset(best.start.getTime() - now.getTime(), locale))}
-              {!answer.good && <> {t.notGood(goodScore)}</>}
-            </p>
-            <p className="ap-regions">
-              {audience.ids.map((id) => (
-                <span key={id}>
-                  <Flag code={REGION_BY_ID[id].flag} label="" size={16} />
-                  {regionName(id, locale)}
-                </span>
-              ))}
-            </p>
-            {verdict && (
-              <p className="ap-ai">
-                <span>{t.ai}:</span> <q>{verdict}</q>
+      {/* the live region is this stable wrapper; the keyed answer inside it swaps, a re-created region is not announced */}
+      <div aria-live="polite">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={active}
+            className="ap-answer"
+            initial={reduce ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={reduce ? undefined : { opacity: 0, y: -8 }}
+            transition={{ duration: 0.32, ease: [0.2, 0.8, 0.2, 1] }}
+          >
+            <div className="ap-window">
+              <span className="ap-label">{t.window}</span>
+              {best ? (
+                <strong>
+                  {formatTime(best.start, zone)}–{formatTime(best.end, zone)}{' '}
+                  <small>{timeZoneName(best.start, undefined, intl)}</small>
+                </strong>
+              ) : (
+                <strong>—</strong>
+              )}
+              <span className="ap-scores">
+                {t.scores(Math.round(best?.score ?? answer.nowScore), answer.nowScore)}
+              </span>
+            </div>
+            <div className="ap-text">
+              <p className="ap-verdict">
+                {answer.postNow || !best
+                  ? t.postNow
+                  : t.wait(when, formatOffset(best.start.getTime() - now.getTime(), locale))}
+                {!answer.good && <> {t.notGood(goodScore)}</>}
               </p>
-            )}
-            {best && (
-              <div className="ap-actions">
-                <CalendarButton
-                  start={best.start}
-                  end={best.end}
-                  summary={t.calSummary(label(audience.name))}
-                  detail={`Score ${Math.round(best.score)}`}
-                  ort="frage"
-                />
-                {!answer.postNow && (
-                  <ReminderButton
-                    at={best.start}
-                    title={t.remindTitle}
-                    body={t.remindBody(label(audience.name))}
+              <p className="ap-regions">
+                {audience.ids.map((id) => (
+                  <span key={id}>
+                    <Flag code={REGION_BY_ID[id].flag} label="" size={16} />
+                    {regionName(id, locale)}
+                  </span>
+                ))}
+              </p>
+              {verdict && (
+                <p className="ap-ai">
+                  <span>{t.ai}:</span> <q>{verdict}</q>
+                </p>
+              )}
+              {best && (
+                <div className="ap-actions">
+                  <CalendarButton
+                    start={best.start}
+                    end={best.end}
+                    summary={t.calSummary(label(audience.name))}
+                    detail={`Score ${Math.round(best.score)}`}
                     ort="frage"
                   />
-                )}
-              </div>
-            )}
-            {/* second row: the two quiet actions together, never one orphaned word under the buttons */}
-            <div className="ap-links">
-              {best && !answer.postNow && (
-                <button
-                  type="button"
-                  className="pp-jump ap-jump"
-                  onClick={() => onJump(best.start)}
-                  aria-label={t.viewLabel(when)}
-                >
-                  {t.view}
-                </button>
+                  {!answer.postNow && (
+                    <ReminderButton
+                      at={best.start}
+                      title={t.remindTitle}
+                      body={t.remindBody(label(audience.name))}
+                      ort="frage"
+                    />
+                  )}
+                </div>
               )}
-              <a
-                className="week-link ap-week"
-                href="#planer"
-                onClick={() => track('Woche planen', { ort: 'frage' })}
-              >
-                {t.planWeek}
-              </a>
+              {/* second row: the two quiet actions together, never one orphaned word under the buttons */}
+              <div className="ap-links">
+                {best && !answer.postNow && (
+                  <button
+                    type="button"
+                    className="pp-jump ap-jump"
+                    onClick={() => onJump(best.start)}
+                    aria-label={t.viewLabel(when)}
+                  >
+                    {t.view}
+                  </button>
+                )}
+                <a
+                  className="week-link ap-week"
+                  href="#planer"
+                  onClick={() => track('Woche planen', { ort: 'frage' })}
+                >
+                  {t.planWeek}
+                </a>
+              </div>
             </div>
-          </div>
-        </motion.div>
-      </AnimatePresence>
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </section>
   )
 }

@@ -8,7 +8,7 @@ import './Heatmap.css'
 import { track } from '../lib/analytics'
 import { useLocale, useMessages } from '../i18n/LocaleProvider'
 import type { Messages } from '../i18n/locale'
-import { cityName, regionName } from '../i18n/labels'
+import { cityName } from '../i18n/labels'
 
 const DE = {
   now: 'jetzt',
@@ -193,7 +193,7 @@ export const Heatmap = memo(function Heatmap({
             {regions.map((region, row) => (
               <div key={region.id} className="heatmap-row" role="row">
                 <span className="heatmap-label" role="rowheader">
-                  <Flag code={region.flag} label={regionName(region.id, locale)} size={16} />{' '}
+                  <Flag code={region.flag} label="" size={16} />{' '}
                   {cityName(region.id, region.city, locale)}
                 </span>
                 {hours.map((date, column) => {

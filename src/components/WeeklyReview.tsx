@@ -1,29 +1,10 @@
-import { useEffect, useState, type CSSProperties } from 'react'
+import type { CSSProperties } from 'react'
 import { motion } from 'motion/react'
-import { DATA_SOURCES } from '../config/model'
 import { useLocale, useMessages } from '../i18n/LocaleProvider'
 import type { Messages } from '../i18n/locale'
-import type { AnalysisReportBody } from './report/types'
+import type { WeeklyPayload } from '../lib/weekly'
 import { AI_MARK } from './reportShared'
 import './WeeklyReview.css'
-
-/** weekly.json from the data branch (scripts/analysis/weekly.ts), written on Sunday evenings. */
-interface WeeklyPayload {
-  woche: string
-  generatedAt: string
-  source: 'llm' | 'template'
-  sourceEn?: 'llm' | 'template'
-  facts: {
-    tage: { datum: string; hoch: number; hochUm: string; mittel: number }[]
-    besteStunden: { stunde: string; mittel: number }[]
-    wochenmittel: number
-  }
-  report: AnalysisReportBody
-  reportEn?: AnalysisReportBody
-}
-
-/** Shown for eight days, so a review never outlives the following Sunday by more than a day. */
-const SHOW_DAYS = 8
 
 const DE = {
   eyebrow: (week: string) => `KW ${week}`,
@@ -43,32 +24,14 @@ const EN: typeof DE = {
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
-function isWeekly(value: unknown): value is WeeklyPayload {
-  const v = value as Partial<WeeklyPayload> | null
-  return Boolean(v?.woche && v.report?.schlagzeile && Array.isArray(v.facts?.tage))
-}
-
-/** T-014: the Sunday review – headline, the week's daily highs as bars, best hours and the written review. */
-export default function WeeklyReview() {
-  const [data, setData] = useState<WeeklyPayload | null>(null)
-  const [now] = useState(() => Date.now())
+/**
+ * T-014: the Sunday review – headline, the week's daily highs as bars, best hours and the written review.
+ * The payload is fetched in App (useBelowFoldData), so this only mounts when there is a current review.
+ */
+export default function WeeklyReview({ data }: { data: WeeklyPayload }) {
   const t = useMessages(M)
   const { locale, intl } = useLocale()
 
-  useEffect(() => {
-    const controller = new AbortController()
-    fetch(`${DATA_SOURCES.weeklyReview}?t=${Math.floor(Date.now() / 3_600_000)}`, {
-      signal: controller.signal,
-    })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((value: unknown) => {
-        if (isWeekly(value)) setData(value)
-      })
-      .catch(() => undefined)
-    return () => controller.abort()
-  }, [])
-
-  if (!data || now - Date.parse(data.generatedAt) > SHOW_DAYS * 86_400_000) return null
   const english = locale === 'en' && data.reportEn
   const report = english ? data.reportEn! : data.report
   const lang = english ? 'en' : 'de'

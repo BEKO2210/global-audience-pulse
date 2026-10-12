@@ -260,9 +260,13 @@ export function MobileTimeBar({
       )}
       <div className="mobile-bar-when">
         <span className="mobile-bar-readout">{formatTime(live ? now : date, userZone)}</span>
+        {/* persistent status node: a region that is inserted while going live is not announced */}
+        <span className="sr-only" role="status">
+          {live ? 'Live' : t.shortOffset(displayedMinutes)}
+        </span>
         {live ? (
-          <span className="mobile-bar-live is-live" role="status">
-            <i aria-hidden="true" /> Live
+          <span className="mobile-bar-live is-live" aria-hidden="true">
+            <i /> Live
           </span>
         ) : (
           <button

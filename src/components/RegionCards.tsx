@@ -316,7 +316,7 @@ export function RegionCards({
                 >
                   <div className="compact-card">
                     <span className="flag">
-                      <Flag code={region.flag} label={name} size={28} />
+                      <Flag code={region.flag} label="" size={28} />
                     </span>
                     <span className="compact-place">
                       <b>{city}</b>

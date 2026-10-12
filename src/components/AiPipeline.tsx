@@ -1,10 +1,8 @@
-import { useEffect, useState, type CSSProperties } from 'react'
+import { useState, type CSSProperties } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
-import { DATA_SOURCES } from '../config/model'
 import { formatDuration, humanAgo, minutesAgo } from '../lib/ago'
 import {
   STATIONS,
-  isHealthPayload,
   logLines,
   oneDecimal,
   reportStatus,
@@ -151,30 +149,14 @@ const shortModel = (model?: string) => model?.split(':')[0] ?? '–'
 /**
  * How the hourly report is made, from the job's own telemetry (health.json): the five stations with their
  * 24 h numbers, every run as a station matrix, compute time per run and the run log. Nothing here is mocked;
- * the flow tokens only move while the job is active.
+ * the flow tokens only move while the job is active. The payload is fetched in App (useBelowFoldData).
  */
-export default function AiPipeline() {
-  const [health, setHealth] = useState<HealthPayload | null>(null)
+export default function AiPipeline({ health }: { health: HealthPayload }) {
   const [now] = useState(() => Date.now())
   const reduce = useReducedMotion()
   const t = useMessages(M)
   const { locale, intl } = useLocale()
   const sec = (value: number | null) => (value == null ? '–' : `${oneDecimal(value, locale)} s`)
-
-  useEffect(() => {
-    const controller = new AbortController()
-    fetch(`${DATA_SOURCES.analysisHealth}?t=${Math.floor(Date.now() / 600_000)}`, {
-      signal: controller.signal,
-    })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((value: unknown) => {
-        if (isHealthPayload(value)) setHealth(value)
-      })
-      .catch(() => undefined)
-    return () => controller.abort()
-  }, [])
-
-  if (!health) return null
 
   const summary = health.summary24h
   const runs = health.runs.slice(-24)
