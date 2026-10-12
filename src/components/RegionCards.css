@@ -6,7 +6,7 @@
 .regions-section h2 {
   font: var(--display-weight) var(--text-2xl) / var(--leading-title) var(--font-display);
   margin: 0;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--display-tracking);
 }
 
 .region-grid {
