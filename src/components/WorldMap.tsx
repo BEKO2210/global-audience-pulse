@@ -16,7 +16,7 @@ import { cityName, regionName } from '../i18n/labels'
 const DE = {
   title: 'Wo die Welt gerade wach ist',
   mapLabel: 'Weltkarte mit Tag-Nacht-Grenze und Aktivitätspunkten',
-  pin: (region: string, score: number) => `${region}: ${score} Prozent Aktivität`,
+  pin: (region: string, score: number) => `${region}: Aktivität ${score} von 100`,
   day: 'Tag',
   twilight: 'Dämmerung',
   night: 'Nacht',
@@ -25,7 +25,7 @@ const DE = {
 const EN: typeof DE = {
   title: 'Who’s awake right now',
   mapLabel: 'World map with day–night line and activity points',
-  pin: (region, score) => `${region}: ${score}% activity`,
+  pin: (region, score) => `${region}: activity ${score} out of 100`,
   day: 'Day',
   twilight: 'Twilight',
   night: 'Night',

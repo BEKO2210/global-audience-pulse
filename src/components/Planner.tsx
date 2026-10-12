@@ -26,7 +26,7 @@ const DE = {
   until: 'bis',
   atPeak: 'In der Hochphase:',
   noPeak: 'Kein Kernmarkt in der Hochphase',
-  download: 'Als Kalenderdatei laden',
+  download: (n: number, time: string) => `Fenster ${n} (${time}) als Kalenderdatei laden`,
   copiedToClipboard: 'In Zwischenablage kopiert',
   copyPlan: 'Plan kopieren',
   shareLink: 'Link teilen',
@@ -51,7 +51,7 @@ const EN: typeof DE = {
   until: 'until',
   atPeak: 'At peak:',
   noPeak: 'No core market at its peak',
-  download: 'Download as calendar file',
+  download: (n, time) => `Download window ${n} (${time}) as calendar file`,
   copiedToClipboard: 'Copied to clipboard',
   copyPlan: 'Copy plan',
   shareLink: 'Share link',
@@ -244,7 +244,7 @@ export function Planner({
                 )
                 track('ICS Download', { zielgruppe })
               }}
-              aria-label={t.download}
+              aria-label={t.download(i + 1, formatTime(window.start, zone))}
             >
               <DownloadSimple size={19} weight="regular" aria-hidden="true" />
             </button>

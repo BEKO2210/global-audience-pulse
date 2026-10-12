@@ -1,4 +1,4 @@
-import { useState, useSyncExternalStore } from 'react'
+import { useId, useState, useSyncExternalStore } from 'react'
 import { Bell, BellRinging } from '@phosphor-icons/react'
 import {
   addReminder,
@@ -18,14 +18,12 @@ const DE = {
   set: (time: string) => `Erinnerung ${time}`,
   hint: 'Benachrichtigung zum Fensterbeginn, solange die Seite oder App geöffnet ist',
   denied: 'Benachrichtigungen sind im Browser blockiert',
-  cancel: (time: string) => `Erinnerung um ${time} entfernen`,
 }
 const EN: typeof DE = {
   remind: 'Remind me',
   set: (time) => `Reminder ${time}`,
   hint: 'Notification when the window starts, while the page or app is open',
   denied: 'Notifications are blocked in this browser',
-  cancel: (time) => `Remove the ${time} reminder`,
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 
@@ -43,6 +41,7 @@ export function ReminderButton({
 }) {
   const t = useMessages(M)
   const [denied, setDenied] = useState(false)
+  const deniedId = useId()
   const [renderedAt] = useState(() => Date.now())
   const active = useSyncExternalStore(
     subscribeReminders,
@@ -51,12 +50,14 @@ export function ReminderButton({
   )
   if (!remindersSupported() || at.getTime() <= renderedAt) return null
   const time = formatTime(at, Intl.DateTimeFormat().resolvedOptions().timeZone)
+  // visible text is the accessible name (WCAG 2.5.3); aria-pressed carries the state, the blocked reason is
+  // announced via aria-describedby instead of living only in title=
   return (
     <button
       type="button"
       className={`calendar-button${active ? ' is-active' : ''}`}
       aria-pressed={active}
-      aria-label={active ? t.cancel(time) : undefined}
+      aria-describedby={denied ? deniedId : undefined}
       title={denied ? t.denied : t.hint}
       disabled={denied}
       onClick={async () => {
@@ -75,6 +76,11 @@ export function ReminderButton({
         <Bell size={16} aria-hidden="true" />
       )}
       {active ? t.set(time) : t.remind}
+      {denied && (
+        <span id={deniedId} className="sr-only">
+          {t.denied}
+        </span>
+      )}
     </button>
   )
 }
