@@ -7,7 +7,7 @@ type Region =
 
 export interface AnalyticsEvents {
   Scrub: {
-    quelle: 'leiste' | 'prognose' | 'heatmap' | 'tastatur'
+    quelle: 'leiste' | 'prognose' | 'heatmap' | 'uhr' | 'tastatur'
     horizont: '24h' | '7d'
     offsetStunden: number
   }
@@ -52,7 +52,7 @@ declare global {
 
 const allowedValues = {
   Scrub: {
-    quelle: ['leiste', 'prognose', 'heatmap', 'tastatur'],
+    quelle: ['leiste', 'prognose', 'heatmap', 'uhr', 'tastatur'],
     horizont: ['24h', '7d'],
   },
   Horizont: { wert: ['24h', '7d'] },

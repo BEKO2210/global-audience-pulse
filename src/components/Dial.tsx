@@ -1,7 +1,8 @@
-import { useState, type CSSProperties } from 'react'
-import { PHASES } from '../config/model'
+import { useRef, useState, type CSSProperties } from 'react'
+import { MODEL_CONFIG, PHASES } from '../config/model'
 import { REGIONS, type RegionId } from '../config/regions'
-import { formatDecimalHour, localDecimalHourFast } from '../lib/time'
+import { formatDecimalHour, localDecimalHourFast, snapToMinutes } from '../lib/time'
+import { track } from '../lib/analytics'
 import { Flag } from './Flag'
 import { useSvgBox } from '../hooks/useSvgBox'
 import { useLocale, useMessages } from '../i18n/LocaleProvider'
@@ -14,7 +15,8 @@ const DE = {
   ring: (n: number, region: string, city: string) => `Ring ${n}: ${region} (${city})`,
   centre: 'Schwerpunkt',
   markets: (n: number) => `${n} ${n === 1 ? 'Markt' : 'Märkte'}`,
-  explainer: 'Jedes Ringsegment zeigt die Aktivitätsphase zur lokalen Stunde.',
+  explainer:
+    'Ringe in deiner Zeitzone: Jedes Segment zeigt die Aktivitätsphase eines Markts, der Zeiger die gewählte Zeit.',
   phases: 'Aktivitätsphasen',
   phaseRange: (from: string, to: string) => `${from}–${to} Uhr`,
   direction: (outer: string, inner: string) => `Außen ${outer}, innen ${inner}`,
@@ -26,7 +28,8 @@ const EN: typeof DE = {
   ring: (n, region, city) => `Ring ${n}: ${region} (${city})`,
   centre: 'Weighted',
   markets: (n) => `${n} ${n === 1 ? 'market' : 'markets'}`,
-  explainer: 'Each ring segment shows the activity phase at the local hour.',
+  explainer:
+    'Rings in your time zone: each segment shows a market’s activity phase, the hand the selected time.',
   phases: 'Activity phases',
   phaseRange: (from, to) => `${from}–${to}`,
   direction: (outer, inner) => `Outer ${outer}, inner ${inner}`,
@@ -49,26 +52,61 @@ export function Dial({
   date,
   selected,
   worldMean,
+  viewerZone,
+  minuteNow,
+  onScrub,
   caption,
 }: {
   date: Date
   selected: readonly RegionId[]
   worldMean: number
+  viewerZone: string
+  minuteNow: Date
+  onScrub: (date: Date) => void
   caption?: string
 }) {
   const t = useMessages(M)
-  const { locale } = useLocale()
+  const { locale, intl } = useLocale()
   const city = (region: (typeof REGIONS)[number]) => cityName(region.id, region.city, locale)
   const cx = 150
   const cy = 150
   const selectedRegions = REGIONS.filter((region) => selected.includes(region.id))
   const [highlighted, setHighlighted] = useState<RegionId | null>(null)
+  const touchStart = useRef<{ x: number; y: number; scrubbing: boolean } | null>(null)
+  const lastScrub = useRef<Date | null>(null)
   // the dial keeps its 300-unit geometry; its text divides by the rendered scale so it lands on the type scale
   const { ref, width } = useSvgBox<SVGSVGElement>({ width: 300, height: 300 })
   // the centre lines keep their CSS size, so their spacing must scale the same way or they collide on a small dial
   const unit = 300 / Math.max(width, 1)
   const outer = selectedRegions[0]
   const inner = selectedRegions.at(-1)
+  const minimum = minuteNow.getTime()
+  const maximum = minimum + 24 * 3_600_000
+  const selectedInDomain = new Date(Math.min(maximum, Math.max(minimum, date.getTime())))
+  const hand = polar(cx, cy, 116, localDecimalHourFast(date, viewerZone))
+  const handStart = polar(cx, cy, 40, localDecimalHourFast(date, viewerZone))
+  const scrub = (clientX: number, clientY: number) => {
+    const rect = ref.current?.getBoundingClientRect()
+    if (!rect) return
+    const x = ((clientX - rect.left) / rect.width) * 300
+    const y = ((clientY - rect.top) / rect.height) * 300
+    const hour = (((Math.atan2(y - cy, x - cx) + Math.PI / 2) / (2 * Math.PI)) * 24 + 24) % 24
+    const h0 = localDecimalHourFast(minuteNow, viewerZone)
+    const delta = (((hour - h0) % 24) + 24) % 24
+    // A DST transition inside these 24 hours may shift the resulting wall-clock time by one hour.
+    const next = snapToMinutes(
+      new Date(minuteNow.getTime() + delta * 3_600_000),
+      MODEL_CONFIG.scanStepMinutes,
+    )
+    lastScrub.current = next
+    onScrub(next)
+  }
+  const trackScrub = (quelle: 'uhr' | 'tastatur', next: Date) =>
+    track('Scrub', {
+      quelle,
+      horizont: '24h',
+      offsetStunden: Math.round((next.getTime() - minuteNow.getTime()) / 3_600_000),
+    })
   return (
     <section className="panel dial-panel" aria-labelledby="dial-title">
       <div className="section-head">
@@ -80,8 +118,80 @@ export function Dial({
           viewBox="0 0 300 300"
           className="dial"
           style={{ '--dial-scale': width / 300 } as CSSProperties}
-          role="img"
+          role="slider"
+          tabIndex={0}
           aria-label={t.dialLabel}
+          aria-valuemin={minimum}
+          aria-valuemax={maximum}
+          aria-valuenow={selectedInDomain.getTime()}
+          aria-valuetext={date.toLocaleString(intl, {
+            timeZone: viewerZone,
+            weekday: 'short',
+            day: locale === 'en' ? 'numeric' : '2-digit',
+            month: locale === 'en' ? 'short' : '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            timeZoneName: 'short',
+          })}
+          onPointerDown={(e) => {
+            // Mouse/pen scrub immediately. Touch waits for intent: the browser keeps vertical
+            // pans (touch-action: pan-y) so scrolling over the chart scrolls the page.
+            touchStart.current = { x: e.clientX, y: e.clientY, scrubbing: false }
+            lastScrub.current = null
+            if (e.pointerType !== 'touch') {
+              e.currentTarget.setPointerCapture(e.pointerId)
+              scrub(e.clientX, e.clientY)
+            }
+          }}
+          onPointerMove={(e) => {
+            if (e.pointerType !== 'touch') {
+              if (e.currentTarget.hasPointerCapture(e.pointerId)) scrub(e.clientX, e.clientY)
+              return
+            }
+            const start = touchStart.current
+            if (!start) return
+            if (!start.scrubbing && Math.abs(e.clientX - start.x) > 8) {
+              start.scrubbing = Math.abs(e.clientX - start.x) > Math.abs(e.clientY - start.y)
+              if (start.scrubbing) e.currentTarget.setPointerCapture(e.pointerId)
+            }
+            if (start.scrubbing) scrub(e.clientX, e.clientY)
+          }}
+          onPointerUp={(e) => {
+            const start = touchStart.current
+            // A deliberate tap (no movement) on touch also moves the time machine.
+            if (
+              e.pointerType === 'touch' &&
+              start &&
+              !start.scrubbing &&
+              Math.hypot(e.clientX - start.x, e.clientY - start.y) < 8
+            )
+              scrub(e.clientX, e.clientY)
+            touchStart.current = null
+            if (lastScrub.current) trackScrub('uhr', lastScrub.current)
+          }}
+          onPointerCancel={() => {
+            touchStart.current = null
+          }}
+          onKeyDown={(e) => {
+            if (['ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home'].includes(e.key))
+              e.preventDefault()
+            const next =
+              e.key === 'ArrowLeft'
+                ? new Date(date.getTime() - 15 * 60_000)
+                : e.key === 'ArrowRight'
+                  ? new Date(date.getTime() + 15 * 60_000)
+                  : e.key === 'PageUp'
+                    ? new Date(date.getTime() + 12 * 3_600_000)
+                    : e.key === 'PageDown'
+                      ? new Date(date.getTime() - 12 * 3_600_000)
+                      : e.key === 'Home'
+                        ? minuteNow
+                        : null
+            if (next) {
+              onScrub(next)
+              trackScrub('tastatur', next)
+            }
+          }}
         >
           {Array.from({ length: 24 }, (_, hour) => {
             const outer = polar(cx, cy, 130, hour)
@@ -100,8 +210,7 @@ export function Dial({
           {selectedRegions.map((region, index) => {
             const radius = 110 - index * 9
             const localHour = localDecimalHourFast(date, region.timeZone)
-            const utcHour = date.getUTCHours() + date.getUTCMinutes() / 60
-            const offset = localHour - utcHour
+            const offset = localHour - localDecimalHourFast(date, viewerZone)
             return (
               <g
                 key={region.id}
@@ -136,6 +245,14 @@ export function Dial({
               </g>
             )
           })}
+          <line
+            className="dial-hand"
+            x1={handStart[0]}
+            y1={handStart[1]}
+            x2={hand[0]}
+            y2={hand[1]}
+          />
+          <circle className="dial-hand-point" cx={hand[0]} cy={hand[1]} r={3.5} />
           {selectedRegions.map((region, index) => {
             const radius = 110 - index * 9
             return (
