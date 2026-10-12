@@ -1,10 +1,11 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises'
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync, realpathSync } from 'node:fs'
 import { homedir } from 'node:os'
-import { dirname, isAbsolute, join, resolve } from 'node:path'
+import { basename, dirname, join, resolve, sep } from 'node:path'
 import process from 'node:process'
 import { PRESETS, REGIONS, type RegionId } from '../../src/config/regions'
 import { parseSnapshot } from '../../src/lib/snapshot'
+import { fastZonedParts } from '../../src/lib/time'
 import { countrySharesToWeights, withAudience, withoutDeviation } from './audience'
 import { constant, pastHourMean, studyHoursBaseline } from './baselines'
 import { parseInstagramCsv } from './instagram-csv'
@@ -15,7 +16,23 @@ import { blockBootstrapCI, holm, permutationP, spearman, tercileUplift } from '.
 import type { PostType, ResidualPost } from './types'
 
 const SEED = 20_261_013
-const repoRoot = process.cwd()
+
+function findRepoRoot(start: string) {
+  let directory = resolve(start)
+  while (true) {
+    const packageFile = join(directory, 'package.json')
+    if (existsSync(packageFile)) {
+      const packageJson = JSON.parse(readFileSync(packageFile, 'utf8')) as { name?: unknown }
+      if (packageJson.name === 'global-audience-pulse') return realpathSync(directory)
+    }
+    const parent = dirname(directory)
+    if (parent === directory)
+      throw new Error('Repository-Wurzel von Global Audience Pulse nicht gefunden')
+    directory = parent
+  }
+}
+
+const repoRoot = findRepoRoot(process.cwd())
 
 function argsOf(argv: readonly string[]) {
   const result = new Map<string, string>()
@@ -54,12 +71,35 @@ async function snapshotFrom(source?: string) {
   return parseSnapshot(JSON.parse(text) as unknown)
 }
 
-function isoWeek(date: Date) {
-  const value = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()))
+export function isoWeek(date: Date, timeZone: string) {
+  const parts = fastZonedParts(date, timeZone)
+  const value = new Date(Date.UTC(parts.year, parts.month - 1, parts.day))
   const day = value.getUTCDay() || 7
   value.setUTCDate(value.getUTCDate() + 4 - day)
   const yearStart = new Date(Date.UTC(value.getUTCFullYear(), 0, 1))
   return `${value.getUTCFullYear()}-W${String(Math.ceil(((value.getTime() - yearStart.getTime()) / 86_400_000 + 1) / 7)).padStart(2, '0')}`
+}
+
+function resolvedParent(path: string) {
+  let existing = path
+  const missing: string[] = []
+  while (!existsSync(existing)) {
+    missing.unshift(basename(existing))
+    const parent = dirname(existing)
+    if (parent === existing) throw new Error(`Elternordner kann nicht aufgelöst werden: ${path}`)
+    existing = parent
+  }
+  return resolve(realpathSync(existing), ...missing)
+}
+
+export function validationOutputPath(output: string) {
+  const absolute = resolve(output)
+  const parent = resolvedParent(dirname(absolute))
+  const normalized = resolve(parent, basename(absolute))
+  const canonical = existsSync(normalized) ? realpathSync(normalized) : normalized
+  if (canonical === repoRoot || canonical.startsWith(`${repoRoot}${sep}`))
+    throw new Error('Der Bericht darf nicht ins Repository geschrieben werden')
+  return canonical
 }
 
 const sd = (values: readonly number[]) => {
@@ -125,6 +165,10 @@ export async function runValidation(argv = process.argv.slice(2)) {
   if (!csvPath || !timeZone) throw new Error('Pflichtargumente: --csv <datei> --tz <IANA>')
   const now = args.has('now') ? new Date(args.get('now')!) : new Date()
   if (Number.isNaN(now.getTime())) throw new Error('Ungültiger Wert für --now')
+  const output = validationOutputPath(
+    args.get('out') ??
+      join(homedir(), '.local/share/gap-validation', `report-${now.toISOString().slice(0, 10)}.md`),
+  )
   const parsed = parseInstagramCsv(await readFile(csvPath, 'utf8'), { timeZone })
   const baseSnapshot = await snapshotFrom(args.get('snapshot'))
   const audience = await audienceSelection(args, baseSnapshot)
@@ -139,7 +183,7 @@ export async function runValidation(argv = process.argv.slice(2)) {
       rows.map((row) => row.score),
       rows.map((row) => row.residual),
     )
-  const blockOf = (row: ResidualPost) => isoWeek(row.publishedAt)
+  const blockOf = (row: ResidualPost) => isoWeek(row.publishedAt, timeZone)
   const primaryCI = blockBootstrapCI(scored, blockOf, rhoOf, { B: 2000, seed: SEED, level: 0.95 })
   const upliftCI = blockBootstrapCI(scored, blockOf, tercileUplift, {
     B: 2000,
@@ -255,19 +299,9 @@ export async function runValidation(argv = process.argv.slice(2)) {
     },
     warnings: [...parsed.warnings, ...audience.warnings],
   }
-  const output =
-    args.get('out') ??
-    join(homedir(), '.local/share/gap-validation', `report-${now.toISOString().slice(0, 10)}.md`)
-  const absoluteOutput = isAbsolute(output) ? output : resolve(output)
-  const relative = absoluteOutput.slice(repoRoot.length)
-  if (
-    absoluteOutput === repoRoot ||
-    (absoluteOutput.startsWith(repoRoot) && relative.startsWith('/'))
-  )
-    throw new Error('Der Bericht darf nicht ins Repository geschrieben werden')
-  await mkdir(dirname(absoluteOutput), { recursive: true })
-  await writeFile(absoluteOutput, renderValidationReport(result), 'utf8')
-  return { result, output: absoluteOutput }
+  await mkdir(dirname(output), { recursive: true })
+  await writeFile(output, renderValidationReport(result), 'utf8')
+  return { result, output }
 }
 
 if (process.argv[1]?.endsWith('run.mjs') || process.argv[1]?.endsWith('run.ts')) {

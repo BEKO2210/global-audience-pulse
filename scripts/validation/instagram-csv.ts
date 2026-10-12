@@ -94,19 +94,51 @@ function numberValue(raw: string, field: string, row: number): number | undefine
   const value = raw.trim()
   if (!value) return undefined
   const compact = value.replace(/\s|\u00a0/g, '')
-  const normalized = /^[+-]?\d{1,3}([.,]\d{3})+$/.test(compact)
-    ? compact.replace(/[.,]/g, '')
-    : compact.replace(',', '.')
+  const normalized = /^[+-]?\d+$/.test(compact)
+    ? compact
+    : /^[+-]?\d{1,3}([.,]\d{3})+$/.test(compact)
+      ? compact.replace(/[.,]/g, '')
+      : undefined
+  if (normalized === undefined)
+    throw new InvalidMetricError(
+      `CSV-Zeile ${row}: ${field} ist keine gültige Zählmetrik: "${raw}"`,
+    )
   const parsed = Number(normalized)
   if (!Number.isFinite(parsed))
-    throw new Error(`CSV-Zeile ${row}: ${field} ist keine Zahl: "${raw}"`)
+    throw new InvalidMetricError(`CSV-Zeile ${row}: ${field} ist keine Zahl: "${raw}"`)
   return parsed
 }
+
+class InvalidMetricError extends Error {}
 
 function boolValue(raw: string): boolean | undefined {
   const value = raw.trim().toLowerCase()
   if (!value) return undefined
   return ['1', 'true', 'yes', 'ja', 'paid', 'bezahlt', 'boosted'].includes(value)
+}
+
+function boostValue(raw: string, row: number, warnings: string[]) {
+  const value = raw.trim().toLowerCase()
+  if (['', '0', 'false', 'no', 'nein'].includes(value)) return false
+  if (
+    [
+      '1',
+      'true',
+      'yes',
+      'ja',
+      'paid',
+      'bezahlt',
+      'boosted',
+      'beworben',
+      'sponsored',
+      'promoted',
+      'werbung',
+      'gesponsert',
+    ].includes(value)
+  )
+    return true
+  warnings.push(`CSV-Zeile ${row}: unbekannter Boost-Wert "${raw}"; Beitrag gilt als beworben`)
+  return true
 }
 
 function sameWall(date: Date, timeZone: string, parts: readonly number[]) {
@@ -142,7 +174,20 @@ export function zonedDate(raw: string, timeZone: string) {
     match = /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})(?::\d{2}(?:\.\d+)?)?$/.exec(value)
     if (match) parts = match.slice(1, 6).map(Number)
   }
-  if (!parts) throw new Error(`Ungültige Veröffentlichungszeit: "${raw}"`)
+  const invalidDate = () =>
+    new Error(`Ungültige Veröffentlichungszeit: "${raw}"; erwartet MM/DD/YYYY HH:mm bzw. ISO`)
+  if (!parts) throw invalidDate()
+  if (
+    parts[1]! < 1 ||
+    parts[1]! > 12 ||
+    parts[2]! < 1 ||
+    parts[2]! > 31 ||
+    parts[3]! < 0 ||
+    parts[3]! > 23 ||
+    parts[4]! < 0 ||
+    parts[4]! > 59
+  )
+    throw invalidDate()
   try {
     new Intl.DateTimeFormat('en', { timeZone }).format(0)
   } catch {
@@ -154,7 +199,10 @@ export function zonedDate(raw: string, timeZone: string) {
     const candidate = new Date(wallUtc - offset * 60_000)
     if (sameWall(candidate, timeZone, parts)) candidates.push(candidate)
   }
-  if (!candidates.length) throw new Error(`Nicht existierende Ortszeit in ${timeZone}: "${raw}"`)
+  if (!candidates.length)
+    throw new Error(
+      `Nicht existierende Ortszeit in ${timeZone}: "${raw}"; erwartet MM/DD/YYYY HH:mm bzw. ISO`,
+    )
   return candidates.sort((a, b) => a.getTime() - b.getTime())[0]!
 }
 
@@ -190,31 +238,38 @@ export function parseInstagramCsv(text: string, opts: { timeZone: string }) {
       if (field) values[field] = source[column] ?? ''
     })
     const line = index + 1
-    const reach = numberValue(values.reach ?? '', 'Reichweite', line)
-    if (reach === undefined) throw new Error(`CSV-Zeile ${line}: Reichweite ist leer`)
-    const published = values.publishedAt?.trim()
-    if (!published) throw new Error(`CSV-Zeile ${line}: Veröffentlichungszeit ist leer`)
-    const id = values.id?.trim() || values.permalink?.trim() || `zeile-${line}`
-    const optionalNumber = (field: 'views' | 'likes' | 'comments' | 'shares' | 'saves') =>
-      numberValue(values[field] ?? '', field, line)
-    posts.push({
-      id,
-      ...(values.permalink?.trim() ? { permalink: values.permalink.trim() } : {}),
-      publishedAt: zonedDate(published, opts.timeZone),
-      type: postType(values.type ?? ''),
-      reach,
-      ...Object.fromEntries(
-        (['views', 'likes', 'comments', 'shares', 'saves'] as const)
-          .map((field) => [field, optionalNumber(field)] as const)
-          .filter((entry): entry is readonly [(typeof entry)[0], number] => entry[1] !== undefined),
-      ),
-      ...(boolValue(values.boosted ?? '') !== undefined
-        ? { boosted: boolValue(values.boosted ?? '') }
-        : {}),
-      ...(boolValue(values.collaborative ?? '') !== undefined
-        ? { collaborative: boolValue(values.collaborative ?? '') }
-        : {}),
-    })
+    try {
+      const reach = numberValue(values.reach ?? '', 'Reichweite', line)
+      if (reach === undefined) throw new Error(`CSV-Zeile ${line}: Reichweite ist leer`)
+      const published = values.publishedAt?.trim()
+      if (!published) throw new Error(`CSV-Zeile ${line}: Veröffentlichungszeit ist leer`)
+      const id = values.id?.trim() || values.permalink?.trim() || `zeile-${line}`
+      const optionalNumber = (field: 'views' | 'likes' | 'comments' | 'shares' | 'saves') =>
+        numberValue(values[field] ?? '', field, line)
+      posts.push({
+        id,
+        ...(values.permalink?.trim() ? { permalink: values.permalink.trim() } : {}),
+        publishedAt: zonedDate(published, opts.timeZone),
+        type: postType(values.type ?? ''),
+        reach,
+        ...Object.fromEntries(
+          (['views', 'likes', 'comments', 'shares', 'saves'] as const)
+            .map((field) => [field, optionalNumber(field)] as const)
+            .filter(
+              (entry): entry is readonly [(typeof entry)[0], number] => entry[1] !== undefined,
+            ),
+        ),
+        ...(fields.includes('boosted')
+          ? { boosted: boostValue(values.boosted ?? '', line, warnings) }
+          : {}),
+        ...(boolValue(values.collaborative ?? '') !== undefined
+          ? { collaborative: boolValue(values.collaborative ?? '') }
+          : {}),
+      })
+    } catch (error) {
+      if (!(error instanceof InvalidMetricError)) throw error
+      warnings.push(`${error.message}; Zeile übersprungen`)
+    }
   }
   return { posts, warnings }
 }

@@ -45,4 +45,26 @@ describe('validation report', () => {
     expect(validationVerdict(unclear).reason).toContain('Konfidenzintervall enthält 0')
     expect(validationVerdict(unclear).verdict).toBe('UNKLAR')
   })
+
+  it('reports only data scarcity and the most frequent exclusion below n = 3', () => {
+    const empty = {
+      ...result,
+      counts: {},
+      period: undefined,
+      exclusions: { 'Mindestalter nicht erreicht': 21, beworben: 2 },
+      score: { sd: 0, min: Number.NaN, max: Number.NaN, weeklyRangeShare: 0 },
+      primary: { n: 0, rho: Number.NaN, ci: { low: Number.NaN, high: Number.NaN }, p: 1 },
+    }
+    expect(validationVerdict(empty).reason).toBe(
+      'keine auswertbaren Beiträge; häufigste Ausschlussursache: Mindestalter nicht erreicht (21)',
+    )
+    const report = renderValidationReport(empty)
+    expect(report).toContain('- Standardabweichung: nicht verfügbar')
+    expect(report).not.toContain('Score-SD unter 8')
+
+    const tiny = { ...empty, primary: { ...empty.primary, n: 2 } }
+    expect(validationVerdict(tiny).reason).toBe(
+      'zu wenige auswertbare Beiträge; häufigste Ausschlussursache: Mindestalter nicht erreicht (21)',
+    )
+  })
 })

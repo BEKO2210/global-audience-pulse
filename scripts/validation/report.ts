@@ -37,6 +37,20 @@ const date = (value: Date) => value.toISOString().slice(0, 10)
 
 export function validationVerdict(result: ValidationResult) {
   const { primary, exploratory, score } = result
+  if (primary.n < 3) {
+    const scarcity =
+      primary.n === 0 ? 'keine auswertbaren Beiträge' : 'zu wenige auswertbare Beiträge'
+    const orderedExclusions = Object.entries(result.exclusions).sort(
+      ([reasonA, countA], [reasonB, countB]) =>
+        countB - countA || (reasonA < reasonB ? -1 : reasonA > reasonB ? 1 : 0),
+    )
+    const mostFrequent = orderedExclusions[0]
+    const excludedTotal = orderedExclusions.reduce((sum, [, count]) => sum + count, 0)
+    const exclusion = mostFrequent
+      ? `; häufigste Ausschlussursache: ${mostFrequent[1] === excludedTotal ? `alle ${mostFrequent[1]} – ` : ''}${mostFrequent[0]}${mostFrequent[1] === excludedTotal ? '' : ` (${mostFrequent[1]})`}`
+      : ''
+    return { verdict: 'UNKLAR' as const, reason: `${scarcity}${exclusion}` }
+  }
   const goChecks = [
     primary.rho >= 0.15,
     primary.ci.low > 0,
@@ -113,7 +127,7 @@ Es wurden weder Beschreibungstexte noch Permalinks in diesen Bericht übernommen
 
 ## Score-Streuung
 
-- Standardabweichung: ${number(result.score.sd)}
+- Standardabweichung: ${result.primary.n === 0 ? 'nicht verfügbar' : number(result.score.sd)}
 - Minimum / Maximum: ${number(result.score.min)} / ${number(result.score.max)}
 - Anteil der Wochenspanne der Zielgruppe: ${percent(result.score.weeklyRangeShare)}
 ${dominantRegion ? `- Hinweis: Score ist hier die Tageskurve von ${dominantRegion.name} (Gewicht ${percent(dominant!.weight * 100)}).` : ''}

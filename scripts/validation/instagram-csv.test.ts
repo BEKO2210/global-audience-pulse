@@ -35,4 +35,55 @@ describe('parseInstagramCsv', () => {
       'Veröffentlichungszeit',
     )
   })
+
+  it('accepts thousands separators and skips decimal count metrics with warnings', () => {
+    const text = `Post ID;Publish Time;Reach
+a;07/01/2026 10:00;1,234
+b;07/02/2026 10:00;1.234
+c;07/03/2026 10:00;1,234,567
+d;07/04/2026 10:00;1.234,56
+e;07/05/2026 10:00;1,234.56
+f;07/06/2026 10:00;0,5`
+    const result = parseInstagramCsv(text, { timeZone: 'Europe/Berlin' })
+    expect(result.posts.map((post) => post.reach)).toEqual([1234, 1234, 1234567])
+    expect(result.warnings).toHaveLength(3)
+    expect(result.warnings.every((warning) => warning.includes('Zeile übersprungen'))).toBe(true)
+  })
+
+  it('recognizes boost labels and conservatively excludes unknown values', () => {
+    const values = [
+      'beworben',
+      'sponsored',
+      'promoted',
+      'werbung',
+      'gesponsert',
+      '0',
+      'false',
+      'no',
+      'nein',
+      '',
+      'vielleicht',
+    ]
+    const rows = values.map(
+      (value, index) => `p${index};07/${String(index + 1).padStart(2, '0')}/2026 10:00;10;${value}`,
+    )
+    const result = parseInstagramCsv(['Post ID;Publish Time;Reach;Boosted', ...rows].join('\n'), {
+      timeZone: 'Europe/Berlin',
+    })
+    expect(result.posts.slice(0, 5).every((post) => post.boosted === true)).toBe(true)
+    expect(result.posts.slice(5, 10).every((post) => post.boosted === false)).toBe(true)
+    expect(result.posts[10]?.boosted).toBe(true)
+    expect(result.warnings).toEqual([
+      'CSV-Zeile 12: unbekannter Boost-Wert "vielleicht"; Beitrag gilt als beworben',
+    ])
+  })
+
+  it('rejects out-of-range month and day before searching offsets and names the format', () => {
+    expect(() => zonedDate('13/01/2026 10:00', 'Europe/Berlin')).toThrow(
+      'erwartet MM/DD/YYYY HH:mm bzw. ISO',
+    )
+    expect(() => zonedDate('12/32/2026 10:00', 'Europe/Berlin')).toThrow(
+      'erwartet MM/DD/YYYY HH:mm bzw. ISO',
+    )
+  })
 })
