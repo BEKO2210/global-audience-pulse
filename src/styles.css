@@ -2719,7 +2719,7 @@ button:active {
   pointer-events: none;
 }
 .report-teaser-label {
-  font: var(--text-meta)/var(--leading-meta) var(--font-ui);
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-ui);
   color: var(--muted);
 }
 .report-teaser-text {

@@ -28,8 +28,7 @@ const DE = {
   aiAnalysis: 'Automatische AI-Analyse',
   pausedSince: 'Pausiert seit ',
   asOf: 'Stand ',
-  reportScope: (total: number, time: string) =>
-    `Lagebericht für alle ${total} Märkte · Stand ${time}`,
+  reportScope: (total: number) => `Lagebericht für alle ${total} Märkte`,
   selectionScope: (count: number, from: string, to: string) =>
     ` · deine Auswahl (${count} Märkte) jetzt: ${from}–${to}`,
   readAll: 'Ganzen Lagebericht lesen',
@@ -43,7 +42,7 @@ const EN: typeof DE = {
   aiAnalysis: 'Automated AI analysis',
   pausedSince: 'Paused since ',
   asOf: 'As of ',
-  reportScope: (total, time) => `Briefing for all ${total} markets · as of ${time}`,
+  reportScope: (total) => `Briefing for all ${total} markets`,
   selectionScope: (count, from, to) => ` · your selection (${count} markets) now: ${from}–${to}`,
   readAll: 'Read the full briefing',
   noteLlm: (ago) =>
@@ -146,7 +145,7 @@ export default function LiveReport({ now, data, liveWindow, selection }: LiveRep
           {report.empfehlung}
         </p>
         <p className="live-report-scope">
-          {t.reportScope(selection.total, formatTime(generated, zone))}
+          {t.reportScope(selection.total)}
           {showSelectionScope && liveWindow && (
             <a href="#optimal">
               {t.selectionScope(

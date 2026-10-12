@@ -3,14 +3,14 @@ import { useMessages } from '../../i18n/LocaleProvider'
 import type { Messages } from '../../i18n/locale'
 
 const DE = {
-  vsYesterday: (d: string) => `gegenüber gestern ${d}`,
-  weekAverage: (n: number) => `Wochenmittel dieser Stunde ${n}`,
+  vsYesterday: (d: string) => `gestern ${d}`,
+  weekAverage: (n: number) => `Ø Stunde ${n}`,
   week: (low: number, high: number) => `Woche ${low}–${high}`,
   label: 'Vergleich mit früheren Werten',
 }
 const EN: typeof DE = {
-  vsYesterday: (d) => `vs. yesterday ${d}`,
-  weekAverage: (n) => `weekly average for this hour ${n}`,
+  vsYesterday: (d) => `yesterday ${d}`,
+  weekAverage: (n) => `hour avg ${n}`,
   week: (low, high) => `week ${low}–${high}`,
   label: 'Comparison with earlier values',
 }

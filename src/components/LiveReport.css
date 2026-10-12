@@ -107,8 +107,9 @@
   padding-top: 0;
 }
 
+/* same role as .eyebrow / .wt-label / .ap-label: the muted 12 px label is medium everywhere */
 .lr-block-title {
-  font: var(--weight-semibold) var(--text-meta)/var(--leading-meta) var(--font-ui);
+  font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-ui);
   text-transform: none;
   letter-spacing: normal;
   color: var(--muted);
@@ -699,6 +700,22 @@
   background: var(--paper-2);
 }
 
+/* phones: 1–3 stat chips share one row evenly, holiday chips stack full width – no orphan, one right edge */
+@media (max-width: 767px) {
+  .lr-memory:not(.lr-holidays) {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+  }
+  .lr-memory:not(.lr-holidays) .lr-memory-badge {
+    text-align: center;
+  }
+  .lr-holidays {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .lr-details {
   border-top: 1px solid var(--rule);
   padding-top: var(--space-4);
@@ -719,6 +736,29 @@
 
 .lr-details summary::-webkit-details-marker {
   display: none;
+}
+
+/* disclosure chevron, ink only: points right when closed, down when open */
+.lr-details summary::before {
+  content: '';
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-right: var(--space-2);
+  border: solid currentColor;
+  border-width: 0 1.5px 1.5px 0;
+  transform: translateX(-2px) rotate(-45deg);
+  transition: transform 0.15s var(--motion-ease, ease);
+}
+
+.lr-details[open] summary::before {
+  transform: translateY(-2px) rotate(45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lr-details summary::before {
+    transition: none;
+  }
 }
 
 .lr-details[open] summary {
