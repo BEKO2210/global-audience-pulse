@@ -55,6 +55,8 @@
 
 .live-report-scope a {
   color: inherit;
+  /* inline padding grows the 24 px hit area without moving the line (the link is one 15 px line from 600 px) */
+  padding-block: 5px;
 }
 
 .lr-layout {
