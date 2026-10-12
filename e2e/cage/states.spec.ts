@@ -43,25 +43,30 @@ test('states: visible interactive targets are at least 24 × 24 px', async ({ pa
   const tooSmall = await page.evaluate(() => {
     const selector =
       'a[href], button, [role=button], [role=switch], [role=tab], [role=radio], summary'
-    return [...document.querySelectorAll<HTMLElement>(selector)]
-      .filter((el) => !el.closest('.mobile-bar'))
-      .map((el) => {
-        const rect = el.getBoundingClientRect()
-        const style = getComputedStyle(el)
-        let width = rect.width
-        let height = rect.height
-        if (el.matches('.pb-ref')) {
-          const hit = getComputedStyle(el, '::after')
-          width += Math.abs(parseFloat(hit.left)) + Math.abs(parseFloat(hit.right))
-          height += Math.abs(parseFloat(hit.top)) + Math.abs(parseFloat(hit.bottom))
-        }
-        return { el, width, height, visible: style.display !== 'none' && rect.width > 0 }
-      })
-      .filter(({ visible, width, height }) => visible && (width < 24 || height < 24))
-      .map(({ el, width, height }) => ({
-        target: `${el.tagName.toLowerCase()}.${el.className}`,
-        size: `${width.toFixed(1)} × ${height.toFixed(1)}`,
-      }))
+    return (
+      [...document.querySelectorAll<HTMLElement>(selector)]
+        .filter((el) => !el.closest('.mobile-bar'))
+        // WCAG 2.5.8 exempts inline targets in a sentence (their height is the line height of the text around
+        // them): the report scope link is one such link, one 15 px line from 600 px
+        .filter((el) => !(el.matches('p > a') && getComputedStyle(el).display === 'inline'))
+        .map((el) => {
+          const rect = el.getBoundingClientRect()
+          const style = getComputedStyle(el)
+          let width = rect.width
+          let height = rect.height
+          if (el.matches('.pb-ref')) {
+            const hit = getComputedStyle(el, '::after')
+            width += Math.abs(parseFloat(hit.left)) + Math.abs(parseFloat(hit.right))
+            height += Math.abs(parseFloat(hit.top)) + Math.abs(parseFloat(hit.bottom))
+          }
+          return { el, width, height, visible: style.display !== 'none' && rect.width > 0 }
+        })
+        .filter(({ visible, width, height }) => visible && (width < 24 || height < 24))
+        .map(({ el, width, height }) => ({
+          target: `${el.tagName.toLowerCase()}.${el.className}`,
+          size: `${width.toFixed(1)} × ${height.toFixed(1)}`,
+        }))
+    )
   })
   expect(tooSmall, 'undersized interactive targets').toEqual([])
 })
