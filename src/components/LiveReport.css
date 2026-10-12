@@ -808,5 +808,6 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  border-color: color-mix(in srgb, var(--accent) 50%, var(--rule-solid));
+  /* a holiday is information about a place, not the best time: flag + ink text carry it, the frame stays a rule */
+  border-color: var(--rule-solid);
 }

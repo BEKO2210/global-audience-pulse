@@ -5,6 +5,7 @@ import { ASK_AUDIENCES, askPulse, type AskAudienceId } from '../lib/askPulse'
 import type { ScoreGrid } from '../lib/model'
 import { formatOffset, formatTime, startOfNextZonedDay, timeZoneName } from '../lib/time'
 import { track, type AnalyticsEvents } from '../lib/analytics'
+import { rovingKey } from '../lib/roving'
 import { useLocale, useMessages } from '../i18n/LocaleProvider'
 import type { Messages } from '../i18n/locale'
 import { presetName, regionName } from '../i18n/labels'
@@ -14,6 +15,8 @@ import { Flag } from './Flag'
 import { CalendarButton } from './CalendarButton'
 import { ReminderButton } from './ReminderButton'
 import './AskPulse.css'
+
+const ASK_IDS = ASK_AUDIENCES.map((audience) => audience.id)
 
 const DE = {
   title: 'Wann poste ich für …?',
@@ -79,6 +82,10 @@ export function AskPulse({
   const { locale, intl } = useLocale()
   const reduce = useReducedMotion()
   const [active, setActive] = useState<AskAudienceId>('global')
+  const choose = (id: AskAudienceId) => {
+    setActive(id)
+    track('Frage', { zielgruppe: id as AnalyticsAudience })
+  }
   const audience = ASK_AUDIENCES.find((a) => a.id === active) ?? ASK_AUDIENCES[0]
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const answer = useMemo(
@@ -104,19 +111,22 @@ export function AskPulse({
       <div className="section-head">
         <h2 id="ask-title">{t.title}</h2>
       </div>
-      <div className="ap-questions" role="radiogroup" aria-label={t.questions}>
+      <div
+        className="ap-questions"
+        role="radiogroup"
+        aria-label={t.questions}
+        onKeyDown={(event) => rovingKey(event, ASK_IDS, active, choose)}
+      >
         {ASK_AUDIENCES.map((a) => (
           <button
             key={a.id}
             type="button"
             role="radio"
             aria-checked={a.id === active}
+            tabIndex={a.id === active ? 0 : -1}
             className="ap-question"
             aria-label={t.question(label(a.name))}
-            onClick={() => {
-              setActive(a.id)
-              track('Frage', { zielgruppe: a.id as AnalyticsAudience })
-            }}
+            onClick={() => choose(a.id)}
           >
             {locale === 'en' ? (AUDIENCE_CHIP_EN[a.name] ?? label(a.name)) : a.name}
           </button>

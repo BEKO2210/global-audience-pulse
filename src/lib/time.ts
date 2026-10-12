@@ -232,6 +232,30 @@ export function startOfNextZonedDay(date: Date, timeZone: string) {
   return new Date(result)
 }
 
+/**
+ * One spoken value for every time-machine slider (dial, forecast, mobile bar): weekday, date, time, zone and,
+ * when known, the score – "Montag, 12.10., 18:00 MESZ · Score 63" / "Monday 12 Oct, 18:00 BST · score 63".
+ */
+export function timeValueText(
+  date: Date,
+  timeZone: string,
+  locale: 'de' | 'en',
+  intl: string,
+  score?: number,
+) {
+  const when = date.toLocaleString(intl, {
+    timeZone,
+    weekday: 'long',
+    day: locale === 'en' ? 'numeric' : '2-digit',
+    month: locale === 'en' ? 'short' : '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZoneName: 'short',
+  })
+  if (score == null) return when
+  return `${when} · ${locale === 'de' ? 'Score' : 'score'} ${Math.round(score)}`
+}
+
 export function snapToMinutes(date: Date, minutes: number) {
   const step = minutes * 60_000
   return new Date(Math.round(date.getTime() / step) * step)

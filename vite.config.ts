@@ -143,8 +143,13 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2,json}'],
-        // The DE/EN UI never requests these subsets (@font-face unicode-range): 39 files, 440 kB less to precache.
-        globIgnores: ['**/*-{cyrillic,cyrillic-ext,greek,greek-ext,vietnamese}-*.woff2'],
+        globIgnores: [
+          // The DE/EN UI never requests these subsets (@font-face unicode-range): 39 files, 440 kB less to precache.
+          '**/*-{cyrillic,cyrillic-ext,greek,greek-ext,vietnamese}-*.woff2',
+          // the snapshot is refreshed by the data workflow without a rebuild: never serve it from the revisioned
+          // precache (that route wins over runtimeCaching); NetworkFirst below keeps the last real one for offline
+          '**/data/snapshot.json',
+        ],
         navigateFallbackDenylist: [/\/(?:impressum|datenschutz)\/?$/],
         runtimeCaching: [
           {

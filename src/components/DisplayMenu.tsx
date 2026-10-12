@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { Check, Desktop, Moon, Sun, SlidersHorizontal, type IconProps } from '@phosphor-icons/react'
 import { STYLES, STYLE_IDS, type StyleId } from '../config/styles'
 import { track } from '../lib/analytics'
+import { rovingKey } from '../lib/roving'
 import { useLocale, useMessages } from '../i18n/LocaleProvider'
 import type { Locale, Messages } from '../i18n/locale'
 import './DisplayMenu.css'
@@ -29,6 +30,8 @@ const LANGUAGES: { id: Locale; name: string }[] = [
   { id: 'de', name: 'Deutsch' },
   { id: 'en', name: 'English' },
 ]
+const LANGUAGE_IDS = LANGUAGES.map((language) => language.id)
+const MODES = ['system', 'light', 'dark'] as const
 
 const MODE_ICONS: Record<ThemePreference, ComponentType<IconProps>> = {
   system: Desktop,
@@ -55,6 +58,10 @@ export function DisplayMenu({
 }) {
   const t = useMessages(M)
   const { locale, setLocale } = useLocale()
+  const chooseLocale = (id: Locale) => {
+    track('Sprache', { wert: id })
+    setLocale(id)
+  }
   const reduce = useReducedMotion()
   const [open, setOpen] = useState(false)
   const panelId = useId()
@@ -110,7 +117,12 @@ export function DisplayMenu({
               <h2 className="dm-label" id={`${panelId}-lang`}>
                 {t.language}
               </h2>
-              <div className="dm-segments" role="radiogroup" aria-labelledby={`${panelId}-lang`}>
+              <div
+                className="dm-segments"
+                role="radiogroup"
+                aria-labelledby={`${panelId}-lang`}
+                onKeyDown={(event) => rovingKey(event, LANGUAGE_IDS, locale, chooseLocale)}
+              >
                 {LANGUAGES.map(({ id, name }) => (
                   <button
                     key={id}
@@ -118,11 +130,9 @@ export function DisplayMenu({
                     role="radio"
                     lang={id}
                     aria-checked={locale === id}
+                    tabIndex={locale === id ? 0 : -1}
                     className="dm-segment"
-                    onClick={() => {
-                      track('Sprache', { wert: id })
-                      setLocale(id)
-                    }}
+                    onClick={() => chooseLocale(id)}
                   >
                     {name}
                   </button>
@@ -134,7 +144,12 @@ export function DisplayMenu({
               <h2 className="dm-label" id={`${panelId}-style`}>
                 {t.style}
               </h2>
-              <div className="dm-rows" role="radiogroup" aria-labelledby={`${panelId}-style`}>
+              <div
+                className="dm-rows"
+                role="radiogroup"
+                aria-labelledby={`${panelId}-style`}
+                onKeyDown={(event) => rovingKey(event, STYLE_IDS, style, onStyle)}
+              >
                 {STYLE_IDS.map((id) => {
                   const checked = style === id
                   return (
@@ -143,6 +158,7 @@ export function DisplayMenu({
                       type="button"
                       role="radio"
                       aria-checked={checked}
+                      tabIndex={checked ? 0 : -1}
                       className="dm-row"
                       onClick={() => onStyle(id)}
                     >
@@ -170,8 +186,9 @@ export function DisplayMenu({
                 className="dm-segments is-three"
                 role="radiogroup"
                 aria-labelledby={`${panelId}-mode`}
+                onKeyDown={(event) => rovingKey(event, MODES, theme, onTheme)}
               >
-                {(['system', 'light', 'dark'] as const).map((value) => {
+                {MODES.map((value) => {
                   const Icon = MODE_ICONS[value]
                   return (
                     <button
@@ -179,6 +196,7 @@ export function DisplayMenu({
                       type="button"
                       role="radio"
                       aria-checked={theme === value}
+                      tabIndex={theme === value ? 0 : -1}
                       className="dm-segment"
                       onClick={() => onTheme(value)}
                     >

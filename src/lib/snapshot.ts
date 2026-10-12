@@ -125,12 +125,12 @@ function parseHolidays(input: unknown): Holidays {
 
 export async function loadSnapshot(base = import.meta.env.BASE_URL, fresh = false) {
   try {
-    const response = await fetch(
-      `${base}data/snapshot.json${fresh ? `?refresh=${Date.now()}` : ''}`,
-      {
-        cache: fresh ? 'no-store' : 'default',
-      },
-    )
+    // No cache-busting query: the plain URL matches the service worker's NetworkFirst route, so an offline or
+    // standalone launch gets the last real snapshot instead of the sample data. `no-cache` still revalidates
+    // (ETag/304) on every fresh load.
+    const response = await fetch(`${base}data/snapshot.json`, {
+      cache: fresh ? 'no-cache' : 'default',
+    })
     if (!response.ok) throw new Error(`HTTP ${response.status}`)
     return parseSnapshot(await response.json())
   } catch {

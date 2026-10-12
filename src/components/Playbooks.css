@@ -24,6 +24,12 @@
 .pb-tabs::-webkit-scrollbar {
   display: none;
 }
+@media (max-width: 719px) {
+  .pb-tabs {
+    /* the right edge fades out like the heatmap and the posting chips: there is more to swipe to, no hard cut */
+    mask-image: linear-gradient(to right, #000 calc(100% - 32px), transparent);
+  }
+}
 .pb-tabs button {
   display: inline-flex;
   align-items: center;

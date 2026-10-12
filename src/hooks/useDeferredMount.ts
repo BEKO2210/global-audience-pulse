@@ -8,7 +8,7 @@ const queue: (() => void)[] = []
 let pumping = false
 
 type IdleCallback = (deadline: { timeRemaining: () => number }) => void
-const requestIdle: (cb: IdleCallback, options?: { timeout: number }) => number =
+export const requestIdle: (cb: IdleCallback, options?: { timeout: number }) => number =
   typeof window !== 'undefined' && 'requestIdleCallback' in window
     ? (cb, options) => window.requestIdleCallback(cb, options)
     : (cb) => window.setTimeout(() => cb({ timeRemaining: () => 16 }), 50)

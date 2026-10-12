@@ -538,7 +538,7 @@ button {
   .pp-chip:not([aria-pressed='true']):not(.active),
   .ap-question:not([aria-checked='true']):not(.active),
   .wt-option:not([aria-pressed='true']):not(.active),
-  .scrub-readout button:not(:disabled):not(.active),
+  .scrub-readout button:not(:disabled):not([aria-disabled='true']):not(.active),
   .lr-details:not([open]) > summary,
   .pb-details:not([open]) > summary {
     transition:
@@ -553,7 +553,7 @@ button {
   .pp-chip:not([aria-pressed='true']):not(.active):hover,
   .ap-question:not([aria-checked='true']):not(.active):hover,
   .wt-option:not([aria-pressed='true']):not(.active):hover,
-  .scrub-readout button:not(:disabled):not(.active):hover,
+  .scrub-readout button:not(:disabled):not([aria-disabled='true']):not(.active):hover,
   .lr-details:not([open]) > summary:hover,
   .pb-details:not([open]) > summary:hover {
     border-color: var(--ink);
@@ -1177,11 +1177,13 @@ button:active {
   background: transparent;
   color: var(--accent-ink);
 }
-.scrub-readout button:disabled {
+.scrub-readout button:disabled,
+.scrub-readout button[aria-disabled='true'] {
   opacity: 1;
   border-color: var(--edge);
   color: var(--muted);
   background: transparent;
+  cursor: default;
 }
 .scrub-key-hint {
   display: none;
@@ -2569,6 +2571,9 @@ button:active {
 }
 .mobile-bar.is-compact.is-scrubbed .mobile-bar-back {
   display: none;
+}
+.mobile-bar-live[aria-disabled='true'] {
+  cursor: default;
 }
 .mobile-bar-live.is-live i {
   width: 6px;

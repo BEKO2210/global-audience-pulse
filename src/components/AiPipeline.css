@@ -3,8 +3,9 @@
 .ai-pipeline {
   --aip-ok: color-mix(in srgb, var(--ink) 60%, var(--paper));
   --aip-template: color-mix(in srgb, var(--ink) 35%, var(--paper));
-  --aip-retry: var(--accent);
-  --aip-warn: var(--series-2);
+  /* a rejection is a state, not the best moment: series colours, never the accent (colour grammar) */
+  --aip-retry: var(--series-2);
+  --aip-warn: var(--series-4);
   --aip-fail: var(--series-5);
   --aip-skip: color-mix(in srgb, var(--ink) 14%, var(--paper));
 }
@@ -395,7 +396,15 @@
   background: var(--aip-fail);
 }
 .aip-log-note {
-  color: var(--accent-ink);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--muted);
+}
+.aip-log-note i {
+  width: 7px;
+  height: 7px;
+  background: var(--aip-retry);
 }
 
 @keyframes aip-flow-h {

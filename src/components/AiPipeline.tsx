@@ -370,7 +370,12 @@ export default function AiPipeline({ health }: { health: HealthPayload }) {
                   {t.outcome[line.outcome] ?? line.outcome}
                 </span>
                 <span className="aip-log-steps">{line.steps.split(' · ').join(', ')}</span>
-                {line.note && <span className="aip-log-note">{line.note}</span>}
+                {line.note && (
+                  <span className="aip-log-note">
+                    <i className="is-retry" aria-hidden="true" />
+                    {line.note}
+                  </span>
+                )}
               </span>
             </li>
           ))}

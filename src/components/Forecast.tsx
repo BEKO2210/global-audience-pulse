@@ -6,13 +6,13 @@ import { motion, useReducedMotion } from 'motion/react'
 import type { PostingWindow } from '../lib/model'
 import { MODEL_CONFIG } from '../config/model'
 import { MOTION } from '../config/motion'
-import { formatTime, snapToMinutes } from '../lib/time'
+import { formatTime, snapToMinutes, timeValueText } from '../lib/time'
 import { track } from '../lib/analytics'
 import { useLocale, useMessages } from '../i18n/LocaleProvider'
 import type { Messages } from '../i18n/locale'
 
 const DE = {
-  title: 'Das nächste Momentum',
+  title: 'Dein Score, nächste 24 Stunden',
   scale: 'Skala: 0–100 Aktivitäts-Score',
   timeMachine: 'Zeitmaschine',
   windowNo: (n: number) => (n === 1 ? 'Bestes Fenster' : `${n}. Fenster`),
@@ -21,7 +21,7 @@ const DE = {
   keyHint: 'Pfeiltasten',
 }
 const EN: typeof DE = {
-  title: 'The next momentum',
+  title: 'Your score, next 24 hours',
   scale: 'Scale: 0–100 activity score',
   timeMachine: 'Time machine',
   windowNo: (n) =>
@@ -31,6 +31,17 @@ const EN: typeof DE = {
   keyHint: 'arrow keys',
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
+
+const SLIDER_KEYS = [
+  'ArrowLeft',
+  'ArrowRight',
+  'ArrowUp',
+  'ArrowDown',
+  'PageUp',
+  'PageDown',
+  'Home',
+  'End',
+]
 
 export interface ForecastPoint {
   date: Date
@@ -46,6 +57,7 @@ export function Forecast({
   onLive,
   isLive,
   recommendationThreshold,
+  score,
   caption,
 }: {
   points: readonly ForecastPoint[]
@@ -56,6 +68,8 @@ export function Forecast({
   onLive: () => void
   isLive: boolean
   recommendationThreshold: number
+  /** Overall score at `selectedDate`, spoken with the time so the three sliders announce the same value. */
+  score?: number
   caption?: string
 }) {
   const t = useMessages(M)
@@ -145,15 +159,14 @@ export function Forecast({
         aria-valuemin={domain[0].getTime()}
         aria-valuemax={domain[1].getTime()}
         aria-valuenow={selectedInDomain.getTime()}
-        aria-valuetext={selectedDate.toLocaleString(intl, {
-          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          weekday: 'short',
-          day: locale === 'en' ? 'numeric' : '2-digit',
-          month: locale === 'en' ? 'short' : '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          timeZoneName: 'short',
-        })}
+        aria-valuetext={timeValueText(
+          selectedDate,
+          Intl.DateTimeFormat().resolvedOptions().timeZone,
+          locale,
+          intl,
+          score ?? points[selectedIndex]?.score,
+        )}
+        aria-keyshortcuts="Home"
         onPointerDown={(e) => {
           // Mouse/pen scrub immediately. Touch waits for intent: the browser keeps vertical
           // pans (touch-action: pan-y) so scrolling over the chart scrolls the page.
@@ -194,12 +207,12 @@ export function Forecast({
           touchStart.current = null
         }}
         onKeyDown={(e) => {
-          if (['ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown', 'Home'].includes(e.key))
-            e.preventDefault()
+          // role=slider promises Up/Down as well as Left/Right (APG); Home is "now", End the last hour
+          if (SLIDER_KEYS.includes(e.key)) e.preventDefault()
           const next =
-            e.key === 'ArrowLeft'
+            e.key === 'ArrowLeft' || e.key === 'ArrowDown'
               ? new Date(selectedDate.getTime() - 15 * 60_000)
-              : e.key === 'ArrowRight'
+              : e.key === 'ArrowRight' || e.key === 'ArrowUp'
                 ? new Date(selectedDate.getTime() + 15 * 60_000)
                 : e.key === 'PageUp'
                   ? new Date(selectedDate.getTime() + 12 * 3_600_000)
@@ -207,7 +220,9 @@ export function Forecast({
                     ? new Date(selectedDate.getTime() - 12 * 3_600_000)
                     : e.key === 'Home'
                       ? minuteNow
-                      : null
+                      : e.key === 'End'
+                        ? domain[1]
+                        : null
           if (next) {
             onScrub(next)
             trackScrub('tastatur', next)
@@ -293,7 +308,14 @@ export function Forecast({
           {t.hint}
           <span className="scrub-key-hint"> · {t.keyHint}</span>
         </span>
-        <button type="button" onClick={onLive} disabled={isLive}>
+        {/* aria-disabled, not disabled: a keyboard "Live" keeps its focus instead of dropping it to the page */}
+        <button
+          type="button"
+          aria-disabled={isLive}
+          onClick={() => {
+            if (!isLive) onLive()
+          }}
+        >
           Live
         </button>
       </div>

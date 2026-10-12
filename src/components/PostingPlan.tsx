@@ -19,7 +19,7 @@ const DE = {
   title: 'Nächste Gelegenheit je Plattform',
   regions: (n: number) => `${n} ${n === 1 ? 'Markt' : 'Märkte'}, deine Zeitzone`,
   lede: (score: number) =>
-    `Erste Stunde, in der dein Publikum laut Modell aktiv ist (Score ab ${score}) und die Plattform-Studien für mindestens die Hälfte davon eine empfohlene Uhrzeit nennen – jeweils in dessen Ortszeit.`,
+    `Früheste Stunde mit Score ab ${score}, zu der Plattform-Studien bei mindestens der Hälfte deiner Zielgruppe eine Uhrzeit empfehlen – gerechnet in der Ortszeit jedes Markts.`,
   empty: 'Wähle mindestens einen Markt, dann erscheinen hier die Termine.',
   head: ['Plattform', 'Termin', 'Score', 'Studienabdeckung'] as readonly string[],
   bestAvailable: 'Bestes verfügbares',
@@ -39,7 +39,7 @@ const EN: typeof DE = {
   title: 'Next opportunity per platform',
   regions: (n) => `${n} ${n === 1 ? 'market' : 'markets'}, your time zone`,
   lede: (score) =>
-    `The first hour in which the model shows your audience as active (score ${score} or higher) and the platform studies recommend that time for at least half of it – each in its own local time.`,
+    `Earliest hour with a score of ${score} or higher at which platform studies recommend posting for at least half of your audience – counted in each market’s local time.`,
   empty: 'Select at least one market and the times will appear here.',
   head: ['Platform', 'When', 'Score', 'Study coverage'],
   bestAvailable: 'Best available',

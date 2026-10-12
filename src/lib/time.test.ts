@@ -4,6 +4,7 @@ import {
   formatDecimalHour,
   formatOffset,
   startOfNextZonedDay,
+  timeValueText,
   zonedParts,
 } from './time'
 
@@ -58,5 +59,18 @@ describe('formatOffset / relativeTime in English', () => {
     const from = new Date('2026-10-10T10:00:00Z')
     expect(relativeTime(new Date('2026-10-10T11:48:00Z'), from, 'en')).toBe('1\u00A0h 48\u00A0min')
     expect(relativeTime(new Date('2026-10-10T11:48:00Z'), from)).toBe('1\u00A0Std 48\u00A0Min')
+  })
+})
+
+describe('timeValueText', () => {
+  it('speaks the same value for every time-machine slider, with the score when known', () => {
+    const at = new Date('2026-10-12T16:00:00Z')
+    expect(timeValueText(at, 'Europe/Berlin', 'de', 'de-DE', 63.4)).toMatch(
+      /^Montag, 12\.10\., 18:00 .+ · Score 63$/,
+    )
+    expect(timeValueText(at, 'Europe/Berlin', 'en', 'en-GB', 63.4)).toMatch(
+      /^Monday 12 Oct, 18:00 .+ · score 63$/,
+    )
+    expect(timeValueText(at, 'Europe/Berlin', 'en', 'en-GB')).not.toMatch(/score/)
   })
 })

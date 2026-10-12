@@ -281,7 +281,7 @@ export const Heatmap = memo(function Heatmap({
           </span>
         )}
       </div>
-      <div className="heat-legend" aria-label={t.legendLabel}>
+      <div className="heat-legend" role="group" aria-label={t.legendLabel}>
         <strong>{t.legend}</strong>
         {ACTIVITY_LEVELS.map((level, index) => (
           <span key={level.min} title={level.label}>
