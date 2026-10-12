@@ -210,7 +210,8 @@ export function relativeTime(target: Date, from = new Date(), locale: 'de' | 'en
   const h = Math.floor(minutes / 60)
   const m = minutes % 60
   const [hu, mu] = locale === 'de' ? ['Std', 'Min'] : ['h', 'min']
-  return h ? `${h} ${hu} ${m} ${mu}` : `${m} ${mu}`
+  // U+00A0 binds each number to its unit; the gap between the parts may still wrap.
+  return h ? `${h}\u00A0${hu} ${m}\u00A0${mu}` : `${m}\u00A0${mu}`
 }
 
 export function findNextOffsetChange(timeZone: string, from: Date, days = 370) {
@@ -236,7 +237,10 @@ export function snapToMinutes(date: Date, minutes: number) {
   return new Date(Math.round(date.getTime() / step) * step)
 }
 
-/** Human offset from now for the time machine readout, e.g. "in 2 h 15 min", "in 3 T 4 h". */
+/**
+ * Human offset from now for the time machine readout, e.g. "in 2 h 15 min", "in 3 days 4 h".
+ * A no-break space (U+00A0) binds each number to its unit so "15" and "Min" never split across lines.
+ */
 export function formatOffset(ms: number, locale: 'de' | 'en' = 'de') {
   const totalMinutes = Math.round(Math.abs(ms) / 60_000)
   if (totalMinutes === 0) return locale === 'de' ? 'jetzt' : 'now'
@@ -245,13 +249,12 @@ export function formatOffset(ms: number, locale: 'de' | 'en' = 'de') {
   const minutes = totalMinutes % 60
   const de = locale === 'de'
   const dayWord = de ? (days === 1 ? 'Tag' : 'Tagen') : days === 1 ? 'day' : 'days'
+  const hourWord = de ? 'Std' : 'h'
+  const minuteWord = de ? 'Min' : 'min'
   const parts = days
-    ? [`${days} ${dayWord}`, hours ? `${hours} ${de ? 'Std' : 'h'}` : '']
-    : [hours ? `${hours} ${de ? 'Std' : 'h'}` : '', minutes ? `${minutes} min` : '']
-  const text = parts
-    .filter(Boolean)
-    .join(' ')
-    .replace(/(\d+) min/g, de ? '$1 Min' : '$1 min')
+    ? [`${days}\u00A0${dayWord}`, hours ? `${hours}\u00A0${hourWord}` : '']
+    : [hours ? `${hours}\u00A0${hourWord}` : '', minutes ? `${minutes}\u00A0${minuteWord}` : '']
+  const text = parts.filter(Boolean).join(' ')
   if (de) return `${ms < 0 ? 'vor' : 'in'} ${text}`
   return ms < 0 ? `${text} ago` : `in ${text}`
 }

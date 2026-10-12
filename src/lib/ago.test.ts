@@ -36,13 +36,13 @@ describe('minutesAgo', () => {
 
 describe('formatDuration', () => {
   it('shows seconds below one minute', () => {
-    expect(formatDuration(0)).toBe('0 s')
-    expect(formatDuration(59)).toBe('59 s')
+    expect(formatDuration(0)).toBe('0\u00A0s')
+    expect(formatDuration(59)).toBe('59\u00A0s')
   })
 
   it('shows minutes and seconds from 60 on', () => {
-    expect(formatDuration(60)).toBe('1 Min 0 s')
-    expect(formatDuration(125)).toBe('2 Min 5 s')
+    expect(formatDuration(60)).toBe('1\u00A0Min 0\u00A0s')
+    expect(formatDuration(125)).toBe('2\u00A0Min 5\u00A0s')
   })
 })
 
@@ -51,7 +51,7 @@ describe('English', () => {
     const { humanAgo, formatDuration, agoPhrase } = await import('./ago')
     expect(humanAgo(61, 'en')).toBe('1 h 1 min')
     expect(humanAgo(4320, 'en')).toBe('3 days')
-    expect(formatDuration(125, 'en')).toBe('2 min 5 s')
+    expect(formatDuration(125, 'en')).toBe('2\u00A0min 5\u00A0s')
     expect(agoPhrase(12, 'en')).toBe('12 min ago')
     expect(agoPhrase(12)).toBe('vor 12 Min')
   })

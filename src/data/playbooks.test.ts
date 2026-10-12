@@ -86,12 +86,14 @@ describe('describeWindows / describePeaks', () => {
     const { describeWindows, describePeaks } = await import('./playbooks')
     const linkedin = PLAYBOOKS.find((p) => p.id === 'linkedin')!
     expect(describeWindows(linkedin.times[0]!)).toBe(
-      'Mo 13–14 Uhr · Di 11–17 Uhr · Mi 11–16 Uhr · Do 11–12, 13–17 Uhr · Fr 11–12, 13–14 Uhr',
+      'Mo 13–14\u00A0Uhr · Di 11–17\u00A0Uhr · Mi 11–16\u00A0Uhr · Do 11–12, 13–17\u00A0Uhr · Fr 11–12, 13–14\u00A0Uhr',
     )
-    expect(describeWindows(linkedin.times[1]!)).toBe('Mo–Fr 15–20 Uhr')
-    expect(describePeaks(linkedin.times[1]!)).toBe('1. Mi 16 Uhr · 2. Fr 15 Uhr · 3. Fr 16 Uhr')
+    expect(describeWindows(linkedin.times[1]!)).toBe('Mo–Fr 15–20\u00A0Uhr')
+    expect(describePeaks(linkedin.times[1]!)).toBe(
+      '1. Mi 16\u00A0Uhr · 2. Fr 15\u00A0Uhr · 3. Fr 16\u00A0Uhr',
+    )
     const tiktok = PLAYBOOKS.find((p) => p.id === 'tiktok')!
-    expect(describeWindows(tiktok.times[1]!)).toBe('täglich 18–23 Uhr')
+    expect(describeWindows(tiktok.times[1]!)).toBe('täglich 18–23\u00A0Uhr')
   })
 
   it('speaks English with a 24-hour clock', async () => {
@@ -105,7 +107,7 @@ describe('describeWindows / describePeaks', () => {
       '1. Wed 16:00 · 2. Fri 15:00 · 3. Fri 16:00',
     )
     const threads = PLAYBOOKS.find((p) => p.id === 'threads')!
-    expect(describeDaily(threads.times[0]!)).toMatch(/^Mo 12 Uhr · Di 10 Uhr/)
+    expect(describeDaily(threads.times[0]!)).toMatch(/^Mo 12\u00A0Uhr · Di 10\u00A0Uhr/)
     expect(describeDaily(threads.times[0]!, 'en')).toMatch(
       /^Mon 12:00 · Tue 10:00 · Wed 12:00 · Thu 09:00/,
     )
@@ -123,7 +125,7 @@ describe('heatmap scores', () => {
     const scores = blockScores(x.times)
     expect(scores[1]).toEqual([0, 0, 3, 4, 2, 0])
     expect(scores[5]).toEqual([0, 0, 3, 0, 0, 0]) // Saturday: Buffer only
-    expect(describeCells(strongestCells(scores))).toBe('Di–Fr 12–16 Uhr')
+    expect(describeCells(strongestCells(scores))).toBe('Di–Fr 12–16\u00A0Uhr')
     expect(describeCells(strongestCells(scores), 'en')).toBe('Tue–Fri 12:00–16:00')
     expect(strongestCells([[0, 0]])).toEqual([])
   })
