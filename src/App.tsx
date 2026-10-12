@@ -7,6 +7,7 @@ import { PRESETS, REGIONS, REGION_BY_ID, type RegionId } from './config/regions'
 import { useAudience } from './hooks/useAudience'
 import { useLiveData } from './hooks/useLiveData'
 import { useScoreGrid } from './hooks/useScoreGrid'
+import { useBelowFoldData } from './hooks/useBelowFoldData'
 import { useDeferredMount } from './hooks/useDeferredMount'
 import { ReportTeaser, useLiveReport } from './components/reportShared'
 const LiveReport = lazy(() => import('./components/LiveReport'))
@@ -75,11 +76,13 @@ const DE = {
   headline: 'Jetzt posten oder warten?',
   noneSelected: 'Keine Märkte ausgewählt',
   noneSelectedHint: 'Wähle mindestens einen Markt aus, um weltweite Posting-Fenster zu berechnen.',
-  activateAll: 'Alle Märkte aktivieren',
+  activateAll: 'Alle Märkte auswählen',
   leads: (city: string, score: number) => `${city} führt mit ${score}.`,
   sleeps: (cities: string, n: number) => `${cities} ${n === 1 ? 'schläft' : 'schlafen'}.`,
-  allAwake: 'Alle Kernmärkte sind wach.',
-  bestWindow: 'Optimales Zeitfenster',
+  allAwake: 'Alle ausgewählten Märkte sind wach.',
+  bestWindow: 'Bestes Posting-Fenster',
+  heroStatus: (score: number, label: string, verdict: string) =>
+    `Jetzt: Score ${score} von 100, ${label}. ${verdict}`,
   potential: (n: number) => `+${n} Pkt. Potenzial`,
   bestRemaining: 'bestes verbleibendes Fenster',
   bestRegion: 'Bester Markt',
@@ -88,13 +91,13 @@ const DE = {
   mapLoading: 'Karte wird geladen',
   nextChange: 'Nächster Wechsel',
   primeStarts: (when: string, city: string) => `In ${when} beginnt Primetime in ${city}`,
-  secondWindow: 'Zweites Zeitfenster heute',
+  secondWindow: 'Zweites Fenster heute',
   noSecondWindow: 'Kein weiteres Fenster heute',
   dstChange: 'Zeitumstellung',
   corridors: 'Strategische Posting-Korridore',
   bestCorridor: 'Bester Korridor',
   nRegions: (n: number) => `${n} Märkte`,
-  activateAllN: (n: number) => `Alle ${n} Märkte aktivieren`,
+  activateAllN: (n: number) => `Alle ${n} Märkte auswählen`,
   method: 'Methodik & Quellen',
   methodTitle: ['Messbar, modelliert,', 'transparent.'],
   methodText: (measured: number, base: number) => (
@@ -158,8 +161,9 @@ const EN: typeof DE = {
   activateAll: 'Select all markets',
   leads: (city: string, score: number) => `${city} leads with ${score} points.`,
   sleeps: (cities: string, n: number) => `${cities} ${n === 1 ? 'is' : 'are'} asleep.`,
-  allAwake: 'All core markets are awake.',
+  allAwake: 'All selected markets are awake.',
   bestWindow: 'Best posting window',
+  heroStatus: (score, label, verdict) => `Now: score ${score} out of 100, ${label}. ${verdict}`,
   potential: (n: number) => `+${n} pts potential`,
   bestRemaining: 'best window left today',
   bestRegion: 'Top market',
@@ -168,7 +172,7 @@ const EN: typeof DE = {
   mapLoading: 'Loading map',
   nextChange: 'Next change',
   primeStarts: (when: string, city: string) => `Prime time starts in ${city} in ${when}`,
-  secondWindow: '2nd window today',
+  secondWindow: 'Second window today',
   noSecondWindow: 'No further window today',
   dstChange: 'Clock change',
   corridors: 'Strategic posting corridors',
@@ -360,6 +364,7 @@ export default function App() {
   const [snapshotState, setSnapshotState] = useState<'loading' | 'live' | 'fallback'>('loading')
   const [minuteNow, setMinuteNow] = useState(() => new Date())
   const liveReport = useLiveReport()
+  const belowFold = useBelowFoldData()
   const [scrubbed, setScrubbed] = useState<Date | null>(null)
   const [detail, setDetail] = useState<RegionId | null>(null)
   const sheetRef = useRef<HTMLElement>(null)
@@ -480,6 +485,11 @@ export default function App() {
   const { grid: scoreGrid, ready: scoreGridReady } = useScoreGrid(activeSnapshot, minuteNow)
   const score = scoreGrid.globalAt(selected, date)
   const status = statusFor(score)
+  // One spoken headline for screen readers: only when the tone changes and only live, with the score of that
+  // moment. The display number itself stays mute (its tween would rewrite the label on every frame).
+  const [spokenStatus, setSpokenStatus] = useState<{ tone: string; score: number } | null>(null)
+  if (!scrubbed && scoreGridReady && spokenStatus?.tone !== status.tone)
+    setSpokenStatus({ tone: status.tone, score: Math.round(score) })
   const forecast = useMemo(
     () => scoreGrid.points(selected, minuteNow, 24),
     [scoreGrid, minuteNow, selected],
@@ -686,6 +696,14 @@ export default function App() {
                   )}
                 </p>
                 <h1>{t.headline}</h1>
+                <p className="sr-only" role="status" aria-atomic="true">
+                  {spokenStatus &&
+                    t.heroStatus(
+                      spokenStatus.score,
+                      statusText(spokenStatus.tone, locale).label,
+                      statusText(spokenStatus.tone, locale).verdict,
+                    )}
+                </p>
                 {selected.length === 0 ? (
                   <div className="empty-selection-banner">
                     <strong>{t.noneSelected}</strong>
@@ -709,7 +727,6 @@ export default function App() {
                     <div
                       className={`hero-score ${status.tone}`}
                       data-timestamp={date.toISOString()}
-                      aria-live={scrubbed ? 'off' : 'polite'}
                     >
                       {scoreGridReady ? (
                         <AnimatedNumber
@@ -830,11 +847,7 @@ export default function App() {
                     <dt>{t.bestRegion}</dt>
                     <dd className="best-region">
                       {regionScores[0] && (
-                        <Flag
-                          code={regionScores[0].region.flag}
-                          label={regionName(regionScores[0].region.id, locale)}
-                          size={20}
-                        />
+                        <Flag code={regionScores[0].region.flag} label="" size={20} />
                       )}{' '}
                       {regionScores[0]
                         ? cityName(regionScores[0].region.id, regionScores[0].region.city, locale)
@@ -896,12 +909,21 @@ export default function App() {
                 />
               </Suspense>
             )}
-            <Section defer placeholderHeight={1100}>
-              <Suspense fallback={null}>
-                <WeeklyReview />
-                <AiPipeline />
-              </Suspense>
-            </Section>
+            {/* Only with data, and one boundary each: appended content below the fold grows, nothing shrinks. */}
+            {(belowFold.weekly || belowFold.health) && (
+              <Section>
+                {belowFold.weekly && (
+                  <Suspense fallback={null}>
+                    <WeeklyReview data={belowFold.weekly} />
+                  </Suspense>
+                )}
+                {belowFold.health && (
+                  <Suspense fallback={null}>
+                    <AiPipeline health={belowFold.health} />
+                  </Suspense>
+                )}
+              </Section>
+            )}
             <Section>
               <div className="insight-strip">
                 <div>
@@ -1110,11 +1132,7 @@ export default function App() {
                       {REGIONS.map((region) => (
                         <div key={region.id}>
                           <span>
-                            <Flag
-                              code={region.flag}
-                              label={regionName(region.id, locale)}
-                              size={16}
-                            />{' '}
+                            <Flag code={region.flag} label="" size={16} />{' '}
                             {cityName(region.id, region.city, locale)}
                           </span>
                           <span>
@@ -1235,11 +1253,7 @@ export default function App() {
                 >
                   <X size={22} weight="regular" aria-hidden="true" />
                 </button>
-                <Flag
-                  code={detailRegion.flag}
-                  label={regionName(detailRegion.id, locale)}
-                  size={28}
-                />
+                <Flag code={detailRegion.flag} label="" size={28} />
                 <h2 id="detail-title">{regionName(detailRegion.id, locale)}</h2>
                 <div className="detail-score">
                   <AnimatedNumber value={scoreGrid.activityAt(detailRegion.id, date)} />

@@ -16,7 +16,7 @@ const DE = {
   scale: 'Skala: 0–100 Aktivitäts-Score',
   timeMachine: 'Zeitmaschine',
   windowNo: (n: number) => (n === 1 ? 'Bestes Fenster' : `${n}. Fenster`),
-  legend: (min: number) => `Optimales Posting-Fenster (Score ab ${min})`,
+  legend: (min: number) => `Starkes Fenster (Score ab ${min})`,
   hint: 'Ziehen',
   keyHint: 'Pfeiltasten',
 }
@@ -26,7 +26,7 @@ const EN: typeof DE = {
   timeMachine: 'Time machine',
   windowNo: (n) =>
     n === 1 ? 'Best window' : `${n}${n === 2 ? 'nd' : n === 3 ? 'rd' : 'th'} window`,
-  legend: (min) => `Best posting window (score ${min}+)`,
+  legend: (min) => `Strong window (score ${min}+)`,
   hint: 'Drag',
   keyHint: 'arrow keys',
 }

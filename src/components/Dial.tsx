@@ -310,7 +310,7 @@ export function Dial({
               onPointerLeave={() => setHighlighted(null)}
             >
               <span>{index + 1}</span>
-              <Flag code={region.flag} label={regionName(region.id, locale)} size={16} />
+              <Flag code={region.flag} label="" size={16} />
               {city(region)}
             </button>
           ))}
