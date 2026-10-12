@@ -54,9 +54,14 @@
   --space-8: 32px;
   --space-12: 48px;
   --space-16: 64px;
-  --prose: 68ch;
+  /* 60ch of "0" is ~78 characters of German prose in Plex/Schibsted (68ch ran to ~89); meta text gets a tighter cap */
+  --prose: 60ch;
+  --prose-meta: 52ch;
   --header-h: 64px;
   --motion-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast: 0.15s;
+  --dur-base: 0.2s;
+  --radius-sm: 2px;
   --mobile-bar-height: 72px;
   --content-width: 1440px;
   /* gutter and section rhythm step at breakpoints on the 4 px grid (fluid vw values landed off-grid) */
@@ -65,8 +70,14 @@
   --control-h: 40px;
   --control-h-sm: 36px;
   --control-px: var(--space-4);
-  --control-border: 1px solid var(--rule-solid);
+  /* control outlines: --rule-solid is 1.75–2.6:1 on paper-2 (and drives the map land colour, so it cannot be raised);
+     --edge mixes the ink into the panel paper for ≥ 3:1 in every style × theme */
+  --edge: color-mix(in srgb, var(--ink) 38%, var(--paper-2));
+  --control-border: 1px solid var(--edge);
   --control-font: var(--weight-medium) var(--text-sm) / 1 var(--font-ui);
+  /* one keyboard focus ring: --accent-ink reaches ≥ 5:1 on paper-2 in light (the accent fell to 2.3:1 in Tafel) */
+  --focus-ring: 2px solid var(--accent-ink);
+  --focus-offset: 2px;
   /* O-014 style "Abflugtafel" (default), dark */
   color-scheme: dark;
   --font-display: 'IBM Plex Sans Condensed', 'Plex Condensed Fallback', system-ui, sans-serif;
@@ -94,13 +105,17 @@
   --series-4: #8fa4e0;
   --series-5: #c88aaa;
   --ink-strong: color-mix(in srgb, var(--ink) 72%, var(--paper));
-  --phase-sleep: color-mix(in srgb, var(--ink) 16%, var(--paper));
+  /* 26 % like the light ramp: at 16 % the night arcs and the Night legend chip merged with the card (1.4:1) */
+  --phase-sleep: color-mix(in srgb, var(--ink) 26%, var(--paper));
   --phase-morning: color-mix(in srgb, var(--ink) 62%, var(--paper));
   --phase-day: color-mix(in srgb, var(--ink) 88%, var(--paper));
   --phase-late: color-mix(in srgb, var(--ink) 38%, var(--paper));
   --map-day: color-mix(in srgb, var(--ink) 38%, var(--paper));
   --map-twilight: rgba(0, 0, 0, 0.3);
   --map-night: rgba(0, 0, 0, 0.62);
+  /* forecast window bands: the 14 % accent tint vanished on dark paper (1.2–1.3:1 against the plot) */
+  --band-best: color-mix(in srgb, var(--accent) 28%, transparent);
+  --band-neutral: color-mix(in srgb, var(--ink) 10%, transparent);
 }
 @media (min-width: 600px) {
   :root {
@@ -146,6 +161,9 @@
   --map-day: #8b9097;
   --map-twilight: rgba(150, 140, 120, 0.14);
   --map-night: rgba(30, 36, 50, 0.16);
+  --edge: color-mix(in srgb, var(--ink) 52%, var(--paper-2));
+  --band-best: var(--accent-tint);
+  --band-neutral: color-mix(in srgb, var(--ink) 6%, transparent);
 }
 
 /* "Atlas": map paper, petrol ink, signal red */
@@ -351,8 +369,8 @@ button:focus-visible,
 a:focus-visible,
 input:focus-visible,
 [tabindex]:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 button {
   cursor: pointer;
@@ -391,8 +409,8 @@ button {
 .icon-button:focus-visible,
 .dm-trigger:focus-visible,
 .include-button:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .button:disabled,
 .button.primary:disabled,
@@ -423,7 +441,7 @@ button {
 .text-button:hover,
 .pp-jump:hover,
 .week-link:hover {
-  border-color: var(--rule-solid);
+  border-color: var(--edge);
   text-decoration: underline;
   text-decoration-color: var(--accent);
   text-underline-offset: 3px;
@@ -431,9 +449,9 @@ button {
 .text-button:focus-visible,
 .pp-jump:focus-visible,
 .week-link:focus-visible {
-  border-color: var(--rule-solid);
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  border-color: var(--edge);
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 
 .pp-chip,
@@ -488,15 +506,15 @@ button {
 .compact-toggle:focus-visible,
 .mobile-horizon-toggle:focus-visible,
 .chip:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 @media (hover: hover) {
   .wordmark,
   .footer-group a,
   .source-list a,
   .pb-ref {
-    transition: color 0.15s var(--motion-ease);
+    transition: color var(--dur-fast) var(--motion-ease);
   }
   .wordmark:hover,
   .footer-group a:hover,
@@ -524,9 +542,9 @@ button {
   .lr-details:not([open]) > summary,
   .pb-details:not([open]) > summary {
     transition:
-      color 0.15s var(--motion-ease),
-      border-color 0.15s var(--motion-ease),
-      background-color 0.15s var(--motion-ease);
+      color var(--dur-fast) var(--motion-ease),
+      border-color var(--dur-fast) var(--motion-ease),
+      background-color var(--dur-fast) var(--motion-ease);
   }
   .freshness:hover,
   .filter-row button:not([aria-pressed='true']):not([aria-selected='true']):not(.active):hover,
@@ -640,18 +658,14 @@ button {
   background: var(--live);
   border-radius: 50%;
   margin-right: var(--space-1);
-  animation: pulse-live 2.8s var(--motion-ease) infinite;
+  animation: live-dot 2.4s var(--motion-ease) infinite;
 }
 .freshness i.offline {
   background: var(--soft);
   animation: none;
 }
-@keyframes pulse-live {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
+/* the one "live" pulse: header dot, mobile bar dot and the pipeline status dot breathe at the same pace */
+@keyframes live-dot {
   50% {
     opacity: 0.4;
   }
@@ -713,7 +727,7 @@ button {
   letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
   min-width: 3.05ch;
-  transition: color 0.22s var(--motion-ease);
+  transition: color var(--dur-base) var(--motion-ease);
   flex: 0 0 auto;
   display: flex;
   align-items: baseline;
@@ -766,7 +780,21 @@ button {
   font-size: var(--text-lg);
   display: block;
   margin-top: var(--space-2);
-  min-height: 26px;
+  min-height: calc(var(--text-lg) * var(--leading-body));
+}
+/* phones: the verdict must stay one line ("Noch etwas warten" wrapped in the wide faces and moved the page 31 px).
+   Measured at 390 px: the column beside the score is 173–192 px, the longest verdict 143–149 px at 16 px. */
+@media (max-width: 767px) {
+  .score-meta strong {
+    font-size: var(--text-base);
+    min-height: calc(var(--text-base) * var(--leading-body));
+  }
+}
+/* 360 px phones: the column shrinks to ~143 px, so two lines are reserved and a wrap cannot move the page */
+@media (max-width: 389px) {
+  .score-meta strong {
+    min-height: calc(2 * var(--text-base) * var(--leading-body));
+  }
 }
 .score-meta p {
   font-size: var(--text-meta);
@@ -881,23 +909,15 @@ button {
   padding: var(--space-4) var(--space-3);
   background: var(--paper-2);
   border: 1px solid var(--rule-solid);
-  transition:
-    transform 0.2s var(--motion-ease),
-    border-color 0.2s var(--motion-ease);
-}
-@media (hover: hover) {
-  .panel:hover,
-  .preset-card:hover {
-    transform: translateY(-1px);
-    border-color: var(--ink);
-  }
+  /* containers do not react to the mouse: the old 1 px lift moved 1344 px of content on every hover */
+  transition: border-color var(--dur-base) var(--motion-ease);
 }
 button {
   transition:
-    transform 0.12s var(--motion-ease),
-    border-color 0.12s var(--motion-ease),
-    color 0.12s var(--motion-ease),
-    background-color 0.12s var(--motion-ease);
+    transform var(--dur-fast) var(--motion-ease),
+    border-color var(--dur-fast) var(--motion-ease),
+    color var(--dur-fast) var(--motion-ease),
+    background-color var(--dur-fast) var(--motion-ease);
 }
 button:active {
   transform: translateY(1px);
@@ -1063,14 +1083,12 @@ button:active {
   stroke: var(--rule);
   stroke-width: 1;
 }
-.window-band {
-  fill: color-mix(in srgb, var(--ink) 6%, transparent);
+.window-band,
+.window-band-neutral {
+  fill: var(--band-neutral);
 }
 .window-band-best {
-  fill: var(--accent-tint);
-}
-.window-band-neutral {
-  fill: color-mix(in srgb, var(--ink) 6%, transparent);
+  fill: var(--band-best);
 }
 .window-band-label {
   font-family: var(--font-ui) !important;
@@ -1095,7 +1113,7 @@ button:active {
 .forecast-legend i {
   width: 10px;
   height: 10px;
-  background: var(--accent-tint);
+  background: var(--band-best);
   border: 1px solid var(--accent);
 }
 .forecast-area {
@@ -1132,10 +1150,20 @@ button:active {
   border-top: 1px solid var(--rule);
   padding-top: var(--space-2);
   display: flex;
-  justify-content: space-between;
+  align-items: center;
   gap: var(--space-2);
   font: var(--text-meta)/var(--leading-meta) var(--font-ui);
   color: var(--muted);
+}
+/* label and time read as one phrase; hint and button sit at the right end of the row */
+.scrub-when {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.scrub-hint {
+  margin-left: auto;
 }
 .scrub-readout strong {
   color: var(--ink);
@@ -1143,7 +1171,7 @@ button:active {
   font-variant-numeric: tabular-nums;
 }
 .scrub-readout button {
-  min-height: 36px;
+  min-height: var(--control-h-sm);
   padding: 0 var(--space-3);
   border: 1px solid var(--accent);
   background: transparent;
@@ -1151,7 +1179,7 @@ button:active {
 }
 .scrub-readout button:disabled {
   opacity: 1;
-  border-color: var(--rule-solid);
+  border-color: var(--edge);
   color: var(--muted);
   background: transparent;
 }
@@ -1202,18 +1230,23 @@ button:active {
   align-content: start;
   text-align: left;
   background: transparent;
-  border: 1px solid var(--rule-solid);
+  border: 1px solid var(--edge);
   padding: var(--space-4);
   min-height: 190px;
-  transition: 0.2s;
+  transition:
+    border-color var(--dur-base) var(--motion-ease),
+    background-color var(--dur-base) var(--motion-ease);
 }
-.preset-grid button:hover {
-  background: var(--paper-2);
-  border-color: var(--accent);
+/* hover = ink like every other control; the accent stays with "best corridor". Selected = the chip recipe. */
+@media (hover: hover) {
+  .preset-grid button:hover {
+    background: var(--paper-2);
+    border-color: var(--ink);
+  }
 }
 .preset-grid button.active {
-  border-color: var(--accent);
-  background: var(--paper-2);
+  border-color: var(--ink);
+  background: var(--accent-tint);
 }
 .preset-grid h3 {
   font: var(--display-weight) var(--text-xl)/var(--leading-title) var(--font-display);
@@ -1304,7 +1337,7 @@ button:active {
   width: 1px;
   background: var(--ink);
   pointer-events: none;
-  transition: left 0.22s var(--motion-ease);
+  transition: left var(--dur-base) var(--motion-ease);
 }
 .heatmap-row {
   display: contents;
@@ -1342,7 +1375,7 @@ button:active {
   height: 15px;
   object-fit: cover;
   border: 1px solid var(--rule-solid);
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
   flex: none;
 }
 .heat-cell {
@@ -1351,7 +1384,7 @@ button:active {
   border: 1px solid var(--paper-2);
   padding: 0;
   animation: heat-column-in 0.3s var(--motion-ease) both;
-  transition: background-color 0.22s var(--motion-ease);
+  transition: background-color var(--dur-base) var(--motion-ease);
 }
 @keyframes heat-column-in {
   from {
@@ -1403,8 +1436,9 @@ button:active {
 .heat-cell:hover {
   border-color: var(--ink);
 }
-.heat-cell:focus-visible {
-  outline: 2px solid var(--accent) !important;
+/* more specific than the selected-/now-column outlines in Heatmap.css, so no !important is needed */
+.heatmap-panel .heatmap .heat-cell:focus-visible {
+  outline: var(--focus-ring);
   outline-offset: -2px;
   position: relative;
   z-index: 5;
@@ -1455,7 +1489,7 @@ button:active {
   line-height: var(--leading-meta);
 }
 .dial-region {
-  transition: opacity 0.15s;
+  transition: opacity var(--dur-fast) var(--motion-ease);
 }
 .dial-region.muted {
   opacity: 0.14;
@@ -1524,7 +1558,7 @@ button:active {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  min-height: 36px;
+  min-height: var(--control-h-sm);
   padding: var(--space-1) var(--space-2);
   border: 1px solid var(--rule);
   background: transparent;
@@ -1540,8 +1574,10 @@ button:active {
   font-variant-numeric: tabular-nums;
   flex: none;
 }
+/* a market is a place: its pressed state is ink, never the accent (colour grammar) */
 .dial-legend button[aria-pressed='true'] {
-  border-color: var(--accent);
+  border-color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
   color: var(--ink);
 }
 @media (max-width: 599px) {
@@ -1552,6 +1588,11 @@ button:active {
     min-height: 0;
     padding: var(--space-1) 0;
     border: 0;
+  }
+  /* no border on phones, so the pressed market gets an ink underline instead (border-color paints nothing) */
+  .dial-legend button[aria-pressed='true'] {
+    background: transparent;
+    box-shadow: inset 0 -2px 0 var(--ink);
   }
 }
 .dial-mean {
@@ -1691,7 +1732,7 @@ button:active {
 .button.primary.copied {
   border-color: var(--series-3);
   color: var(--ink);
-  transition: border-color 0.2s;
+  transition: border-color var(--dur-base) var(--motion-ease);
 }
 .dst-note {
   color: var(--muted);
@@ -1781,7 +1822,7 @@ button:active {
   line-height: var(--leading-meta);
 }
 .limitations {
-  max-width: var(--prose);
+  max-width: var(--prose-meta);
   font-size: var(--text-meta) !important;
   line-height: var(--leading-meta);
 }
@@ -1972,7 +2013,7 @@ button:active {
   top: 15px;
   width: 44px;
   height: 44px;
-  border: 1px solid var(--rule-solid);
+  border: 1px solid var(--edge);
   background: transparent;
   font-size: var(--text-xl);
 }
@@ -1985,6 +2026,11 @@ button:active {
 }
 .detail-score {
   font: var(--display-weight) var(--text-display) / 0.9 var(--font-display);
+  /* like the hero score: ink, and the accent only while the region is in its strong phase */
+  color: var(--ink);
+  transition: color var(--dur-base) var(--motion-ease);
+}
+.detail-sheet[data-tone='strong'] .detail-score {
   color: var(--accent-ink);
 }
 .detail-score small {
@@ -2034,7 +2080,7 @@ button:active {
     border-left: 1px solid var(--rule);
   }
   .panel {
-    margin: var(--space-4);
+    margin: var(--space-4) var(--gutter);
   }
   .detail-sheet {
     max-width: 470px;
@@ -2043,6 +2089,15 @@ button:active {
     border-left: 1px solid var(--rule-solid);
     border-top: 0;
     padding-top: var(--space-16);
+  }
+}
+/* Phones: panels run edge to edge, so their text sits on the same 16 px gutter as the plain sections
+   (the inset card put every panel heading at 21 px, off the grid and 5 px right of the headings around it) */
+@media (max-width: 599px) {
+  .panel {
+    margin-inline: 0;
+    border-inline-width: 0;
+    padding-inline: var(--gutter);
   }
 }
 @media (min-width: 900px) {
@@ -2092,8 +2147,9 @@ button:active {
     align-items: stretch;
     padding: var(--space-6) var(--gutter);
   }
+  /* free-standing panels share the gutter with the grids and plain sections: one left edge down the page */
   .panel {
-    margin: var(--space-6);
+    margin: var(--space-6) var(--gutter);
     padding: var(--space-6);
   }
   .desktop-grid > div,
@@ -2105,6 +2161,14 @@ button:active {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+  }
+  /* half-width panels: the meta line always sits under the heading – its position depended on the style's face
+     (Tafel kept it beside the h2, the three wider faces wrapped it, so the first row differed by 29 px) */
+  .map-panel .section-head,
+  .forecast-panel .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
   }
   .analysis-grid {
     grid-template-columns: 1.15fr 0.85fr;
@@ -2211,15 +2275,21 @@ button:active {
   .analysis-grid .heat-cell {
     height: var(--space-8);
   }
+  /* the dial spans a third fr row that absorbs its height, so explainer/caption (row 1) and the two legends
+     (row 2) sit tight together instead of being pushed apart by the spanning clock */
   .analysis-grid .dial-wrap {
-    grid-template-columns: minmax(280px, 360px) minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(360px, 420px) minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr;
     align-items: start;
-    gap: var(--space-3) var(--space-8);
+    column-gap: var(--space-6);
+    row-gap: var(--space-3);
   }
   .analysis-grid .dial {
     grid-column: 1;
-    grid-row: 1 / span 5;
+    grid-row: 1 / -1;
     align-self: center;
+    width: min(100%, 420px);
+    max-width: 420px;
   }
   .analysis-grid .dial-explainer,
   .analysis-grid .phase-colour-legend {
@@ -2229,11 +2299,14 @@ button:active {
   .analysis-grid .dial-legend {
     grid-column: 3;
   }
+  .analysis-grid .dial-explainer,
   .analysis-grid .ring-direction {
     grid-row: 1;
   }
+  .analysis-grid .phase-colour-legend,
   .analysis-grid .dial-legend {
-    grid-row: 2 / span 4;
+    grid-row: 2;
+    align-self: start;
   }
   .analysis-grid .phase-colour-legend {
     display: grid;
@@ -2326,11 +2399,6 @@ button:active {
 .planner-tabs {
   margin-bottom: var(--space-2);
 }
-@keyframes live-pulse {
-  50% {
-    opacity: 0.35;
-  }
-}
 @media (prefers-reduced-motion: reduce) {
   .mobile-bar-live.is-live i {
     animation: none;
@@ -2417,7 +2485,7 @@ button:active {
   background: var(--paper);
   border-top: 1px solid var(--rule-solid);
   overscroll-behavior: contain;
-  transition: height 0.2s var(--motion-ease);
+  transition: height var(--dur-base) var(--motion-ease);
 }
 .mobile-bar.is-compact {
   height: calc(44px + env(safe-area-inset-bottom));
@@ -2452,7 +2520,7 @@ button:active {
   font: var(--weight-medium) var(--text-meta) / 2 var(--font-ui);
   color: var(--ink);
   background: var(--paper);
-  outline: 2px solid var(--accent);
+  outline: var(--focus-ring);
   outline-offset: -2px;
 }
 .mobile-bar-when {
@@ -2473,7 +2541,7 @@ button:active {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  min-height: 36px;
+  min-height: var(--control-h-sm);
   padding: 0;
   border: 0;
   background: none;
@@ -2490,12 +2558,24 @@ button:active {
   height: 0;
   overflow: hidden;
 }
+/* scrubbed + compact: the offset stays as a 12 px accent-ink label under the clock (not a tap target – any touch
+   expands the bar first, then "Jetzt" is reachable); the bar keeps its 44 px */
+.mobile-bar.is-compact.is-scrubbed .mobile-bar-live {
+  display: inline-flex;
+  visibility: visible;
+  height: auto;
+  color: var(--accent-ink);
+  pointer-events: none;
+}
+.mobile-bar.is-compact.is-scrubbed .mobile-bar-back {
+  display: none;
+}
 .mobile-bar-live.is-live i {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: var(--live);
-  animation: live-pulse 2.4s ease-in-out infinite;
+  animation: live-dot 2.4s var(--motion-ease) infinite;
 }
 .mobile-bar-back {
   color: var(--accent-ink);
@@ -2525,12 +2605,13 @@ button:active {
   width: 100%;
   height: 30px;
 }
+/* the same marks as the forecast panel: ink curve, 4 % ink area, ink dot – the accent is kept for the window ticks */
 .mobile-forecast-area {
-  fill: var(--accent-tint);
+  fill: color-mix(in srgb, var(--ink) 4%, transparent);
 }
 .mobile-forecast-line {
   fill: none;
-  stroke: var(--accent);
+  stroke: var(--ink);
   stroke-width: 1.5px;
   vector-effect: non-scaling-stroke;
 }
@@ -2554,6 +2635,12 @@ button:active {
 .mobile-bar.is-compact .mobile-cursor {
   visibility: hidden;
 }
+/* while scrubbed the compact bar keeps its cursor (the curve's 30 px box), so the state is never invisible */
+.mobile-bar.is-compact.is-scrubbed .mobile-cursor {
+  visibility: visible;
+  top: 4px;
+  height: 30px;
+}
 .mobile-cursor {
   position: absolute;
   top: 2px;
@@ -2561,7 +2648,7 @@ button:active {
   width: 1px;
   background: var(--ink);
   transform: translateX(-0.5px);
-  transition: left 0.18s var(--motion-ease);
+  transition: left var(--dur-base) var(--motion-ease);
 }
 .mobile-bar-slider.is-dragging .mobile-cursor {
   transition: none;
@@ -2572,16 +2659,16 @@ button:active {
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--ink);
   box-shadow: 0 0 0 3px var(--paper);
   transform: translate(-50%, -50%) scale(1);
   transition:
-    top 0.18s var(--motion-ease),
-    transform 0.18s var(--motion-ease);
+    top var(--dur-base) var(--motion-ease),
+    transform var(--dur-base) var(--motion-ease);
 }
 .mobile-bar-slider.is-dragging .mobile-cursor b {
   transform: translate(-50%, -50%) scale(1.45);
-  transition: transform 0.18s var(--motion-ease);
+  transition: transform var(--dur-base) var(--motion-ease);
 }
 /* The native range input stays the real control: invisible, full track height, whole track draggable. */
 .mobile-bar-slider input {
@@ -2595,8 +2682,8 @@ button:active {
   touch-action: none;
 }
 .mobile-bar-slider:has(input:focus-visible) .mobile-cursor {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 .mobile-horizon-toggle {
   min-width: 36px;
@@ -2619,7 +2706,7 @@ button:active {
 .mobile-bar-score b {
   font: var(--display-weight) var(--text-2xl)/1 var(--font-display);
   color: var(--ink);
-  transition: color 0.22s var(--motion-ease);
+  transition: color var(--dur-base) var(--motion-ease);
 }
 .mobile-bar-score > span {
   font: var(--weight-medium) var(--text-meta)/var(--leading-meta) var(--font-ui);
@@ -2716,7 +2803,7 @@ button:active {
   background: var(--accent);
 }
 .live-report-note {
-  max-width: var(--prose);
+  max-width: var(--prose-meta);
   font-size: var(--text-meta);
   line-height: var(--leading-meta);
   color: var(--muted);

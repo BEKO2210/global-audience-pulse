@@ -196,7 +196,7 @@
   box-sizing: border-box;
   width: 44px;
   height: 26px;
-  border: 1px solid var(--rule-solid);
+  border: 1px solid var(--edge);
   border-radius: 13px;
   background: color-mix(in srgb, var(--ink) 6%, transparent);
   transition:
@@ -227,7 +227,7 @@
   outline: none;
 }
 .region-switch:focus-visible .region-switch-track {
-  outline: 2px solid var(--accent);
+  outline: var(--focus-ring);
   outline-offset: 3px;
 }
 @media (hover: hover) {

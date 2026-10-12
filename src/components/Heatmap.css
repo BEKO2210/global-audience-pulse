@@ -110,7 +110,7 @@
   left: 50%;
   transform: translateX(-50%);
   padding: var(--space-1) var(--space-1);
-  border-radius: 3px;
+  border-radius: var(--radius-sm);
   font: var(--text-meta)/var(--leading-meta) var(--font-ui);
   font-variant-numeric: tabular-nums;
   font-weight: var(--weight-semibold);

@@ -279,14 +279,16 @@ export function Forecast({
         <i /> {t.legend(recommendationThreshold)}
       </div>
       <div className="scrub-readout">
-        <span>{t.timeMachine}</span>
-        <strong>
-          {selectedDate.toLocaleString(intl, {
-            weekday: 'short',
-            hour: '2-digit',
-            minute: '2-digit',
-          })}
-        </strong>
+        <span className="scrub-when">
+          <span>{t.timeMachine}</span>
+          <strong>
+            {selectedDate.toLocaleString(intl, {
+              weekday: 'short',
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
+          </strong>
+        </span>
         <span className="scrub-hint">
           {t.hint}
           <span className="scrub-key-hint"> · {t.keyHint}</span>
