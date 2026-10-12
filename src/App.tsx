@@ -1014,6 +1014,9 @@ export default function App() {
                   date={date}
                   selected={selected}
                   worldMean={worldMean}
+                  viewerZone={viewerZone}
+                  minuteNow={minuteNow}
+                  onScrub={scrubTo}
                   caption={captions?.dial}
                 />
               </Section>

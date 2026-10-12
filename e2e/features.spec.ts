@@ -305,3 +305,64 @@ for (const theme of ['light', 'dark'] as const)
       results.violations.filter((v) => ['serious', 'critical'].includes(v.impact ?? '')),
     ).toEqual([])
   })
+
+test('dial hand follows the time machine', async ({ page }) => {
+  await page.clock.install({ time: new Date('2026-10-12T08:00:00Z') })
+  await openReady(page)
+  const dial = page.locator('.dial')
+  const readout = page.locator('.scrub-readout strong')
+  const initialReadout = await readout.innerText()
+  const initialHand = await dial.locator('.dial-hand').evaluate((hand) => ({
+    x2: hand.getAttribute('x2'),
+    y2: hand.getAttribute('y2'),
+  }))
+  const [, initialHour, initialMinute] = initialReadout.match(/(\d{2}):(\d{2})/) ?? []
+  expect(initialHour).toBeTruthy()
+  expect(initialMinute).toBeTruthy()
+  const expectedMinutes = (Number(initialHour) * 60 + Number(initialMinute) + 60) % (24 * 60)
+  const expectedTime = `${String(Math.floor(expectedMinutes / 60)).padStart(2, '0')}:${String(
+    expectedMinutes % 60,
+  ).padStart(2, '0')}`
+
+  await dial.focus()
+  await page.keyboard.press('ArrowRight')
+  await page.keyboard.press('ArrowRight')
+  await page.keyboard.press('ArrowRight')
+  await page.keyboard.press('ArrowRight')
+
+  await expect(readout).toContainText(expectedTime)
+  await expect
+    .poll(() =>
+      dial.locator('.dial-hand').evaluate((hand) => ({
+        x2: hand.getAttribute('x2'),
+        y2: hand.getAttribute('y2'),
+      })),
+    )
+    .not.toEqual(initialHand)
+
+  await page.keyboard.press('Home')
+  await expect(readout).toHaveText(initialReadout)
+  await expect
+    .poll(() =>
+      dial.locator('.dial-hand').evaluate((hand) => ({
+        x2: hand.getAttribute('x2'),
+        y2: hand.getAttribute('y2'),
+      })),
+    )
+    .toEqual(initialHand)
+})
+
+test('tapping the dial sets the time machine', async ({ page }) => {
+  await page.clock.install({ time: new Date('2026-10-12T08:00:00Z') })
+  await openReady(page)
+  const dial = page.locator('.dial')
+  const box = await dial.boundingBox()
+  expect(box).toBeTruthy()
+
+  await dial.click({
+    position: { x: box!.width * 0.05, y: box!.height / 2 },
+  })
+
+  await expect(page.locator('.scrub-readout strong')).toContainText('18:00')
+  await expect(dial).toHaveAttribute('aria-valuetext', /18:00/)
+})
