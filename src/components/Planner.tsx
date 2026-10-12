@@ -37,7 +37,7 @@ const DE = {
   noWindowsWeek: 'Keine starken Fenster in den nächsten 7 Tagen.',
 }
 const EN: typeof DE = {
-  icsSummary: 'Optimal posting window',
+  icsSummary: 'Best posting window',
   icsFile: 'posting-window.ics',
   planCopied: 'Plan copied',
   shareTitle: 'My posting plan',
@@ -73,8 +73,8 @@ function formatStart(date: Date, timeZone: string, locale: Locale, intl: string)
     format = new Intl.DateTimeFormat(intl, {
       timeZone,
       weekday: 'short',
-      day: '2-digit',
-      month: '2-digit',
+      day: 'numeric',
+      month: 'short',
       hour: '2-digit',
       minute: '2-digit',
       hourCycle: 'h23',
@@ -220,7 +220,12 @@ export function Planner({
                 .slice(0, 4)
                 .map((region) => {
                   const phase = phaseAt(localDecimalHourFast(window.start, region.timeZone))
-                  return `${cityName(region.id, region.city, locale)} (${formatTime(window.start, region.timeZone)} ${phaseName(phase.id, phase.name, locale)})`
+                  const phaseLabel = phaseName(phase.id, phase.name, locale)
+                  const sentencePhase =
+                    locale === 'en'
+                      ? `${phaseLabel.charAt(0).toLowerCase()}${phaseLabel.slice(1)}`
+                      : phaseLabel
+                  return `${cityName(region.id, region.city, locale)} (${formatTime(window.start, region.timeZone)} ${sentencePhase})`
                 })
                 .join(', ') || t.noPeak}
             </small>

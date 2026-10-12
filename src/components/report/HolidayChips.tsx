@@ -6,12 +6,12 @@ import { cityName } from '../../i18n/labels'
 import type { RegionId } from '../../config/regions'
 
 const DE = {
-  label: 'Feiertage in den Regionen',
+  label: 'Feiertage in deinen Märkten',
   holiday: (when: 'heute' | 'morgen', city: string, name: string) =>
     `Feiertag ${when} in ${city}: ${name}`,
 }
 const EN: typeof DE = {
-  label: 'Public holidays in the regions',
+  label: 'Public holidays in your markets',
   holiday: (when, city, name) =>
     `Public holiday ${when === 'heute' ? 'today' : 'tomorrow'} in ${city}: ${name}`,
 }

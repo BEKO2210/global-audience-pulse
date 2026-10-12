@@ -17,13 +17,14 @@ import { track } from '../lib/analytics'
 import { useLocale, useMessages } from '../i18n/LocaleProvider'
 import type { Locale, Messages } from '../i18n/locale'
 import { cityName, phaseName, regionName } from '../i18n/labels'
+import { formatPercent } from '../lib/format'
 
 const DE = {
   title: 'Deine Zielgruppen-Märkte',
   active: (n: number, total: number) => `${n} von ${total} aktiv`,
   selectAll: 'Alle auswählen',
   reset: 'Auswahl zurücksetzen',
-  filter: 'Regionen filtern',
+  filter: 'Märkte filtern',
   all: (n: number) => `Alle (${n})`,
   measured: (n: number) => `Gemessen (${n})`,
   model: (n: number) => `Modell (${n})`,
@@ -34,17 +35,19 @@ const DE = {
   modelBadge: 'Modell',
   holidayNote: (name: string) => `Feiertag: ${name} – wird wie ein Sonntag gerechnet`,
   deviation: (value: number) =>
-    value >= 0 ? `+${value} % über dem Üblichen` : `${Math.abs(value)} % unter dem Üblichen`,
+    value >= 0
+      ? `+${formatPercent(value, 'de')} über dem Üblichen`
+      : `${formatPercent(Math.abs(value), 'de')} unter dem Üblichen`,
   hourUntil: (time: string, lag: string) =>
     `Stand ${time} Uhr · Wikipedia liefert ${lag} verzögert`,
   profileAge: (age: string) => `Profil von vor ${age}`,
   baseline: 'Statistisches Basismodell',
   share: 'Zielgruppenanteil',
-  percent: (n: number) => `${n} %`,
+  percent: (n: number) => formatPercent(n, 'de'),
   switchLabel: (city: string) => `${city} in der Zielgruppe`,
   source: 'Datenquelle',
   liveSignal: 'Live-Signal',
-  shareShort: (n: number) => `${n} % Anteil`,
+  shareShort: (n: number) => `${formatPercent(n, 'de')} Anteil`,
   phaseRange: (name: string, from: string, to: string) => `${name} · ${from}–${to} Uhr`,
 }
 const EN: typeof DE = {
@@ -52,7 +55,7 @@ const EN: typeof DE = {
   active: (n, total) => `${n} of ${total} active`,
   selectAll: 'Select all',
   reset: 'Reset selection',
-  filter: 'Filter regions',
+  filter: 'Filter markets',
   all: (n) => `All (${n})`,
   measured: (n) => `Measured (${n})`,
   model: (n) => `Model (${n})`,
@@ -62,17 +65,20 @@ const EN: typeof DE = {
   dataProfile: 'Data profile',
   modelBadge: 'Model',
   holidayNote: (name) => `Public holiday: ${name} – counted like a Sunday`,
-  deviation: (value) => (value >= 0 ? `+${value}% above usual` : `${Math.abs(value)}% below usual`),
+  deviation: (value) =>
+    value >= 0
+      ? `+${formatPercent(value, 'en')} above usual`
+      : `${formatPercent(Math.abs(value), 'en')} below usual`,
   hourUntil: (time, lag) => `As of ${time} · Wikipedia is ${lag} behind`,
   profileAge: (age) => `Profile from ${age} ago`,
   baseline: 'Statistical baseline model',
   share: 'Audience share',
-  percent: (n) => `${n}%`,
+  percent: (n) => formatPercent(n, 'en'),
   switchLabel: (city) => `${city} in the audience`,
   source: 'Data source',
   liveSignal: 'Live signal',
-  shareShort: (n) => `${n}% share`,
-  phaseRange: (name, from, to) => `${name} · ${from}:00–${to}:00`,
+  shareShort: (n) => `${formatPercent(n, 'en')} share`,
+  phaseRange: (name, from, to) => `${name} · ${from}–${to}`,
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 

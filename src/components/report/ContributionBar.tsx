@@ -11,9 +11,9 @@ const DE = {
   carries: 'trägt',
   of: 'von',
   points: 'Punkten',
-  groupLabel: (total: number) => `Beitrag der Regionen zum Gesamtwert ${total} Punkte`,
+  groupLabel: (total: number) => `Beitrag je Markt zum Gesamtwert ${total} Punkte`,
   pointsOf: (city: string, points: number) => `${city}: ${points} Punkte`,
-  caption: 'Regionaler Beitrag zum Gesamtwert',
+  caption: 'Beitrag je Markt zum Gesamtwert',
   place: 'Ort',
   pointsHead: 'Punkte',
 }
@@ -22,9 +22,9 @@ const EN: typeof DE = {
   carries: 'contributes',
   of: 'of',
   points: 'points',
-  groupLabel: (total) => `Regional contributions to the overall score of ${total} points`,
+  groupLabel: (total) => `Contribution per market to the overall score of ${total} points`,
   pointsOf: (city, points) => `${city}: ${points} points`,
-  caption: 'Regional contribution to the overall score',
+  caption: 'Contribution per market to the overall score',
   place: 'Place',
   pointsHead: 'Points',
 }

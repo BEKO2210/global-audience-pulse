@@ -6,6 +6,7 @@ import { useLocale, useMessages } from '../i18n/LocaleProvider'
 import type { Messages } from '../i18n/locale'
 import { cityName } from '../i18n/labels'
 import './WeightingToggle.css'
+import { formatPercent } from '../lib/format'
 
 type Mode = 'value' | 'reach'
 
@@ -22,8 +23,8 @@ const DE = {
       sub: 'Internetnutzer – nach erreichbaren Menschen gewichtet',
     },
   } as Record<Mode, { title: string; sub: string }>,
-  label: 'Gewichtung der Regionen',
-  leads: (city: string, percent: number) => `${city} führt mit ${percent} %`,
+  label: 'Gewichtung der Märkte',
+  leads: (city: string, percent: number) => `${city} führt mit ${formatPercent(percent, 'de')}`,
 }
 const EN: typeof DE = {
   options: {
@@ -36,8 +37,8 @@ const EN: typeof DE = {
       sub: 'Internet users – weighted by people reachable',
     },
   },
-  label: 'Region weighting',
-  leads: (city, percent) => `${city} leads with ${percent}%`,
+  label: 'Market weighting',
+  leads: (city, percent) => `${city} leads with ${formatPercent(percent, 'en')}`,
 }
 const M: Messages<typeof DE> = { de: DE, en: EN }
 

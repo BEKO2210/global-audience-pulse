@@ -55,7 +55,7 @@ test('accepts a fresh snapshot and live Wikimedia samples', async ({ page }) => 
   )
   await openReady(page)
   // O-013: no decorative eyebrow any more – live data shows the active regions, without the offline note
-  await expect(page.getByTestId('data-state')).toContainText(/\d Regionen aktiv/)
+  await expect(page.getByTestId('data-state')).toContainText(/\d Märkte aktiv/)
   await expect(page.getByTestId('data-state')).not.toContainText('Beispieldaten')
   // the source badge lives in the region detail
   await page

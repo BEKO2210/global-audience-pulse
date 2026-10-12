@@ -26,7 +26,7 @@ const EN: typeof DE = {
   timeMachine: 'Time machine',
   windowNo: (n) =>
     n === 1 ? 'Best window' : `${n}${n === 2 ? 'nd' : n === 3 ? 'rd' : 'th'} window`,
-  legend: (min) => `Optimal posting window (score from ${min})`,
+  legend: (min) => `Best posting window (score ${min}+)`,
   hint: 'Drag',
   keyHint: 'arrow keys',
 }
@@ -59,7 +59,7 @@ export function Forecast({
   caption?: string
 }) {
   const t = useMessages(M)
-  const { intl } = useLocale()
+  const { locale, intl } = useLocale()
   const reduceMotion = useReducedMotion()
   // 1 SVG unit = 1 CSS px: the height is set in CSS, the width follows the panel.
   const { ref, width, height } = useSvgBox<SVGSVGElement>({ width: 720, height: 240 })
@@ -148,8 +148,8 @@ export function Forecast({
         aria-valuetext={selectedDate.toLocaleString(intl, {
           timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
           weekday: 'short',
-          day: '2-digit',
-          month: '2-digit',
+          day: locale === 'en' ? 'numeric' : '2-digit',
+          month: locale === 'en' ? 'short' : '2-digit',
           hour: '2-digit',
           minute: '2-digit',
           timeZoneName: 'short',

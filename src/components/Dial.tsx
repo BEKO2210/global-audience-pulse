@@ -24,7 +24,7 @@ const EN: typeof DE = {
   title: 'When your markets are awake',
   dialLabel: 'Activity phases of the selected markets over 24 hours',
   ring: (n, region, city) => `Ring ${n}: ${region} (${city})`,
-  centre: 'Centre',
+  centre: 'Weighted',
   markets: (n) => `${n} ${n === 1 ? 'market' : 'markets'}`,
   explainer: 'Each ring segment shows the activity phase at the local hour.',
   phases: 'Activity phases',

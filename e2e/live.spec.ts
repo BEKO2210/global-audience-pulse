@@ -80,3 +80,16 @@ test('Europe/Berlin changes from summer to standard time at the DST boundary', a
   await page.clock.runFor(3_000)
   await expect(page.locator('.live-clock small')).toContainText(/MEZ|GMT\+1/)
 })
+
+test('English planner and forecast use unambiguous month names', async ({ page }) => {
+  await page.clock.install({ time: new Date('2026-10-12T01:00:00Z') })
+  await openReady(page, true, '?lang=en')
+
+  const planner = page.getByRole('region', { name: 'The next strong windows' })
+  await expect(planner.locator('.planner-window-time strong').first()).toContainText('12 Oct')
+  await expect(planner.locator('.planner-window-time strong').first()).not.toContainText('12/10')
+
+  const slider = page.getByRole('slider', { name: 'Time machine', exact: true })
+  await expect(slider).toHaveAttribute('aria-valuetext', /12 Oct/)
+  await expect(slider).not.toHaveAttribute('aria-valuetext', /12\/10/)
+})

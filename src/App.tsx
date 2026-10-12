@@ -59,6 +59,7 @@ import { useLocale, useMessages } from './i18n/LocaleProvider'
 import type { Locale, Messages } from './i18n/locale'
 import { cityName, phaseName, presetName, regionName, statusText } from './i18n/labels'
 import { agoPhrase } from './lib/ago'
+import { formatPercent } from './lib/format'
 
 const DE = {
   and: 'und',
@@ -70,20 +71,20 @@ const DE = {
   noData: 'Messdaten nicht verfügbar',
   eyebrowFallback: 'Beispieldaten, Offline-Modell',
   eyebrowLoading: 'Daten werden geladen',
-  regionsActive: (n: number) => `${n} Regionen aktiv`,
+  regionsActive: (n: number) => `${n} Märkte aktiv`,
   headline: 'Jetzt posten oder warten?',
-  noneSelected: 'Keine Regionen ausgewählt',
+  noneSelected: 'Keine Märkte ausgewählt',
   noneSelectedHint: 'Wähle mindestens einen Markt aus, um weltweite Posting-Fenster zu berechnen.',
-  activateAll: 'Alle Regionen aktivieren',
+  activateAll: 'Alle Märkte aktivieren',
   leads: (city: string, score: number) => `${city} führt mit ${score}.`,
   sleeps: (cities: string, n: number) => `${cities} ${n === 1 ? 'schläft' : 'schlafen'}.`,
   allAwake: 'Alle Kernmärkte sind wach.',
   bestWindow: 'Optimales Zeitfenster',
   potential: (n: number) => `+${n} Pkt. Potenzial`,
   bestRemaining: 'bestes verbleibendes Fenster',
-  bestRegion: 'Beste Region',
+  bestRegion: 'Bester Markt',
   primeNow: 'Gerade Primetime',
-  ofRegions: (a: number, b: number) => `${a} von ${b} Regionen`,
+  ofRegions: (a: number, b: number) => `${a} von ${b} Märkten`,
   mapLoading: 'Karte wird geladen',
   nextChange: 'Nächster Wechsel',
   primeStarts: (when: string, city: string) => `In ${when} beginnt Primetime in ${city}`,
@@ -92,16 +93,16 @@ const DE = {
   dstChange: 'Zeitumstellung',
   corridors: 'Strategische Posting-Korridore',
   bestCorridor: 'Bester Korridor',
-  nRegions: (n: number) => `${n} Regionen`,
-  activateAllN: (n: number) => `Alle ${n} Regionen aktivieren`,
+  nRegions: (n: number) => `${n} Märkte`,
+  activateAllN: (n: number) => `Alle ${n} Märkte aktivieren`,
   method: 'Methodik & Quellen',
   methodTitle: ['Messbar, modelliert,', 'transparent.'],
   methodText: (measured: number, base: number) => (
     <>
       Der Score verbindet die geglättete menschliche Aufmerksamkeitskurve mit den stündlichen
-      Wikipedia-Abrufen der jeweiligen Sprachregion:{' '}
+      Wikipedia-Abrufen des jeweiligen Sprachmarkts:{' '}
       <strong>
-        {measured} % Messprofil + {base} % Baseline
+        {formatPercent(measured, 'de')} Messprofil + {formatPercent(base, 'de')} Baseline
       </strong>
       . <strong>Reichweite</strong> basiert auf Internetnutzern; <strong>Werbewert</strong>{' '}
       multipliziert sie mit dem BIP pro Kopf. Beide Weltbank-Gewichte werden für deine Auswahl live
@@ -131,7 +132,7 @@ const DE = {
   remindBody: (score: number) => `Dein Posting-Fenster beginnt – Score ${score}.`,
   // one line each on a phone (Belkis: a second line made everything below jump while scrubbing)
   capMap: (when: string | null, awake: number, total: number, prime: string) =>
-    `${when ?? 'Jetzt'}: ${awake} von ${total} wach${prime ? ` · Primetime ${prime}` : ''}`,
+    `${when ? `${when}: ` : ''}${awake} von ${total} wach${prime ? ` · Primetime ${prime}` : ''}`,
   capForecast: (score: number, at: string, now: number) =>
     `Höhepunkt ${score} um ${at} · jetzt ${now}`,
   capHeatmap: (count: number, total: number, at: string) =>
@@ -150,38 +151,38 @@ const EN: typeof DE = {
   noData: 'Data unavailable',
   eyebrowFallback: 'Sample data, offline model',
   eyebrowLoading: 'Loading data',
-  regionsActive: (n: number) => `${n} regions active`,
+  regionsActive: (n: number) => `${n} markets active`,
   headline: 'Post now or wait?',
-  noneSelected: 'No regions selected',
+  noneSelected: 'No markets selected',
   noneSelectedHint: 'Pick at least one market to calculate posting windows worldwide.',
-  activateAll: 'Select all regions',
-  leads: (city: string, score: number) => `${city} leads with ${score}.`,
+  activateAll: 'Select all markets',
+  leads: (city: string, score: number) => `${city} leads with ${score} points.`,
   sleeps: (cities: string, n: number) => `${cities} ${n === 1 ? 'is' : 'are'} asleep.`,
   allAwake: 'All core markets are awake.',
   bestWindow: 'Best posting window',
   potential: (n: number) => `+${n} pts potential`,
   bestRemaining: 'best window left today',
-  bestRegion: 'Top region',
+  bestRegion: 'Top market',
   primeNow: 'In prime time now',
-  ofRegions: (a: number, b: number) => `${a} of ${b} regions`,
+  ofRegions: (a: number, b: number) => `${a} of ${b} markets`,
   mapLoading: 'Loading map',
   nextChange: 'Next change',
   primeStarts: (when: string, city: string) => `Prime time starts in ${city} in ${when}`,
-  secondWindow: 'Second window today',
+  secondWindow: '2nd window today',
   noSecondWindow: 'No further window today',
   dstChange: 'Clock change',
   corridors: 'Strategic posting corridors',
   bestCorridor: 'Best corridor',
-  nRegions: (n: number) => `${n} regions`,
-  activateAllN: (n: number) => `Select all ${n} regions`,
+  nRegions: (n: number) => `${n} markets`,
+  activateAllN: (n: number) => `Select all ${n} markets`,
   method: 'Method & sources',
   methodTitle: ['Measured, modelled,', 'transparent.'],
   methodText: (measured: number, base: number) => (
     <>
       The score combines a smoothed human attention curve with hourly Wikipedia page views in each
-      language region:{' '}
+      language market:{' '}
       <strong>
-        {measured} % measured profile + {base} % baseline
+        {formatPercent(measured, 'en')} measured profile + {formatPercent(base, 'en')} baseline
       </strong>
       . <strong>Reach</strong> is based on internet users; <strong>Ad value</strong> multiplies it
       by GDP per capita. Both World Bank weightings are re-normalised live for your selection. The
@@ -198,7 +199,7 @@ const EN: typeof DE = {
   wikiProfile: 'Data profile',
   fetched: (wb: string, wiki: string) => `Fetched: World Bank ${wb} · Wikimedia ${wiki}`,
   holidaysSource: 'Nager.Date · Public holidays',
-  holidaysNote: 'nationwide, at build time',
+  holidaysNote: 'Nationwide, at build time',
   tokens: 'Design tokens',
   limitations:
     'Wikipedia is a proxy for activity, not a social-platform measurement. English Wikipedia is deliberately not used for the US/UK because it mixes time zones. Country groups and the documented US split approximate global audiences; they do not replace your own analytics. Nationwide public holidays (US, Brazil, UK, Germany, Japan) count like a Sunday; the source has no holidays for the Middle East and India.',
@@ -210,7 +211,7 @@ const EN: typeof DE = {
   remindTitle: 'Post now',
   remindBody: (score) => `Your posting window starts – score ${score}.`,
   capMap: (when, awake, total, prime) =>
-    `${when ?? 'Now'}: ${awake} of ${total} awake${prime ? ` · prime time ${prime}` : ''}`,
+    `${when ? `${when}: ` : ''}${awake} of ${total} awake${prime ? ` · prime time ${prime}` : ''}`,
   capForecast: (score, at, now) => `Peak ${score} at ${at} · now ${now}`,
   capHeatmap: (count, total, at) => `Most markets at once: ${count} of ${total} at ${at}`,
   capHeatmapNone: (threshold) => `No market reaches score ${threshold} today`,
@@ -590,10 +591,10 @@ export default function App() {
         scrubbed ? formatTime(date, viewerZone) : null,
         awake.awake,
         awake.total,
-        // at most two cities, then "+n", so the caption stays on one line
-        awake.prime.length > 2
-          ? `${awake.prime.slice(0, 2).join(', ')} +${awake.prime.length - 2}`
-          : joinList(awake.prime, t.and),
+        // one named city, then "+n": two names already overflow a 360 px phone in praezision
+        awake.prime.length > 1
+          ? `${awake.prime[0]} +${awake.prime.length - 1}`
+          : awake.prime.join(', '),
       ),
       forecast: peak
         ? t.capForecast(
@@ -1115,11 +1116,21 @@ export default function App() {
                           </span>
                           <span>
                             {t.reach}{' '}
-                            <b>{Math.round(activeSnapshot.weights.reach[region.id] * 100)} %</b>
+                            <b>
+                              {formatPercent(
+                                Math.round(activeSnapshot.weights.reach[region.id] * 100),
+                                locale,
+                              )}
+                            </b>
                           </span>
                           <span>
                             {t.value}{' '}
-                            <b>{Math.round(activeSnapshot.weights.value[region.id] * 100)} %</b>
+                            <b>
+                              {formatPercent(
+                                Math.round(activeSnapshot.weights.value[region.id] * 100),
+                                locale,
+                              )}
+                            </b>
                           </span>
                         </div>
                       ))}

@@ -47,7 +47,7 @@ const EN: typeof DE = {
   today: 'today',
   tomorrow: 'tomorrow',
   ai: 'Briefing (AI)',
-  view: 'View',
+  view: 'Show in chart',
   viewLabel: (when) => `Set the time machine to ${when}`,
   calSummary: (name) => `Post for ${name} (Global Audience Pulse)`,
   remindTitle: 'Post now',
@@ -93,7 +93,11 @@ export function AskPulse({
     : undefined
   const best = answer.best
   const dayWord = (at: Date) => (at < startOfNextZonedDay(now, zone) ? t.today : t.tomorrow)
-  const when = best ? `${dayWord(best.start)} ${formatTime(best.start, zone)}` : ''
+  const when = best
+    ? locale === 'en'
+      ? `${formatTime(best.start, zone)} ${dayWord(best.start)}`
+      : `${dayWord(best.start)} ${formatTime(best.start, zone)}`
+    : ''
 
   return (
     <section className="panel ask-pulse" aria-labelledby="ask-title">
